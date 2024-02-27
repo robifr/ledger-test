@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/bottomdialog_padding"
+      android:paddingTop="@dimen/bottomdialog_title_margin"
+      android:paddingBottom="@dimen/bottomdialog_title_margin"
+      android:text="@string/date"
+      android:textSize="@dimen/text_smallmedium"
+      android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <com.google.android.material.chip.ChipGroup
+      android:id="@+id/chipGroup"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/bottomdialog_padding"
+      android:layout_marginEnd="@dimen/bottomdialog_padding"
+      app:chipSpacingHorizontal="@dimen/chip_spacing"
+      app:chipSpacingVertical="@dimen/chip_spacing"
+      app:layout_constraintTop_toBottomOf="@id/title"
+      app:selectionRequired="true"
+      app:singleSelection="true">
+
+    <!-- Chips tag are based on `QueueFilters.DateRange` enum. -->
+    <com.google.android.material.chip.Chip
+        style="@style/Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="ALL_TIME"
+        android:text="@string/all_time"
+        app:chipIcon="@null" />
+
+    <com.google.android.material.chip.Chip
+        style="@style/Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="TODAY"
+        android:text="@string/today"
+        app:chipIcon="@null" />
+
+    <com.google.android.material.chip.Chip
+        style="@style/Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="YESTERDAY"
+        android:text="@string/yesterday"
+        app:chipIcon="@null" />
+
+    <com.google.android.material.chip.Chip
+        style="@style/Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="THIS_WEEK"
+        android:text="@string/this_week"
+        app:chipIcon="@null" />
+
+    <com.google.android.material.chip.Chip
+        style="@style/Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="THIS_MONTH"
+        android:text="@string/this_month"
+        app:chipIcon="@null" />
+
+    <com.google.android.material.chip.Chip
+        style="@style/Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="CUSTOM"
+        android:text="@string/queuefilter_date_selecteddate_chip"
+        android:visibility="gone"
+        app:chipIcon="@null" />
+  </com.google.android.material.chip.ChipGroup>
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/customDateButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="12dp"
+      android:layout_marginTop="5dp"
+      android:layout_marginEnd="@dimen/bottomdialog_padding"
+      android:layout_marginBottom="@dimen/bottomdialog_item_margin"
+      android:minWidth="0dp"
+      android:minHeight="0dp"
+      android:paddingTop="6dp"
+      android:paddingBottom="6dp"
+      android:text="@string/custom_range"
+      android:textColor="?attr/colorPrimary"
+      android:textSize="@dimen/text_smallmedium"
+      app:cornerRadius="10dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/chipGroup" />
+</androidx.constraintlayout.widget.ConstraintLayout>

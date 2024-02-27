@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:rippleColor="?android:attr/colorControlHighlight"
+    card_view:cardCornerRadius="@dimen/cardlist_corner_radius"
+    card_view:cardElevation="@dimen/cardlist_elevation">
+
+  <!--
+    Note: Use constraint layout instead of linear one because we are required to ensure
+      ellipsize works while having flexible width.
+  -->
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/searchable_narrow_constraintlayout"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <include
+        layout="@layout/reusable_image_shapeable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- TODO: Make every cards have equal height, especially when the text multilined. -->
+    <!--		<TextView android:id="@+id/text"-->
+    <!--			android:layout_width="0dp"-->
+    <!--			android:layout_height="wrap_content"-->
+    <!--			android:paddingTop="5dp"-->
+    <!--			android:paddingStart="@dimen/cardlist_padding"-->
+    <!--			android:paddingEnd="@dimen/cardlist_padding"-->
+    <!--			android:textStyle="bold"-->
+    <!--			android:textSize="@dimen/text_smallmedium"-->
+    <!--			android:maxLines="2"-->
+    <!--			android:ellipsize="end"-->
+    <!--			app:layout_constraintTop_toBottomOf="@id/constraintLayout"-->
+    <!--			app:layout_constraintStart_toStartOf="parent"-->
+    <!--			app:layout_constraintEnd_toEndOf="parent"/>-->
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/cardlist_padding"
+        android:paddingEnd="@dimen/cardlist_padding"
+        android:paddingBottom="@dimen/cardlist_padding"
+        android:textSize="@dimen/text_smallmedium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

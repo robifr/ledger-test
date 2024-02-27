@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <androidx.appcompat.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_scrollFlags="enterAlways"
+      app:menu="@menu/reusable_toolbar_edit"
+      app:navigationIcon="@drawable/icon_arrow_back"
+      app:title="Create customer" />
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/nameLayout"
+      style="@style/TextInputLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:hint="Name"
+      android:paddingTop="5dp"
+      app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionSend"
+        android:inputType="text|textNoSuggestions"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:backgroundTint="@android:color/transparent" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/balanceLayout"
+      style="@style/TextInputLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginTop="10dp"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:hint="Balance"
+      app:layout_constraintTop_toBottomOf="@id/nameLayout">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/balance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:backgroundTint="@android:color/transparent" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/debtLayout"
+      style="@style/TextInputLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginTop="10dp"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:hint="Debt"
+      app:layout_constraintTop_toBottomOf="@id/balanceLayout">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/debt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:backgroundTint="@android:color/transparent" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/withdrawButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginTop="30dp"
+      android:text="Withdraw"
+      android:textColor="?attr/colorOnSecondary"
+      app:backgroundTint="?attr/colorSecondary"
+      app:cornerRadius="10dp"
+      app:layout_constraintEnd_toStartOf="@id/depositButton"
+      app:layout_constraintHorizontal_chainStyle="packed"
+      app:layout_constraintHorizontal_weight="0.5"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/debtLayout"
+      app:rippleColor="@color/secondary_ripple" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/depositButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:text="Deposit"
+      android:textColor="?attr/colorOnPrimary"
+      app:backgroundTint="?attr/colorPrimary"
+      app:cornerRadius="10dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_weight="0.5"
+      app:layout_constraintStart_toEndOf="@id/withdrawButton"
+      app:layout_constraintTop_toTopOf="@id/withdrawButton"
+      app:rippleColor="@color/primary_ripple" />
+</androidx.constraintlayout.widget.ConstraintLayout>

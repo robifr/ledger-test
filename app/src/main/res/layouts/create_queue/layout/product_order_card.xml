@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/cardlist_margin"
+    android:layout_marginBottom="@dimen/cardlist_margin"
+    android:checkable="true"
+    app:checkedIcon="@null"
+    app:rippleColor="?android:attr/colorControlHighlight"
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="@dimen/cardlist_elevation">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <include
+        android:id="@+id/productImage"
+        layout="@layout/reusable_image_shapeable"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/productName"
+        app:layout_constraintHeight_max="60dp"
+        app:layout_constraintHeight_min="60dp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="60dp"
+        app:layout_constraintWidth_min="60dp" />
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:button="@drawable/icon_check_32"
+        android:buttonTint="?attr/colorControlNormal"
+        app:layout_constraintBottom_toBottomOf="@id/productImage"
+        app:layout_constraintEnd_toEndOf="@id/productImage"
+        app:layout_constraintStart_toStartOf="@id/productImage"
+        app:layout_constraintTop_toTopOf="@id/productImage" />
+
+    <TextView
+        android:id="@+id/productName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/productPrice"
+        app:layout_constraintEnd_toStartOf="@id/totalPrice"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/productImage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/productPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start|top"
+        android:paddingStart="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/text_disabled"
+        android:textSize="@dimen/text_smallmedium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/quantity"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/productName"
+        app:layout_constraintTop_toBottomOf="@id/productName" />
+
+    <TextView
+        android:id="@+id/quantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start|top"
+        android:paddingBottom="10dp"
+        android:textColor="@color/text_disabled"
+        android:textSize="@dimen/text_smallmedium"
+        app:layout_constraintBottom_toBottomOf="@id/productPrice"
+        app:layout_constraintEnd_toEndOf="@id/productName"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/productPrice"
+        app:layout_constraintTop_toTopOf="@id/productPrice" />
+
+    <TextView
+        android:id="@+id/totalPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:paddingEnd="15dp"
+        app:layout_constraintBottom_toTopOf="@id/discount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/productName"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/discount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:paddingEnd="15dp"
+        android:textColor="@color/text_disabled"
+        android:textSize="@dimen/text_smallmedium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/totalPrice"
+        app:layout_constraintTop_toBottomOf="@id/totalPrice"
+        app:layout_constraintVertical_weight="1" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

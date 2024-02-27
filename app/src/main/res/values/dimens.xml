@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+  <dimen name="text_small">12sp</dimen>
+  <dimen name="text_smallmedium">14sp</dimen>
+  <dimen name="text_medium">16sp</dimen>
+  <dimen name="text_mediumlarge">18sp</dimen>
+  <dimen name="text_large">20sp</dimen>
+  <dimen name="text_extralarge">24sp</dimen>
+
+  <dimen name="icon_extrasmall">16dp</dimen>
+  <dimen name="icon_small">20dp</dimen>
+  <dimen name="icon_smallmedium">24dp</dimen>
+  <dimen name="icon_medium">32dp</dimen>
+  <dimen name="icon_mediumlarge">40dp</dimen>
+  <dimen name="icon_large">48dp</dimen>
+
+  <dimen name="screen_padding">15dp</dimen>
+
+  <dimen name="stroke_width">1.5px</dimen>
+
+  <dimen name="bottomdialog_padding">20dp</dimen>
+  <dimen name="bottomdialog_icon_padding">20dp</dimen>
+  <dimen name="bottomdialog_button_minheight">45dp</dimen>
+  <dimen name="bottomdialog_item_margin">15dp</dimen>
+  <dimen name="bottomdialog_title_margin">18dp</dimen>
+  <dimen name="bottomdialog_title_abovebutton_marginbottom">8dp</dimen>
+
+  <dimen name="cardlist_wide_height">90dp</dimen>
+  <dimen name="cardlist_padding">10dp</dimen>
+  <dimen name="cardlist_margin">5dp</dimen>
+  <dimen name="cardlist_corner_radius">8dp</dimen>
+  <dimen name="cardlist_elevation">0dp</dimen>
+
+  <dimen name="chip_spacing">10dp</dimen>
+
+  <dimen name="list_title_margintop">15dp</dimen>
+
+  <dimen name="table_column_padding">10dp</dimen>
+  <dimen name="table_column_minheight">45dp</dimen>
+
+  <dimen name="illustration_maxwidth">300dp</dimen>
+</resources>

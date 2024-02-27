@@ -1,0 +1,154 @@
+<!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/cardlist_wide_height">
+
+  <include
+      android:id="@+id/image"
+      layout="@layout/reusable_image_shapeable"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/cardlist_padding"
+      android:layout_marginTop="@dimen/cardlist_padding"
+      android:layout_marginEnd="@dimen/cardlist_padding"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/name"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="10dp"
+      android:ellipsize="end"
+      android:gravity="start|center_vertical"
+      android:maxLines="2"
+      android:textSize="@dimen/text_large"
+      app:layout_constraintBottom_toBottomOf="@id/image"
+      app:layout_constraintEnd_toStartOf="@id/menuButton"
+      app:layout_constraintStart_toEndOf="@id/image"
+      app:layout_constraintTop_toTopOf="@id/image" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/menuButton"
+      style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:insetTop="0dp"
+      android:insetBottom="0dp"
+      android:minWidth="0dp"
+      android:minHeight="0dp"
+      android:padding="@dimen/cardlist_padding"
+      android:visibility="visible"
+      app:backgroundTint="@android:color/transparent"
+      app:cornerRadius="50dp"
+      app:icon="@drawable/icon_morevert_20"
+      app:iconPadding="0dp"
+      app:iconSize="@dimen/icon_small"
+      app:iconTint="?attr/colorControlNormal"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:rippleColor="?android:attr/colorControlHighlight" />
+
+  <CheckBox
+      android:id="@+id/checkbox"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="?android:attr/listChoiceIndicatorMultiple"
+      android:button="@null"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="@id/menuButton"
+      app:layout_constraintEnd_toEndOf="@id/menuButton"
+      app:layout_constraintStart_toStartOf="@id/menuButton"
+      app:layout_constraintTop_toTopOf="@id/menuButton" />
+
+  <TextView
+      android:id="@+id/uniqueIdTitle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp"
+      android:enabled="false"
+      android:paddingStart="@dimen/cardlist_padding"
+      android:text="Customer ID"
+      android:textSize="@dimen/text_smallmedium"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/image"
+      app:layout_constraintWidth_percent="0.25" />
+
+  <TextView
+      android:id="@+id/uniqueId"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/cardlist_padding"
+      android:paddingBottom="@dimen/cardlist_padding"
+      app:layout_constraintEnd_toEndOf="@id/uniqueIdTitle"
+      app:layout_constraintStart_toStartOf="@id/uniqueIdTitle"
+      app:layout_constraintTop_toBottomOf="@id/uniqueIdTitle" />
+
+  <TextView
+      android:id="@+id/balanceTitle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:enabled="false"
+      android:gravity="end|center_vertical"
+      android:text="Balance"
+      android:textSize="@dimen/text_smallmedium"
+      app:layout_constraintBottom_toBottomOf="@id/uniqueIdTitle"
+      app:layout_constraintStart_toEndOf="@id/uniqueIdTitle"
+      app:layout_constraintTop_toTopOf="@id/uniqueIdTitle"
+      app:layout_constraintWidth_percent="0.375" />
+
+  <TextView
+      android:id="@+id/balance"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:gravity="end|center_vertical"
+      android:paddingBottom="@dimen/cardlist_padding"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="@id/balanceTitle"
+      app:layout_constraintStart_toStartOf="@id/balanceTitle"
+      app:layout_constraintTop_toBottomOf="@id/balanceTitle" />
+
+  <TextView
+      android:id="@+id/debtTitle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:enabled="false"
+      android:gravity="end|center_vertical"
+      android:paddingEnd="@dimen/cardlist_padding"
+      android:text="Debt"
+      android:textSize="@dimen/text_smallmedium"
+      app:layout_constraintBottom_toBottomOf="@id/balanceTitle"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/balanceTitle"
+      app:layout_constraintTop_toTopOf="@id/balanceTitle" />
+
+  <TextView
+      android:id="@+id/debt"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:gravity="end|center_vertical"
+      android:paddingEnd="@dimen/cardlist_padding"
+      android:paddingBottom="@dimen/cardlist_padding"
+      app:layout_constraintEnd_toEndOf="@id/debtTitle"
+      app:layout_constraintStart_toStartOf="@id/debtTitle"
+      app:layout_constraintTop_toBottomOf="@id/debtTitle" />
+</androidx.constraintlayout.widget.ConstraintLayout>

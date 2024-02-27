@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/bottomdialog_padding"
+      android:paddingTop="@dimen/bottomdialog_title_margin"
+      android:paddingBottom="@dimen/bottomdialog_title_margin"
+      android:text="Balance"
+      android:textSize="@dimen/text_smallmedium"
+      android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/minimumBalanceLayout"
+      style="@style/TextInputLayout.OutlinedBox"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/bottomdialog_item_margin"
+      android:hint="Min"
+      android:paddingStart="@dimen/bottomdialog_padding"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintHorizontal_chainStyle="spread"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/title"
+      app:layout_constraintWidth_percent="0.45">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/minimumBalance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionSend"
+        android:inputType="number"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="@dimen/text_smallmedium"
+        app:backgroundTint="@android:color/transparent" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="—"
+      android:textSize="@dimen/text_smallmedium"
+      app:layout_constraintBottom_toBottomOf="@id/minimumBalanceLayout"
+      app:layout_constraintEnd_toStartOf="@id/maximumBalanceLayout"
+      app:layout_constraintStart_toEndOf="@id/minimumBalanceLayout"
+      app:layout_constraintTop_toTopOf="@id/minimumBalanceLayout" />
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/maximumBalanceLayout"
+      style="@style/TextInputLayout.OutlinedBox"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:hint="Max"
+      android:paddingEnd="@dimen/bottomdialog_padding"
+      app:layout_constraintBottom_toBottomOf="@id/minimumBalanceLayout"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="@id/minimumBalanceLayout"
+      app:layout_constraintWidth_percent="0.45">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/maximumBalance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionSend"
+        android:inputType="number"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="@dimen/text_smallmedium"
+        app:backgroundTint="@android:color/transparent" />
+  </com.google.android.material.textfield.TextInputLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

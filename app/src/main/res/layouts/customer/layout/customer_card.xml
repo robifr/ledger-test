@@ -1,0 +1,42 @@
+<!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/cardlist_margin"
+    android:layout_marginBottom="@dimen/cardlist_margin"
+    android:checkable="true"
+    android:clickable="true"
+    app:checkedIcon="@drawable/icon_check"
+    app:rippleColor="?android:attr/colorControlHighlight"
+    card_view:cardCornerRadius="@dimen/cardlist_corner_radius"
+    card_view:cardElevation="@dimen/cardlist_elevation">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+
+    <include
+        android:id="@+id/normalCard"
+        layout="@layout/customer_card_normal" />
+  </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

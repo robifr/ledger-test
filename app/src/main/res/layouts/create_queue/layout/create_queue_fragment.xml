@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+  <androidx.appcompat.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_scrollFlags="enterAlways"
+      app:menu="@menu/reusable_toolbar_edit"
+      app:navigationIcon="@drawable/icon_arrow_back"
+      app:title="Create queue" />
+
+  <androidx.core.widget.NestedScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical">
+
+      <!--
+        Note: In order to make `app:endIconDrawable` visible, we're required to set
+          `android:focusable` attribute to true for `TextInputEditText`.
+          But setting focusable to true will leads to user having to double click the field,
+          first one focusing cursor to the field, second one will invoke on click listener.
+          So that we use `custom` mode instead of `clear_text`,
+          with similar icon drawable as when using `app:endIconMode` with `clear_text`.
+      -->
+      <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/customerLayout"
+          style="@style/TextInputLayout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/screen_padding"
+          android:layout_marginEnd="@dimen/screen_padding"
+          android:layout_marginBottom="5dp"
+          android:hint="Customer"
+          android:paddingTop="5dp"
+          app:endIconDrawable="@drawable/icon_cancel_20"
+          app:endIconMode="custom">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/customer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            app:backgroundTint="@android:color/transparent" />
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <com.google.android.material.textfield.TextInputLayout
+          style="@style/TextInputLayout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/screen_padding"
+          android:layout_marginTop="5dp"
+          android:layout_marginEnd="@dimen/screen_padding"
+          android:layout_marginBottom="5dp"
+          android:hint="Date">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            app:backgroundTint="@android:color/transparent" />
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <com.google.android.material.textfield.TextInputLayout
+          style="@style/TextInputLayout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/screen_padding"
+          android:layout_marginTop="5dp"
+          android:layout_marginEnd="@dimen/screen_padding"
+          android:layout_marginBottom="5dp"
+          android:hint="Status">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            app:backgroundTint="@android:color/transparent" />
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <!-- Button tag are based on `QueueModel.PaymentMethod` enum. -->
+      <TextView
+          android:id="@+id/paymentMethodTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/screen_padding"
+          android:layout_marginTop="30dp"
+          android:layout_marginEnd="@dimen/screen_padding"
+          android:layout_marginBottom="8dp"
+          android:text="Payment methods"
+          android:textStyle="bold" />
+
+      <com.google.android.material.button.MaterialButton
+          android:id="@+id/paymentMethodCashButton"
+          android:layout_width="match_parent"
+          android:layout_height="50dp"
+          android:layout_marginStart="@dimen/screen_padding"
+          android:layout_marginEnd="@dimen/screen_padding"
+          android:layout_marginBottom="4dp"
+          android:checkable="true"
+          android:drawableLeft="@drawable/icon_dollar_20"
+          android:gravity="start|center_vertical"
+          android:paddingStart="15dp"
+          android:paddingEnd="15dp"
+          android:tag="CASH"
+          android:text="Cash"
+          app:backgroundTint="@color/surface"
+          app:cornerRadius="12dp"
+          app:iconPadding="15dp"
+          app:rippleColor="?android:attr/colorControlHighlight" />
+
+      <com.google.android.material.button.MaterialButton
+          android:id="@+id/paymentMethodAccountBalanceButton"
+          android:layout_width="match_parent"
+          android:layout_height="50dp"
+          android:layout_marginStart="@dimen/screen_padding"
+          android:layout_marginTop="4dp"
+          android:layout_marginEnd="@dimen/screen_padding"
+          android:checkable="true"
+          android:drawableLeft="@drawable/icon_account_wallet_20"
+          android:gravity="start|center_vertical"
+          android:paddingStart="15dp"
+          android:paddingEnd="15dp"
+          android:tag="ACCOUNT_BALANCE"
+          android:text="Account balance"
+          app:backgroundTint="@color/surface"
+          app:cornerRadius="12dp"
+          app:iconPadding="15dp"
+          app:rippleColor="?android:attr/colorControlHighlight" />
+
+      <include
+          android:id="@+id/productOrder"
+          layout="@layout/create_queue_product_order" />
+    </LinearLayout>
+  </androidx.core.widget.NestedScrollView>
+</LinearLayout>

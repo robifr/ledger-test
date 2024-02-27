@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp">
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:gravity="center_vertical"
+      android:text="Product orders"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toBottomOf="@id/addButton"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@id/addButton" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/addButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:minWidth="0dp"
+      android:minHeight="0dp"
+      android:paddingEnd="12dp"
+      android:text="Add"
+      android:textColor="?attr/colorPrimary"
+      android:textSize="@dimen/text_smallmedium"
+      android:textStyle="bold"
+      app:cornerRadius="12dp"
+      app:icon="@drawable/icon_add_20"
+      app:iconPadding="5dp"
+      app:iconTint="?attr/colorPrimary"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <!-- Container for product orders. -->
+  <LinearLayout
+      android:id="@+id/listLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:orientation="vertical"
+      app:layout_constraintTop_toBottomOf="@id/title" />
+
+  <TextView
+      android:id="@+id/grandTotalPriceTitle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginTop="12dp"
+      android:gravity="end"
+      android:text="Grand total price"
+      android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/listLayout"
+      app:layout_constraintWidth_percent="0.45" />
+
+  <TextView
+      android:id="@+id/grandTotalPrice"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:gravity="end"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toBottomOf="@id/grandTotalPriceTitle"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/grandTotalPriceTitle"
+      app:layout_constraintTop_toTopOf="@id/grandTotalPriceTitle" />
+
+  <TextView
+      android:id="@+id/totalDiscountTitle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginTop="8dp"
+      android:gravity="end"
+      android:text="Total discount"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/grandTotalPrice"
+      app:layout_constraintWidth_percent="0.45" />
+
+  <TextView
+      android:id="@+id/totalDiscount"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:gravity="end"
+      app:layout_constraintBottom_toBottomOf="@id/totalDiscountTitle"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/totalDiscountTitle"
+      app:layout_constraintTop_toTopOf="@id/totalDiscountTitle" />
+
+  <TextView
+      android:id="@+id/customerBalanceTitle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginTop="8dp"
+      android:gravity="end"
+      android:text="%s's balance"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/totalDiscount"
+      app:layout_constraintWidth_percent="0.45" />
+
+  <TextView
+      android:id="@+id/customerBalance"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:gravity="end"
+      app:layout_constraintBottom_toBottomOf="@id/customerBalanceTitle"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/customerBalanceTitle"
+      app:layout_constraintTop_toTopOf="@id/customerBalanceTitle" />
+
+  <TextView
+      android:id="@+id/customerDebtTitle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginTop="8dp"
+      android:gravity="end"
+      android:text="%s's debt"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/customerBalance"
+      app:layout_constraintWidth_percent="0.45" />
+
+  <TextView
+      android:id="@+id/customerDebt"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:gravity="end"
+      app:layout_constraintBottom_toBottomOf="@id/customerDebtTitle"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/customerDebtTitle"
+      app:layout_constraintTop_toTopOf="@id/customerDebtTitle" />
+</androidx.constraintlayout.widget.ConstraintLayout>

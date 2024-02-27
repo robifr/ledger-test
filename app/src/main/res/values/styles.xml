@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+  <style name="Button" parent="Widget.MaterialComponents.Button.TextButton">
+    <item name="android:insetTop">0dp</item>
+    <item name="android:insetBottom">0dp</item>
+    <item name="android:textColor">?android:attr/textColor</item>
+    <item name="iconTint">?attr/colorControlNormal</item>
+    <item name="rippleColor">?attr/colorControlHighlight</item>
+  </style>
+
+  <style name="BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+    <item name="itemIconTint">?attr/colorControlNormal</item>
+    <item name="itemRippleColor">?android:attr/colorControlHighlight</item>
+    <item name="itemTextColor">?android:attr/textColor</item>
+    <item name="itemTextAppearanceActive">@style/BottomNavigationView.TextAppearance</item>
+    <item name="itemTextAppearanceInactive">@style/BottomNavigationView.TextAppearance</item>
+  </style>
+
+  <style name="BottomNavigationView.TextAppearance" parent="TextAppearance.MaterialComponents.Caption">
+    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+
+  <!-- Put this theme at `BottomSheetDialog` instance, second constructor parameter. -->
+  <style name="BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+    <item name="android:windowIsFloating">false</item>
+    <item name="android:windowSoftInputMode">adjustResize|stateAlwaysVisible</item>
+    <item name="android:navigationBarColor">?attr/colorSurface</item>
+    <item name="bottomSheetStyle">@style/BottomSheetDialog.Style</item>
+  </style>
+
+  <style name="BottomSheetDialog.MaterialButton" parent="Button">
+    <item name="android:minHeight">@dimen/bottomdialog_button_minheight</item>
+    <item name="android:paddingStart">@dimen/bottomdialog_padding</item>
+    <item name="android:textSize">@dimen/text_smallmedium</item>
+    <item name="android:textColor">?android:attr/textColor</item>
+    <item name="android:gravity">left|center_vertical</item>
+    <item name="backgroundTint">@android:color/transparent</item>
+    <item name="iconPadding">@dimen/bottomdialog_icon_padding</item>
+    <item name="iconSize">@dimen/icon_small</item>
+  </style>
+
+  <style name="BottomSheetDialog.Style" parent="Widget.Design.BottomSheet.Modal">
+    <item name="android:paddingTop">@dimen/bottomdialog_padding</item>
+    <item name="android:paddingBottom">@dimen/bottomdialog_padding</item>
+    <item name="android:orientation">vertical</item>
+
+    <!--
+        Note: Don't use `shapeAppearance` because the dialog corner will be flattened when expanded,
+            use `android:background` attribute instead. There's no way to override them
+            because material team is strongly opinionated about this.
+            https://github.com/material-components/material-components-android/pull/437
+    -->
+    <item name="android:background">@drawable/shape_bottomdialog</item>
+    <item name="backgroundTint">?attr/colorSurface</item>
+
+    <item name="layout_behavior">com.google.android.material.bottomsheet.BottomSheetBehavior</item>
+    <item name="behavior_hideable">true</item>
+  </style>
+
+  <style name="BottomSheetDialog.Title" parent="Widget.AppCompat.TextView">
+    <item name="android:layout_marginBottom">@dimen/bottomdialog_padding</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:gravity">center</item>
+  </style>
+
+  <style name="BottomSheetDialog.RadioButton.RoundedRight" parent="Widget.AppCompat.CompoundButton.RadioButton">
+    <item name="android:minHeight">@dimen/bottomdialog_button_minheight</item>
+    <item name="android:paddingStart">@dimen/bottomdialog_padding</item>
+    <item name="android:button">@null</item>
+    <item name="android:textSize">@dimen/text_smallmedium</item>
+    <item name="android:textColor">@color/selector_textview_selectable</item>
+    <item name="android:background">@drawable/shape_bottomdialog_radio_roundedright</item>
+    <item name="android:drawablePadding">@dimen/bottomdialog_icon_padding</item>
+    <item name="android:drawableTint">@color/selector_textview_selectable</item>
+  </style>
+
+  <style name="Chip" parent="Base.Widget.MaterialComponents.Chip">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:paddingTop">8dp</item>
+    <item name="android:paddingBottom">8dp</item>
+    <item name="android:textSize">@dimen/text_smallmedium</item>
+    <item name="android:textColor">@color/selector_textview_selectable</item>
+    <item name="android:elevation">0dp</item>
+    <item name="android:stateListAnimator">@null</item> <!-- Completely disable shadow. -->
+    <item name="chipMinHeight">0dp</item>
+    <item name="chipStartPadding">10dp</item>
+    <item name="chipEndPadding">10dp</item>
+    <item name="chipBackgroundColor">?attr/colorSurface</item>
+    <item name="chipIconSize">@dimen/icon_small</item>
+    <item name="chipCornerRadius">10dp</item>
+    <item name="chipStrokeColor">@color/selector_chip_stroke</item>
+    <item name="chipStrokeWidth">1dp</item>
+    <item name="closeIconVisible">false</item>
+    <item name="textStartPadding">2dp</item>
+    <item name="textEndPadding">2dp</item>
+    <item name="rippleColor">?android:attr/colorControlHighlight</item>
+    <item name="ensureMinTouchTargetSize">false</item> <!-- To allow padding top and bottom. -->
+  </style>
+
+  <style name="Chip.Choice" parent="Widget.MaterialComponents.Chip.Choice">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:paddingTop">8dp</item>
+    <item name="android:paddingBottom">8dp</item>
+    <item name="android:textColor">@color/selector_textview_selectable</item>
+    <item name="android:textSize">@dimen/text_smallmedium</item>
+    <item name="android:elevation">0dp</item>
+    <item name="android:stateListAnimator">@null</item> <!-- Completely disable shadow. -->
+    <item name="chipMinHeight">0dp</item>
+    <item name="chipStartPadding">10dp</item>
+    <item name="chipEndPadding">10dp</item>
+    <item name="chipBackgroundColor">?attr/colorSurface</item>
+    <item name="chipIconSize">@dimen/icon_small</item>
+    <item name="chipCornerRadius">10dp</item>
+    <item name="chipStrokeColor">@color/selector_chip_stroke</item>
+    <item name="chipStrokeWidth">1dp</item>
+    <item name="closeIconVisible">false</item>
+    <item name="textStartPadding">2dp</item>
+    <item name="textEndPadding">2dp</item>
+    <item name="rippleColor">?android:attr/colorControlHighlight</item>
+    <item name="ensureMinTouchTargetSize">false</item> <!-- To allow padding top and bottom. -->
+  </style>
+
+  <style name="ContextualToolbar" parent="Widget.AppCompat.ActionMode">
+    <item name="titleTextStyle">@style/ContextualToolbar.Title</item>
+  </style>
+
+  <style name="ContextualToolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textColor">?android:attr/textColor</item>
+  </style>
+
+  <style name="MaterialOverlay.TextInputEditText.FilledBox" parent="">
+    <item name="editTextStyle">@style/TextInputEditText.FilledBox</item>
+  </style>
+
+  <style name="MaterialOverlay.TextInputEditText.OutlinedBox" parent="">
+    <item name="editTextStyle">@style/TextInputEditText.OutlinedBox</item>
+  </style>
+
+  <!-- Put this theme at `MaterialAlertDialogBuilder` instance, second constructor parameter. -->
+  <style name="MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="shapeAppearanceOverlay">@style/MaterialAlertDialog.ShapeAppearance</item>
+  </style>
+
+  <style name="MaterialAlertDialog.ShapeAppearance" parent="">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">15dp</item>
+  </style>
+
+  <!-- Put this theme at `MaterialDatePicker.setTheme` method. -->
+  <style name="MaterialDatePicker" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+    <item name="colorControlActivated">@color/red</item>
+    <item name="shapeAppearanceOverlay">@style/MaterialAlertDialog.ShapeAppearance</item>
+    <item name="materialCalendarHeaderToggleButton">@style/MaterialDatePicker.HeaderToggleButton
+    </item>
+  </style>
+
+  <style name="MaterialDatePicker.HeaderToggleButton" parent="Widget.MaterialComponents.MaterialCalendar.HeaderToggleButton">
+    <item name="android:visibility">gone</item> <!-- Remove keyboard input. -->
+  </style>
+
+  <style name="Snackbar.TextView" parent="Widget.MaterialComponents.Snackbar.TextView">
+    <item name="android:textSize">@dimen/text_smallmedium</item>
+  </style>
+
+  <style name="Shape.Round" parent="">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">50%</item>
+  </style>
+
+  <style name="Shape.Card" parent="">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">@dimen/cardlist_corner_radius</item>
+  </style>
+
+  <style name="TextInputEditText.FilledBox" parent="Widget.MaterialComponents.TextInputEditText.FilledBox">
+    <item name="android:textColor">?android:attr/textColor</item>
+  </style>
+
+  <style name="TextInputEditText.OutlinedBox" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox.Dense">
+    <item name="android:textColor">?android:attr/textColor</item>
+  </style>
+
+  <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+    <item name="hintTextColor">?android:attr/textColor</item>
+    <item name="boxBackgroundColor">@android:color/transparent</item>
+    <item name="boxStrokeColor">@color/selector_textinput_boxstroke</item>
+    <item name="boxStrokeWidth">1dp</item>
+    <item name="boxStrokeWidthFocused">1dp</item>
+    <item name="errorIconDrawable">@null</item>
+    <item name="materialThemeOverlay">@style/MaterialOverlay.TextInputEditText.FilledBox</item>
+  </style>
+
+  <style name="TextInputLayout.OutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+    <item name="hintTextColor">?android:attr/textColor</item>
+    <item name="boxBackgroundColor">@android:color/transparent</item>
+    <item name="boxStrokeColor">@color/selector_textinput_boxstroke</item>
+    <item name="boxStrokeWidth">1dp</item>
+    <item name="boxStrokeWidthFocused">1dp</item>
+    <item name="errorIconDrawable">@null</item>
+    <item name="materialThemeOverlay">@style/MaterialOverlay.TextInputEditText.OutlinedBox</item>
+  </style>
+
+  <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
+    <item name="titleTextColor">?android:attr/textColor</item>
+  </style>
+</resources>

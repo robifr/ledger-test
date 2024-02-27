@@ -1,0 +1,43 @@
+/**
+ * Copyright (c) 2022-present Robi
+ *
+ * Ledger is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Ledger is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package com.robifr.ledger.data.model;
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Fts4;
+import androidx.room.PrimaryKey;
+import java.util.Objects;
+
+@Fts4
+@Entity(tableName = "product_fts")
+public class ProductFtsModel {
+  @PrimaryKey
+  @ColumnInfo(name = "rowid")
+  public final long rowId;
+
+  @NonNull
+  @ColumnInfo(name = "name")
+  public final String name;
+
+  /** Reserved constructor to be used by Room upon querying. */
+  public ProductFtsModel(long rowId, @NonNull String name) {
+    this.rowId = rowId;
+    this.name = Objects.requireNonNull(name);
+  }
+}

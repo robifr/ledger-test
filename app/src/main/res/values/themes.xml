@@ -1,0 +1,96 @@
+<!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+  <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light">
+    <!-- Branding. -->
+    <item name="colorPrimary">@color/selector_primary</item>
+    <item name="colorOnPrimary">@color/selector_primary_textview</item>
+    <item name="colorSecondary">@color/selector_secondary</item>
+    <item name="colorOnSecondary">@color/selector_secondary_textview</item>
+    <item name="colorSurface">@color/selector_surface</item>
+    <!-- Note: Consider having a color selector for chip text color when defining `colorOnSurface`. -->
+    <item name="colorOnSurface">?android:attr/textColor</item>
+
+    <!-- Background color. -->
+    <item name="android:colorBackground">@color/white</item>
+
+    <!-- Color of icon, checkbox, radio button, etc. -->
+    <item name="android:textColorPrimary">?android:attr/textColor</item> <!-- Menu item. -->
+    <item name="actionMenuTextColor">?android:attr/textColor</item> <!-- Menu item. -->
+    <item name="colorControlNormal">?android:attr/textColor</item>
+
+    <!-- Color of selectable stuff (switch, cursor on edit text, button, etc.) -->
+    <item name="colorAccent">@color/surface_selected</item> <!-- Foreground color. -->
+    <item name="colorControlActivated">@color/primary</item> <!-- Background color. -->
+
+    <!-- Text style. -->
+    <item name="android:textColor">@color/selector_textview</item>
+    <item name="android:textColorHint">@color/text_disabled</item>
+    <item name="android:textSize">@dimen/text_medium</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:fontFamily">@font/roboto</item>
+    <item name="textInputStyle">@style/TextInputLayout</item>
+
+    <!--
+  Ripple color.
+  Note: Each material widgets use their own ripple color (can be seen in their github repository).
+    Like `color/mtrl_btn_ripple_color` for button, don't override them because they're internal.
+    I have tried to override `color/mtrl_btn_text_btn_ripple_color` for alert dialog
+    and `InflateException` get thrown in runtime.
+
+    Also `MaterialButton` uses `colorOnPrimary` for their ripple.
+    Of course it's inconvenience to straight override `colorOnPrimary`.
+    While its true you can override them via
+    `materialButtonStyle` -> `materialThemeOverlay` -> `colorOnPrimary` right here,
+    but there are still buttons which doesn't get overrode.
+    It's when you set a custom `style` attribute on the `MaterialButton` itself.
+    e.g. Buttons inside bottom sheet dialog uses `style/BottomSheetDialog.MaterialButton`.
+
+    In conclusion it's better to manually set `app:rippleColor` on everything.
+-->
+    <item name="colorControlHighlight">@color/black_10</item>
+
+    <!-- System status and navigation bar. -->
+    <item name="android:statusBarColor">?android:attr/colorBackground</item>
+    <item name="android:windowLightStatusBar">true</item>
+    <!--
+      Navigation bar background color should be manually set programmatically
+      to match current background or bottom navigation.
+    -->
+    <item name="android:windowLightNavigationBar">true</item>
+
+    <!-- Toolbar. -->
+    <item name="toolbarStyle">@style/Toolbar</item>
+
+    <!-- Contextual toolbar. -->
+    <item name="windowActionModeOverlay">true</item>
+    <item name="actionModeStyle">@style/ContextualToolbar</item>
+    <item name="actionModeCloseDrawable">@drawable/icon_arrow_back</item>
+    <item name="actionModeBackground">@drawable/shape_contextualtoolbar</item>
+
+    <!-- Snackbar. -->
+    <item name="snackbarTextViewStyle">@style/Snackbar.TextView</item>
+
+    <!-- Button. -->
+    <item name="materialButtonStyle">@style/Button</item>
+
+    <item name="windowNoTitle">true</item>
+    <item name="windowActionBar">false</item>
+  </style>
+</resources>

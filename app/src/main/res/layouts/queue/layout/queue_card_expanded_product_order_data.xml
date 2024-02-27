@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/table_column_padding">
+
+  <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.45"
+      android:orientation="vertical"
+      android:paddingEnd="@dimen/table_column_padding">
+
+    <TextView
+        android:id="@+id/productName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/text_smallmedium" />
+
+    <TextView
+        android:id="@+id/productPrice"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/text_smallmedium" />
+  </LinearLayout>
+
+  <!-- TODO: For unknown reason both quantity and total price text color default to gray. -->
+
+  <TextView
+      android:id="@+id/quantity"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.2"
+      android:gravity="center_horizontal"
+      android:paddingStart="@dimen/table_column_padding"
+      android:paddingEnd="@dimen/table_column_padding"
+      android:textColor="@color/text_enabled"
+      android:textSize="@dimen/text_smallmedium" />
+
+  <TextView
+      android:id="@+id/totalPrice"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.35"
+      android:gravity="end"
+      android:textColor="@color/text_enabled"
+      android:textSize="@dimen/text_smallmedium" />
+</TableRow>

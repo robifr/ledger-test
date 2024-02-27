@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+  <!-- Note: Translation-Z used here because the list always disarranged by chips when scrolling. -->
+  <com.google.android.material.appbar.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:translationZ="0.1dp"
+      app:elevation="0dp">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/colorBackground"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
+        app:menu="@menu/reusable_toolbar_main"
+        app:navigationIcon="@drawable/icon_arrow_back" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/colorBackground"
+        android:scrollbars="@null"
+        app:layout_scrollFlags="scroll|enterAlways|snap">
+
+      <com.google.android.material.chip.ChipGroup
+          android:id="@+id/chipGroup"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingTop="5dp"
+          android:paddingBottom="5dp"
+          app:chipSpacingHorizontal="@dimen/chip_spacing"
+          app:singleLine="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/sortByChip"
+            style="@style/Chip"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:layoutDirection="rtl"
+            android:text="@string/sort_by"
+            app:chipIcon="@drawable/icon_arrow_dropdown_20" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/filtersChip"
+            style="@style/Chip"
+            android:layout_marginEnd="@dimen/screen_padding"
+            android:layoutDirection="rtl"
+            android:text="@string/filters"
+            app:chipIcon="@drawable/icon_arrow_dropdown_20" />
+      </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recyclerView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginEnd="@dimen/screen_padding"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

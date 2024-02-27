@@ -1,0 +1,67 @@
+<!--
+  ~ Copyright (c) 2022-present Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+  <string name="app_name">Ledger</string>
+
+  <string name="all_time">All time</string>
+  <string name="completed">Completed</string>
+  <string name="create_new">Create new</string>
+  <string name="custom_range">Custom range</string>
+  <string name="customer">Customer</string>
+  <string name="customer_name">Customer name</string>
+  <string name="date">Date</string>
+  <string name="delete">Delete</string>
+  <string name="edit">Edit</string>
+  <string name="filter_customers">Filter customers</string>
+  <string name="filters">Filters</string>
+  <string name="in_process">In process</string>
+  <string name="in_queue">In queue</string>
+  <string name="max">Max</string>
+  <string name="min">Min</string>
+  <string name="payment_method">Payment method</string>
+  <string name="product">Product</string>
+  <string name="quantity">Quantity</string>
+  <string name="queue">Queue</string>
+  <string name="queue_id">Queue ID</string>
+  <string name="show_queue_with_no_customer">Show queue with no customer</string>
+  <string name="sort_by">Sort by</string>
+  <string name="status">Status</string>
+  <string name="this_month">This month</string>
+  <string name="this_week">This week</string>
+  <string name="today">Today</string>
+  <string name="total">Total</string>
+  <string name="total_discount">Total discount</string>
+  <string name="total_price">Total price</string>
+  <string name="unpaid">Unpaid</string>
+  <string name="yesterday">Yesterday</string>
+  <string name="cash">Cash</string>
+  <string name="account_balance">Account balance</string>
+
+  <string name="searchfragment_noresultsfound_title">No results found</string>
+  <string name="searchfragment_noresultsfound_description">Can\'t find any matching %s</string>
+
+  <string name="queuelist_result_title"><![CDATA[Displaying <b>%d</b> queue(s)]]></string>
+  <string name="queuefilter_date_selecteddate_chip">%s — %s</string>
+
+  <string name="customerlist_result_title"><![CDATA[Displaying <b>%d</b> customer(s)]]></string>
+
+  <string name="productlist_result_title"><![CDATA[Displaying <b>%d</b> product(s)]]></string>
+
+  <string name="productordercard_customerbalance_title">%s\'s balance</string>
+  <string name="productordercard_customerdebt_title">%s\'s debt</string>
+</resources>

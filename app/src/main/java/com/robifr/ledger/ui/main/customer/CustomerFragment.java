@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
@@ -74,8 +73,7 @@ public class CustomerFragment extends Fragment {
     this._fragmentBinding.toolbar.getMenu().clear();
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_main);
     this._fragmentBinding.toolbar.setNavigationIcon(null);
-    this._fragmentBinding.toolbar.setTitle(
-        ContextCompat.getString(this.requireContext(), R.string.app_name));
+    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.app_name));
     this._fragmentBinding.sortByChip.setOnClickListener(chip -> this._sort.openDialog());
     this._fragmentBinding.filtersChip.setOnClickListener(chip -> this._filter.openDialog());
     this._fragmentBinding.recyclerView.setLayoutManager(

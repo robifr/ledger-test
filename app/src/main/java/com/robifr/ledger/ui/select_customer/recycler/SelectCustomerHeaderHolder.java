@@ -51,9 +51,10 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
         new CustomerCardNormalComponent(
             this._fragment.requireContext(), this._selectedCardBinding.normalCard);
 
-    this._headerBinding.selectedItemTitle.setText("Selected customer");
+    this._headerBinding.selectedItemTitle.setText(
+        this._fragment.getString(R.string.text_selected_customer));
     this._headerBinding.selectedItemContainer.addView(this._selectedCardBinding.getRoot());
-    this._headerBinding.allListTitle.setText("All customers");
+    this._headerBinding.allListTitle.setText(this._fragment.getString(R.string.text_all_customers));
     this._headerBinding.newButton.setOnClickListener(this);
     // Don't set to `View.GONE` as the position will be occupied by checkbox.
     this._selectedCardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
@@ -86,14 +87,14 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
     // The original customer on database was deleted.
     if (selectedCustomerOnDb == null) {
       this._headerBinding.selectedItemDescription.setText(
-          "Originally selected customer was deleted.");
+          this._fragment.getString(R.string.text_originally_selected_customer_was_deleted));
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
 
       // The original customer on database was edited.
     } else if (selectedCustomer.isPresent()
         && !selectedCustomer.get().equals(selectedCustomerOnDb)) {
       this._headerBinding.selectedItemDescription.setText(
-          "Originally selected customer was changed.");
+          this._fragment.getString(R.string.text_originally_selected_customer_was_changed));
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
 
       // It's the same unchanged customer.

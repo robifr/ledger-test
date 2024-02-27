@@ -21,6 +21,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.data.model.QueueModel;
@@ -136,14 +137,17 @@ public class CreateQueueViewModelHandler {
 
     if (customer != null) {
       final String croppedName =
-          customer.name().length() > 12
-              ? customer.name().substring(0, 12) + "...'s"
-              : customer.name() + "'s";
+          customer.name().length() > 12 ? customer.name().substring(0, 12) : customer.name();
 
       this._fragment
           .inputProductOrder()
-          .setCustomerBalanceAfterPaymentTitle(croppedName + " balance");
-      this._fragment.inputProductOrder().setCustomerDebtAfterPaymentTitle(croppedName + " debt");
+          .setCustomerBalanceAfterPaymentTitle(
+              this._fragment.getString(
+                  R.string.productordercard_customerbalance_title, croppedName));
+      this._fragment
+          .inputProductOrder()
+          .setCustomerDebtAfterPaymentTitle(
+              this._fragment.getString(R.string.productordercard_customerdebt_title, croppedName));
 
     } else {
       this._fragment.inputProductOrder().setCustomerBalanceAfterPaymentTitle(null);

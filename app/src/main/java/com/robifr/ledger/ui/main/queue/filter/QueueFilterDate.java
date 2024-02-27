@@ -19,7 +19,6 @@ package com.robifr.ledger.ui.main.queue.filter;
 
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
@@ -104,9 +103,8 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
     // Hide custom range chip when it's not being selected, and show otherwise.
     customRangeChip.setVisibility(customRangeVisibility);
     customRangeChip.setText(
-        String.format(
-            ContextCompat.getString(
-                this._fragment.requireContext(), R.string.queuefilter_date_selecteddate_chip),
+        this._fragment.getString(
+            R.string.queuefilter_date_selecteddate_chip,
             dateStartEnd.first.format(format),
             dateStartEnd.second.format(format)));
   }
@@ -114,7 +112,7 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
   public void openDialog() {
     final MaterialDatePicker<Pair<Long, Long>> picker =
         MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText("Select date range")
+            .setTitleText(this._fragment.getString(R.string.text_select_date_range))
             .setTheme(R.style.MaterialDatePicker)
             .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
             .build();

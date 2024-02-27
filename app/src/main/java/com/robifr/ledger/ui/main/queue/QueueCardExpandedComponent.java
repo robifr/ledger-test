@@ -100,7 +100,8 @@ public class QueueCardExpandedComponent {
   }
 
   private void _setId(@Nullable Long id) {
-    final String queueId = id != null ? id.toString() : "n/a";
+    final String queueId =
+        id != null ? id.toString() : this._context.getString(R.string.symbol_notavailable);
     this._binding.uniqueId.setText(queueId);
   }
 
@@ -116,8 +117,7 @@ public class QueueCardExpandedComponent {
     final int statusBackground =
         ContextCompat.getColor(this._context, status.resourceBackgroundColor());
 
-    this._binding.statusChip.setText(
-        ContextCompat.getString(this._context, status.resourceString()));
+    this._binding.statusChip.setText(this._context.getString(status.resourceString()));
     this._binding.statusChip.setTextColor(
         ContextCompat.getColor(this._context, status.resourceTextColor()));
     this._binding.statusChip.setChipBackgroundColor(ColorStateList.valueOf(statusBackground));
@@ -127,8 +127,7 @@ public class QueueCardExpandedComponent {
   private void _setPaymentMethod(@NonNull QueueModel.PaymentMethod paymentMethod) {
     Objects.requireNonNull(paymentMethod);
 
-    this._binding.paymentMethod.setText(
-        ContextCompat.getString(this._context, paymentMethod.resourceString()));
+    this._binding.paymentMethod.setText(this._context.getString(paymentMethod.resourceString()));
   }
 
   private void _setTotalDiscount(@NonNull BigDecimal totalDiscount) {
@@ -148,7 +147,7 @@ public class QueueCardExpandedComponent {
   private void _setCustomer(@Nullable CustomerModel customer) {
     if (customer == null) {
       this._binding.customerImage.text.setText(null);
-      this._binding.customerName.setText("n/a");
+      this._binding.customerName.setText(this._context.getString(R.string.symbol_notavailable));
       this._binding.customerName.setEnabled(false);
       this._binding.productOrderTotalRow.customerBalanceTitle.setVisibility(View.GONE);
       this._binding.productOrderTotalRow.customerBalance.setVisibility(View.GONE);
@@ -157,10 +156,8 @@ public class QueueCardExpandedComponent {
       return;
     }
 
-    final String croppedCustomerName =
-        customer.name().length() > 12
-            ? customer.name().substring(0, 12) + "...'s"
-            : customer.name() + "'s";
+    final String croppedName =
+        customer.name().length() > 12 ? customer.name().substring(0, 12) : customer.name();
     final int debtTextColor =
         customer.debt().compareTo(BigDecimal.ZERO) < 0
             // Negative debt will be shown red.
@@ -174,17 +171,13 @@ public class QueueCardExpandedComponent {
 
     // Displaying customer data on the product orders table, total typed row.
     this._binding.productOrderTotalRow.customerBalanceTitle.setText(
-        String.format(
-            ContextCompat.getString(this._context, R.string.productordercard_customerbalance_title),
-            croppedCustomerName));
+        this._context.getString(R.string.productordercard_customerbalance_title, croppedName));
     this._binding.productOrderTotalRow.customerBalanceTitle.setVisibility(View.VISIBLE);
     this._binding.productOrderTotalRow.customerBalance.setText(
         CurrencyFormat.format(BigDecimal.valueOf(customer.balance()), "id", "ID"));
     this._binding.productOrderTotalRow.customerBalance.setVisibility(View.VISIBLE);
     this._binding.productOrderTotalRow.customerDebtTitle.setText(
-        String.format(
-            ContextCompat.getString(this._context, R.string.productordercard_customerdebt_title),
-            croppedCustomerName));
+        this._context.getString(R.string.productordercard_customerdebt_title, croppedName));
     this._binding.productOrderTotalRow.customerDebtTitle.setVisibility(View.VISIBLE);
     this._binding.productOrderTotalRow.customerDebt.setText(
         CurrencyFormat.format(customer.debt(), "id", "ID"));
@@ -214,11 +207,14 @@ public class QueueCardExpandedComponent {
               ? ContextCompat.getColor(this._context, R.color.text_enabled)
               : ContextCompat.getColor(this._context, R.color.text_disabled);
 
-      final String productName = isProductNameExists ? productOrder.productName() : "n/a";
+      final String productName =
+          isProductNameExists
+              ? productOrder.productName()
+              : this._context.getString(R.string.symbol_notavailable);
       final String productPrice =
           isProductPriceExists
               ? CurrencyFormat.format(BigDecimal.valueOf(productOrder.productPrice()), "id", "ID")
-              : "n/a";
+              : this._context.getString(R.string.symbol_notavailable);
       final String quantity =
           CurrencyFormat.format(BigDecimal.valueOf(productOrder.quantity()), "id", "ID", "");
       final String totalPrice = CurrencyFormat.format(productOrder.totalPrice(), "id", "ID");

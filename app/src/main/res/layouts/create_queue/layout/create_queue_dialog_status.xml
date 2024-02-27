@@ -24,7 +24,7 @@
       style="@style/BottomSheetDialog.Title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Select status" />
+      android:text="@string/text_select_status" />
 
   <View
       android:layout_width="match_parent"
@@ -44,27 +44,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="IN_QUEUE"
-        android:text="In queue" />
+        android:text="@string/text_in_queue" />
 
     <RadioButton
         style="@style/BottomSheetDialog.RadioButton.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="IN_PROCESS"
-        android:text="In process" />
+        android:text="@string/text_in_process" />
 
     <RadioButton
         style="@style/BottomSheetDialog.RadioButton.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="UNPAID"
-        android:text="Unpaid" />
+        android:text="@string/text_unpaid" />
 
     <RadioButton
         style="@style/BottomSheetDialog.RadioButton.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="COMPLETED"
-        android:text="Completed" />
+        android:text="@string/text_completed" />
   </RadioGroup>
 </LinearLayout>

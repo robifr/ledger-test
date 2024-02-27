@@ -19,7 +19,6 @@ package com.robifr.ledger.ui.main.queue.recycler;
 
 import android.util.TypedValue;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.QueueModel;
@@ -49,11 +48,7 @@ public class QueueHeaderHolder extends RecyclerViewHolder<Optional> {
   public void bind(@NonNull Optional ignore) {
     final List<QueueModel> queues = this._fragment.queueViewModel().queues().getValue();
     final int totalQueues = queues != null ? queues.size() : 0;
-    final String text =
-        String.format(
-            ContextCompat.getString(
-                this._fragment.requireContext(), R.string.queuelist_result_title),
-            totalQueues);
+    final String text = this._fragment.getString(R.string.queuelist_result_title, totalQueues);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

@@ -27,7 +27,7 @@
       android:paddingStart="@dimen/bottomdialog_padding"
       android:paddingTop="@dimen/bottomdialog_title_margin"
       android:paddingBottom="@dimen/bottomdialog_title_margin"
-      android:text="@string/status"
+      android:text="@string/text_status"
       android:textSize="@dimen/text_smallmedium"
       android:textStyle="bold"
       app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="IN_QUEUE"
-        android:text="@string/in_queue"
+        android:text="@string/text_in_queue"
         app:chipIcon="@null" />
 
     <com.google.android.material.chip.Chip
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="IN_PROCESS"
-        android:text="@string/in_process"
+        android:text="@string/text_in_process"
         app:chipIcon="@null" />
 
     <com.google.android.material.chip.Chip
@@ -68,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="UNPAID"
-        android:text="@string/unpaid"
+        android:text="@string/text_unpaid"
         app:chipIcon="@null" />
 
     <com.google.android.material.chip.Chip
@@ -76,7 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="COMPLETED"
-        android:text="@string/completed"
+        android:text="@string/text_completed"
         app:chipIcon="@null" />
   </com.google.android.material.chip.ChipGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

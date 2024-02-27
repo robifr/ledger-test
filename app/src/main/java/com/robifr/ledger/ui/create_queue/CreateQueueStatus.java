@@ -71,7 +71,7 @@ public class CreateQueueStatus implements RadioGroup.OnCheckedChangeListener {
     this._fragment
         .fragmentBinding()
         .status
-        .setText(ContextCompat.getString(this._fragment.requireContext(), status.resourceString()));
+        .setText(this._fragment.getString(status.resourceString()));
   }
 
   private void _openDialog() {

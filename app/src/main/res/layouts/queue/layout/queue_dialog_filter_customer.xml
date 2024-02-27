@@ -27,7 +27,7 @@
       android:paddingStart="@dimen/bottomdialog_padding"
       android:paddingTop="@dimen/bottomdialog_title_margin"
       android:paddingBottom="@dimen/bottomdialog_title_abovebutton_marginbottom"
-      android:text="@string/customer"
+      android:text="@string/text_customer"
       android:textSize="@dimen/text_smallmedium"
       android:textStyle="bold"
       app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
       android:minHeight="@dimen/bottomdialog_button_minheight"
       android:paddingStart="@dimen/bottomdialog_padding"
       android:paddingEnd="@dimen/bottomdialog_padding"
-      android:text="@string/show_queue_with_no_customer"
+      android:text="@string/text_show_queue_with_no_customer"
       android:textColor="?android:attr/textColor"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintTop_toBottomOf="@id/title" />
@@ -75,7 +75,7 @@
       android:minHeight="@dimen/bottomdialog_button_minheight"
       android:paddingStart="@dimen/bottomdialog_padding"
       android:paddingEnd="@dimen/bottomdialog_padding"
-      android:text="@string/filter_customers"
+      android:text="@string/text_filter_customers"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintTop_toBottomOf="@id/chipGroup" />

@@ -58,8 +58,8 @@ public class MakeProductOrder
     this._dialog =
         new MaterialAlertDialogBuilder(this._fragment.requireContext(), R.style.MaterialAlertDialog)
             .setView(this._dialogBinding.getRoot())
-            .setNegativeButton("Cancel", this)
-            .setPositiveButton("Add", this)
+            .setNegativeButton(this._fragment.getString(R.string.text_cancel), this)
+            .setPositiveButton(this._fragment.getString(R.string.text_add), this)
             .create();
     this._quantityTextWatcher = new QuantityTextWatcher(this._dialogBinding.quantity, "id", "ID");
     this._discountTextWatcher = new DiscountTextWatcher(this._dialogBinding.discount, "id", "ID");
@@ -184,7 +184,7 @@ public class MakeProductOrder
   }
 
   public void openCreateDialog() {
-    this._dialogBinding.title.setText("Add product order");
+    this._dialogBinding.title.setText(this._fragment.getString(R.string.text_add_product_order));
     this._dialog.show();
 
     final boolean isProductInputted =
@@ -193,17 +193,17 @@ public class MakeProductOrder
 
     // Only invoke `AlertDialog#getButton()` after `AlertDialog.show()` called, otherwise NPE.
     final Button positiveButton = this._dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-    positiveButton.setText("Add");
+    positiveButton.setText(this._fragment.getString(R.string.text_add));
     positiveButton.setEnabled(isProductInputted);
   }
 
   public void openEditDialog() {
     this.openCreateDialog();
-    this._dialogBinding.title.setText("Edit product order");
+    this._dialogBinding.title.setText(this._fragment.getString(R.string.text_edit_product_order));
 
     // Only invoke `AlertDialog#getButton()` after `AlertDialog.show()` called, otherwise NPE.
     final Button positiveButton = this._dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-    positiveButton.setText("Save");
+    positiveButton.setText(this._fragment.getString(R.string.text_save));
   }
 
   private class QuantityTextWatcher extends CurrencyTextWatcher {

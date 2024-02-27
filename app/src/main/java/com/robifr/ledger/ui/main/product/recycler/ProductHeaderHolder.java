@@ -19,7 +19,6 @@ package com.robifr.ledger.ui.main.product.recycler;
 
 import android.util.TypedValue;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
@@ -49,11 +48,7 @@ public class ProductHeaderHolder extends RecyclerViewHolder<Optional> {
   public void bind(@NonNull Optional ignore) {
     final List<ProductModel> products = this._fragment.productViewModel().products().getValue();
     final int totalProducts = products != null ? products.size() : 0;
-    final String text =
-        String.format(
-            ContextCompat.getString(
-                this._fragment.requireContext(), R.string.productlist_result_title),
-            totalProducts);
+    final String text = this._fragment.getString(R.string.productlist_result_title, totalProducts);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

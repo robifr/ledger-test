@@ -27,7 +27,7 @@
       android:paddingStart="@dimen/bottomdialog_padding"
       android:paddingTop="@dimen/bottomdialog_title_margin"
       android:paddingBottom="@dimen/bottomdialog_title_margin"
-      android:text="@string/date"
+      android:text="@string/text_date"
       android:textSize="@dimen/text_smallmedium"
       android:textStyle="bold"
       app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="ALL_TIME"
-        android:text="@string/all_time"
+        android:text="@string/text_all_time"
         app:chipIcon="@null" />
 
     <com.google.android.material.chip.Chip
@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="TODAY"
-        android:text="@string/today"
+        android:text="@string/text_today"
         app:chipIcon="@null" />
 
     <com.google.android.material.chip.Chip
@@ -67,7 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="YESTERDAY"
-        android:text="@string/yesterday"
+        android:text="@string/text_yesterday"
         app:chipIcon="@null" />
 
     <com.google.android.material.chip.Chip
@@ -75,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="THIS_WEEK"
-        android:text="@string/this_week"
+        android:text="@string/text_this_week"
         app:chipIcon="@null" />
 
     <com.google.android.material.chip.Chip
@@ -83,7 +83,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="THIS_MONTH"
-        android:text="@string/this_month"
+        android:text="@string/text_this_month"
         app:chipIcon="@null" />
 
     <com.google.android.material.chip.Chip
@@ -108,7 +108,7 @@
       android:minHeight="0dp"
       android:paddingTop="6dp"
       android:paddingBottom="6dp"
-      android:text="@string/custom_range"
+      android:text="@string/text_custom_range"
       android:textColor="?attr/colorPrimary"
       android:textSize="@dimen/text_smallmedium"
       app:cornerRadius="10dp"

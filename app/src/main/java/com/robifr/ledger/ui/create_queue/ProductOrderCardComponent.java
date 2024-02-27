@@ -52,15 +52,15 @@ public class ProductOrderCardComponent {
     Objects.requireNonNull(productOrder);
 
     this._setProductName(productOrder.productName());
-    this._setProductPrice(productOrder.productPrice());
-    this._setQuantity(productOrder.quantity());
+    this._setProductPriceAndQuantity(productOrder.productPrice(), productOrder.quantity());
     this._setTotalPrice(productOrder.totalPrice());
     this._setDiscount(productOrder.discountPercent());
   }
 
   private void _setProductName(@Nullable String productName) {
     final boolean shouldViewEnabled = productName != null;
-    final String name = shouldViewEnabled ? productName : "n/a";
+    final String name =
+        shouldViewEnabled ? productName : this._context.getString(R.string.symbol_notavailable);
 
     this._binding.productName.setText(name);
     this._binding.productName.setEnabled(shouldViewEnabled);
@@ -68,19 +68,16 @@ public class ProductOrderCardComponent {
         name.trim().substring(0, Math.min(1, name.trim().length())));
   }
 
-  private void _setProductPrice(@Nullable Long productPrice) {
+  private void _setProductPriceAndQuantity(@Nullable Long productPrice, double quantity) {
     final String price =
         productPrice != null
             ? CurrencyFormat.format(BigDecimal.valueOf(productPrice), "id", "ID")
-            : "n/a";
-    this._binding.productPrice.setText(price);
-  }
-
-  private void _setQuantity(@NonNull Double quantity) {
-    Objects.requireNonNull(quantity);
-
+            : this._context.getString(R.string.symbol_notavailable);
     final String quantities = CurrencyFormat.format(BigDecimal.valueOf(quantity), "id", "ID", "");
-    this._binding.quantity.setText(" x " + quantities);
+
+    this._binding.productPriceQuantity.setText(
+        this._context.getString(
+            R.string.productordercard_productpriceandquantity_title, price, quantities));
   }
 
   private void _setTotalPrice(@NonNull BigDecimal totalPrice) {
@@ -97,7 +94,8 @@ public class ProductOrderCardComponent {
     final String text =
         discountPercent.compareTo(BigDecimal.ZERO) == 0
             ? null
-            : discountPercent.toPlainString() + "% off";
+            : this._context.getString(
+                R.string.productordercard_discount_title, discountPercent.toPlainString());
 
     this._binding.discount.setVisibility(textVisibility);
     this._binding.discount.setText(text);

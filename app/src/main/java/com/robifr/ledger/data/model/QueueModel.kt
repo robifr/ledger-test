@@ -75,10 +75,10 @@ data class QueueModel(
       @ColorRes private val _resourceBackgroundColor: Int,
       @ColorRes private val _resourceTextColor: Int
   ) {
-    IN_QUEUE(R.string.in_queue, R.color.light_yellow, R.color.dark_yellow),
-    IN_PROCESS(R.string.in_process, R.color.light_blue, R.color.dark_blue),
-    UNPAID(R.string.unpaid, R.color.light_red, R.color.dark_red),
-    COMPLETED(R.string.completed, R.color.light_gray, R.color.darker_gray);
+    IN_QUEUE(R.string.text_in_queue, R.color.light_yellow, R.color.dark_yellow),
+    IN_PROCESS(R.string.text_in_process, R.color.light_blue, R.color.dark_blue),
+    UNPAID(R.string.text_unpaid, R.color.light_red, R.color.dark_red),
+    COMPLETED(R.string.text_completed, R.color.light_gray, R.color.darker_gray);
 
     @StringRes fun resourceString(): Int = this._resourceString
 
@@ -88,8 +88,8 @@ data class QueueModel(
   }
 
   enum class PaymentMethod(@StringRes private val _resourceString: Int) {
-    CASH(R.string.cash),
-    ACCOUNT_BALANCE(R.string.account_balance);
+    CASH(R.string.text_cash),
+    ACCOUNT_BALANCE(R.string.text_account_balance);
 
     @StringRes fun resourceString(): Int = this._resourceString
   }

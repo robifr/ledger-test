@@ -47,7 +47,7 @@ public class CreateQueueDate implements View.OnClickListener {
       case R.id.date -> {
         final MaterialDatePicker.Builder<Long> pickerBuilder =
             MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Select date")
+                .setTitleText(this._fragment.getString(R.string.text_select_date))
                 .setTheme(R.style.MaterialDatePicker)
                 .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR);
 

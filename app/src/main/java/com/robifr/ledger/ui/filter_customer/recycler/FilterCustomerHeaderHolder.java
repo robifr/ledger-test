@@ -54,9 +54,10 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
     this._chipGroup.setChipSpacingVertical(chipSpacing);
     this._chipGroup.setChipSpacingHorizontal(chipSpacing);
     this._headerBinding.selectedItemContainer.addView(this._chipGroup);
-    this._headerBinding.selectedItemTitle.setText("Filtered customers");
+    this._headerBinding.selectedItemTitle.setText(
+        this._fragment.getString(R.string.text_filtered_customers));
     this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
-    this._headerBinding.allListTitle.setText("All customers");
+    this._headerBinding.allListTitle.setText(this._fragment.getString(R.string.text_all_customers));
     this._headerBinding.newButton.setVisibility(View.GONE);
   }
 

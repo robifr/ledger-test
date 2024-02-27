@@ -24,7 +24,7 @@
       android:layout_height="match_parent"
       android:layout_weight="0.45"
       android:gravity="start|center_vertical"
-      android:text="@string/product"
+      android:text="@string/text_product"
       android:textColor="@color/text_disabled"
       android:textSize="@dimen/text_smallmedium" />
 
@@ -33,7 +33,7 @@
       android:layout_height="match_parent"
       android:layout_weight="0.2"
       android:gravity="center"
-      android:text="@string/quantity"
+      android:text="@string/text_quantity"
       android:textColor="@color/text_disabled"
       android:textSize="@dimen/text_smallmedium" />
 
@@ -42,7 +42,7 @@
       android:layout_height="match_parent"
       android:layout_weight="0.35"
       android:gravity="end|center_vertical"
-      android:text="@string/total"
+      android:text="@string/text_total"
       android:textColor="@color/text_disabled"
       android:textSize="@dimen/text_smallmedium" />
 </TableRow>

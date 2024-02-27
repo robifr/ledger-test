@@ -26,7 +26,7 @@
       style="@style/BottomSheetDialog.Title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/create_new" />
+      android:text="@string/text_create_new" />
 
   <View
       android:layout_width="match_parent"
@@ -39,7 +39,7 @@
       style="@style/BottomSheetDialog.MaterialButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/queue"
+      android:text="@string/text_queue"
       android:textColor="?android:attr/textColor"
       app:icon="@drawable/icon_assignment_20" />
 
@@ -48,7 +48,7 @@
       style="@style/BottomSheetDialog.MaterialButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/customer"
+      android:text="@string/text_customer"
       android:textColor="?android:attr/textColor"
       app:icon="@drawable/icon_person_20" />
 
@@ -57,7 +57,7 @@
       style="@style/BottomSheetDialog.MaterialButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/product"
+      android:text="@string/text_product"
       android:textColor="?android:attr/textColor"
       app:icon="@drawable/icon_sell_20" />
 </LinearLayout>

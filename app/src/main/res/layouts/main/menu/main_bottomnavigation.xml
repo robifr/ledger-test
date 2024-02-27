@@ -20,15 +20,15 @@
       android:id="@+id/queue"
       android:icon="@drawable/selector_icon_assignment"
       android:menuCategory="secondary"
-      android:title="Queue" />
+      android:title="@string/text_queue" />
   <item
       android:id="@+id/customer"
       android:icon="@drawable/selector_icon_person"
       android:menuCategory="secondary"
-      android:title="Customer" />
+      android:title="@string/text_customer" />
   <item
       android:id="@+id/productLayout"
       android:icon="@drawable/selector_icon_sell"
       android:menuCategory="secondary"
-      android:title="Product" />
+      android:title="@string/text_product" />
 </menu>

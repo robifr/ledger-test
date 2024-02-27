@@ -26,7 +26,7 @@
       style="@style/BottomSheetDialog.Title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Sort by" />
+      android:text="@string/text_sort_by" />
 
   <View
       android:layout_width="match_parent"
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="NAME"
-        android:text="Name" />
+        android:text="@string/text_name" />
 
     <RadioButton
         android:id="@+id/balanceRadioButton"
@@ -55,6 +55,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="BALANCE"
-        android:text="Balance" />
+        android:text="@string/text_balance" />
   </RadioGroup>
 </LinearLayout>

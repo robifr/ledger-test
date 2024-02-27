@@ -55,8 +55,8 @@ public class CreateCustomerBalance
     this._withdrawDialog =
         new MaterialAlertDialogBuilder(this._fragment.requireContext(), R.style.MaterialAlertDialog)
             .setView(this._withdrawDialogBinding.getRoot())
-            .setNegativeButton("Cancel", this)
-            .setPositiveButton("Withdraw", this)
+            .setNegativeButton(this._fragment.getString(R.string.text_cancel), this)
+            .setPositiveButton(this._fragment.getString(R.string.text_withdraw), this)
             .create();
     this._withdrawTextWatcher =
         new BalanceTextWatcher(this._withdrawDialogBinding.amount, "id", "ID");
@@ -66,20 +66,22 @@ public class CreateCustomerBalance
     this._depositDialog =
         new MaterialAlertDialogBuilder(this._fragment.requireContext(), R.style.MaterialAlertDialog)
             .setView(this._depositDialogBinding.getRoot())
-            .setNegativeButton("Cancel", this)
-            .setPositiveButton("Deposit", this)
+            .setNegativeButton(this._fragment.getString(R.string.text_cancel), this)
+            .setPositiveButton(this._fragment.getString(R.string.text_deposit), this)
             .create();
     this._depositTextWatcher =
         new BalanceTextWatcher(this._depositDialogBinding.amount, "id", "ID");
 
     this._fragment.fragmentBinding().withdrawButton.setOnClickListener(this);
     this._withdrawDialog.setOnDismissListener(this);
-    this._withdrawDialogBinding.title.setText("Withdraw balance");
+    this._withdrawDialogBinding.title.setText(
+        this._fragment.getString(R.string.text_withdraw_balance));
     this._withdrawDialogBinding.amount.addTextChangedListener(this._withdrawTextWatcher);
 
     this._fragment.fragmentBinding().depositButton.setOnClickListener(this);
     this._depositDialog.setOnDismissListener(this);
-    this._depositDialogBinding.title.setText("Deposit balance");
+    this._depositDialogBinding.title.setText(
+        this._fragment.getString(R.string.text_deposit_balance));
     this._depositDialogBinding.amount.addTextChangedListener(this._depositTextWatcher);
   }
 
@@ -182,9 +184,10 @@ public class CreateCustomerBalance
   }
 
   public void setAvailableAmountToWithdraw(long amount) {
-    final String formattedAmount =
-        CurrencyFormat.format(BigDecimal.valueOf(amount), "id", "ID") + " available";
-    this._withdrawDialogBinding.amountLayout.setHelperText(formattedAmount);
+    this._withdrawDialogBinding.amountLayout.setHelperText(
+        this._fragment.getString(
+            R.string.createcustomerdialog_balanceavailable_helper,
+            CurrencyFormat.format(BigDecimal.valueOf(amount), "id", "ID")));
   }
 
   private class BalanceTextWatcher extends CurrencyTextWatcher {

@@ -92,7 +92,8 @@ public class QueueFilter implements DialogInterface.OnDismissListener {
   public void openDialog() {
     // Allow bottom sheet to go fully expanded.
     final View bottomSheet =
-        this._dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        Objects.requireNonNull(
+            this._dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet));
     bottomSheet.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
     bottomSheet.setLayoutParams(bottomSheet.getLayoutParams());
 

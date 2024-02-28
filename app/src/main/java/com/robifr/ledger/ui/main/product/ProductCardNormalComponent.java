@@ -68,9 +68,7 @@ public class ProductCardNormalComponent {
     this._binding.image.text.setText(name.trim().substring(0, Math.min(1, name.trim().length())));
   }
 
-  private void _setPrice(@NonNull Long price) {
-    Objects.requireNonNull(price);
-
+  private void _setPrice(long price) {
     this._binding.price.setText(CurrencyFormat.format(BigDecimal.valueOf(price), "id", "ID"));
   }
 }

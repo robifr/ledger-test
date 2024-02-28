@@ -69,9 +69,7 @@ public class CustomerCardNormalComponent {
     this._binding.image.text.setText(name.trim().substring(0, Math.min(1, name.trim().length())));
   }
 
-  private void _setBalance(@NonNull Long balance) {
-    Objects.requireNonNull(balance);
-
+  private void _setBalance(long balance) {
     this._binding.balance.setText(CurrencyFormat.format(BigDecimal.valueOf(balance), "id", "ID"));
   }
 

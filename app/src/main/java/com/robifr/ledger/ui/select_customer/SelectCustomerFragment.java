@@ -65,6 +65,7 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   @Nullable private final CustomerModel _initialSelectedCustomer;
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private SelectCustomerAdapter _adapter;
+  @Nullable private SelectCustomerResultHandler _resultHandler;
 
   @Nullable private SelectCustomerViewModel _selectCustomerViewModel;
   @Nullable private SelectCustomerViewModelHandler _viewModelHandler;
@@ -95,6 +96,7 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     Objects.requireNonNull(this._fragmentBinding);
 
     this._adapter = new SelectCustomerAdapter(this);
+    this._resultHandler = new SelectCustomerResultHandler(this);
     this._selectCustomerViewModel =
         new ViewModelProvider(
                 this,
@@ -110,6 +112,7 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     this._fragmentBinding.toolbar.getMenu().clear();
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_select);
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_select_customer));
+    this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
     this._fragmentBinding.horizontalToolbar.setVisibility(View.GONE);

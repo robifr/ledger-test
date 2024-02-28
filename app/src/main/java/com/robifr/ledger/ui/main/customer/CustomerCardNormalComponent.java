@@ -20,7 +20,6 @@ package com.robifr.ledger.ui.main.customer;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -83,8 +82,8 @@ public class CustomerCardNormalComponent {
     final int debtTextColor =
         debt.compareTo(BigDecimal.ZERO) < 0
             // Negative debt will be shown red.
-            ? ContextCompat.getColor(this._context, R.color.red)
-            : ContextCompat.getColor(this._context, R.color.text_enabled);
+            ? this._context.getColor(R.color.red)
+            : this._context.getColor(R.color.text_enabled);
 
     this._binding.debt.setText(debtText);
     this._binding.debt.setTextColor(debtTextColor);

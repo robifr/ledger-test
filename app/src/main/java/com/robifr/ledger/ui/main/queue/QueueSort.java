@@ -23,7 +23,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.RadioButton;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.QueueSortMethod;
@@ -91,13 +90,13 @@ public class QueueSort implements RadioButton.OnClickListener {
     final int icon =
         isAscending ? R.drawable.icon_arrow_upward_20 : R.drawable.icon_arrow_downward_20;
     final Drawable leftIcon =
-        Objects.requireNonNull(ContextCompat.getDrawable(this._fragment.requireContext(), icon));
+        Objects.requireNonNull(this._fragment.requireContext().getDrawable(icon));
 
     leftIcon.setAlpha(255); // Bring back icon to be visible.
     radio.setBackgroundTintList(
         ColorStateList.valueOf(
             // Use background tint to maintain ripple and rounded corner of drawable shape.
-            ContextCompat.getColor(this._fragment.requireContext(), backgroundColor.resourceId)));
+            this._fragment.requireContext().getColor(backgroundColor.resourceId)));
     radio.setCompoundDrawablesWithIntrinsicBounds(leftIcon, null, null, null);
   }
 
@@ -113,13 +112,13 @@ public class QueueSort implements RadioButton.OnClickListener {
     final int icon =
         isAscending ? R.drawable.icon_arrow_upward_20 : R.drawable.icon_arrow_downward_20;
     final Drawable leftIcon =
-        Objects.requireNonNull(ContextCompat.getDrawable(this._fragment.requireContext(), icon));
+        Objects.requireNonNull(this._fragment.requireContext().getDrawable(icon));
 
     leftIcon.setAlpha(0); // Hide icon, so that we can reserve its space width.
     radio.setBackgroundTintList(
         ColorStateList.valueOf(
             // Use background tint to maintain ripple and rounded corner of drawable shape.
-            ContextCompat.getColor(this._fragment.requireContext(), backgroundColor.resourceId)));
+            this._fragment.requireContext().getColor(backgroundColor.resourceId)));
     radio.setCompoundDrawablesWithIntrinsicBounds(leftIcon, null, null, null);
   }
 }

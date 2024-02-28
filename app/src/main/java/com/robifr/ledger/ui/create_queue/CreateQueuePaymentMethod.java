@@ -21,7 +21,6 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import com.google.android.material.button.MaterialButton;
 import com.robifr.ledger.R;
@@ -74,8 +73,7 @@ public class CreateQueuePaymentMethod implements View.OnClickListener {
 
       final Drawable[] buttonIcons = button.getCompoundDrawables();
       final ColorStateList buttonColor =
-          ContextCompat.getColorStateList(
-              this._fragment.requireContext(), R.color.selector_textview);
+          this._fragment.requireContext().getColorStateList(R.color.selector_textview);
 
       DrawableCompat.setTintList(buttonIcons[0], buttonColor);
       button.setEnabled(paymentMethods.contains(paymentMethod));
@@ -98,7 +96,7 @@ public class CreateQueuePaymentMethod implements View.OnClickListener {
     button.setCompoundDrawablesWithIntrinsicBounds(
         button.getCompoundDrawables()[0], // Payment method icon.
         null,
-        ContextCompat.getDrawable(this._fragment.requireContext(), R.drawable.icon_check_20),
+        this._fragment.requireContext().getDrawable(R.drawable.icon_check_20),
         null);
     button.setChecked(true);
   }

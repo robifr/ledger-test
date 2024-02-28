@@ -18,7 +18,6 @@
 package com.robifr.ledger.ui.create_customer;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
@@ -37,8 +36,8 @@ public class CreateCustomerDebt {
     final int textColor =
         debt.compareTo(BigDecimal.ZERO) < 0
             // Red for negative debt.
-            ? ContextCompat.getColor(this._fragment.requireContext(), R.color.red)
-            : ContextCompat.getColor(this._fragment.requireContext(), R.color.text_disabled);
+            ? this._fragment.requireContext().getColor(R.color.red)
+            : this._fragment.requireContext().getColor(R.color.text_disabled);
 
     this._fragment.fragmentBinding().debt.setText(CurrencyFormat.format(debt, "id", "ID"));
     this._fragment.fragmentBinding().debt.setTextColor(textColor);

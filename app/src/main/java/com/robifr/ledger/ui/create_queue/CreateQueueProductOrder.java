@@ -25,7 +25,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
-import androidx.core.content.ContextCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.ProductOrderCardBinding;
 import com.robifr.ledger.util.CurrencyFormat;
@@ -209,8 +208,8 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
     final int textColor =
         debt != null && debt.compareTo(BigDecimal.ZERO) < 0
             // Negative debt will be shown red.
-            ? ContextCompat.getColor(this._fragment.requireContext(), R.color.red)
-            : ContextCompat.getColor(this._fragment.requireContext(), R.color.text_enabled);
+            ? this._fragment.requireContext().getColor(R.color.red)
+            : this._fragment.requireContext().getColor(R.color.text_enabled);
     final int viewVisibility = debt != null ? View.VISIBLE : View.GONE;
 
     this._fragment.fragmentBinding().productOrder.customerDebt.setText(text);
@@ -277,8 +276,7 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
       this._fragment
           .requireActivity()
           .getWindow()
-          .setStatusBarColor(
-              ContextCompat.getColor(this._fragment.requireContext(), R.color.surface));
+          .setStatusBarColor(this._fragment.requireContext().getColor(R.color.surface));
       return true;
     }
 

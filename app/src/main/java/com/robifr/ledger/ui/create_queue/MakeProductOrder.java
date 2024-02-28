@@ -29,7 +29,6 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
@@ -141,8 +140,7 @@ public class MakeProductOrder
           Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       // Coloring product price text with gray.
       text.setSpan(
-          new ForegroundColorSpan(
-              ContextCompat.getColor(this._fragment.requireContext(), R.color.text_disabled)),
+          new ForegroundColorSpan(this._fragment.requireContext().getColor(R.color.text_disabled)),
           productName.length(),
           productName.length() + productPrice.length(),
           Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

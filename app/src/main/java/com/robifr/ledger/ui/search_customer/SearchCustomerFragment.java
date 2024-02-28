@@ -26,7 +26,6 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
@@ -99,7 +98,7 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
         .addCallback(this.getViewLifecycleOwner(), this._onBackPressed);
     this.requireActivity()
         .getWindow() // Match status bar color with toolbar.
-        .setStatusBarColor(ContextCompat.getColor(this.requireContext(), R.color.surface));
+        .setStatusBarColor(this.requireContext().getColor(R.color.surface));
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
     this._fragmentBinding.seachView.setQueryHint(this.getString(R.string.text_search_customers));

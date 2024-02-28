@@ -25,7 +25,6 @@ import android.widget.TableRow;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -114,12 +113,10 @@ public class QueueCardExpandedComponent {
   private void _setStatus(@NonNull QueueModel.Status status) {
     Objects.requireNonNull(status);
 
-    final int statusBackground =
-        ContextCompat.getColor(this._context, status.resourceBackgroundColor());
+    final int statusBackground = this._context.getColor(status.resourceBackgroundColor());
 
     this._binding.statusChip.setText(this._context.getString(status.resourceString()));
-    this._binding.statusChip.setTextColor(
-        ContextCompat.getColor(this._context, status.resourceTextColor()));
+    this._binding.statusChip.setTextColor(this._context.getColor(status.resourceTextColor()));
     this._binding.statusChip.setChipBackgroundColor(ColorStateList.valueOf(statusBackground));
     this._binding.coloredSideline.setBackgroundColor(statusBackground);
   }
@@ -161,8 +158,8 @@ public class QueueCardExpandedComponent {
     final int debtTextColor =
         customer.debt().compareTo(BigDecimal.ZERO) < 0
             // Negative debt will be shown red.
-            ? ContextCompat.getColor(this._context, R.color.red)
-            : ContextCompat.getColor(this._context, R.color.text_enabled);
+            ? this._context.getColor(R.color.red)
+            : this._context.getColor(R.color.text_enabled);
 
     this._binding.customerImage.text.setText(
         customer.name().trim().substring(0, Math.min(1, customer.name().trim().length())));
@@ -204,8 +201,8 @@ public class QueueCardExpandedComponent {
       final boolean isProductPriceExists = productOrder.productPrice() != null;
       final int productTextColor =
           isProductNameExists && isProductPriceExists
-              ? ContextCompat.getColor(this._context, R.color.text_enabled)
-              : ContextCompat.getColor(this._context, R.color.text_disabled);
+              ? this._context.getColor(R.color.text_enabled)
+              : this._context.getColor(R.color.text_disabled);
 
       final String productName =
           isProductNameExists

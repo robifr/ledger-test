@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -78,12 +77,10 @@ public class QueueCardNormalComponent {
   private void _setStatus(@NonNull QueueModel.Status status) {
     Objects.requireNonNull(status);
 
-    final int statusBackground =
-        ContextCompat.getColor(this._context, status.resourceBackgroundColor());
+    final int statusBackground = this._context.getColor(status.resourceBackgroundColor());
 
     this._binding.statusChip.setText(this._context.getString(status.resourceString()));
-    this._binding.statusChip.setTextColor(
-        ContextCompat.getColor(this._context, status.resourceTextColor()));
+    this._binding.statusChip.setTextColor(this._context.getColor(status.resourceTextColor()));
     this._binding.statusChip.setChipBackgroundColor(ColorStateList.valueOf(statusBackground));
     this._binding.coloredSideline.setBackgroundColor(statusBackground);
   }

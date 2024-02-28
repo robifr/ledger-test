@@ -26,7 +26,6 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.robifr.ledger.R;
@@ -311,8 +310,7 @@ public class MainActivity extends AppCompatActivity
     // Due to bottom sheet navigation on main activity uses a different color — color surface.
     // Match system navigation bar color into it, otherwise with current background.
     this.getTheme().resolveAttribute(navigationBarColor, backgroundColor, true);
-    this.getWindow()
-        .setNavigationBarColor(ContextCompat.getColor(this, backgroundColor.resourceId));
+    this.getWindow().setNavigationBarColor(this.getColor(backgroundColor.resourceId));
 
     // Hide views on main activity when user navigating to another fragment other than
     // the one defined as top of the stack — queue, customer, and product — inside bottom

@@ -26,7 +26,7 @@
       style="@style/BottomSheetDialog.MaterialButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Edit"
+      android:text="@string/text_edit"
       app:icon="@drawable/icon_edit_20" />
 
   <com.google.android.material.button.MaterialButton
@@ -34,6 +34,6 @@
       style="@style/BottomSheetDialog.MaterialButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Delete"
+      android:text="@string/text_delete"
       app:icon="@drawable/icon_delete_20" />
 </LinearLayout>

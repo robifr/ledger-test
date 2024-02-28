@@ -64,7 +64,8 @@ public class QueueCardNormalComponent {
   }
 
   private void _setId(@Nullable Long id) {
-    final String queueId = id != null ? id.toString() : "n/a";
+    final String queueId =
+        id != null ? id.toString() : this._context.getString(R.string.symbol_notavailable);
     this._binding.uniqueId.setText(queueId);
   }
 
@@ -80,8 +81,7 @@ public class QueueCardNormalComponent {
     final int statusBackground =
         ContextCompat.getColor(this._context, status.resourceBackgroundColor());
 
-    this._binding.statusChip.setText(
-        ContextCompat.getString(this._context, status.resourceString()));
+    this._binding.statusChip.setText(this._context.getString(status.resourceString()));
     this._binding.statusChip.setTextColor(
         ContextCompat.getColor(this._context, status.resourceTextColor()));
     this._binding.statusChip.setChipBackgroundColor(ColorStateList.valueOf(statusBackground));
@@ -96,7 +96,10 @@ public class QueueCardNormalComponent {
 
   private void _setCustomer(@Nullable CustomerModel customer) {
     final boolean isCustomerNameEnabled = customer != null;
-    final String customerName = isCustomerNameEnabled ? customer.name() : "n/a";
+    final String customerName =
+        isCustomerNameEnabled
+            ? customer.name()
+            : this._context.getString(R.string.symbol_notavailable);
     final String customerImageText =
         customer != null
             ? customer.name().trim().substring(0, Math.min(1, customer.name().trim().length()))

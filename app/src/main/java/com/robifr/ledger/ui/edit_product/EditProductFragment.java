@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.create_product.CreateProductFragment;
@@ -75,7 +76,7 @@ public class EditProductFragment extends CreateProductFragment {
     this._viewModelHandler =
         new EditProductViewModelHandler(this, (EditProductViewModel) this._createProductViewModel);
 
-    this._fragmentBinding.toolbar.setTitle("Edit product");
+    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_product));
 
     if (this._createProductViewModel instanceof EditProductViewModel editProductViewModel) {
       final ProductModel initialProduct =

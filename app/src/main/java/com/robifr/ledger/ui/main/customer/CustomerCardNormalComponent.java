@@ -58,7 +58,8 @@ public class CustomerCardNormalComponent {
   }
 
   private void _setId(@Nullable Long id) {
-    final String customerId = id != null ? id.toString() : "n/a";
+    final String customerId =
+        id != null ? id.toString() : this._context.getString(R.string.symbol_notavailable);
     this._binding.uniqueId.setText(customerId);
   }
 

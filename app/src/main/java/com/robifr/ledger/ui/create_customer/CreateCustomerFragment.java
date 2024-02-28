@@ -175,9 +175,13 @@ public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     public void handleOnBackPressed() {
       new MaterialAlertDialogBuilder(
               CreateCustomerFragment.this.requireContext(), R.style.MaterialAlertDialog)
-          .setTitle("Discard this unsaved task?")
-          .setNegativeButton("Discard", (dialog, type) -> CreateCustomerFragment.this.finish())
-          .setPositiveButton("Cancel", (dialog, type) -> dialog.dismiss())
+          .setTitle(CreateCustomerFragment.this.getString(R.string.text_discard_this_unsaved_task))
+          .setNegativeButton(
+              CreateCustomerFragment.this.getString(R.string.text_discard),
+              (dialog, type) -> CreateCustomerFragment.this.finish())
+          .setPositiveButton(
+              CreateCustomerFragment.this.getString(R.string.text_cancel),
+              (dialog, type) -> dialog.dismiss())
           .show();
     }
   }

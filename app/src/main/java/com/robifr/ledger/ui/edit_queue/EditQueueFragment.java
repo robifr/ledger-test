@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.FragmentResultKey;
@@ -75,7 +76,7 @@ public class EditQueueFragment extends CreateQueueFragment {
     this._viewModelHandler =
         new EditQueueViewModelHandler(this, (EditQueueViewModel) this._createQueueViewModel);
 
-    this._fragmentBinding.toolbar.setTitle("Edit queue");
+    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_queue));
 
     if (this._createQueueViewModel instanceof EditQueueViewModel editQueueViewModel) {
       final QueueModel initialQueue =

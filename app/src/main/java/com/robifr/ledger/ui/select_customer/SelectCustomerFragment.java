@@ -109,7 +109,7 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
         .addCallback(this.getViewLifecycleOwner(), this._onBackPressed);
     this._fragmentBinding.toolbar.getMenu().clear();
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_select);
-    this._fragmentBinding.toolbar.setTitle("Select customer");
+    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_select_customer));
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
     this._fragmentBinding.horizontalToolbar.setVisibility(View.GONE);

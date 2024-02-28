@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.create_customer.CreateCustomerFragment;
@@ -74,7 +75,7 @@ public class EditCustomerFragment extends CreateCustomerFragment {
         new EditCustomerViewModelHandler(
             this, (EditCustomerViewModel) this._createCustomerViewModel);
 
-    this._fragmentBinding.toolbar.setTitle("Edit customer");
+    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_customer));
 
     if (this._createCustomerViewModel instanceof EditCustomerViewModel editCustomerViewModel) {
       final CustomerModel initialCustomer =

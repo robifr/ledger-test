@@ -199,9 +199,13 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
     public void handleOnBackPressed() {
       new MaterialAlertDialogBuilder(
               CreateQueueFragment.this.requireContext(), R.style.MaterialAlertDialog)
-          .setTitle("Discard this unsaved task?")
-          .setNegativeButton("Discard", (dialog, type) -> CreateQueueFragment.this.finish())
-          .setPositiveButton("Cancel", (dialog, type) -> dialog.dismiss())
+          .setTitle(CreateQueueFragment.this.getString(R.string.text_discard_this_unsaved_task))
+          .setNegativeButton(
+              CreateQueueFragment.this.getString(R.string.text_discard),
+              (dialog, type) -> CreateQueueFragment.this.finish())
+          .setPositiveButton(
+              CreateQueueFragment.this.getString(R.string.text_cancel),
+              (dialog, type) -> dialog.dismiss())
           .show();
     }
   }

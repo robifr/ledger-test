@@ -61,7 +61,7 @@
             style="@style/Chip"
             android:layout_marginStart="@dimen/screen_padding"
             android:layoutDirection="rtl"
-            android:text="@string/sort_by"
+            android:text="@string/text_sort_by"
             app:chipIcon="@drawable/icon_arrow_dropdown_20" />
 
         <com.google.android.material.chip.Chip
@@ -69,7 +69,7 @@
             style="@style/Chip"
             android:layout_marginEnd="@dimen/screen_padding"
             android:layoutDirection="rtl"
-            android:text="@string/filters"
+            android:text="@string/text_filters"
             app:chipIcon="@drawable/icon_arrow_dropdown_20" />
       </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>

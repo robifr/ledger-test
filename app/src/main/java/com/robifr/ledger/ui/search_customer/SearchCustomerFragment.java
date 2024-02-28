@@ -102,17 +102,13 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
         .setStatusBarColor(ContextCompat.getColor(this.requireContext(), R.color.surface));
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
-    this._fragmentBinding.seachView.setQueryHint("Search customers");
+    this._fragmentBinding.seachView.setQueryHint(this.getString(R.string.text_search_customers));
     this._fragmentBinding.seachView.setOnQueryTextListener(this);
     this._fragmentBinding.seachView.requestFocus();
     this._fragmentBinding.noResultsImage.image.setImageResource(R.drawable.image_noresultsfound);
-    this._fragmentBinding.noResultsImage.title.setText(
-        R.string.searchfragment_noresultsfound_title);
+    this._fragmentBinding.noResultsImage.title.setText(R.string.text_no_results_found);
     this._fragmentBinding.noResultsImage.description.setText(
-        String.format(
-            ContextCompat.getString(
-                this.requireContext(), R.string.searchfragment_noresultsfound_description),
-            ContextCompat.getString(this.requireContext(), R.string.customer).toLowerCase()));
+        this.getString(R.string.text_cant_find_any_matching_customers));
     this._fragmentBinding.recyclerView.setLayoutManager(
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);

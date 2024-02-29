@@ -15,44 +15,36 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.ui.main.queue.recycler;
+package com.robifr.ledger.ui.search_customer.recycler;
 
-import android.util.TypedValue;
 import androidx.annotation.NonNull;
-import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.QueueModel;
+import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.main.queue.QueueFragment;
+import com.robifr.ledger.ui.search_customer.SearchCustomerFragment;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class QueueHeaderHolder extends RecyclerViewHolder<Optional> {
-  @NonNull private final QueueFragment _fragment;
+public class SearchCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
+  @NonNull private final SearchCustomerFragment _fragment;
   @NonNull private final ListableListTextBinding _textBinding;
 
-  public QueueHeaderHolder(
-      @NonNull QueueFragment fragment, @NonNull ListableListTextBinding binding) {
+  public SearchCustomerHeaderHolder(
+      @NonNull SearchCustomerFragment fragment, @NonNull ListableListTextBinding binding) {
     super(binding.getRoot());
     this._fragment = Objects.requireNonNull(fragment);
     this._textBinding = Objects.requireNonNull(binding);
-
-    this._textBinding.text.setTextSize(
-        TypedValue.COMPLEX_UNIT_PX,
-        this._fragment.requireContext().getResources().getDimension(R.dimen.text_small));
   }
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final List<QueueModel> queues = this._fragment.queueViewModel().queues().getValue();
-    final int totalQueues = queues != null ? queues.size() : 0;
-    final String text =
-        this._fragment
-            .getResources()
-            .getQuantityString(R.plurals.queuelist_result_title, totalQueues, totalQueues);
+    final List<CustomerModel> customers =
+        this._fragment.searchCustomerViewModel().customers().getValue();
+    final int totalCustomers = customers != null ? customers.size() : 0;
 
-    this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
+    this._textBinding.text.setText(
+        this._fragment.getResources().getQuantityString(R.plurals.text_customer, totalCustomers));
   }
 }

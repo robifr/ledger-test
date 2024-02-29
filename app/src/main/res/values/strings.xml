@@ -76,7 +76,13 @@
   <string name="text_payment_method">Payment method...</string>
   <string name="text_payment_methods">Payment methods...</string>
   <string name="text_price">Price...</string>
+
   <string name="text_product">Product...</string>
+  <plurals name="text_product">
+    <item quantity="one">Product...</item>
+    <item quantity="other">Products...</item>
+  </plurals>
+
   <string name="text_product_id">Product ID...</string>
   <string name="text_product_orders">Product orders...</string>
   <string name="text_quantity">Quantity...</string>

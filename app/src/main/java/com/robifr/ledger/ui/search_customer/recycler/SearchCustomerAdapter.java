@@ -85,7 +85,9 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
     } else if (holder instanceof SearchCustomerListHolder listHolder) {
       final List<CustomerModel> customers =
           this._fragment.searchCustomerViewModel().customers().getValue();
-      if (customers != null) listHolder.bind(customers.get(index));
+
+      // -1 offset because header holder.
+      if (customers != null) listHolder.bind(customers.get(index - 1));
     }
   }
 
@@ -93,7 +95,7 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   public int getItemCount() {
     final List<CustomerModel> customers =
         this._fragment.searchCustomerViewModel().customers().getValue();
-    return customers != null ? customers.size() : 0;
+    return customers != null ? customers.size() + 1 : 0; // +1 offset because header holder.
   }
 
   @Override

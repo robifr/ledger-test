@@ -78,6 +78,7 @@
   <string name="text_queue_id">Queue ID...</string>
   <string name="text_save">Save...</string>
   <string name="text_search_customers">Search customers...</string>
+  <string name="text_search_products">Search products...</string>
   <string name="text_select_customer">Select customer...</string>
   <string name="text_select_date">Select date...</string>
   <string name="text_select_date_range">Select date range...</string>

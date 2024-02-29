@@ -76,7 +76,13 @@
   <string name="text_payment_method">Payment method...</string>
   <string name="text_payment_methods">Payment methods...</string>
   <string name="text_price">Price...</string>
+
   <string name="text_product">Product...</string>
+  <plurals name="text_product">
+    <item quantity="one">Product...</item>
+    <item quantity="other">Products...</item>
+  </plurals>
+
   <string name="text_product_id">Product ID...</string>
   <string name="text_product_orders">Product orders...</string>
   <string name="text_quantity">Quantity...</string>
@@ -84,6 +90,7 @@
   <string name="text_queue_id">Queue ID...</string>
   <string name="text_save">Save...</string>
   <string name="text_search_customers">Search customers...</string>
+  <string name="text_search_products">Search products...</string>
   <string name="text_select_customer">Select customer...</string>
   <string name="text_select_date">Select date...</string>
   <string name="text_select_date_range">Select date range...</string>

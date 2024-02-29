@@ -15,32 +15,32 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.ui.select_product;
+package com.robifr.ledger.ui.search_product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.ProductModel;
-import com.robifr.ledger.databinding.ListableFragmentBinding;
+import com.robifr.ledger.databinding.SearchableFragmentBinding;
 import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
-import com.robifr.ledger.ui.search_product.SearchProductFragment;
-import com.robifr.ledger.ui.select_product.recycler.SelectProductAdapter;
-import com.robifr.ledger.ui.select_product.view_model.SelectProductViewModel;
+import com.robifr.ledger.ui.search_product.recycler.SearchProductAdapter;
+import com.robifr.ledger.ui.search_product.view_model.SearchProductViewModel;
+import com.robifr.ledger.ui.select_product.SelectProductFragment;
+import com.robifr.ledger.util.Compats;
 import java.util.Objects;
 
-public class SelectProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
+public class SearchProductFragment extends Fragment implements SearchView.OnQueryTextListener {
   public enum Request implements FragmentResultKey {
     SELECT_PRODUCT;
 
@@ -62,21 +62,12 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
-  @Nullable private final ProductModel _initialSelectedProduct;
-  @Nullable private ListableFragmentBinding _fragmentBinding;
-  @Nullable private SelectProductAdapter _adapter;
+  @Nullable private SearchableFragmentBinding _fragmentBinding;
+  @Nullable private SearchProductAdapter _adapter;
+  @ColorInt private int _normalStatusBarColor;
 
-  @Nullable private SelectProductViewModel _selectProductViewModel;
-  @Nullable private SelectProductViewModelHandler _viewModelHandler;
-
-  /** Default constructor when configuration changes. */
-  public SelectProductFragment() {
-    this(null);
-  }
-
-  protected SelectProductFragment(@Nullable ProductModel initialSelectedProduct) {
-    this._initialSelectedProduct = initialSelectedProduct;
-  }
+  @Nullable private SearchProductViewModel _searchProductViewModel;
+  @Nullable private SearchProductViewModelHandler _viewModelHandler;
 
   @Override
   public View onCreateView(
@@ -85,8 +76,7 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
 
-    this._fragmentBinding =
-        ListableFragmentBinding.inflate(this.getLayoutInflater(), container, false);
+    this._fragmentBinding = SearchableFragmentBinding.inflate(inflater, container, false);
     return this._fragmentBinding.getRoot();
   }
 
@@ -95,90 +85,73 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
 
-    this._adapter = new SelectProductAdapter(this);
-    this._selectProductViewModel =
-        new ViewModelProvider(
-                this,
-                new SelectProductViewModel.Factory(
-                    this.requireContext(), this._initialSelectedProduct))
-            .get(SelectProductViewModel.class);
-    this._viewModelHandler = new SelectProductViewModelHandler(this, this._selectProductViewModel);
+    this._adapter = new SearchProductAdapter(this);
+    this._normalStatusBarColor = this.requireActivity().getWindow().getStatusBarColor();
+    this._searchProductViewModel =
+        new ViewModelProvider(this, new SearchProductViewModel.Factory(this.requireContext()))
+            .get(SearchProductViewModel.class);
+    this._viewModelHandler = new SearchProductViewModelHandler(this, this._searchProductViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()
         .addCallback(this.getViewLifecycleOwner(), this._onBackPressed);
-    this._fragmentBinding.toolbar.getMenu().clear();
-    this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_select);
-    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_select_product));
-    this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
+    this.requireActivity()
+        .getWindow() // Match status bar color with toolbar.
+        .setStatusBarColor(this.requireContext().getColor(R.color.surface));
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
-    this._fragmentBinding.horizontalToolbar.setVisibility(View.GONE);
+    this._fragmentBinding.seachView.setQueryHint(this.getString(R.string.text_search_products));
+    this._fragmentBinding.seachView.setOnQueryTextListener(this);
+    this._fragmentBinding.seachView.requestFocus();
+    this._fragmentBinding.noResultsImage.image.setImageResource(R.drawable.image_noresultsfound);
+    this._fragmentBinding.noResultsImage.title.setText(R.string.text_no_results_found);
+    this._fragmentBinding.noResultsImage.description.setText(
+        this.getString(R.string.text_cant_find_any_matching_products));
     this._fragmentBinding.recyclerView.setLayoutManager(
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    this._selectProductViewModel.onProductsChanged(this._selectProductViewModel.fetchAllProducts());
+    Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
   }
 
   @Override
-  public boolean onMenuItemClick(@NonNull MenuItem item) {
-    Objects.requireNonNull(item);
+  public boolean onQueryTextSubmit(@NonNull String query) {
+    return false;
+  }
 
-    return switch (item.getItemId()) {
-      case R.id.search -> {
-        final SearchProductFragment searchProductFragment =
-            (SearchProductFragment)
-                new SearchProductFragment.Factory()
-                    .instantiate(
-                        this.requireContext().getClassLoader(),
-                        SearchProductFragment.class.getName());
+  @Override
+  public boolean onQueryTextChange(@NonNull String newText) {
+    Objects.requireNonNull(this._searchProductViewModel);
 
-        if (this.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              searchProductFragment,
-              SearchProductFragment.class.toString());
-        }
-
-        yield true;
-      }
-
-      default -> false;
-    };
+    this._searchProductViewModel.onSearch(newText);
+    return true;
   }
 
   @NonNull
-  public ListableFragmentBinding fragmentBinding() {
+  public SearchableFragmentBinding fragmentBinding() {
     return Objects.requireNonNull(this._fragmentBinding);
   }
 
   @NonNull
-  public SelectProductAdapter adapter() {
+  public SearchProductAdapter adapter() {
     return Objects.requireNonNull(this._adapter);
   }
 
   @NonNull
-  public SelectProductViewModel selectProductViewModel() {
-    return Objects.requireNonNull(this._selectProductViewModel);
+  public SearchProductViewModel searchProductViewModel() {
+    return Objects.requireNonNull(this._searchProductViewModel);
   }
 
   public void finish() {
     if (this.requireActivity() instanceof BackStack navigation
         && navigation.currentTabStackTag() != null) {
+      this.requireActivity().getWindow().setStatusBarColor(this._normalStatusBarColor);
       navigation.popFragmentStack(navigation.currentTabStackTag());
     }
   }
 
   public static class Factory extends FragmentFactory {
-    @Nullable private final ProductModel _initialSelectedProduct;
-
-    public Factory(@Nullable ProductModel initialSelectedProduct) {
-      this._initialSelectedProduct = initialSelectedProduct;
-    }
-
     @Override
     @NonNull
     public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
@@ -186,7 +159,7 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
       Objects.requireNonNull(className);
 
       return (className.equals(SelectProductFragment.class.getName()))
-          ? new SelectProductFragment(this._initialSelectedProduct)
+          ? new SearchProductFragment()
           : super.instantiate(classLoader, className);
     }
   }
@@ -198,7 +171,7 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
 
     @Override
     public void handleOnBackPressed() {
-      SelectProductFragment.this.selectProductViewModel().onProductSelected(null);
+      SearchProductFragment.this.searchProductViewModel().onProductSelected(null);
     }
   }
 }

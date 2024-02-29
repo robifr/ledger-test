@@ -124,13 +124,13 @@
   </plurals>
 
   <plurals name="customerlist_result_title">
-    <item quantity="one"><![CDATA[Displaying <b>%d</b> queue]]></item>
-    <item quantity="other"><![CDATA[Displaying <b>%d</b> queues]]></item>
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> customer]]></item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> customers]]></item>
   </plurals>
 
   <plurals name="productlist_result_title">
-    <item quantity="one"><![CDATA[Displaying <b>%d</b> queue]]></item>
-    <item quantity="other"><![CDATA[Displaying <b>%d</b> queues]]></item>
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> product]]></item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> products]]></item>
   </plurals>
 
   <string name="productordercard_customerbalance_title">%s\'s balance</string>

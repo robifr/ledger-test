@@ -17,17 +17,36 @@
 
 package com.robifr.ledger.ui.search_customer.recycler;
 
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardBinding;
+import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.search_customer.SearchCustomerFragment;
+import com.robifr.ledger.util.Enums;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+  private enum ViewType {
+    HEADER(0),
+    LIST(1);
+
+    private final int _value;
+
+    private ViewType(int value) {
+      this._value = value;
+    }
+
+    public int value() {
+      return this._value;
+    }
+  }
+
   @NonNull private final SearchCustomerFragment _fragment;
 
   public SearchCustomerAdapter(@NonNull SearchCustomerFragment fragment) {
@@ -39,21 +58,34 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     Objects.requireNonNull(parent);
 
-    return new SearchCustomerListHolder(
-        this._fragment,
-        CustomerCardBinding.inflate(this._fragment.getLayoutInflater(), parent, false));
+    final ViewType type =
+        Objects.requireNonNull(Enums.valueOf(viewType, ViewType.class, ViewType::value));
+    final LayoutInflater inflater = this._fragment.getLayoutInflater();
+
+    return switch (type) {
+      case HEADER ->
+          new SearchCustomerHeaderHolder(
+              this._fragment, ListableListTextBinding.inflate(inflater, parent, false));
+
+        // Defaults to `ViewType#LIST`.
+      default ->
+          new SearchCustomerListHolder(
+              this._fragment,
+              CustomerCardBinding.inflate(this._fragment.getLayoutInflater(), parent, false));
+    };
   }
 
   @Override
   public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    final List<CustomerModel> customers =
-        this._fragment.searchCustomerViewModel().customers().getValue();
-    if (customers == null) return;
+    if (holder instanceof SearchCustomerHeaderHolder headerHolder) {
+      headerHolder.bind(Optional.empty());
 
-    if (holder instanceof SearchCustomerListHolder listHolder) {
-      listHolder.bind(customers.get(index));
+    } else if (holder instanceof SearchCustomerListHolder listHolder) {
+      final List<CustomerModel> customers =
+          this._fragment.searchCustomerViewModel().customers().getValue();
+      if (customers != null) listHolder.bind(customers.get(index));
     }
   }
 
@@ -62,5 +94,13 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
     final List<CustomerModel> customers =
         this._fragment.searchCustomerViewModel().customers().getValue();
     return customers != null ? customers.size() : 0;
+  }
+
+  @Override
+  public int getItemViewType(int index) {
+    return switch (index) {
+      case 0 -> ViewType.HEADER.value();
+      default -> ViewType.LIST.value();
+    };
   }
 }

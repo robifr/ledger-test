@@ -115,4 +115,9 @@
   <string name="productordercard_customerdebt_title">%s\'s debt...</string>
   <string name="productordercard_discount_title">%s%% off...</string>
   <string name="productordercard_productpriceandquantity_title">%s x %s...</string>
+
+  <plurals name="text_customer">
+    <item quantity="one">Customer...</item>
+    <item quantity="other">Customers...</item>
+  </plurals>
 </resources>

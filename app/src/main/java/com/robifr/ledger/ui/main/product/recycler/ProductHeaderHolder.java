@@ -48,7 +48,10 @@ public class ProductHeaderHolder extends RecyclerViewHolder<Optional> {
   public void bind(@NonNull Optional ignore) {
     final List<ProductModel> products = this._fragment.productViewModel().products().getValue();
     final int totalProducts = products != null ? products.size() : 0;
-    final String text = this._fragment.getString(R.string.productlist_result_title, totalProducts);
+    final String text =
+        this._fragment
+            .getResources()
+            .getQuantityString(R.plurals.productlist_result_title, totalProducts, totalProducts);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

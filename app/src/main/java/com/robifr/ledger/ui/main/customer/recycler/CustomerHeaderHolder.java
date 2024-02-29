@@ -49,7 +49,9 @@ public class CustomerHeaderHolder extends RecyclerViewHolder<Optional> {
     final List<CustomerModel> customers = this._fragment.customerViewModel().customers().getValue();
     final int totalCustomers = customers != null ? customers.size() : 0;
     final String text =
-        this._fragment.getString(R.string.customerlist_result_title, totalCustomers);
+        this._fragment
+            .getResources()
+            .getQuantityString(R.plurals.customerlist_result_title, totalCustomers, totalCustomers);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

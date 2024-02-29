@@ -36,7 +36,13 @@
   <string name="text_create_product">Create product...</string>
   <string name="text_create_queue">Create queue...</string>
   <string name="text_custom_range">Custom range...</string>
+
   <string name="text_customer">Customer...</string>
+  <plurals name="text_customer">
+    <item quantity="one">Customer...</item>
+    <item quantity="other">Customers...</item>
+  </plurals>
+
   <string name="text_customer_id">Customer ID...</string>
   <string name="text_customer_name">Customer name...</string>
   <string name="text_date">Date...</string>
@@ -105,19 +111,23 @@
   <string name="createcustomerdialog_balanceavailable_helper">%s available...</string>
 
   <string name="queuefilter_date_selecteddate_chip">%s — %s...</string>
-  <string name="queuelist_result_title"><![CDATA[Displaying <b>%d</b> queue(s)]]>...</string>
+  <plurals name="queuelist_result_title">
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> queue]]>...</item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> queues]]>...</item>
+  </plurals>
 
-  <string name="customerlist_result_title"><![CDATA[Displaying <b>%d</b> customer(s)]]>...</string>
+  <plurals name="customerlist_result_title">
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> queue]]>...</item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> queues]]>...</item>
+  </plurals>
 
-  <string name="productlist_result_title"><![CDATA[Displaying <b>%d</b> product(s)]]>...</string>
+  <plurals name="productlist_result_title">
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> queue]]>...</item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> queues]]>...</item>
+  </plurals>
 
   <string name="productordercard_customerbalance_title">%s\'s balance...</string>
   <string name="productordercard_customerdebt_title">%s\'s debt...</string>
   <string name="productordercard_discount_title">%s%% off...</string>
   <string name="productordercard_productpriceandquantity_title">%s x %s...</string>
-
-  <plurals name="text_customer">
-    <item quantity="one">Customer...</item>
-    <item quantity="other">Customers...</item>
-  </plurals>
 </resources>

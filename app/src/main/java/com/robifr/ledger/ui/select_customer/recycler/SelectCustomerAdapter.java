@@ -78,17 +78,17 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    final List<CustomerModel> customers =
-        this._fragment.selectCustomerViewModel().customers().getValue();
-    if (customers == null) return;
-
     if (holder instanceof SelectCustomerHeaderHolder headerHolder) {
       final Optional<CustomerModel> selectedCustomer =
           Optional.ofNullable(this._fragment.selectCustomerViewModel().initialSelectedCustomer());
       headerHolder.bind(selectedCustomer);
 
     } else if (holder instanceof SelectCustomerListHolder listHolder) {
-      listHolder.bind(customers.get(index - 1)); // -1 offset because header holder.
+      final List<CustomerModel> customers =
+          this._fragment.selectCustomerViewModel().customers().getValue();
+
+      // -1 offset because header holder.
+      if (customers != null) listHolder.bind(customers.get(index - 1));
     }
   }
 
@@ -96,7 +96,7 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   public int getItemCount() {
     final List<CustomerModel> customers =
         this._fragment.selectCustomerViewModel().customers().getValue();
-    return customers != null ? customers.size() + 1 : 0; // -1 offset because header holder.
+    return customers != null ? customers.size() + 1 : 0; // +1 offset because header holder.
   }
 
   @Override

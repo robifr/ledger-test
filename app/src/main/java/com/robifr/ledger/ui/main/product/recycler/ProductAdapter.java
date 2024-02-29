@@ -77,14 +77,14 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    final List<ProductModel> products = this._fragment.productViewModel().products().getValue();
-    if (products == null) return;
-
     if (holder instanceof ProductHeaderHolder headerHolder) {
       headerHolder.bind(Optional.empty());
 
     } else if (holder instanceof ProductListHolder listHolder) {
-      listHolder.bind(products.get(index - 1)); // -1 offset because header holder.
+      final List<ProductModel> products = this._fragment.productViewModel().products().getValue();
+
+      // -1 offset because header holder.
+      if (products != null) listHolder.bind(products.get(index - 1));
     }
   }
 

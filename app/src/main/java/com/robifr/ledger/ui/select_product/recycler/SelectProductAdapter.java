@@ -78,17 +78,17 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
   public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    final List<ProductModel> products =
-        this._fragment.selectProductViewModel().products().getValue();
-    if (products == null) return;
-
     if (holder instanceof SelectProductHeaderHolder headerHolder) {
       final Optional<ProductModel> selectedProduct =
           Optional.ofNullable(this._fragment.selectProductViewModel().initialSelectedProduct());
       headerHolder.bind(selectedProduct);
 
     } else if (holder instanceof SelectProductListHolder listHolder) {
-      listHolder.bind(products.get(index - 1)); // -1 offset because header holder.
+      final List<ProductModel> products =
+          this._fragment.selectProductViewModel().products().getValue();
+
+      // -1 offset because header holder.
+      if (products != null) listHolder.bind(products.get(index - 1));
     }
   }
 
@@ -96,7 +96,7 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
   public int getItemCount() {
     final List<ProductModel> products =
         this._fragment.selectProductViewModel().products().getValue();
-    return products != null ? products.size() + 1 : 0; // -1 offset because header holder.
+    return products != null ? products.size() + 1 : 0; // +1 offset because header holder.
   }
 
   @Override

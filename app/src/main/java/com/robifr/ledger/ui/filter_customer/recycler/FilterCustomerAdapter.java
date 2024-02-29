@@ -78,15 +78,15 @@ public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    final List<CustomerModel> customers =
-        this._fragment.filterCustomerViewModel().customers().getValue();
-    if (customers == null) return;
-
     if (holder instanceof FilterCustomerHeaderHolder headerHolder) {
       headerHolder.bind(Optional.empty());
 
     } else if (holder instanceof FilterCustomerListHolder listHolder) {
-      listHolder.bind(customers.get(index - 1)); // -1 offset because header holder.
+      final List<CustomerModel> customers =
+          this._fragment.filterCustomerViewModel().customers().getValue();
+
+      // -1 offset because header holder.
+      if (customers != null) listHolder.bind(customers.get(index - 1));
     }
   }
 

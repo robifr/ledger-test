@@ -25,12 +25,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.data.ProductSorter;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
+import com.robifr.ledger.ui.StringResources;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +46,8 @@ public class SelectProductViewModel extends ViewModel {
   @NonNull private final ProductSorter _sorter = new ProductSorter();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<String>> _snackbarMessage = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+      new MutableLiveData<>();
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<Long>> _selectedProductId = new MutableLiveData<>();
@@ -72,7 +75,7 @@ public class SelectProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<String>> snackbarMessage() {
+  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -103,7 +106,9 @@ public class SelectProductViewModel extends ViewModel {
       return this._productRepository.selectAll().get();
 
     } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(new LiveDataEvent<>("Error! Unable to obtain all products"));
+      this._snackbarMessage.setValue(
+          new LiveDataEvent<>(
+              new StringResources.Strings(R.string.text_error_unable_to_retrieve_all_customers)));
     }
 
     return new ArrayList<>();

@@ -26,6 +26,7 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.create_queue.view_model.CreateQueueViewModel;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -113,10 +114,14 @@ public class CreateQueueViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSelectOrderSelectedIndexes);
   }
 
-  private void _onSnackbarMessage(@Nullable String message) {
-    if (message != null) {
-      Snackbar.make(this._fragment.requireView(), message, Snackbar.LENGTH_LONG).show();
-    }
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            this._fragment.requireView(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onCreatedQueueId(@Nullable Long queueId) {

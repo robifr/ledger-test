@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.data.model.ProductOrderModel;
@@ -33,6 +34,7 @@ import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
+import com.robifr.ledger.ui.StringResources;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -53,7 +55,8 @@ public class CreateQueueViewModel extends ViewModel {
   @NonNull protected final SelectProductOrderViewModel _selectProductOrderView;
 
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<String>> _snackbarMessage = new MutableLiveData<>();
+  protected final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+      new MutableLiveData<>();
 
   /**
    * Current inputted customer with changes to data like balance or debt as an overview before doing
@@ -124,7 +127,7 @@ public class CreateQueueViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<String>> snackbarMessage() {
+  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -314,7 +317,9 @@ public class CreateQueueViewModel extends ViewModel {
   public void onSave() {
     if (this._inputtedProductOrders.size() == 0) {
       this._snackbarMessage.setValue(
-          new LiveDataEvent<>("Required to have at least one product order!"));
+          new LiveDataEvent<>(
+              new StringResources.Strings(
+                  R.string.text_please_to_include_at_least_one_product_order)));
       return;
     }
 
@@ -323,16 +328,16 @@ public class CreateQueueViewModel extends ViewModel {
 
   @Nullable
   public CustomerModel selectCustomerById(@Nullable Long customerId) {
-    final LiveDataEvent<String> notFoundError =
-        new LiveDataEvent<>("Error! Unable to obtain customer with ID " + customerId);
+    final StringResources notFoundRes =
+        new StringResources.Strings(R.string.text_error_failed_to_find_related_customer);
     CustomerModel customer = null;
 
     try {
       customer = this._customerRepository.selectById(customerId).get();
-      if (customer == null) this._snackbarMessage.setValue(notFoundError);
+      if (customer == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
 
     } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(notFoundError);
+      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
     }
 
     return customer;
@@ -340,16 +345,16 @@ public class CreateQueueViewModel extends ViewModel {
 
   @Nullable
   public ProductModel selectProductById(@Nullable Long productId) {
-    final LiveDataEvent<String> notFoundError =
-        new LiveDataEvent<>("Error! Unable to obtain product with ID " + productId);
+    final StringResources notFoundRes =
+        new StringResources.Strings(R.string.text_error_failed_to_find_related_product);
     ProductModel product = null;
 
     try {
       product = this._productRepository.selectById(productId).get();
-      if (product == null) this._snackbarMessage.setValue(notFoundError);
+      if (product == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
 
     } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(notFoundError);
+      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
     }
 
     return product;
@@ -404,9 +409,11 @@ public class CreateQueueViewModel extends ViewModel {
             id -> {
               if (id != 0L) this._createdQueueId.postValue(new LiveDataEvent<>(id));
 
-              final String message =
-                  id != 0L ? "Added 1 queue(s)" : "Error! Failed to add queue(s)";
-              this._snackbarMessage.postValue(new LiveDataEvent<>(message));
+              final StringResources stringRes =
+                  id != 0L
+                      ? new StringResources.Plurals(R.plurals.args_queue_added, 1, 1)
+                      : new StringResources.Strings(R.string.text_error_failed_to_add_queue);
+              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
   }
 

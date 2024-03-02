@@ -45,6 +45,7 @@
 
   <string name="text_customer_id">Customer ID</string>
   <string name="text_customer_name">Customer name</string>
+  <string name="text_customer_name_is_required">Customer name is required</string>
   <string name="text_date">Date</string>
   <string name="text_debt">Debt</string>
   <string name="text_delete">Delete</string>
@@ -58,6 +59,21 @@
   <string name="text_edit_product">Edit product</string>
   <string name="text_edit_product_order">Edit product order</string>
   <string name="text_edit_queue">Edit queue</string>
+  <string name="text_error_failed_to_add_customer">Error! Failed to add customer</string>
+  <string name="text_error_failed_to_add_product">Error! Failed to add product</string>
+  <string name="text_error_failed_to_add_queue">Error! Failed to add queue</string>
+  <string name="text_error_failed_to_delete_customer">Error! Failed to delete customer</string>
+  <string name="text_error_failed_to_delete_product">Error! Failed to delete product</string>
+  <string name="text_error_failed_to_delete_queue">Error! Failed to delete queue</string>
+  <string name="text_error_failed_to_find_related_customer">Error! Failed to find related customer</string>
+  <string name="text_error_failed_to_find_related_product">Error! Failed to find related product</string>
+  <string name="text_error_failed_to_find_related_queue">Error! Failed to find related queue</string>
+  <string name="text_error_failed_to_update_customer">Error! Failed to update customer</string>
+  <string name="text_error_failed_to_update_product">Error! Failed to update product</string>
+  <string name="text_error_failed_to_update_queue">Error! Failed to update queue</string>
+  <string name="text_error_unable_to_retrieve_all_customers">Error! Unable to retrieve all customers</string>
+  <string name="text_error_unable_to_retrieve_all_products">Error! Unable to retrieve all products</string>
+  <string name="text_error_unable_to_retrieve_all_queues">Error! Unable to retrieve all queues</string>
   <string name="text_filter_customers">Filter customers</string>
   <string name="text_filtered_customers">Filtered customers</string>
   <string name="text_filters">Filters</string>
@@ -75,6 +91,7 @@
   <string name="text_originally_selected_product_was_deleted">Originally selected product was deleted</string>
   <string name="text_payment_method">Payment method</string>
   <string name="text_payment_methods">Payment methods</string>
+  <string name="text_please_to_include_at_least_one_product_order">Please to include at least one product order</string>
   <string name="text_price">Price</string>
 
   <string name="text_product">Product</string>
@@ -84,6 +101,7 @@
   </plurals>
 
   <string name="text_product_id">Product ID</string>
+  <string name="text_product_name_is_required">Product name is required</string>
   <string name="text_product_orders">Product orders</string>
   <string name="text_quantity">Quantity</string>
   <string name="text_queue">Queue</string>
@@ -111,6 +129,43 @@
   <string name="text_withdraw">Withdraw</string>
   <string name="text_withdraw_balance">Withdraw balance</string>
   <string name="text_yesterday">Yesterday</string>
+
+  <plurals name="args_customer_added">
+    <item quantity="one">Added %d customer</item>
+    <item quantity="other">Added %d customers</item>
+  </plurals>
+  <plurals name="args_customer_deleted">
+    <item quantity="one">Deleted %d customer</item>
+    <item quantity="other">Deleted %d customers</item>
+  </plurals>
+  <plurals name="args_customer_updated">
+    <item quantity="one">Updated %d customer</item>
+    <item quantity="other">Updated %d customers</item>
+  </plurals>
+  <plurals name="args_product_added">
+    <item quantity="one">Added %d product</item>
+    <item quantity="other">Added %d products</item>
+  </plurals>
+  <plurals name="args_product_deleted">
+    <item quantity="one">Deleted %d product</item>
+    <item quantity="other">Deleted %d products</item>
+  </plurals>
+  <plurals name="args_product_updated">
+    <item quantity="one">Updated %d product</item>
+    <item quantity="other">Updated %d products</item>
+  </plurals>
+  <plurals name="args_queue_added">
+    <item quantity="one">Added %d queue</item>
+    <item quantity="other">Added %d queues</item>
+  </plurals>
+  <plurals name="args_queue_deleted">
+    <item quantity="one">Deleted %d queue</item>
+    <item quantity="other">Deleted %d queues</item>
+  </plurals>
+  <plurals name="args_queue_updated">
+    <item quantity="one">Updated %d queue</item>
+    <item quantity="other">Updated %d queues</item>
+  </plurals>
 
   <string name="symbol_notavailable">n/a</string>
   <string name="symbol_mdash">—</string>

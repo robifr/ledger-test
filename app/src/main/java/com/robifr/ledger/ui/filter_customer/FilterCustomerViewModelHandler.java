@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.filter_customer.recycler.FilterCustomerListHolder;
 import com.robifr.ledger.ui.filter_customer.view_model.FilterCustomerViewModel;
 import java.util.List;
@@ -59,10 +60,14 @@ public class FilterCustomerViewModelHandler {
             new Observer<>(this::_onRemovedFilteredCustomerIndexes));
   }
 
-  private void _onSnackbarMessage(@Nullable String message) {
-    if (message != null) {
-      Snackbar.make(this._fragment.requireView(), message, Snackbar.LENGTH_LONG).show();
-    }
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            this._fragment.requireView(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onFilteredCustomerIds(@Nullable List<Long> customerIds) {

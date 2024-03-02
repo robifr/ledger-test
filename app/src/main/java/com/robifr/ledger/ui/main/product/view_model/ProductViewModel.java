@@ -24,12 +24,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.data.ProductSorter;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
+import com.robifr.ledger.ui.StringResources;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +45,8 @@ public class ProductViewModel extends ViewModel {
   @NonNull private final ProductSorter _sorter = new ProductSorter();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<String>> _snackbarMessage = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+      new MutableLiveData<>();
 
   @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
   @NonNull private final MutableLiveData<ProductSortMethod> _sortMethod = new MutableLiveData<>();
@@ -66,7 +69,7 @@ public class ProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<String>> snackbarMessage() {
+  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -86,7 +89,9 @@ public class ProductViewModel extends ViewModel {
       return this._productRepository.selectAll().get();
 
     } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(new LiveDataEvent<>("Error! Unable to obtain all products"));
+      this._snackbarMessage.setValue(
+          new LiveDataEvent<>(
+              new StringResources.Strings(R.string.text_error_unable_to_retrieve_all_products)));
     }
 
     return new ArrayList<>();
@@ -98,12 +103,13 @@ public class ProductViewModel extends ViewModel {
     this._productRepository
         .delete(product)
         .thenAcceptAsync(
-            totalDeleted -> {
-              final String message =
-                  totalDeleted > 0
-                      ? "Deleted " + totalDeleted + " product(s)"
-                      : "Error! Failed to delete product(s)";
-              this._snackbarMessage.postValue(new LiveDataEvent<>(message));
+            effected -> {
+              final StringResources stringRes =
+                  effected > 0
+                      ? new StringResources.Plurals(
+                          R.plurals.args_product_deleted, effected, effected)
+                      : new StringResources.Strings(R.string.text_error_failed_to_delete_product);
+              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
   }
 

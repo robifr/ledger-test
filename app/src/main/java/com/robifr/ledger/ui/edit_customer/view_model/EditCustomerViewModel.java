@@ -20,14 +20,15 @@ package com.robifr.ledger.ui.edit_customer.view_model;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.create_customer.view_model.CreateCustomerViewModel;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -56,7 +57,8 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
   public void onSave() {
     if (this.inputtedCustomer().name().isBlank()) {
       this._inputtedNameError.setValue(
-          new LiveDataEvent<>(new Pair<>("Customer name is required", true)));
+          new LiveDataEvent<>(
+              new StringResources.Strings(R.string.text_customer_name_is_required)));
       return;
     }
 
@@ -74,16 +76,16 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
 
   @Nullable
   public CustomerModel selectCustomerById(@Nullable Long customerId) {
-    final LiveDataEvent<String> notFoundError =
-        new LiveDataEvent<>("Error! Unable to obtain customer with ID " + customerId);
+    final StringResources notFoundRes =
+        new StringResources.Strings(R.string.text_error_failed_to_find_related_customer);
     CustomerModel customer = null;
 
     try {
       customer = this._customerRepository.selectById(customerId).get();
-      if (customer == null) this._snackbarMessage.setValue(notFoundError);
+      if (customer == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
 
     } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(notFoundError);
+      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
     }
 
     return customer;
@@ -96,11 +98,16 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
         .update(customer)
         .thenAcceptAsync(
             effected -> {
-              if (effected > 0)
+              if (effected > 0) {
                 this._editedCustomerId.postValue(new LiveDataEvent<>(customer.id()));
+              }
 
-              this._snackbarMessage.postValue(
-                  new LiveDataEvent<>("Updated " + effected + " customer(s)"));
+              final StringResources stringRes =
+                  effected > 0
+                      ? new StringResources.Plurals(
+                          R.plurals.args_customer_updated, effected, effected)
+                      : new StringResources.Strings(R.string.text_error_failed_to_update_customer);
+              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
   }
 

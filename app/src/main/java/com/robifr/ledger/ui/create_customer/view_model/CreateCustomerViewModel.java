@@ -19,15 +19,16 @@ package com.robifr.ledger.ui.create_customer.view_model;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
+import com.robifr.ledger.ui.StringResources;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -38,11 +39,11 @@ public class CreateCustomerViewModel extends ViewModel {
   protected final CustomerBalanceViewModel _balanceView = new CustomerBalanceViewModel(this);
 
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<String>> _snackbarMessage = new MutableLiveData<>();
+  protected final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+      new MutableLiveData<>();
 
-  /** Pair of name field error message (first) and whether the error is enabled (second). */
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<Pair<String, Boolean>>> _inputtedNameError =
+  protected final MutableLiveData<LiveDataEvent<StringResources>> _inputtedNameError =
       new MutableLiveData<>();
 
   @NonNull protected final MutableLiveData<String> _inputtedNameText = new MutableLiveData<>();
@@ -61,21 +62,18 @@ public class CreateCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<String>> snackbarMessage() {
+  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
+  }
+
+  @NonNull
+  public LiveData<LiveDataEvent<StringResources>> inputtedNameError() {
+    return this._inputtedNameError;
   }
 
   @NonNull
   public LiveData<LiveDataEvent<Long>> createdCustomerId() {
     return this._createdCustomerId;
-  }
-
-  /**
-   * @see CreateCustomerViewModel#_inputtedNameError
-   */
-  @NonNull
-  public LiveData<LiveDataEvent<Pair<String, Boolean>>> inputtedNameError() {
-    return this._inputtedNameError;
   }
 
   @NonNull
@@ -119,9 +117,7 @@ public class CreateCustomerViewModel extends ViewModel {
     this._inputtedNameText.setValue(name);
 
     // Disable error when name field filled.
-    if (!name.isBlank()) {
-      this._inputtedNameError.setValue(new LiveDataEvent<>(new Pair<>("", false)));
-    }
+    if (!name.isBlank()) this._inputtedNameError.setValue(new LiveDataEvent<>(null));
   }
 
   public void onBalanceChanged(long balance) {
@@ -137,7 +133,8 @@ public class CreateCustomerViewModel extends ViewModel {
   public void onSave() {
     if (this.inputtedCustomer().name().isBlank()) {
       this._inputtedNameError.setValue(
-          new LiveDataEvent<>(new Pair<>("Customer name is required", true)));
+          new LiveDataEvent<>(
+              new StringResources.Strings(R.string.text_customer_name_is_required)));
       return;
     }
 
@@ -153,9 +150,11 @@ public class CreateCustomerViewModel extends ViewModel {
             id -> {
               if (id != 0L) this._createdCustomerId.postValue(new LiveDataEvent<>(id));
 
-              final String message =
-                  id != 0L ? "Added 1 customer(s)" : "Error! Failed to add customer(s)";
-              this._snackbarMessage.postValue(new LiveDataEvent<>(message));
+              final StringResources stringRes =
+                  id != 0L
+                      ? new StringResources.Plurals(R.plurals.args_customer_added, 1, 1)
+                      : new StringResources.Strings(R.string.text_error_failed_to_add_customer);
+              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
   }
 

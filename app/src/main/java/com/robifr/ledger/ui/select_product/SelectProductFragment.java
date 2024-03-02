@@ -65,6 +65,7 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
   @Nullable private final ProductModel _initialSelectedProduct;
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private SelectProductAdapter _adapter;
+  @Nullable private SelectProductResultHandler _resultHandler;
 
   @Nullable private SelectProductViewModel _selectProductViewModel;
   @Nullable private SelectProductViewModelHandler _viewModelHandler;
@@ -96,6 +97,7 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
     Objects.requireNonNull(this._fragmentBinding);
 
     this._adapter = new SelectProductAdapter(this);
+    this._resultHandler = new SelectProductResultHandler(this);
     this._selectProductViewModel =
         new ViewModelProvider(
                 this,

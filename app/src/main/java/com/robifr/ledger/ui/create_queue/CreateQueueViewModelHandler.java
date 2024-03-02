@@ -106,11 +106,11 @@ public class CreateQueueViewModelHandler {
     this._viewModel
         .selectProductOrderView()
         .isContextualModeActive()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_isContextualModeActive);
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSelectOrderContextualModeActive);
     this._viewModel
         .selectProductOrderView()
         .selectedIndexes()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onSelectedOrderIndexes);
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSelectOrderSelectedIndexes);
   }
 
   private void _onSnackbarMessage(@Nullable String message) {
@@ -247,11 +247,21 @@ public class CreateQueueViewModelHandler {
     }
   }
 
-  private void _isContextualModeActive(@Nullable Boolean isActive) {
-    if (isActive != null) this._fragment.inputProductOrder().setContextualMode(isActive);
+  private void _onSelectOrderContextualModeActive(@Nullable Boolean isActive) {
+    if (isActive == null) return;
+
+    this._fragment.inputProductOrder().setContextualMode(isActive);
+    // Disable every possible irrelevant action when contextual mode is on.
+    this._fragment.fragmentBinding().customer.setEnabled(!isActive);
+    this._fragment.fragmentBinding().customerLayout.setEndIconVisible(!isActive);
+    this._fragment.fragmentBinding().date.setEnabled(!isActive);
+    this._fragment.fragmentBinding().status.setEnabled(!isActive);
+    this._fragment.fragmentBinding().paymentMethodCashButton.setEnabled(!isActive);
+    this._fragment.fragmentBinding().paymentMethodAccountBalanceButton.setEnabled(!isActive);
+    this._fragment.fragmentBinding().productOrder.addButton.setEnabled(!isActive);
   }
 
-  private void _onSelectedOrderIndexes(@Nullable Set<Integer> selectedIndexes) {
+  private void _onSelectOrderSelectedIndexes(@Nullable Set<Integer> selectedIndexes) {
     if (selectedIndexes != null) {
       this._fragment.inputProductOrder().setSelectedProductOrderByIndexes(selectedIndexes);
     }

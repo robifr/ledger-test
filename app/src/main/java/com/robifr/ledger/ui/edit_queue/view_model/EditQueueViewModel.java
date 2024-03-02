@@ -112,19 +112,17 @@ public class EditQueueViewModel extends CreateQueueViewModel {
                     .subtract(inputtedQueue.grandTotalPrice())
                     .compareTo(BigDecimal.ZERO)
                 >= 0;
-    final boolean isOldQueueHaveCustomer =
-        this._initialQueueToEdit != null && this._initialQueueToEdit.customerId() != null;
+    final boolean isCustomerAndOrdersUnchanged =
+        this._initialQueueToEdit != null
+            && this._initialQueueToEdit.productOrders().equals(inputtedQueue.productOrders())
+            && this._initialQueueToEdit.customerId() != null
+            && this._initialQueueToEdit.customerId().equals(inputtedQueue.customerId());
 
-    // Only disallow to use account balance option when queue is edited.
-    // So that customer doesn't get charged during initial edit
-    // because the queue is initially already completed with account balance.
-    if ((!isBalanceEnoughToPay && !inputtedQueue.equals(this._initialQueueToEdit))
-        // Or when the queue is initially saved with account balance and no customer.
-        // Though, it should be impossible in first place.
-        || (!isOldQueueHaveCustomer && inputtedQueue.equals(this._initialQueueToEdit))) {
-      allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
-    } else {
+    if (inputtedQueue.status() == QueueModel.Status.COMPLETED
+        && (isBalanceEnoughToPay || isCustomerAndOrdersUnchanged)) {
       allowedPaymentMethods.add(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
+    } else {
+      allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
     }
 
     this._allowedPaymentMethods.setValue(Collections.unmodifiableSet(allowedPaymentMethods));

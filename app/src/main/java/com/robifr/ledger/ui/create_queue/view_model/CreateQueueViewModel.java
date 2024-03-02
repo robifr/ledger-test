@@ -256,6 +256,8 @@ public class CreateQueueViewModel extends ViewModel {
 
     this._inputtedStatus.setValue(status);
     this._isPaymentMethodsViewVisible.setValue(isPaymentMethodsViewVisible);
+    this._onUpdateAllowedPaymentMethod();
+    // Update after allowed payment methods updated, in case payment method changed.
     this._onUpdateTemporalInputtedCustomer();
   }
 
@@ -364,12 +366,10 @@ public class CreateQueueViewModel extends ViewModel {
             ? new HashSet<>(this._allowedPaymentMethods.getValue())
             : new HashSet<>(Set.of(QueueModel.PaymentMethod.CASH));
 
-    // Disallow to use account balance option when customer
-    // have insufficient amount of balance to pay all the product orders.
-    if (!isBalanceEnoughToPay) {
-      allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
-    } else {
+    if (inputtedQueue.status() == QueueModel.Status.COMPLETED && isBalanceEnoughToPay) {
       allowedPaymentMethods.add(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
+    } else {
+      allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
     }
 
     this._allowedPaymentMethods.setValue(Collections.unmodifiableSet(allowedPaymentMethods));

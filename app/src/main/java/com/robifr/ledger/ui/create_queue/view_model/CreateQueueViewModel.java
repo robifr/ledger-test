@@ -272,7 +272,9 @@ public class CreateQueueViewModel extends ViewModel {
     Objects.requireNonNull(productOrder);
 
     final List<Integer> addedIndexes =
-        IntStream.rangeClosed(this._inputtedProductOrders.size(), List.of(productOrder).size() - 1)
+        IntStream.rangeClosed(
+                this._inputtedProductOrders.size(),
+                this._inputtedProductOrders.size() + productOrder.length - 1)
             .boxed()
             .collect(Collectors.toList());
 

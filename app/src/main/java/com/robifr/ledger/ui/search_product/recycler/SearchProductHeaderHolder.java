@@ -17,12 +17,12 @@
 
 package com.robifr.ledger.ui.search_product.recycler;
 
-import android.util.Log;import androidx.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.search_product.SearchProductFragment;import com.robifr.ledger.util.SingleToast;
+import com.robifr.ledger.ui.search_product.SearchProductFragment;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

@@ -21,8 +21,6 @@ plugins {
 allprojects {
   apply(plugin = "com.diffplug.spotless")
   configure<SpotlessExtension> {
-    ratchetFrom("origin/main")
-
     val license: String =
         """
           /**

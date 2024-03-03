@@ -94,7 +94,7 @@ public interface FragmentResultKey {
   public String key();
 
   @NonNull
-  static <E extends Enum<E> & FragmentResultKey> String generateKey(@NonNull E constant) {
+  public static <E extends Enum<E> & FragmentResultKey> String generateKey(@NonNull E constant) {
     Objects.requireNonNull(constant);
 
     final String enumPath = constant.getDeclaringClass().getName();

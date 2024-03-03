@@ -114,12 +114,12 @@ allprojects {
             afterSuite(
                 KotlinClosure2({ description: TestDescriptor, result: TestResult ->
                   if (description.parent != null) {
-                    val output =
+                    val output: String =
                         "Results: ${result.resultType} (${result.testCount} tests, " +
                             "${result.successfulTestCount} passed, " +
                             "${result.failedTestCount} failed, " +
                             "${result.skippedTestCount} skipped)"
-                    val repeatedMinusSign = "-".repeat(output.length)
+                    val repeatedMinusSign: String = "-".repeat(output.length)
 
                     println("${repeatedMinusSign}\n${output}\n")
                   }

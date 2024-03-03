@@ -256,9 +256,17 @@ public class CreateQueueViewModelHandler {
     this._fragment.fragmentBinding().customerLayout.setEndIconVisible(!isActive);
     this._fragment.fragmentBinding().date.setEnabled(!isActive);
     this._fragment.fragmentBinding().status.setEnabled(!isActive);
-    this._fragment.fragmentBinding().paymentMethodCashButton.setEnabled(!isActive);
-    this._fragment.fragmentBinding().paymentMethodAccountBalanceButton.setEnabled(!isActive);
     this._fragment.fragmentBinding().productOrder.addButton.setEnabled(!isActive);
+
+    final Set<QueueModel.PaymentMethod> allowedPayments =
+        this._viewModel.allowedPaymentMethods().getValue();
+
+    // Don't set it via view model as doing so will make the actual allowed payments lost.
+    if (!isActive && allowedPayments != null) {
+      this._fragment.inputPaymentMethod().setEnabledButtons(allowedPayments);
+    } else {
+      this._fragment.inputPaymentMethod().setEnabledButtons(Set.of());
+    }
   }
 
   private void _onSelectOrderSelectedIndexes(@Nullable Set<Integer> selectedIndexes) {

@@ -19,15 +19,16 @@ package com.robifr.ledger.ui.create_product.view_model;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.text.ParseException;
 import java.util.Objects;
@@ -36,11 +37,11 @@ public class CreateProductViewModel extends ViewModel {
   @NonNull protected final ProductRepository _productRepository;
 
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<String>> _snackbarMessage = new MutableLiveData<>();
+  protected final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+      new MutableLiveData<>();
 
-  /** Pair of name field error message (first) and whether the error is enabled (second). */
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<Pair<String, Boolean>>> _inputtedNameError =
+  protected final MutableLiveData<LiveDataEvent<StringResources>> _inputtedNameError =
       new MutableLiveData<>();
 
   @NonNull protected final MutableLiveData<String> _inputtedNameText = new MutableLiveData<>();
@@ -54,7 +55,7 @@ public class CreateProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<String>> snackbarMessage() {
+  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -63,11 +64,8 @@ public class CreateProductViewModel extends ViewModel {
     return this._createdProductId;
   }
 
-  /**
-   * @see CreateProductViewModel#_inputtedNameError
-   */
   @NonNull
-  public LiveData<LiveDataEvent<Pair<String, Boolean>>> inputtedNameError() {
+  public LiveData<LiveDataEvent<StringResources>> inputtedNameError() {
     return this._inputtedNameError;
   }
 
@@ -108,9 +106,7 @@ public class CreateProductViewModel extends ViewModel {
     this._inputtedNameText.setValue(name);
 
     // Disable error when name field filled.
-    if (!name.isBlank()) {
-      this._inputtedNameError.setValue(new LiveDataEvent<>(new Pair<>("", false)));
-    }
+    if (!name.isBlank()) this._inputtedNameError.setValue(new LiveDataEvent<>(null));
   }
 
   public void onPriceTextChanged(@NonNull String price) {
@@ -122,7 +118,7 @@ public class CreateProductViewModel extends ViewModel {
   public void onSave() {
     if (this._inputtedNameText.getValue() == null || this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
-          new LiveDataEvent<>(new Pair<>("Product name is required", true)));
+          new LiveDataEvent<>(new StringResources.Strings(R.string.text_product_name_is_required)));
       return;
     }
 
@@ -138,9 +134,11 @@ public class CreateProductViewModel extends ViewModel {
             id -> {
               if (id != 0L) this._createdProductId.postValue(new LiveDataEvent<>(id));
 
-              final String message =
-                  id != 0L ? "Added 1 product(s)" : "Error! Failed to add product(s)";
-              this._snackbarMessage.postValue(new LiveDataEvent<>(message));
+              final StringResources stringRes =
+                  id != 0L
+                      ? new StringResources.Plurals(R.plurals.args_product_added, 1, 1)
+                      : new StringResources.Strings(R.string.text_error_failed_to_add_product);
+              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
   }
 

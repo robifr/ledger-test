@@ -24,12 +24,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.create_queue.view_model.CreateQueueViewModel;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -65,7 +67,9 @@ public class EditQueueViewModel extends CreateQueueViewModel {
   public void onSave() {
     if (this._inputtedProductOrders.size() == 0) {
       this._snackbarMessage.setValue(
-          new LiveDataEvent<>("Required to have at least one product order!"));
+          new LiveDataEvent<>(
+              new StringResources.Strings(
+                  R.string.text_please_to_include_at_least_one_product_order)));
       return;
     }
 
@@ -83,16 +87,16 @@ public class EditQueueViewModel extends CreateQueueViewModel {
 
   @Nullable
   public QueueModel selectQueueById(@Nullable Long queueId) {
-    final LiveDataEvent<String> notFoundError =
-        new LiveDataEvent<>("Error! Unable to obtain queue with ID " + queueId);
+    final StringResources notFoundRes =
+        new StringResources.Strings(R.string.text_error_failed_to_find_related_queue);
     QueueModel queue = null;
 
     try {
       queue = this._queueRepository.selectById(queueId).get();
-      if (queue == null) this._snackbarMessage.setValue(notFoundError);
+      if (queue == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
 
     } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(notFoundError);
+      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
     }
 
     return queue;
@@ -164,8 +168,12 @@ public class EditQueueViewModel extends CreateQueueViewModel {
             effected -> {
               if (effected > 0) this._editedQueueId.postValue(new LiveDataEvent<>(queue.id()));
 
-              this._snackbarMessage.postValue(
-                  new LiveDataEvent<>("Updated " + effected + " queue(s)"));
+              final StringResources stringRes =
+                  effected > 0
+                      ? new StringResources.Plurals(
+                          R.plurals.args_queue_updated, effected, effected)
+                      : new StringResources.Strings(R.string.text_error_failed_to_update_queue);
+              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
   }
 

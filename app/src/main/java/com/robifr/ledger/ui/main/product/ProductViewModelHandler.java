@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.main.product.view_model.ProductViewModel;
 import java.util.List;
 import java.util.Objects;
@@ -50,10 +51,14 @@ public class ProductViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onFilteredMaxPriceText);
   }
 
-  private void _onSnackbarMessage(@Nullable String message) {
-    if (message != null) {
-      Snackbar.make(this._fragment.requireView(), message, Snackbar.LENGTH_LONG).show();
-    }
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            this._fragment.requireView(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onProducts(@Nullable List<ProductModel> products) {

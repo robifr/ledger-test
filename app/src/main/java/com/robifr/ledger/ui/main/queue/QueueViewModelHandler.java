@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.main.queue.recycler.QueueListHolder;
 import com.robifr.ledger.ui.main.queue.view_model.QueueViewModel;
 import java.time.ZonedDateTime;
@@ -73,10 +74,14 @@ public class QueueViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onFilteredMaxTotalPriceText);
   }
 
-  private void _onSnackbarMessage(@Nullable String message) {
-    if (message != null) {
-      Snackbar.make(this._fragment.requireView(), message, Snackbar.LENGTH_LONG).show();
-    }
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            this._fragment.requireView(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onQueues(@Nullable List<QueueModel> queues) {

@@ -23,11 +23,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.data.CustomerSorter;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
+import com.robifr.ledger.ui.StringResources;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +42,8 @@ public class FilterCustomerViewModel extends ViewModel {
   @NonNull private final CustomerSorter _sorter = new CustomerSorter();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<String>> _snackbarMessage = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+      new MutableLiveData<>();
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<List<Long>>> _filteredCustomerIds =
@@ -65,7 +68,7 @@ public class FilterCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<String>> snackbarMessage() {
+  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -145,7 +148,9 @@ public class FilterCustomerViewModel extends ViewModel {
       return this._customerRepository.selectAll().get();
 
     } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(new LiveDataEvent<>("Error! Unable to obtain all customers"));
+      this._snackbarMessage.setValue(
+          new LiveDataEvent<>(
+              new StringResources.Strings(R.string.text_error_unable_to_retrieve_all_customers)));
     }
 
     return new ArrayList<>();

@@ -20,9 +20,9 @@ package com.robifr.ledger.ui.create_customer;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.create_customer.view_model.CreateCustomerViewModel;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -71,10 +71,14 @@ public class CreateCustomerViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onAvailableBalanceToWithdraw);
   }
 
-  private void _onSnackbarMessage(@Nullable String message) {
-    if (message != null) {
-      Snackbar.make(this._fragment.requireView(), message, Snackbar.LENGTH_LONG).show();
-    }
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            this._fragment.requireView(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onCreatedCustomerId(@Nullable Long id) {
@@ -90,10 +94,12 @@ public class CreateCustomerViewModelHandler {
     this._fragment.finish();
   }
 
-  private void _onInputtedNameError(@Nullable Pair<String, Boolean> inputtedNameError) {
-    if (inputtedNameError != null) {
-      this._fragment.inputName().setError(inputtedNameError.first, inputtedNameError.second);
-    }
+  private void _onInputtedNameError(@Nullable StringResources stringRes) {
+    final String text =
+        stringRes != null
+            ? StringResources.stringOf(this._fragment.requireContext(), stringRes)
+            : null;
+    this._fragment.inputName().setError(text);
   }
 
   private void _onInputtedNameText(@Nullable String name) {

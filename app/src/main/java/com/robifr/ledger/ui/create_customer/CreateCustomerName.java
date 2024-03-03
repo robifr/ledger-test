@@ -48,11 +48,8 @@ public class CreateCustomerName {
     this._fragment.fragmentBinding().name.addTextChangedListener(this._nameTextWatcher);
   }
 
-  public void setError(@NonNull String message, boolean isEnabled) {
-    Objects.requireNonNull(message);
-
+  public void setError(@Nullable String message) {
     this._fragment.fragmentBinding().nameLayout.setError(message);
-    this._fragment.fragmentBinding().nameLayout.setErrorEnabled(isEnabled);
   }
 
   private class NameTextWatcher extends EditTextWatcher {

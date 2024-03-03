@@ -27,6 +27,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.QueueSortMethod;
 import com.robifr.ledger.data.QueueSorter;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -36,6 +37,7 @@ import com.robifr.ledger.repository.ModelChangedListener;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
+import com.robifr.ledger.ui.StringResources;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +53,8 @@ public class QueueViewModel extends ViewModel {
   @NonNull private final QueueSorter _sorter = new QueueSorter();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<String>> _snackbarMessage = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+      new MutableLiveData<>();
 
   @NonNull private final MutableLiveData<List<QueueModel>> _queues = new MutableLiveData<>();
   @NonNull private final MutableLiveData<QueueSortMethod> _sortMethod = new MutableLiveData<>();
@@ -90,7 +93,7 @@ public class QueueViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<String>> snackbarMessage() {
+  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -124,7 +127,9 @@ public class QueueViewModel extends ViewModel {
       return this._queueRepository.selectAll().get();
 
     } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(new LiveDataEvent<>("Error! Unable to obtain all queues"));
+      this._snackbarMessage.setValue(
+          new LiveDataEvent<>(
+              new StringResources.Strings(R.string.text_error_unable_to_retrieve_all_queues)));
     }
 
     return new ArrayList<>();
@@ -136,13 +141,13 @@ public class QueueViewModel extends ViewModel {
     this._queueRepository
         .delete(queue)
         .thenAcceptAsync(
-            totalDeleted -> {
-              final String message =
-                  totalDeleted > 0
-                      ? "Deleted " + totalDeleted + " queue(s)"
-                      : "Error! Failed to delete queue(s)";
-
-              this._snackbarMessage.postValue(new LiveDataEvent<>(message));
+            effected -> {
+              final StringResources stringRes =
+                  effected > 0
+                      ? new StringResources.Plurals(
+                          R.plurals.args_queue_deleted, effected, effected)
+                      : new StringResources.Strings(R.string.text_error_failed_to_delete_queue);
+              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
   }
 

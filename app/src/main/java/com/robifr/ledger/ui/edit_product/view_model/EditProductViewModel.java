@@ -20,14 +20,15 @@ package com.robifr.ledger.ui.edit_product.view_model;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.create_product.view_model.CreateProductViewModel;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -56,7 +57,7 @@ public class EditProductViewModel extends CreateProductViewModel {
   public void onSave() {
     if (this._inputtedNameText.getValue() == null || this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
-          new LiveDataEvent<>(new Pair<>("Product name is required", true)));
+          new LiveDataEvent<>(new StringResources.Strings(R.string.text_product_name_is_required)));
       return;
     }
 
@@ -74,16 +75,16 @@ public class EditProductViewModel extends CreateProductViewModel {
 
   @Nullable
   public ProductModel selectProductById(@Nullable Long productId) {
-    final LiveDataEvent<String> notFoundError =
-        new LiveDataEvent<>("Error! Unable to obtain product with ID " + productId);
+    final StringResources notFoundRes =
+        new StringResources.Strings(R.string.text_error_failed_to_find_related_product);
     ProductModel product = null;
 
     try {
       product = this._productRepository.selectById(productId).get();
-      if (product == null) this._snackbarMessage.setValue(notFoundError);
+      if (product == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
 
     } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(notFoundError);
+      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
     }
 
     return product;
@@ -98,8 +99,12 @@ public class EditProductViewModel extends CreateProductViewModel {
             effected -> {
               if (effected > 0) this._editedProductId.postValue(new LiveDataEvent<>(product.id()));
 
-              this._snackbarMessage.postValue(
-                  new LiveDataEvent<>("Updated " + effected + " product(s)"));
+              final StringResources stringRes =
+                  effected > 0
+                      ? new StringResources.Plurals(
+                          R.plurals.args_product_updated, effected, effected)
+                      : new StringResources.Strings(R.string.text_error_failed_to_update_product);
+              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
   }
 

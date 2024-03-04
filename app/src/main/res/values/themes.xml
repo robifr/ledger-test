@@ -23,7 +23,7 @@
     <item name="colorSecondary">@color/selector_secondary</item>
     <item name="colorOnSecondary">@color/selector_secondary_textview</item>
     <item name="colorSurface">@color/selector_surface</item>
-    <!-- Note: Consider having a color selector for chip text color when defining `colorOnSurface`. -->
+    <!-- Consider having a color selector for chip text color when defining `colorOnSurface`. -->
     <item name="colorOnSurface">?android:attr/textColor</item>
 
     <!-- Background color. -->
@@ -47,30 +47,30 @@
     <item name="textInputStyle">@style/TextInputLayout</item>
 
     <!--
-  Ripple color.
-  Note: Each material widgets use their own ripple color (can be seen in their github repository).
-    Like `color/mtrl_btn_ripple_color` for button, don't override them because they're internal.
-    I have tried to override `color/mtrl_btn_text_btn_ripple_color` for alert dialog
-    and `InflateException` get thrown in runtime.
+        Ripple color.
 
-    Also `MaterialButton` uses `colorOnPrimary` for their ripple.
-    Of course it's inconvenience to straight override `colorOnPrimary`.
-    While its true you can override them via
-    `materialButtonStyle` -> `materialThemeOverlay` -> `colorOnPrimary` right here,
-    but there are still buttons which doesn't get overrode.
-    It's when you set a custom `style` attribute on the `MaterialButton` itself.
-    e.g. Buttons inside bottom sheet dialog uses `style/BottomSheetDialog.MaterialButton`.
+        Note: Each material widgets use their own ripple color (can be seen in their github
+          repository). Like `color/mtrl_btn_ripple_color` for button, don't override them because
+          they're internal. I have tried to override `color/mtrl_btn_text_btn_ripple_color` for
+          alert dialog and `InflateException` get thrown in runtime.
 
-    In conclusion it's better to manually set `app:rippleColor` on everything.
--->
+          Also `MaterialButton` uses `colorOnPrimary` for their ripple. Of course it's inconvenience
+          to straight override `colorOnPrimary`. While its true you can override them via
+          `materialButtonStyle` -> `materialThemeOverlay` -> `colorOnPrimary` right here,
+          but there are still buttons which doesn't get overrode.
+          It's when you set a custom `style` attribute on the `MaterialButton` itself.
+          e.g. Buttons inside bottom sheet dialog uses `style/BottomSheetDialog.MaterialButton`.
+
+          In conclusion it's better to manually set `app:rippleColor` on everything.
+    -->
     <item name="colorControlHighlight">@color/black_10</item>
 
     <!-- System status and navigation bar. -->
     <item name="android:statusBarColor">?android:attr/colorBackground</item>
     <item name="android:windowLightStatusBar">true</item>
     <!--
-      Navigation bar background color should be manually set programmatically
-      to match current background or bottom navigation.
+        Navigation bar background color should be manually set programmatically
+        to match current background or bottom navigation.
     -->
     <item name="android:windowLightNavigationBar">true</item>
 

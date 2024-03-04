@@ -25,7 +25,7 @@
     card_view:cardElevation="@dimen/cardlist_elevation">
 
   <!--
-    Note: Use constraint layout instead of linear one because we are required to ensure
+      Use constraint layout instead of linear one because we are required to ensure
       ellipsize works while having flexible width.
   -->
   <androidx.constraintlayout.widget.ConstraintLayout

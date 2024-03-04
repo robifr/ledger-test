@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity
     if (tab == null || tab.toString().equals(this.currentTabStackTag())) return true;
 
     // Note: Using `bottomNavigation.setSelectedItemId()` can often result in an infinite loop,
-    // 		even if the code placement is correct.
+    //    even if the code placement is correct.
     this._activityBinding.bottomNavigation.getMenu().findItem(item.getItemId()).setChecked(true);
     this.navigateTabStack(tab.toString());
     return false;

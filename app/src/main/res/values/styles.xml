@@ -16,6 +16,7 @@
   -->
 
 <resources>
+
   <style name="Button" parent="Widget.MaterialComponents.Button.TextButton">
     <item name="android:insetTop">0dp</item>
     <item name="android:insetBottom">0dp</item>
@@ -62,10 +63,10 @@
     <item name="android:orientation">vertical</item>
 
     <!--
-        Note: Don't use `shapeAppearance` because the dialog corner will be flattened when expanded,
-            use `android:background` attribute instead. There's no way to override them
-            because material team is strongly opinionated about this.
-            https://github.com/material-components/material-components-android/pull/437
+        Don't use `shapeAppearance` because the dialog corner will be flattened when expanded,
+        use `android:background` attribute instead. There's no way to override them
+        because material team is strongly opinionated about this.
+        https://github.com/material-components/material-components-android/pull/437
     -->
     <item name="android:background">@drawable/shape_bottomdialog</item>
     <item name="backgroundTint">?attr/colorSurface</item>

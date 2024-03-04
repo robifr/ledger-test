@@ -23,7 +23,7 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-  <!-- Note: Translation-Z used here because the list always disarranged by chips when scrolling. -->
+  <!-- Translation-Z used here because the list always disarranged by chips when scrolling. -->
   <com.google.android.material.appbar.AppBarLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

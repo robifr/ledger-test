@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2024 Robi
   ~
   ~ Ledger is free software: you can redistribute it and/or modify
@@ -16,7 +16,6 @@
   -->
 
 <resources>
-
   <style name="AppTheme.Dark" parent="AppTheme.Light">
     <!-- Branding. -->
     <item name="colorOnPrimary">@color/dark_white</item>

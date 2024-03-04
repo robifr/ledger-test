@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022-present Robi
+ * Copyright (c) 2024 Robi
  *
  * Ledger is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
-import com.robifr.ledger.ui.main.customer.view_model.CustomerViewModel;
+import com.robifr.ledger.ui.main.customer.viewmodel.CustomerViewModel;
 import java.util.List;
 import java.util.Objects;
 

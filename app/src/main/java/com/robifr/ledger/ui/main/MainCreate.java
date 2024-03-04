@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022-present Robi
+ * Copyright (c) 2024 Robi
  *
  * Ledger is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.MainDialogCreateBinding;
-import com.robifr.ledger.ui.create_customer.CreateCustomerFragment;
-import com.robifr.ledger.ui.create_product.CreateProductFragment;
-import com.robifr.ledger.ui.create_queue.CreateQueueFragment;
+import com.robifr.ledger.ui.createcustomer.CreateCustomerFragment;
+import com.robifr.ledger.ui.createproduct.CreateProductFragment;
+import com.robifr.ledger.ui.createqueue.CreateQueueFragment;
 import java.util.Objects;
 
 public class MainCreate implements View.OnClickListener {

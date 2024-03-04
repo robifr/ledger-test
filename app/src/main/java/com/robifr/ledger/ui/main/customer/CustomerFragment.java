@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022-present Robi
+ * Copyright (c) 2024 Robi
  *
  * Ledger is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.main.customer.filter.CustomerFilter;
 import com.robifr.ledger.ui.main.customer.recycler.CustomerAdapter;
-import com.robifr.ledger.ui.main.customer.view_model.CustomerViewModel;
+import com.robifr.ledger.ui.main.customer.viewmodel.CustomerViewModel;
 import java.util.Objects;
 
 public class CustomerFragment extends Fragment {

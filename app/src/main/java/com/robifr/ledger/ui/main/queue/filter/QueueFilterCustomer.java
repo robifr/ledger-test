@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022-present Robi
+ * Copyright (c) 2024 Robi
  *
  * Ledger is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.databinding.QueueDialogFilterBinding;
 import com.robifr.ledger.ui.BackStack;
-import com.robifr.ledger.ui.filter_customer.FilterCustomerFragment;
+import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import com.robifr.ledger.ui.main.queue.QueueFragment;
 import java.util.ArrayList;
 import java.util.List;

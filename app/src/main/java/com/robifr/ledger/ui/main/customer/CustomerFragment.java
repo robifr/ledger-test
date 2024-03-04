@@ -19,10 +19,12 @@ package com.robifr.ledger.ui.main.customer;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,12 +33,14 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.CustomerFilters;
 import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
+import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.main.customer.filter.CustomerFilter;
 import com.robifr.ledger.ui.main.customer.recycler.CustomerAdapter;
 import com.robifr.ledger.ui.main.customer.viewmodel.CustomerViewModel;
+import com.robifr.ledger.ui.main.search.SearchFragment;
 import java.util.Objects;
 
-public class CustomerFragment extends Fragment {
+public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private CustomerSort _sort;
   @Nullable private CustomerFilter _filter;
@@ -74,6 +78,7 @@ public class CustomerFragment extends Fragment {
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_main);
     this._fragmentBinding.toolbar.setNavigationIcon(null);
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.app_name));
+    this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
     this._fragmentBinding.sortByChip.setOnClickListener(chip -> this._sort.openDialog());
     this._fragmentBinding.filtersChip.setOnClickListener(chip -> this._filter.openDialog());
     this._fragmentBinding.recyclerView.setLayoutManager(
@@ -85,6 +90,31 @@ public class CustomerFragment extends Fragment {
     this._customerViewModel.onSortMethodChanged(
         new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
     this._customerViewModel.filterView().onFiltersChanged(CustomerFilters.toBuilder().build());
+  }
+
+  @Override
+  public boolean onMenuItemClick(@NonNull MenuItem item) {
+    Objects.requireNonNull(item);
+
+    return switch (item.getItemId()) {
+      case R.id.search -> {
+        final SearchFragment searchFragment =
+            (SearchFragment)
+                new SearchFragment.Factory()
+                    .instantiate(
+                        this.requireContext().getClassLoader(), SearchFragment.class.getName());
+
+        if (this.requireActivity() instanceof BackStack navigation
+            && navigation.currentTabStackTag() != null) {
+          navigation.pushFragmentStack(
+              navigation.currentTabStackTag(), searchFragment, SearchFragment.class.toString());
+        }
+
+        yield true;
+      }
+
+      default -> false;
+    };
   }
 
   @NonNull

@@ -18,56 +18,66 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/cardlist_margin"
+    android:layout_marginTop="@dimen/cardlist_margin"
+    android:layout_marginEnd="@dimen/cardlist_margin"
+    android:layout_marginBottom="@dimen/cardlist_margin"
+    android:checkable="true"
+    android:clickable="true"
+    app:checkedIcon="@drawable/icon_check"
     app:rippleColor="?android:attr/colorControlHighlight"
     card_view:cardCornerRadius="@dimen/cardlist_corner_radius"
     card_view:cardElevation="@dimen/cardlist_elevation">
 
-  <!--
-      Use constraint layout instead of linear one because we are required to ensure
-      ellipsize works while having flexible width.
-  -->
   <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/searchable_narrow_constraintlayout"
-      android:layout_width="wrap_content"
+      android:layout_width="@dimen/cardlist_packed_width"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:paddingStart="@dimen/cardlist_padding"
+      android:paddingTop="@dimen/cardlist_padding"
+      android:paddingEnd="@dimen/cardlist_padding"
+      android:paddingBottom="@dimen/cardlist_padding">
 
     <include
+        android:id="@+id/image"
         layout="@layout/reusable_image_shapeable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/name"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- TODO: Make every cards have equal height, especially when the text multilined. -->
-    <!--		<TextView android:id="@+id/text"-->
-    <!--			android:layout_width="0dp"-->
-    <!--			android:layout_height="wrap_content"-->
-    <!--			android:paddingTop="5dp"-->
-    <!--			android:paddingStart="@dimen/cardlist_padding"-->
-    <!--			android:paddingEnd="@dimen/cardlist_padding"-->
-    <!--			android:textStyle="bold"-->
-    <!--			android:textSize="@dimen/text_smallmedium"-->
-    <!--			android:maxLines="2"-->
-    <!--			android:ellipsize="end"-->
-    <!--			app:layout_constraintTop_toBottomOf="@id/constraintLayout"-->
-    <!--			app:layout_constraintStart_toStartOf="parent"-->
-    <!--			app:layout_constraintEnd_toEndOf="parent"/>-->
-
     <TextView
-        android:id="@+id/description"
+        android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/cardlist_padding"
-        android:paddingEnd="@dimen/cardlist_padding"
-        android:paddingBottom="@dimen/cardlist_padding"
+        android:layout_marginStart="@dimen/cardlist_padding"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:textSize="@dimen/text_smallmedium"
+        android:textStyle="bold"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/balance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/balance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="@dimen/text_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text" />
+        app:layout_constraintStart_toStartOf="@id/name"
+        app:layout_constraintTop_toBottomOf="@id/name" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

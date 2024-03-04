@@ -19,10 +19,12 @@ package com.robifr.ledger.ui.main.product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,12 +33,14 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.ProductFilters;
 import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
+import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.main.product.filter.ProductFilter;
 import com.robifr.ledger.ui.main.product.recycler.ProductAdapter;
 import com.robifr.ledger.ui.main.product.viewmodel.ProductViewModel;
+import com.robifr.ledger.ui.main.search.SearchFragment;
 import java.util.Objects;
 
-public class ProductFragment extends Fragment {
+public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private ProductSort _sort;
   @Nullable private ProductFilter _filter;
@@ -74,6 +78,7 @@ public class ProductFragment extends Fragment {
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_main);
     this._fragmentBinding.toolbar.setNavigationIcon(null);
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.app_name));
+    this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
     this._fragmentBinding.sortByChip.setOnClickListener(chip -> this._sort.openDialog());
     this._fragmentBinding.filtersChip.setOnClickListener(chip -> this._filter.openDialog());
     this._fragmentBinding.recyclerView.setLayoutManager(
@@ -85,6 +90,31 @@ public class ProductFragment extends Fragment {
     this._productViewModel.onSortMethodChanged(
         new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
     this._productViewModel.filterView().onFiltersChanged(ProductFilters.toBuilder().build());
+  }
+
+  @Override
+  public boolean onMenuItemClick(@NonNull MenuItem item) {
+    Objects.requireNonNull(item);
+
+    return switch (item.getItemId()) {
+      case R.id.search -> {
+        final SearchFragment searchFragment =
+            (SearchFragment)
+                new SearchFragment.Factory()
+                    .instantiate(
+                        this.requireContext().getClassLoader(), SearchFragment.class.getName());
+
+        if (this.requireActivity() instanceof BackStack navigation
+            && navigation.currentTabStackTag() != null) {
+          navigation.pushFragmentStack(
+              navigation.currentTabStackTag(), searchFragment, SearchFragment.class.toString());
+        }
+
+        yield true;
+      }
+
+      default -> false;
+    };
   }
 
   @NonNull

@@ -19,10 +19,12 @@ package com.robifr.ledger.ui.main.queue;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
@@ -32,13 +34,15 @@ import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.data.QueueSortMethod;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
+import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.main.queue.filter.QueueFilter;
 import com.robifr.ledger.ui.main.queue.recycler.QueueAdapter;
 import com.robifr.ledger.ui.main.queue.viewmodel.QueueViewModel;
+import com.robifr.ledger.ui.main.search.SearchFragment;
 import java.util.Objects;
 import java.util.Set;
 
-public class QueueFragment extends Fragment {
+public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private QueueSort _sort;
   @Nullable private QueueFilter _filter;
@@ -78,6 +82,7 @@ public class QueueFragment extends Fragment {
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_main);
     this._fragmentBinding.toolbar.setNavigationIcon(null);
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.app_name));
+    this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
     this._fragmentBinding.sortByChip.setOnClickListener(chip -> this._sort.openDialog());
     this._fragmentBinding.filtersChip.setOnClickListener(chip -> this._filter.openDialog());
     this._fragmentBinding.recyclerView.setLayoutManager(
@@ -97,6 +102,31 @@ public class QueueFragment extends Fragment {
     this._queueViewModel.onSortMethodChanged(
         new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
     this._queueViewModel.filterView().onFiltersChanged(initialFilters);
+  }
+
+  @Override
+  public boolean onMenuItemClick(@NonNull MenuItem item) {
+    Objects.requireNonNull(item);
+
+    return switch (item.getItemId()) {
+      case R.id.search -> {
+        final SearchFragment searchFragment =
+            (SearchFragment)
+                new SearchFragment.Factory()
+                    .instantiate(
+                        this.requireContext().getClassLoader(), SearchFragment.class.getName());
+
+        if (this.requireActivity() instanceof BackStack navigation
+            && navigation.currentTabStackTag() != null) {
+          navigation.pushFragmentStack(
+              navigation.currentTabStackTag(), searchFragment, SearchFragment.class.toString());
+        }
+
+        yield true;
+      }
+
+      default -> false;
+    };
   }
 
   @NonNull

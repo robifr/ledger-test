@@ -35,9 +35,7 @@ public class ProductOrderCardComponent {
 
   public ProductOrderCardComponent(
       @NonNull Context context, @NonNull ProductOrderCardBinding binding) {
-    Objects.requireNonNull(context);
-
-    this._context = context.getApplicationContext();
+    this._context = Objects.requireNonNull(context);
     this._binding = Objects.requireNonNull(binding);
 
     this._binding.productImage.shapeableImage.setShapeAppearanceModel(
@@ -58,12 +56,12 @@ public class ProductOrderCardComponent {
   }
 
   private void _setProductName(@Nullable String productName) {
-    final boolean shouldViewEnabled = productName != null;
+    final boolean isNameExists = productName != null;
     final String name =
-        shouldViewEnabled ? productName : this._context.getString(R.string.symbol_notavailable);
+        isNameExists ? productName : this._context.getString(R.string.symbol_notavailable);
 
     this._binding.productName.setText(name);
-    this._binding.productName.setEnabled(shouldViewEnabled);
+    this._binding.productName.setEnabled(isNameExists);
     this._binding.productImage.text.setText(
         name.trim().substring(0, Math.min(1, name.trim().length())));
   }

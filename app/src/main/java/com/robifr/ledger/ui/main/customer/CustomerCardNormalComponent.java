@@ -34,9 +34,7 @@ public class CustomerCardNormalComponent {
 
   public CustomerCardNormalComponent(
       @NonNull Context context, @NonNull CustomerCardNormalBinding binding) {
-    Objects.requireNonNull(context);
-
-    this._context = context.getApplicationContext();
+    this._context = Objects.requireNonNull(context);
     this._binding = Objects.requireNonNull(binding);
 
     this._binding.image.shapeableImage.setShapeAppearanceModel(
@@ -57,9 +55,12 @@ public class CustomerCardNormalComponent {
   }
 
   private void _setId(@Nullable Long id) {
+    final boolean isIdExists = id != null;
     final String customerId =
-        id != null ? id.toString() : this._context.getString(R.string.symbol_notavailable);
+        isIdExists ? id.toString() : this._context.getString(R.string.symbol_notavailable);
+
     this._binding.uniqueId.setText(customerId);
+    this._binding.uniqueId.setEnabled(isIdExists);
   }
 
   private void _setName(@NonNull String name) {

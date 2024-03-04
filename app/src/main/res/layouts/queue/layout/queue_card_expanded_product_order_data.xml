@@ -37,6 +37,7 @@
         android:id="@+id/productPrice"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:enabled="false"
         android:textSize="@dimen/text_smallmedium" />
   </LinearLayout>
 

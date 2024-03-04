@@ -39,9 +39,7 @@ public class QueueCardNormalComponent {
 
   public QueueCardNormalComponent(
       @NonNull Context context, @NonNull QueueCardNormalBinding binding) {
-    Objects.requireNonNull(context);
-
-    this._context = context.getApplicationContext();
+    this._context = Objects.requireNonNull(context);
     this._binding = Objects.requireNonNull(binding);
 
     this._binding.customerImage.shapeableImage.setShapeAppearanceModel(
@@ -63,9 +61,12 @@ public class QueueCardNormalComponent {
   }
 
   private void _setId(@Nullable Long id) {
+    final boolean isIdExists = id != null;
     final String queueId =
         id != null ? id.toString() : this._context.getString(R.string.symbol_notavailable);
+
     this._binding.uniqueId.setText(queueId);
+    this._binding.uniqueId.setEnabled(isIdExists);
   }
 
   private void _setDate(@NonNull ZonedDateTime date) {
@@ -92,18 +93,16 @@ public class QueueCardNormalComponent {
   }
 
   private void _setCustomer(@Nullable CustomerModel customer) {
-    final boolean isCustomerNameEnabled = customer != null;
+    final boolean isCustomerExists = customer != null;
     final String customerName =
-        isCustomerNameEnabled
-            ? customer.name()
-            : this._context.getString(R.string.symbol_notavailable);
+        isCustomerExists ? customer.name() : this._context.getString(R.string.symbol_notavailable);
     final String customerImageText =
         customer != null
             ? customer.name().trim().substring(0, Math.min(1, customer.name().trim().length()))
             : null;
 
     this._binding.customerName.setText(customerName);
-    this._binding.customerName.setEnabled(isCustomerNameEnabled);
+    this._binding.customerName.setEnabled(isCustomerExists);
     this._binding.customerImage.text.setText(customerImageText);
   }
 }

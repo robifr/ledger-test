@@ -46,9 +46,7 @@ public class QueueCardExpandedComponent {
 
   public QueueCardExpandedComponent(
       @NonNull Context context, @NonNull QueueCardExpandedBinding binding) {
-    Objects.requireNonNull(context);
-
-    this._context = context.getApplicationContext();
+    this._context = Objects.requireNonNull(context);
     this._binding = Objects.requireNonNull(binding);
 
     this._binding.customerImage.shapeableImage.setShapeAppearanceModel(
@@ -99,9 +97,12 @@ public class QueueCardExpandedComponent {
   }
 
   private void _setId(@Nullable Long id) {
+    final boolean isIdExists = id != null;
     final String queueId =
-        id != null ? id.toString() : this._context.getString(R.string.symbol_notavailable);
+        isIdExists ? id.toString() : this._context.getString(R.string.symbol_notavailable);
+
     this._binding.uniqueId.setText(queueId);
+    this._binding.uniqueId.setEnabled(isIdExists);
   }
 
   private void _setDate(@NonNull ZonedDateTime date) {
@@ -199,10 +200,7 @@ public class QueueCardExpandedComponent {
           QueueCardExpandedProductOrderDataBinding.inflate(LayoutInflater.from(this._context));
       final boolean isProductNameExists = productOrder.productName() != null;
       final boolean isProductPriceExists = productOrder.productPrice() != null;
-      final int productTextColor =
-          isProductNameExists && isProductPriceExists
-              ? this._context.getColor(R.color.text_enabled)
-              : this._context.getColor(R.color.text_disabled);
+      final boolean isProductExists = isProductNameExists && isProductPriceExists;
 
       final String productName =
           isProductNameExists
@@ -217,9 +215,9 @@ public class QueueCardExpandedComponent {
       final String totalPrice = CurrencyFormat.format(productOrder.totalPrice(), "id", "ID");
 
       dataRowBinding.productName.setText(productName);
-      dataRowBinding.productName.setTextColor(productTextColor);
+      dataRowBinding.productName.setEnabled(isProductExists);
       dataRowBinding.productPrice.setText(productPrice);
-      dataRowBinding.productPrice.setTextColor(productTextColor);
+      dataRowBinding.productPrice.setEnabled(isProductExists);
       dataRowBinding.quantity.setText(quantity);
       dataRowBinding.totalPrice.setText(totalPrice);
       this._binding.productOrderTable.addView(dataRowBinding.getRoot());

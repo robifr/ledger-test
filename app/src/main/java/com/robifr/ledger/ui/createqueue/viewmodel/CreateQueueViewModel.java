@@ -411,7 +411,7 @@ public class CreateQueueViewModel extends ViewModel {
 
               final StringResources stringRes =
                   id != 0L
-                      ? new StringResources.Plurals(R.plurals.args_queue_added, 1, 1)
+                      ? new StringResources.Plurals(R.plurals.args_added_x_queue, 1, 1)
                       : new StringResources.Strings(R.string.text_error_failed_to_add_queue);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });

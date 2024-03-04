@@ -105,7 +105,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_customer_updated, effected, effected)
+                          R.plurals.args_updated_x_customer, effected, effected)
                       : new StringResources.Strings(R.string.text_error_failed_to_update_customer);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });

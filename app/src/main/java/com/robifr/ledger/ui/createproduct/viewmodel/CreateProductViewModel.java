@@ -136,7 +136,7 @@ public class CreateProductViewModel extends ViewModel {
 
               final StringResources stringRes =
                   id != 0L
-                      ? new StringResources.Plurals(R.plurals.args_product_added, 1, 1)
+                      ? new StringResources.Plurals(R.plurals.args_added_x_product, 1, 1)
                       : new StringResources.Strings(R.string.text_error_failed_to_add_product);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });

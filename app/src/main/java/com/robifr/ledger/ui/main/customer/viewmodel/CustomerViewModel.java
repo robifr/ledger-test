@@ -107,7 +107,7 @@ public class CustomerViewModel extends ViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_customer_deleted, effected, effected)
+                          R.plurals.args_deleted_x_customer, effected, effected)
                       : new StringResources.Strings(R.string.text_error_failed_to_delete_customer);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });

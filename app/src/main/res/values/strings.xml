@@ -130,66 +130,67 @@
   <string name="text_withdraw_balance">Withdraw balance</string>
   <string name="text_yesterday">Yesterday</string>
 
-  <plurals name="args_customer_added">
+  <plurals name="args_added_x_customer">
     <item quantity="one">Added %d customer</item>
     <item quantity="other">Added %d customers</item>
   </plurals>
-  <plurals name="args_customer_deleted">
+  <plurals name="args_deleted_x_customer">
     <item quantity="one">Deleted %d customer</item>
     <item quantity="other">Deleted %d customers</item>
   </plurals>
-  <plurals name="args_customer_updated">
+  <plurals name="args_updated_x_customer">
     <item quantity="one">Updated %d customer</item>
     <item quantity="other">Updated %d customers</item>
   </plurals>
-  <plurals name="args_product_added">
+
+  <plurals name="args_added_x_product">
     <item quantity="one">Added %d product</item>
     <item quantity="other">Added %d products</item>
   </plurals>
-  <plurals name="args_product_deleted">
+  <plurals name="args_deleted_x_product">
     <item quantity="one">Deleted %d product</item>
     <item quantity="other">Deleted %d products</item>
   </plurals>
-  <plurals name="args_product_updated">
+  <plurals name="args_updated_x_product">
     <item quantity="one">Updated %d product</item>
     <item quantity="other">Updated %d products</item>
   </plurals>
-  <plurals name="args_queue_added">
+
+  <plurals name="args_added_x_queue">
     <item quantity="one">Added %d queue</item>
     <item quantity="other">Added %d queues</item>
   </plurals>
-  <plurals name="args_queue_deleted">
+  <plurals name="args_deleted_x_queue">
     <item quantity="one">Deleted %d queue</item>
     <item quantity="other">Deleted %d queues</item>
   </plurals>
-  <plurals name="args_queue_updated">
+  <plurals name="args_updated_x_queue">
     <item quantity="one">Updated %d queue</item>
     <item quantity="other">Updated %d queues</item>
   </plurals>
 
-  <string name="symbol_notavailable">n/a</string>
-  <string name="symbol_mdash">—</string>
+  <plurals name="args_displaying_x_queue">
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> queue]]></item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> queues]]></item>
+  </plurals>
+  <plurals name="args_displaying_x_customer">
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> customer]]></item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> customers]]></item>
+  </plurals>
+  <plurals name="args_displaying_x_product">
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> product]]></item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> products]]></item>
+  </plurals>
 
   <string name="createcustomerdialog_balanceavailable_helper">%s available</string>
 
   <string name="queuefilter_date_selecteddate_chip">%s — %s</string>
-  <plurals name="queuelist_result_title">
-    <item quantity="one"><![CDATA[Displaying <b>%d</b> queue]]></item>
-    <item quantity="other"><![CDATA[Displaying <b>%d</b> queues]]></item>
-  </plurals>
-
-  <plurals name="customerlist_result_title">
-    <item quantity="one"><![CDATA[Displaying <b>%d</b> customer]]></item>
-    <item quantity="other"><![CDATA[Displaying <b>%d</b> customers]]></item>
-  </plurals>
-
-  <plurals name="productlist_result_title">
-    <item quantity="one"><![CDATA[Displaying <b>%d</b> product]]></item>
-    <item quantity="other"><![CDATA[Displaying <b>%d</b> products]]></item>
-  </plurals>
 
   <string name="productordercard_customerbalance_title">%s\'s balance</string>
   <string name="productordercard_customerdebt_title">%s\'s debt</string>
   <string name="productordercard_discount_title">%s%% off</string>
   <string name="productordercard_productpriceandquantity_title">%s x %s</string>
+
+  <string name="symbol_notavailable">n/a</string>
+  <string name="symbol_mdash">—</string>
 </resources>

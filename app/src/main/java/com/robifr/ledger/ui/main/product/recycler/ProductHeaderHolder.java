@@ -51,7 +51,7 @@ public class ProductHeaderHolder extends RecyclerViewHolder<Optional> {
     final String text =
         this._fragment
             .getResources()
-            .getQuantityString(R.plurals.productlist_result_title, totalProducts, totalProducts);
+            .getQuantityString(R.plurals.args_displaying_x_product, totalProducts, totalProducts);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

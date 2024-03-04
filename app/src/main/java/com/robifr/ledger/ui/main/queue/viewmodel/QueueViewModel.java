@@ -145,7 +145,7 @@ public class QueueViewModel extends ViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_queue_deleted, effected, effected)
+                          R.plurals.args_deleted_x_queue, effected, effected)
                       : new StringResources.Strings(R.string.text_error_failed_to_delete_queue);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });

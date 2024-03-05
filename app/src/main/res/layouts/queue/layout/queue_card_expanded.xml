@@ -56,7 +56,7 @@
 
   <TextView
       android:id="@+id/customerName"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:ellipsize="end"
       android:maxLines="1"
@@ -65,8 +65,7 @@
       app:layout_constraintEnd_toStartOf="@id/menuButton"
       app:layout_constraintHorizontal_bias="0"
       app:layout_constraintStart_toStartOf="@id/customerNameTitle"
-      app:layout_constraintTop_toBottomOf="@id/customerNameTitle"
-      app:layout_constraintWidth_max="wrap" />
+      app:layout_constraintTop_toBottomOf="@id/customerNameTitle" />
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/menuButton"

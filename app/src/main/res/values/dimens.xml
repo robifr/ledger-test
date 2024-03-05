@@ -41,7 +41,7 @@
   <dimen name="bottomdialog_title_margin">18dp</dimen>
   <dimen name="bottomdialog_title_abovebutton_marginbottom">8dp</dimen>
 
-  <dimen name="cardlist_wide_height">90dp</dimen>
+  <dimen name="cardlist_normal_height">90dp</dimen>
   <dimen name="cardlist_padding">10dp</dimen>
   <dimen name="cardlist_margin">5dp</dimen>
   <dimen name="cardlist_corner_radius">8dp</dimen>

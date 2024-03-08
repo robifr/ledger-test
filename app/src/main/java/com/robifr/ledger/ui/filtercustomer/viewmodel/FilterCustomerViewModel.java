@@ -59,7 +59,7 @@ public class FilterCustomerViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<List<Integer>>> _removedFilteredCustomerIndexes =
       new MutableLiveData<>();
 
-  @NonNull private ArrayList<CustomerModel> _filteredCustomers = new ArrayList<>();
+  @NonNull private final ArrayList<CustomerModel> _filteredCustomers = new ArrayList<>();
 
   public FilterCustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);

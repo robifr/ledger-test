@@ -97,7 +97,7 @@ public class CreateQueueViewModel extends ViewModel {
   protected final MutableLiveData<LiveDataEvent<List<Integer>>> _updatedProductOrderIndexes =
       new MutableLiveData<>();
 
-  @NonNull protected ArrayList<ProductOrderModel> _inputtedProductOrders = new ArrayList<>();
+  @NonNull protected final ArrayList<ProductOrderModel> _inputtedProductOrders = new ArrayList<>();
 
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final ProductRepository _productRepository;

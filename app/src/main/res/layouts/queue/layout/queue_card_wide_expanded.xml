@@ -211,11 +211,11 @@
 
       <include
           android:id="@+id/productOrderHeaderRow"
-          layout="@layout/queue_card_expanded_product_order_header" />
+          layout="@layout/queue_card_wide_expanded_order_header" />
 
       <include
           android:id="@+id/productOrderTotalRow"
-          layout="@layout/queue_card_expanded_product_order_total" />
+          layout="@layout/queue_card_wide_expanded_order_total" />
     </TableLayout>
   </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
-import com.robifr.ledger.databinding.QueueCardBinding;
+import com.robifr.ledger.databinding.QueueCardWideBinding;
 import com.robifr.ledger.ui.main.queue.QueueFragment;
 import com.robifr.ledger.util.Enums;
 import java.util.List;
@@ -68,7 +68,8 @@ public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         // Defaults to `ViewType#LIST`.
       default ->
-          new QueueListHolder(this._fragment, QueueCardBinding.inflate(inflater, parent, false));
+          new QueueListHolder(
+              this._fragment, QueueCardWideBinding.inflate(inflater, parent, false));
     };
   }
 

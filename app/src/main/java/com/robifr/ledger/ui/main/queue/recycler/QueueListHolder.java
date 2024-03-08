@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.databinding.QueueCardBinding;
+import com.robifr.ledger.databinding.QueueCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.main.queue.QueueCardExpandedComponent;
 import com.robifr.ledger.ui.main.queue.QueueCardNormalComponent;
@@ -33,13 +33,13 @@ import java.util.Objects;
 public class QueueListHolder extends RecyclerViewHolder<QueueModel>
     implements View.OnClickListener {
   @NonNull private final QueueFragment _fragment;
-  @NonNull private final QueueCardBinding _cardBinding;
+  @NonNull private final QueueCardWideBinding _cardBinding;
   @NonNull private final QueueCardNormalComponent _normalCard;
   @NonNull private final QueueCardExpandedComponent _expandedCard;
   @NonNull private final QueueListMenu _menu;
   @Nullable private QueueModel _boundQueue;
 
-  public QueueListHolder(@NonNull QueueFragment fragment, @NonNull QueueCardBinding binding) {
+  public QueueListHolder(@NonNull QueueFragment fragment, @NonNull QueueCardWideBinding binding) {
     super(binding.getRoot());
     this._fragment = Objects.requireNonNull(fragment);
     this._cardBinding = Objects.requireNonNull(binding);

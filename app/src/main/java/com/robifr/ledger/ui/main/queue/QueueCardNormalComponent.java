@@ -25,7 +25,7 @@ import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.databinding.QueueCardNormalBinding;
+import com.robifr.ledger.databinding.QueueCardWideNormalBinding;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.time.ZoneId;
@@ -35,10 +35,10 @@ import java.util.Objects;
 
 public class QueueCardNormalComponent {
   @NonNull private final Context _context;
-  @NonNull private final QueueCardNormalBinding _binding;
+  @NonNull private final QueueCardWideNormalBinding _binding;
 
   public QueueCardNormalComponent(
-      @NonNull Context context, @NonNull QueueCardNormalBinding binding) {
+      @NonNull Context context, @NonNull QueueCardWideNormalBinding binding) {
     Objects.requireNonNull(context);
 
     this._context = context.getApplicationContext();

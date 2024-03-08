@@ -34,11 +34,11 @@
 
     <include
         android:id="@+id/normalCard"
-        layout="@layout/queue_card_normal" />
+        layout="@layout/queue_card_wide_normal" />
 
     <include
         android:id="@+id/expandedCard"
-        layout="@layout/queue_card_expanded"
+        layout="@layout/queue_card_wide_expanded"
         android:visibility="gone" />
   </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

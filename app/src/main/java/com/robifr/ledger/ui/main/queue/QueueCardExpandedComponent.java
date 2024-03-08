@@ -30,8 +30,8 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.databinding.QueueCardExpandedBinding;
-import com.robifr.ledger.databinding.QueueCardExpandedProductOrderDataBinding;
+import com.robifr.ledger.databinding.QueueCardWideExpandedBinding;
+import com.robifr.ledger.databinding.QueueCardWideExpandedOrderDataBinding;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.time.ZoneId;
@@ -42,10 +42,10 @@ import java.util.Objects;
 
 public class QueueCardExpandedComponent {
   @NonNull private final Context _context;
-  @NonNull private final QueueCardExpandedBinding _binding;
+  @NonNull private final QueueCardWideExpandedBinding _binding;
 
   public QueueCardExpandedComponent(
-      @NonNull Context context, @NonNull QueueCardExpandedBinding binding) {
+      @NonNull Context context, @NonNull QueueCardWideExpandedBinding binding) {
     Objects.requireNonNull(context);
 
     this._context = context.getApplicationContext();
@@ -195,8 +195,8 @@ public class QueueCardExpandedComponent {
     this._binding.productOrderTable.removeAllViews();
 
     for (ProductOrderModel productOrder : productOrders) {
-      final QueueCardExpandedProductOrderDataBinding dataRowBinding =
-          QueueCardExpandedProductOrderDataBinding.inflate(LayoutInflater.from(this._context));
+      final QueueCardWideExpandedOrderDataBinding dataRowBinding =
+          QueueCardWideExpandedOrderDataBinding.inflate(LayoutInflater.from(this._context));
       final boolean isProductNameExists = productOrder.productName() != null;
       final boolean isProductPriceExists = productOrder.productPrice() != null;
       final int productTextColor =

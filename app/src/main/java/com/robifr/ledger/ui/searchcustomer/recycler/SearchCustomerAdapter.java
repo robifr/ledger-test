@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.databinding.CustomerCardBinding;
+import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
@@ -71,7 +71,7 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
       default ->
           new SearchCustomerListHolder(
               this._fragment,
-              CustomerCardBinding.inflate(this._fragment.getLayoutInflater(), parent, false));
+              CustomerCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false));
     };
   }
 

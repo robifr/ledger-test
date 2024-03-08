@@ -32,6 +32,5 @@
 
   <include
       android:id="@+id/normalCard"
-      layout="@layout/customer_card_normal"
-      android:visibility="visible" />
+      layout="@layout/customer_card_wide_normal" />
 </com.google.android.material.card.MaterialCardView>

@@ -21,12 +21,12 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.databinding.CustomerCardBinding;
+import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.createcustomer.CreateCustomerFragment;
-import com.robifr.ledger.ui.main.customer.CustomerCardNormalComponent;
+import com.robifr.ledger.ui.main.customer.CustomerCardWideNormalComponent;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import java.util.List;
 import java.util.Objects;
@@ -36,8 +36,8 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
     implements View.OnClickListener {
   @NonNull private final SelectCustomerFragment _fragment;
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
-  @NonNull private final CustomerCardBinding _selectedCardBinding;
-  @NonNull private final CustomerCardNormalComponent _selectedNormalCard;
+  @NonNull private final CustomerCardWideBinding _selectedCardBinding;
+  @NonNull private final CustomerCardWideNormalComponent _selectedNormalCard;
 
   public SelectCustomerHeaderHolder(
       @NonNull SelectCustomerFragment fragment, @NonNull ListableListSelectedItemBinding binding) {
@@ -45,10 +45,10 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
     this._fragment = Objects.requireNonNull(fragment);
     this._headerBinding = Objects.requireNonNull(binding);
     this._selectedCardBinding =
-        CustomerCardBinding.inflate(
+        CustomerCardWideBinding.inflate(
             this._fragment.getLayoutInflater(), this._headerBinding.selectedItemContainer, false);
     this._selectedNormalCard =
-        new CustomerCardNormalComponent(
+        new CustomerCardWideNormalComponent(
             this._fragment.requireContext(), this._selectedCardBinding.normalCard);
 
     this._headerBinding.selectedItemTitle.setText(

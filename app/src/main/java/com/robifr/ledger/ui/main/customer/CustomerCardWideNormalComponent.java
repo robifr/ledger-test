@@ -23,20 +23,18 @@ import androidx.annotation.Nullable;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.databinding.CustomerCardNormalBinding;
+import com.robifr.ledger.databinding.CustomerCardWideNormalBinding;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class CustomerCardNormalComponent {
+public class CustomerCardWideNormalComponent {
   @NonNull private final Context _context;
-  @NonNull private final CustomerCardNormalBinding _binding;
+  @NonNull private final CustomerCardWideNormalBinding _binding;
 
-  public CustomerCardNormalComponent(
-      @NonNull Context context, @NonNull CustomerCardNormalBinding binding) {
-    Objects.requireNonNull(context);
-
-    this._context = context.getApplicationContext();
+  public CustomerCardWideNormalComponent(
+      @NonNull Context context, @NonNull CustomerCardWideNormalBinding binding) {
+    this._context = Objects.requireNonNull(context);
     this._binding = Objects.requireNonNull(binding);
 
     this._binding.image.shapeableImage.setShapeAppearanceModel(

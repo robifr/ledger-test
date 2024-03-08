@@ -22,26 +22,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.databinding.CustomerCardBinding;
+import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.main.customer.CustomerCardNormalComponent;
+import com.robifr.ledger.ui.main.customer.CustomerCardWideNormalComponent;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import java.util.Objects;
 
 public class SelectCustomerListHolder extends RecyclerViewHolder<CustomerModel>
     implements View.OnClickListener {
   @NonNull private final SelectCustomerFragment _fragment;
-  @NonNull private final CustomerCardBinding _cardBinding;
-  @NonNull private final CustomerCardNormalComponent _normalCard;
+  @NonNull private final CustomerCardWideBinding _cardBinding;
+  @NonNull private final CustomerCardWideNormalComponent _normalCard;
   @Nullable private CustomerModel _boundCustomer;
 
   public SelectCustomerListHolder(
-      @NonNull SelectCustomerFragment fragment, @NonNull CustomerCardBinding binding) {
+      @NonNull SelectCustomerFragment fragment, @NonNull CustomerCardWideBinding binding) {
     super(binding.getRoot());
     this._fragment = Objects.requireNonNull(fragment);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new CustomerCardNormalComponent(
+        new CustomerCardWideNormalComponent(
             this._fragment.requireContext(), this._cardBinding.normalCard);
 
     this._cardBinding.cardView.setOnClickListener(this);

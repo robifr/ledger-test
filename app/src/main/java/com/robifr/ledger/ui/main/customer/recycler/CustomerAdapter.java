@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.databinding.CustomerCardBinding;
+import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.main.customer.CustomerFragment;
@@ -70,7 +70,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
         // Defaults to `ViewType#LIST`.
       default ->
           new CustomerListHolder(
-              this._fragment, CustomerCardBinding.inflate(inflater, parent, false));
+              this._fragment, CustomerCardWideBinding.inflate(inflater, parent, false));
     };
   }
 

@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
-import com.robifr.ledger.databinding.ProductCardBinding;
+import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.createproduct.CreateProductFragment;
@@ -36,7 +36,7 @@ public class SelectProductHeaderHolder extends RecyclerViewHolder<Optional<Produ
     implements View.OnClickListener {
   @NonNull private final SelectProductFragment _fragment;
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
-  @NonNull private final ProductCardBinding _selectedCardBinding;
+  @NonNull private final ProductCardWideBinding _selectedCardBinding;
   @NonNull private final ProductCardNormalComponent _selectedNormalCard;
 
   public SelectProductHeaderHolder(
@@ -45,7 +45,7 @@ public class SelectProductHeaderHolder extends RecyclerViewHolder<Optional<Produ
     this._fragment = Objects.requireNonNull(fragment);
     this._headerBinding = Objects.requireNonNull(binding);
     this._selectedCardBinding =
-        ProductCardBinding.inflate(
+        ProductCardWideBinding.inflate(
             this._fragment.getLayoutInflater(), this._headerBinding.selectedItemContainer, false);
     this._selectedNormalCard =
         new ProductCardNormalComponent(

@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
-import com.robifr.ledger.databinding.ProductCardBinding;
+import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.main.product.ProductFragment;
 import com.robifr.ledger.util.Enums;
 import java.util.List;
@@ -69,7 +69,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         // Defaults to `ViewType#LIST`.
       default ->
           new ProductListHolder(
-              this._fragment, ProductCardBinding.inflate(inflater, parent, false));
+              this._fragment, ProductCardWideBinding.inflate(inflater, parent, false));
     };
   }
 

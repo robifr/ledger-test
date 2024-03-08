@@ -37,6 +37,6 @@
 
     <include
         android:id="@+id/normalCard"
-        layout="@layout/product_card_normal" />
+        layout="@layout/product_card_wide_normal" />
   </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

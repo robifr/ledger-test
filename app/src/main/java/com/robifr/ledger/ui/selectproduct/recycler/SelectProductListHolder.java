@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
-import com.robifr.ledger.databinding.ProductCardBinding;
+import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.main.product.ProductCardNormalComponent;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
@@ -31,12 +31,12 @@ import java.util.Objects;
 public class SelectProductListHolder extends RecyclerViewHolder<ProductModel>
     implements View.OnClickListener {
   @NonNull private final SelectProductFragment _fragment;
-  @NonNull private final ProductCardBinding _cardBinding;
+  @NonNull private final ProductCardWideBinding _cardBinding;
   @NonNull private final ProductCardNormalComponent _normalCard;
   @Nullable private ProductModel _boundProduct;
 
   public SelectProductListHolder(
-      @NonNull SelectProductFragment fragment, @NonNull ProductCardBinding binding) {
+      @NonNull SelectProductFragment fragment, @NonNull ProductCardWideBinding binding) {
     super(binding.getRoot());
     this._fragment = Objects.requireNonNull(fragment);
     this._cardBinding = Objects.requireNonNull(binding);

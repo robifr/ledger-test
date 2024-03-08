@@ -23,17 +23,17 @@ import androidx.annotation.Nullable;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
-import com.robifr.ledger.databinding.ProductCardNormalBinding;
+import com.robifr.ledger.databinding.ProductCardWideNormalBinding;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ProductCardNormalComponent {
   @NonNull private final Context _context;
-  @NonNull private final ProductCardNormalBinding _binding;
+  @NonNull private final ProductCardWideNormalBinding _binding;
 
   public ProductCardNormalComponent(
-      @NonNull Context context, @NonNull ProductCardNormalBinding binding) {
+      @NonNull Context context, @NonNull ProductCardWideNormalBinding binding) {
     Objects.requireNonNull(context);
 
     this._context = context.getApplicationContext();

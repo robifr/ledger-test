@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
-import com.robifr.ledger.databinding.ProductCardBinding;
+import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
 import com.robifr.ledger.util.Enums;
@@ -71,7 +71,7 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
       default ->
           new SearchProductListHolder(
               this._fragment,
-              ProductCardBinding.inflate(this._fragment.getLayoutInflater(), parent, false));
+              ProductCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false));
     };
   }
 

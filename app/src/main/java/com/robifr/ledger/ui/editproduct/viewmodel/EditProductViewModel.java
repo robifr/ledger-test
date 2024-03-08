@@ -102,7 +102,7 @@ public class EditProductViewModel extends CreateProductViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_product_updated, effected, effected)
+                          R.plurals.args_updated_x_product, effected, effected)
                       : new StringResources.Strings(R.string.text_error_failed_to_update_product);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });

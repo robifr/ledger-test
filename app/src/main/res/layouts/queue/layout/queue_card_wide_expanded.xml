@@ -46,8 +46,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="10dp"
+      android:enabled="false"
       android:text="@string/text_customer"
-      android:textColor="@color/text_disabled"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintBottom_toTopOf="@id/customerName"
       app:layout_constraintStart_toEndOf="@id/customerImage"
@@ -56,7 +56,7 @@
 
   <TextView
       android:id="@+id/customerName"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:ellipsize="end"
       android:maxLines="1"
@@ -65,8 +65,7 @@
       app:layout_constraintEnd_toStartOf="@id/menuButton"
       app:layout_constraintHorizontal_bias="0"
       app:layout_constraintStart_toStartOf="@id/customerNameTitle"
-      app:layout_constraintTop_toBottomOf="@id/customerNameTitle"
-      app:layout_constraintWidth_max="wrap" />
+      app:layout_constraintTop_toBottomOf="@id/customerNameTitle" />
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/menuButton"
@@ -106,8 +105,8 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/cardlist_padding"
       android:layout_marginTop="12dp"
+      android:enabled="false"
       android:text="@string/text_queue_id"
-      android:textColor="@color/text_disabled"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintStart_toEndOf="@id/coloredSideline"
       app:layout_constraintTop_toBottomOf="@id/dividerLineForCustomer"
@@ -125,8 +124,8 @@
       android:id="@+id/dateTitle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:enabled="false"
       android:text="@string/text_date"
-      android:textColor="@color/text_disabled"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintBottom_toBottomOf="@id/uniqueIdTitle"
       app:layout_constraintStart_toEndOf="@id/uniqueIdTitle"
@@ -146,8 +145,8 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="@dimen/cardlist_padding"
+      android:enabled="false"
       android:text="@string/text_status"
-      android:textColor="@color/text_disabled"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintBottom_toBottomOf="@id/uniqueIdTitle"
       app:layout_constraintEnd_toEndOf="parent"
@@ -175,8 +174,8 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="12dp"
+      android:enabled="false"
       android:text="@string/text_payment_method"
-      android:textColor="@color/text_disabled"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintStart_toStartOf="@id/uniqueId"
       app:layout_constraintTop_toBottomOf="@id/uniqueId" />

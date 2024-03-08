@@ -23,7 +23,7 @@ import androidx.annotation.PluralsRes;
 import androidx.annotation.StringRes;
 import java.util.Objects;
 
-public interface StringResources {
+public sealed interface StringResources permits StringResources.Strings, StringResources.Plurals {
   @NonNull
   public static String stringOf(@NonNull Context context, @NonNull StringResources resources) {
     Objects.requireNonNull(context);

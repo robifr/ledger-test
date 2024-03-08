@@ -30,13 +30,7 @@
     card_view:cardCornerRadius="@dimen/cardlist_corner_radius"
     card_view:cardElevation="@dimen/cardlist_elevation">
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical">
-
-    <include
-        android:id="@+id/normalCard"
-        layout="@layout/product_card_wide_normal" />
-  </LinearLayout>
+  <include
+      android:id="@+id/normalCard"
+      layout="@layout/product_card_wide_normal" />
 </com.google.android.material.card.MaterialCardView>

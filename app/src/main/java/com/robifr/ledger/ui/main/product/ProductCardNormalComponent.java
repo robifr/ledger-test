@@ -56,9 +56,12 @@ public class ProductCardNormalComponent {
   }
 
   private void _setId(@Nullable Long id) {
+    final boolean isIdExists = id != null;
     final String productId =
-        id != null ? id.toString() : this._context.getString(R.string.symbol_notavailable);
+        isIdExists ? id.toString() : this._context.getString(R.string.symbol_notavailable);
+
     this._binding.uniqueId.setText(productId);
+    this._binding.uniqueId.setEnabled(isIdExists);
   }
 
   private void _setName(@NonNull String name) {

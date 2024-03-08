@@ -51,7 +51,7 @@ public class QueueHeaderHolder extends RecyclerViewHolder<Optional> {
     final String text =
         this._fragment
             .getResources()
-            .getQuantityString(R.plurals.queuelist_result_title, totalQueues, totalQueues);
+            .getQuantityString(R.plurals.args_displaying_x_queue, totalQueues, totalQueues);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

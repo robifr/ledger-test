@@ -24,6 +24,10 @@ import androidx.room.Fts4;
 import androidx.room.PrimaryKey;
 import java.util.Objects;
 
+/**
+ * @implNote Room library isn't yet support Java record.
+ * @noinspection ClassCanBeRecord
+ */
 @Fts4
 @Entity(tableName = "product_fts")
 public class ProductFtsModel {

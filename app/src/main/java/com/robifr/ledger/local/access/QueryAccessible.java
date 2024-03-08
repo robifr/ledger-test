@@ -26,6 +26,7 @@ import java.util.List;
 /**
  * @implNote Every method with ID as a parameter are using an object instead of its primitive type.
  *     So that we can easily query a foreign-key (nullable). Like {@link QueueModel#customerId()}.
+ * @noinspection EmptyMethod
  */
 interface QueryAccessible<M extends Model> {
   /**

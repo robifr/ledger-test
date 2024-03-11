@@ -58,6 +58,15 @@ public class Compats {
         0);
   }
 
+  public static void hideKeyboard(@NonNull Context context, @NonNull View focusedView) {
+    Objects.requireNonNull(context);
+    Objects.requireNonNull(focusedView);
+
+    final InputMethodManager inputManager =
+        (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+    inputManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+  }
+
   @Nullable
   public static <T extends Parcelable> T parcelableOf(
       @NonNull Bundle bundle, @NonNull String key, @NonNull Class<T> cls) {

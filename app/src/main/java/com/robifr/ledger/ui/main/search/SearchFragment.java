@@ -156,8 +156,11 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
   }
 
   public void finish() {
+    Objects.requireNonNull(this._fragmentBinding);
+
     if (this.requireActivity() instanceof BackStack navigation
         && navigation.currentTabStackTag() != null) {
+      Compats.hideKeyboard(this.requireContext(), this._fragmentBinding.seachView);
       this.requireActivity().getWindow().setStatusBarColor(this._normalStatusBarColor);
       navigation.popFragmentStack(navigation.currentTabStackTag());
     }

@@ -26,7 +26,7 @@
     android:checkable="true"
     app:checkedIcon="@null"
     app:rippleColor="?android:attr/colorControlHighlight"
-    card_view:cardCornerRadius="12dp"
+    card_view:cardCornerRadius="@dimen/cardlist_corner_radius"
     card_view:cardElevation="@dimen/cardlist_elevation">
 
   <androidx.constraintlayout.widget.ConstraintLayout

@@ -41,7 +41,7 @@
       android:minWidth="0dp"
       android:minHeight="0dp"
       android:padding="8dp"
-      app:cornerRadius="24dp"
+      app:cornerRadius="50dp"
       app:icon="@drawable/icon_arrow_forward"
       app:iconPadding="0dp"
       app:layout_constraintEnd_toEndOf="parent"

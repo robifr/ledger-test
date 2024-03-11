@@ -141,7 +141,7 @@
           android:tag="CASH"
           android:text="@string/text_cash"
           app:backgroundTint="@color/surface"
-          app:cornerRadius="12dp"
+          app:cornerRadius="@dimen/cardlist_corner_radius"
           app:iconPadding="15dp"
           app:rippleColor="?android:attr/colorControlHighlight" />
 
@@ -160,7 +160,7 @@
           android:tag="ACCOUNT_BALANCE"
           android:text="@string/text_account_balance"
           app:backgroundTint="@color/surface"
-          app:cornerRadius="12dp"
+          app:cornerRadius="@dimen/cardlist_corner_radius"
           app:iconPadding="15dp"
           app:rippleColor="?android:attr/colorControlHighlight" />
 

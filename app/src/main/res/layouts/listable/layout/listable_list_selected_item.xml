@@ -74,7 +74,7 @@
       android:textColor="?attr/colorPrimary"
       android:textSize="@dimen/text_smallmedium"
       android:textStyle="bold"
-      app:cornerRadius="12dp"
+      app:cornerRadius="@dimen/cardlist_corner_radius"
       app:icon="@drawable/icon_add_20"
       app:iconPadding="5dp"
       app:iconTint="?attr/colorPrimary"

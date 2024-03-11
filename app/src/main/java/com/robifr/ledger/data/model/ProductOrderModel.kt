@@ -115,7 +115,7 @@ data class ProductOrderModel(
         0.toBigDecimal() // Prevent zero division.
     else
         (this.discount.toBigDecimal() * 100.toBigDecimal())
-            .divide(totalPriceWithoutDiscount, 2, RoundingMode.HALF_UP)
+            .divide(totalPriceWithoutDiscount, 2, RoundingMode.UP)
             .stripTrailingZeros()
   }
 

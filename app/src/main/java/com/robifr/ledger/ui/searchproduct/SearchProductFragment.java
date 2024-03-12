@@ -36,7 +36,6 @@ import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.searchproduct.recycler.SearchProductAdapter;
 import com.robifr.ledger.ui.searchproduct.viewmodel.SearchProductViewModel;
-import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import com.robifr.ledger.util.Compats;
 import java.util.Objects;
 
@@ -161,7 +160,7 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
       Objects.requireNonNull(classLoader);
       Objects.requireNonNull(className);
 
-      return (className.equals(SelectProductFragment.class.getName()))
+      return (className.equals(SearchProductFragment.class.getName()))
           ? new SearchProductFragment()
           : super.instantiate(classLoader, className);
     }

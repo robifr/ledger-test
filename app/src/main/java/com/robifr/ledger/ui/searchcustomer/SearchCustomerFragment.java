@@ -36,7 +36,6 @@ import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.searchcustomer.recycler.SearchCustomerAdapter;
 import com.robifr.ledger.ui.searchcustomer.viewmodel.SearchCustomerViewModel;
-import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import com.robifr.ledger.util.Compats;
 import java.util.Objects;
 
@@ -162,7 +161,7 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
       Objects.requireNonNull(classLoader);
       Objects.requireNonNull(className);
 
-      return (className.equals(SelectCustomerFragment.class.getName()))
+      return (className.equals(SearchCustomerFragment.class.getName()))
           ? new SearchCustomerFragment()
           : super.instantiate(classLoader, className);
     }

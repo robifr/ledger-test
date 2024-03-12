@@ -34,9 +34,7 @@ public class ProductCardNormalComponent {
 
   public ProductCardNormalComponent(
       @NonNull Context context, @NonNull ProductCardWideNormalBinding binding) {
-    Objects.requireNonNull(context);
-
-    this._context = context.getApplicationContext();
+    this._context = Objects.requireNonNull(context);
     this._binding = Objects.requireNonNull(binding);
 
     this._binding.image.shapeableImage.setShapeAppearanceModel(

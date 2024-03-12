@@ -39,9 +39,7 @@ public class QueueCardNormalComponent {
 
   public QueueCardNormalComponent(
       @NonNull Context context, @NonNull QueueCardWideNormalBinding binding) {
-    Objects.requireNonNull(context);
-
-    this._context = context.getApplicationContext();
+    this._context = Objects.requireNonNull(context);
     this._binding = Objects.requireNonNull(binding);
 
     this._binding.customerImage.shapeableImage.setShapeAppearanceModel(

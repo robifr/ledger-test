@@ -132,7 +132,7 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
       case R.id.search -> {
         final SearchProductFragment searchProductFragment =
             (SearchProductFragment)
-                new SearchProductFragment.Factory()
+                new SearchProductFragment.Factory(null)
                     .instantiate(
                         this.requireContext().getClassLoader(),
                         SearchProductFragment.class.getName());

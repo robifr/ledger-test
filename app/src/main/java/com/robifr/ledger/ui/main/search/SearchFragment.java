@@ -36,6 +36,7 @@ import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.main.search.viewmodel.SearchViewModel;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
+import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
 import com.robifr.ledger.util.Compats;
 import java.util.Objects;
 
@@ -131,6 +132,7 @@ public class SearchFragment extends Fragment
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
     Objects.requireNonNull(this._customerListBinding);
+    Objects.requireNonNull(this._productListBinding);
 
     switch (view.getId()) {
       case R.id.viewMoreButton -> {
@@ -149,6 +151,23 @@ public class SearchFragment extends Fragment
                 navigation.currentTabStackTag(),
                 searchCustomerFragment,
                 SearchCustomerFragment.class.toString());
+          }
+
+        } else if (view == this._productListBinding.viewMoreButton) {
+          final SearchProductFragment searchProductFragment =
+              (SearchProductFragment)
+                  new SearchProductFragment.Factory(
+                          this._fragmentBinding.seachView.getQuery().toString())
+                      .instantiate(
+                          this.requireContext().getClassLoader(),
+                          SearchProductFragment.class.getName());
+
+          if (this.requireActivity() instanceof BackStack navigation
+              && navigation.currentTabStackTag() != null) {
+            navigation.pushFragmentStack(
+                navigation.currentTabStackTag(),
+                searchProductFragment,
+                SearchProductFragment.class.toString());
           }
         }
       }

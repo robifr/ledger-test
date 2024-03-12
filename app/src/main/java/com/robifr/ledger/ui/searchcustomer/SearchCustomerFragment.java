@@ -61,12 +61,22 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
+  @Nullable private final String _initialQuery;
   @Nullable private SearchableFragmentBinding _fragmentBinding;
   @Nullable private SearchCustomerAdapter _adapter;
   @ColorInt private int _normalStatusBarColor;
 
   @Nullable private SearchCustomerViewModel _searchCustomerViewModel;
   @Nullable private SearchCustomerViewModelHandler _viewModelHandler;
+
+  /** Default constructor when configuration changes. */
+  public SearchCustomerFragment() {
+    this(null);
+  }
+
+  private SearchCustomerFragment(@Nullable String initialQuery) {
+    this._initialQuery = initialQuery;
+  }
 
   @Override
   public View onCreateView(
@@ -112,7 +122,11 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
+    if (this._initialQuery != null) {
+      this._fragmentBinding.seachView.setQuery(this._initialQuery, true);
+    } else {
+      Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
+    }
   }
 
   @Override
@@ -155,6 +169,12 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
   }
 
   public static class Factory extends FragmentFactory {
+    @Nullable private final String _initialQuery;
+
+    public Factory(@Nullable String initialQuery) {
+      this._initialQuery = initialQuery;
+    }
+
     @Override
     @NonNull
     public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
@@ -162,7 +182,7 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
       Objects.requireNonNull(className);
 
       return (className.equals(SearchCustomerFragment.class.getName()))
-          ? new SearchCustomerFragment()
+          ? new SearchCustomerFragment(this._initialQuery)
           : super.instantiate(classLoader, className);
     }
   }

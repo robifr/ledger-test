@@ -61,12 +61,22 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
+  @Nullable private final String _initialQuery;
   @Nullable private SearchableFragmentBinding _fragmentBinding;
   @Nullable private SearchProductAdapter _adapter;
   @ColorInt private int _normalStatusBarColor;
 
   @Nullable private SearchProductViewModel _searchProductViewModel;
   @Nullable private SearchProductViewModelHandler _viewModelHandler;
+
+  /** Default constructor when configuration changes. */
+  public SearchProductFragment() {
+    this(null);
+  }
+
+  private SearchProductFragment(@Nullable String initialQuery) {
+    this._initialQuery = initialQuery;
+  }
 
   @Override
   public View onCreateView(
@@ -111,7 +121,11 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
+    if (this._initialQuery != null) {
+      this._fragmentBinding.seachView.setQuery(this._initialQuery, true);
+    } else {
+      Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
+    }
   }
 
   @Override
@@ -154,6 +168,12 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
   }
 
   public static class Factory extends FragmentFactory {
+    @Nullable private final String _initialQuery;
+
+    public Factory(@Nullable String initialQuery) {
+      this._initialQuery = initialQuery;
+    }
+
     @Override
     @NonNull
     public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
@@ -161,7 +181,7 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
       Objects.requireNonNull(className);
 
       return (className.equals(SearchProductFragment.class.getName()))
-          ? new SearchProductFragment()
+          ? new SearchProductFragment(this._initialQuery)
           : super.instantiate(classLoader, className);
     }
   }

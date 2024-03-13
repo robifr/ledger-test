@@ -83,53 +83,6 @@ public class MainActivity extends AppCompatActivity
   }
 
   @Override
-  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    Objects.requireNonNull(item);
-
-    return switch (item.getItemId()) {
-      case android.R.id.home -> {
-        this.onBackPressed();
-        yield true;
-      }
-
-      case R.id.search -> {
-        // Add search fragment on top of current fragment,
-        // without removing current displayed fragment.
-        //				this.getSupportFragmentManager()
-        //					.beginTransaction()
-        //					.add(R.id.main_framelayout, this._searchFragment, SearchFragment.class.toString())
-        //					.addToBackStack(SearchFragment.class.toString())
-        //					.hide(this._lastNavigatedFragment)
-        //					.show(this._searchFragment)
-        //					.commit();
-        yield true;
-      }
-
-      default -> super.onOptionsItemSelected(item);
-    };
-  }
-
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    //		if (!this._searchFragment.isVisible()) super.onBackPressed();
-    //
-    //		//Return to horizontal search result (initial one) when user are on vertically oriented
-    // view.
-    //		//Happened because clicked "see more" button, or the one with right-sided arrow icon.
-    //		if (this._searchFragment.searchCustomerList().isVerticallyOriented()
-    //			|| this._searchFragment.searchProductList().isVerticallyOriented()) {
-    //			this._searchFragment.searchCustomerList().setVerticallyOriented(false);
-    //			this._searchFragment.searchProductList().setVerticallyOriented(false);
-    //
-    //		//Close search fragment.
-    //		} else {
-    //			this._searchFragment.setVisible(false);
-    //			this.getSupportFragmentManager().popBackStack();
-    //		}
-  }
-
-  @Override
   public boolean onNavigationItemSelected(@NonNull MenuItem item) {
     Objects.requireNonNull(item);
     Objects.requireNonNull(this._activityBinding);
@@ -242,9 +195,9 @@ public class MainActivity extends AppCompatActivity
     this._activityBinding = MainActivityBinding.inflate(this.getLayoutInflater());
     this.setContentView(this._activityBinding.getRoot());
 
-    this._create = new MainCreate(this);
     this._backStackNavigation =
         new BackStackNavigation(this.getSupportFragmentManager(), R.id.fragmentContainer);
+    this._create = new MainCreate(this);
     this._resultHandler = new MainResultHandler(this);
 
     if (!Environment.isExternalStorageManager()) {
@@ -301,6 +254,7 @@ public class MainActivity extends AppCompatActivity
     }
   }
 
+  @NonNull
   public Intent requireStoragePermission() {
     Objects.requireNonNull(this._resultHandler);
 

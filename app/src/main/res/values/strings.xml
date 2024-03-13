@@ -17,6 +17,7 @@
 
 <resources>
   <string name="app_name">Ledger</string>
+  <string name="app_name_debug">Ledger (Debug)</string>
 
   <string name="text_account_balance">Account balance</string>
   <string name="text_add">Add</string>

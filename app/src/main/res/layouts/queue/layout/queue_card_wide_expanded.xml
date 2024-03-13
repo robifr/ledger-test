@@ -116,6 +116,7 @@
       android:id="@+id/uniqueId"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:paddingEnd="@dimen/cardlist_padding"
       app:layout_constraintEnd_toEndOf="@id/uniqueIdTitle"
       app:layout_constraintStart_toStartOf="@id/uniqueIdTitle"
       app:layout_constraintTop_toBottomOf="@id/uniqueIdTitle" />
@@ -136,6 +137,7 @@
       android:id="@+id/date"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:paddingEnd="@dimen/cardlist_padding"
       app:layout_constraintEnd_toEndOf="@id/dateTitle"
       app:layout_constraintStart_toStartOf="@id/dateTitle"
       app:layout_constraintTop_toBottomOf="@id/dateTitle" />

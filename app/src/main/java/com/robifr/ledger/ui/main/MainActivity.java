@@ -17,8 +17,12 @@
 
 package com.robifr.ledger.ui.main;
 
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +30,9 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.MainActivityBinding;
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity
   @Nullable private MainActivityBinding _activityBinding;
   @Nullable private BackStackNavigation _backStackNavigation;
   @Nullable private MainCreate _create;
+  @Nullable private MainResultHandler _resultHandler;
 
   @Override
   public void onConfigurationChanged(@NonNull Configuration newConfig) {
@@ -238,6 +245,12 @@ public class MainActivity extends AppCompatActivity
     this._create = new MainCreate(this);
     this._backStackNavigation =
         new BackStackNavigation(this.getSupportFragmentManager(), R.id.fragmentContainer);
+    this._resultHandler = new MainResultHandler(this);
+
+    if (!Environment.isExternalStorageManager()) {
+      this.requireStoragePermission();
+      return;
+    }
 
     this._activityBinding.createButton.setOnClickListener(button -> this._create.openDialog());
     this._activityBinding.bottomNavigation.setOnItemSelectedListener(this);
@@ -286,6 +299,30 @@ public class MainActivity extends AppCompatActivity
           ProductFragment.class.toString());
       this.navigateTabStack(BottomNavigationTabTag.QUEUE.toString());
     }
+  }
+
+  public Intent requireStoragePermission() {
+    Objects.requireNonNull(this._resultHandler);
+
+    final Intent intent =
+        new Intent(
+            Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+            Uri.fromParts("package", this.getPackageName(), null));
+
+    new MaterialAlertDialogBuilder(this, R.style.MaterialAlertDialog)
+        .setTitle(this.getString(R.string.text_storage_access_permission_required))
+        .setMessage(
+            HtmlCompat.fromHtml(
+                this.getString(R.string.maindialog_manageexternalstorage_permission_description),
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        .setNegativeButton(
+            this.getString(R.string.text_deny_and_quit), (dialog, type) -> this.finish())
+        .setPositiveButton(
+            this.getString(R.string.text_grant),
+            (dialog, type) -> this._resultHandler.permissionLauncher().launch(intent))
+        .setCancelable(false)
+        .show();
+    return intent;
   }
 
   private void _onBackStackChanged(@NonNull String tabTag) {

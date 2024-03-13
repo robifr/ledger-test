@@ -52,6 +52,7 @@
   <string name="text_date">Date</string>
   <string name="text_debt">Debt</string>
   <string name="text_delete">Delete</string>
+  <string name="text_deny_and_quit">Deny and quit</string>
   <string name="text_deposit">Deposit</string>
   <string name="text_deposit_balance">Deposit balance</string>
   <string name="text_discard">Discard</string>
@@ -81,6 +82,7 @@
   <string name="text_filtered_customers">Filtered customers</string>
   <string name="text_filters">Filters</string>
   <string name="text_grand_total_price">Grand total price</string>
+  <string name="text_grant">Grant</string>
   <string name="text_in_process">In process</string>
   <string name="text_in_queue">In queue</string>
   <string name="text_max">Max</string>
@@ -124,6 +126,7 @@
   <string name="text_show_queue_with_no_customer">Show queue with no customer</string>
   <string name="text_sort_by">Sort by</string>
   <string name="text_status">Status</string>
+  <string name="text_storage_access_permission_required">Storage access permission required</string>
   <string name="text_this_month">This month</string>
   <string name="text_this_week">This week</string>
   <string name="text_today">Today</string>
@@ -186,6 +189,17 @@
     <item quantity="one"><![CDATA[Displaying <b>%d</b> product]]></item>
     <item quantity="other"><![CDATA[Displaying <b>%d</b> products]]></item>
   </plurals>
+
+  <string name="maindialog_manageexternalstorage_permission_description">
+    <![CDATA[
+      <p>
+        This permission is required to ensure data persistence.
+        Granting this permission allows the app to retain all data even after uninstallation.
+        The data is stored inside <br/>
+        \'/storage/emulated/0/Documents/.ledger/\'
+      </p>
+    ]]>
+  </string>
 
   <string name="createcustomerdialog_balanceavailable_helper">%s available</string>
 

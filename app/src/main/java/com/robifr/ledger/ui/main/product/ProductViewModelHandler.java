@@ -17,6 +17,7 @@
 
 package com.robifr.ledger.ui.main.product;
 
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
@@ -55,7 +56,7 @@ public class ProductViewModelHandler {
     if (stringRes == null) return;
 
     Snackbar.make(
-            this._fragment.requireView(),
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
             StringResources.stringOf(this._fragment.requireContext(), stringRes),
             Snackbar.LENGTH_LONG)
         .show();

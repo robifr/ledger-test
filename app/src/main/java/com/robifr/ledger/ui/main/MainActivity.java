@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity
       this.pushFragmentStack(
           BottomNavigationTabTag.PRODUCT.toString(),
           productFragment,
-          CustomerFragment.class.toString());
+          ProductFragment.class.toString());
       this.navigateTabStack(BottomNavigationTabTag.QUEUE.toString());
     }
   }

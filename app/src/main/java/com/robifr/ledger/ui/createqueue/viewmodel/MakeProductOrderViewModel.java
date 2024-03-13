@@ -87,6 +87,10 @@ public class MakeProductOrderViewModel {
         this._productOrderToEdit != null && this._productOrderToEdit.id() != null
             ? this._productOrderToEdit.id()
             : defaultOrder.id();
+    final Long queueId =
+        this._productOrderToEdit != null && this._productOrderToEdit.queueId() != null
+            ? this._productOrderToEdit.queueId()
+            : defaultOrder.queueId();
     final BigDecimal totalPrice =
         Objects.requireNonNullElse(this._inputtedTotalPrice.getValue(), defaultOrder.totalPrice());
     double quantity = defaultOrder.quantity();
@@ -118,6 +122,7 @@ public class MakeProductOrderViewModel {
 
     return ProductOrderModel.toBuilder(defaultOrder)
         .setId(id)
+        .setQueueId(queueId)
         .setProductId(productId)
         .setProductName(productName)
         .setProductPrice(productPrice)

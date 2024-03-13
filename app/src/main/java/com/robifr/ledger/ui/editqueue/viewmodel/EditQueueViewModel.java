@@ -122,8 +122,13 @@ public class EditQueueViewModel extends CreateQueueViewModel {
             && this._initialQueueToEdit.customerId() != null
             && this._initialQueueToEdit.customerId().equals(inputtedQueue.customerId());
 
-    if (inputtedQueue.status() == QueueModel.Status.COMPLETED
-        && (isBalanceEnoughToPay || isCustomerAndOrdersUnchanged)) {
+    if ((inputtedQueue.status() == QueueModel.Status.COMPLETED && isBalanceEnoughToPay)
+        // When the queue was initially completed with an account balance option,
+        // and the order hasn't been edited. Removing and reassign the same customer
+        // with a balance lower than the total orders, shouldn't restrict the user
+        // from using account balance option. In other words, nothing changed.
+        || (this._initialQueueToEdit.status() == QueueModel.Status.COMPLETED
+            && isCustomerAndOrdersUnchanged)) {
       allowedPaymentMethods.add(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
     } else {
       allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);

@@ -129,20 +129,19 @@ public final class ProductRepository
     Objects.requireNonNull(product);
 
     final CompletableFuture<Long> insert =
-        CompletableFuture.supplyAsync(() -> this._localDao.insert(product));
+        CompletableFuture.supplyAsync(() -> this._localDao.insert(product))
+            .thenComposeAsync(
+                rowId ->
+                    CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowId)));
 
     return insert.thenComposeAsync(
-        rowId -> {
-          final CompletableFuture<Long> selectId =
-              CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowId));
-
-          selectId
-              .thenComposeAsync(this::selectById)
+        insertedProductId -> {
+          this.selectById(insertedProductId)
               .thenAcceptAsync(
                   insertedProduct -> {
                     if (insertedProduct != null) this.notifyModelAdded(List.of(insertedProduct));
                   });
-          return selectId;
+          return CompletableFuture.completedFuture(insertedProductId);
         });
   }
 

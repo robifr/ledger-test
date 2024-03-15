@@ -131,20 +131,19 @@ public final class ProductOrderRepository
     Objects.requireNonNull(productOrder);
 
     final CompletableFuture<Long> insert =
-        CompletableFuture.supplyAsync(() -> this._localDao.insert(productOrder));
+        CompletableFuture.supplyAsync(() -> this._localDao.insert(productOrder))
+            .thenComposeAsync(
+                rowId ->
+                    CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowId)));
 
     return insert.thenComposeAsync(
-        rowId -> {
-          final CompletableFuture<Long> selectId =
-              CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowId));
-
-          selectId
-              .thenComposeAsync(this::selectById)
+        insertedOrderId -> {
+          this.selectById(insertedOrderId)
               .thenAcceptAsync(
                   insertedOrder -> {
                     if (insertedOrder != null) this.notifyModelAdded(List.of(insertedOrder));
                   });
-          return selectId;
+          return CompletableFuture.completedFuture(insertedOrderId);
         });
   }
 
@@ -156,15 +155,14 @@ public final class ProductOrderRepository
     Objects.requireNonNull(productOrders);
 
     final CompletableFuture<List<Long>> insert =
-        CompletableFuture.supplyAsync(() -> this._localDao.insert(productOrders));
+        CompletableFuture.supplyAsync(() -> this._localDao.insert(productOrders))
+            .thenComposeAsync(
+                rowIds ->
+                    CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowIds)));
 
     return insert.thenComposeAsync(
-        rowIds -> {
-          final CompletableFuture<List<Long>> selectIds =
-              CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowIds));
-
-          selectIds
-              .thenComposeAsync(this::selectById)
+        insertedOrderIds -> {
+          this.selectById(insertedOrderIds)
               .thenAcceptAsync(
                   insertedOrders -> {
                     // Only notify the one with a valid ID and successfully inserted.
@@ -174,7 +172,7 @@ public final class ProductOrderRepository
                             .collect(Collectors.toList());
                     this.notifyModelAdded(notifiedOrders);
                   });
-          return selectIds;
+          return CompletableFuture.completedFuture(insertedOrderIds);
         });
   }
 
@@ -287,20 +285,19 @@ public final class ProductOrderRepository
     Objects.requireNonNull(productOrder);
 
     final CompletableFuture<Long> upsert =
-        CompletableFuture.supplyAsync(() -> this._localDao.upsert(productOrder));
+        CompletableFuture.supplyAsync(() -> this._localDao.upsert(productOrder))
+            .thenComposeAsync(
+                rowId ->
+                    CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowId)));
 
     return upsert.thenComposeAsync(
-        rowId -> {
-          final CompletableFuture<Long> selectId =
-              CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowId));
-
-          selectId
-              .thenComposeAsync(this::selectById)
+        upsertedOrderId -> {
+          this.selectById(upsertedOrderId)
               .thenAcceptAsync(
                   upsertedOrder -> {
                     if (upsertedOrder != null) this.notifyModelUpserted(List.of(upsertedOrder));
                   });
-          return selectId;
+          return CompletableFuture.completedFuture(upsertedOrderId);
         });
   }
 
@@ -312,15 +309,14 @@ public final class ProductOrderRepository
     Objects.requireNonNull(productOrders);
 
     final CompletableFuture<List<Long>> upsert =
-        CompletableFuture.supplyAsync(() -> this._localDao.upsert(productOrders));
+        CompletableFuture.supplyAsync(() -> this._localDao.upsert(productOrders))
+            .thenComposeAsync(
+                rowIds ->
+                    CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowIds)));
 
     return upsert.thenComposeAsync(
-        rowIds -> {
-          final CompletableFuture<List<Long>> selectIds =
-              CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowIds));
-
-          selectIds
-              .thenComposeAsync(this::selectById)
+        upsertedOrderIds -> {
+          this.selectById(upsertedOrderIds)
               .thenAcceptAsync(
                   upsertedOrders -> {
                     // Only notify the one with a valid ID and successfully upserted.
@@ -330,7 +326,7 @@ public final class ProductOrderRepository
                             .collect(Collectors.toList());
                     this.notifyModelUpserted(notifiedOrders);
                   });
-          return selectIds;
+          return CompletableFuture.completedFuture(upsertedOrderIds);
         });
   }
 

@@ -134,20 +134,19 @@ public final class CustomerRepository
     Objects.requireNonNull(customer);
 
     final CompletableFuture<Long> insert =
-        CompletableFuture.supplyAsync(() -> this._localDao.insert(customer));
+        CompletableFuture.supplyAsync(() -> this._localDao.insert(customer))
+            .thenComposeAsync(
+                rowId ->
+                    CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowId)));
 
     return insert.thenComposeAsync(
-        rowId -> {
-          final CompletableFuture<Long> selectId =
-              CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowId));
-
-          selectId
-              .thenComposeAsync(this::selectById)
+        insertedCustomerId -> {
+          this.selectById(insertedCustomerId)
               .thenAcceptAsync(
                   insertedCustomer -> {
                     if (insertedCustomer != null) this.notifyModelAdded(List.of(insertedCustomer));
                   });
-          return selectId;
+          return CompletableFuture.completedFuture(insertedCustomerId);
         });
   }
 

@@ -33,7 +33,6 @@ import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createqueue.viewmodel.CreateQueueViewModel;
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -110,25 +109,9 @@ public class EditQueueViewModel extends CreateQueueViewModel {
             ? new HashSet<>(this._allowedPaymentMethods.getValue())
             : new HashSet<>(Set.of(QueueModel.PaymentMethod.CASH));
 
-    final boolean isBalanceEnoughToPay =
-        inputtedQueue.customer() != null
-            && BigDecimal.valueOf(inputtedQueue.customer().balance())
-                    .subtract(inputtedQueue.grandTotalPrice())
-                    .compareTo(BigDecimal.ZERO)
-                >= 0;
-    final boolean isCustomerAndOrdersUnchanged =
-        this._initialQueueToEdit != null
-            && this._initialQueueToEdit.productOrders().equals(inputtedQueue.productOrders())
-            && this._initialQueueToEdit.customerId() != null
-            && this._initialQueueToEdit.customerId().equals(inputtedQueue.customerId());
-
-    if ((inputtedQueue.status() == QueueModel.Status.COMPLETED && isBalanceEnoughToPay)
-        // When the queue was initially completed with an account balance option,
-        // and the order hasn't been edited. Removing and reassign the same customer
-        // with a balance lower than the total orders, shouldn't restrict the user
-        // from using account balance option. In other words, nothing changed.
-        || (this._initialQueueToEdit.status() == QueueModel.Status.COMPLETED
-            && isCustomerAndOrdersUnchanged)) {
+    if ((inputtedQueue.status() == QueueModel.Status.COMPLETED
+        && inputtedQueue.customer() != null
+        && inputtedQueue.customer().isBalanceSufficient(this._initialQueueToEdit, inputtedQueue))) {
       allowedPaymentMethods.add(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
     } else {
       allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);

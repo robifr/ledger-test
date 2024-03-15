@@ -63,6 +63,27 @@ data class CustomerModel(
 
   @Ignore override fun toString(): String = Strings.classToString(this)
 
+  /**
+   * Check whether balance is sufficient before making a payment. Where current customer belongs to
+   * the new queue.
+   */
+  @Ignore
+  fun isBalanceSufficient(oldQueue: QueueModel?, newQueue: QueueModel): Boolean {
+    if (this != newQueue.customer) return false
+
+    val oldTotalPrice: BigDecimal = oldQueue?.grandTotalPrice() ?: BigDecimal.ZERO
+    val originalBalance: BigDecimal =
+        // Ensure customer is unchanged when they both exists.
+        if (oldQueue?.customerId != null &&
+            oldQueue.customerId == this.id &&
+            newQueue.customerId != null &&
+            newQueue.customerId == this.id)
+            this.balance.toBigDecimal() + oldTotalPrice
+        else this.balance.toBigDecimal()
+
+    return (originalBalance - newQueue.grandTotalPrice()).compareTo(BigDecimal.ZERO) >= 0
+  }
+
   /** Calculate balance when customer assigned to pay a queue. */
   @Ignore
   fun balanceOnMadePayment(queue: QueueModel): Long {

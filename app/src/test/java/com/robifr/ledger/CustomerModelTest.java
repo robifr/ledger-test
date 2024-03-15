@@ -19,6 +19,8 @@ package com.robifr.ledger;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import androidx.annotation.NonNull;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -64,6 +66,53 @@ public class CustomerModelTest {
           .setCustomer(this._customer)
           .setProductOrders(List.of(this._order))
           .build();
+
+  @Test
+  public void balanceSufficient() {
+    final CustomerModel secondCustomer =
+        CustomerModel.toBuilder(this._customer).setId(2L).setName("Ben").build();
+
+    final QueueModel queue_secondCustomer =
+        QueueModel.toBuilder(this._queue)
+            .setCustomerId(secondCustomer.id())
+            .setCustomer(secondCustomer)
+            .build();
+
+    final CustomerModel noBalanceCustomer =
+        CustomerModel.toBuilder(this._customer).setBalance(0L).build();
+
+    final QueueModel queue_noBalance_totalPriceLessThanOriginalBalance =
+        QueueModel.toBuilder(this._queue)
+            .setCustomer(noBalanceCustomer)
+            .setProductOrders(Collections.nCopies(9, this._order))
+            .build();
+    final QueueModel queue_noBalance_totalPriceEqualsOriginalBalance =
+        QueueModel.toBuilder(this._queue)
+            .setCustomer(noBalanceCustomer)
+            .setProductOrders(Collections.nCopies(10, this._order))
+            .build();
+    final QueueModel queue_noBalance_totalPriceMoreThanOriginalBalance =
+        QueueModel.toBuilder(this._queue)
+            .setCustomer(noBalanceCustomer)
+            .setProductOrders(Collections.nCopies(11, this._order))
+            .build();
+
+    assertAll( // spotless:off
+        // Customer should equals to the new queue.
+        () -> assertFalse(this._customer.isBalanceSufficient(null, queue_secondCustomer)),
+
+        // Before payment is made. Ensure the actual shown balance — the one
+        // visible by user — is sufficient.
+        () -> assertTrue(this._customer.isBalanceSufficient(this._queue, this._queue)),
+        () -> assertTrue(this._customer.isBalanceSufficient(null, this._queue)),
+
+        // After payment is made. Ensure the balance — from
+        // both current and deducted balance — is sufficient.
+        () -> assertTrue(noBalanceCustomer.isBalanceSufficient(queue_noBalance_totalPriceEqualsOriginalBalance, queue_noBalance_totalPriceLessThanOriginalBalance)),
+        () -> assertTrue(noBalanceCustomer.isBalanceSufficient(queue_noBalance_totalPriceEqualsOriginalBalance, queue_noBalance_totalPriceEqualsOriginalBalance)),
+        () -> assertFalse(noBalanceCustomer.isBalanceSufficient(queue_noBalance_totalPriceEqualsOriginalBalance, queue_noBalance_totalPriceMoreThanOriginalBalance))
+    ); // spotless:on
+  }
 
   @Test
   public void balanceOnPayment() {

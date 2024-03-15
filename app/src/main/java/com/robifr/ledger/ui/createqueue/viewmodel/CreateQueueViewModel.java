@@ -362,18 +362,14 @@ public class CreateQueueViewModel extends ViewModel {
 
   protected void _onUpdateAllowedPaymentMethod() {
     final QueueModel inputtedQueue = this.inputtedQueue();
-    final boolean isBalanceEnoughToPay =
-        inputtedQueue.customer() != null
-            && BigDecimal.valueOf(inputtedQueue.customer().balance())
-                    .subtract(inputtedQueue.grandTotalPrice())
-                    .compareTo(BigDecimal.ZERO)
-                >= 0;
     final HashSet<QueueModel.PaymentMethod> allowedPaymentMethods =
         this._allowedPaymentMethods.getValue() != null
             ? new HashSet<>(this._allowedPaymentMethods.getValue())
             : new HashSet<>(Set.of(QueueModel.PaymentMethod.CASH));
 
-    if (inputtedQueue.status() == QueueModel.Status.COMPLETED && isBalanceEnoughToPay) {
+    if (inputtedQueue.status() == QueueModel.Status.COMPLETED
+        && inputtedQueue.customer() != null
+        && inputtedQueue.customer().isBalanceSufficient(null, inputtedQueue)) {
       allowedPaymentMethods.add(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
     } else {
       allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);

@@ -140,22 +140,16 @@ public final class QueueRepository
   public CompletableFuture<Long> add(@NonNull QueueModel queue) {
     Objects.requireNonNull(queue);
 
-    // Returns inserted product order IDs.
-    final BiFunction<List<ProductOrderModel>, QueueModel, CompletableFuture<List<Long>>>
+    final BiFunction<List<ProductOrderModel>, Long, CompletableFuture<List<Long>>>
         insertProductOrders =
-            (productOrders, insertedQueue) -> {
+            (productOrders, queueId) -> {
               final List<ProductOrderModel> orders =
                   productOrders.stream()
-                      .map(
-                          order ->
-                              ProductOrderModel.toBuilder(order)
-                                  .setQueueId(insertedQueue.id())
-                                  .build())
+                      .map(order -> ProductOrderModel.toBuilder(order).setQueueId(queueId).build())
                       .collect(Collectors.toList());
               return this._productOrderRepository.add(orders);
             };
 
-    // Returns number of row effected.
     final Function<QueueModel, CompletableFuture<Integer>> updateCustomer =
         insertedQueue ->
             this._customerRepository
@@ -170,30 +164,32 @@ public final class QueueRepository
                       return this._customerRepository.update(customer);
                     });
 
-    final CompletableFuture<QueueModel> insert =
+    final CompletableFuture<Long> insert =
         CompletableFuture.supplyAsync(() -> this._localDao.insert(queue))
             .thenComposeAsync(
-                rowId -> CompletableFuture.supplyAsync(() -> this._localDao.selectByRowId(rowId)));
+                rowId ->
+                    CompletableFuture.supplyAsync(() -> this._localDao.selectIdByRowId(rowId)));
 
     return insert.thenComposeAsync(
-        insertedQueue -> {
-          if (insertedQueue == null) return CompletableFuture.completedFuture(0L);
+        insertedQueueId -> {
+          if (insertedQueueId == 0L) return CompletableFuture.completedFuture(0L);
 
-          final CompletableFuture<Void> updateForeign =
+          final CompletableFuture<QueueModel> updateForeign =
               insertProductOrders
-                  .apply(queue.productOrders(), insertedQueue)
-                  .thenRunAsync(() -> updateCustomer.apply(insertedQueue));
+                  .apply(queue.productOrders(), insertedQueueId)
+                  // First select query to get a queue mapped with newly inserted orders.
+                  .thenComposeAsync(ignore -> this.selectById(insertedQueueId))
+                  .thenAcceptAsync(updateCustomer::apply)
+                  // Re-select to get a queue mapped with an updated customer.
+                  .thenComposeAsync(ignore -> this.selectById(insertedQueueId));
 
           // Update foreign column firstly, so that queue
           // already provided with an updated value when notified.
           updateForeign.thenAcceptAsync(
-              effectedCustomers ->
-                  this.selectById(insertedQueue.id())
-                      .thenAcceptAsync(
-                          updatedQueue -> {
-                            if (updatedQueue != null) this.notifyModelAdded(List.of(updatedQueue));
-                          }));
-          return CompletableFuture.completedFuture(insertedQueue.id());
+              updatedQueue -> {
+                if (updatedQueue != null) this.notifyModelAdded(List.of(updatedQueue));
+              });
+          return CompletableFuture.completedFuture(insertedQueueId);
         });
   }
 
@@ -202,7 +198,7 @@ public final class QueueRepository
   public CompletableFuture<Integer> update(@NonNull QueueModel queue) {
     Objects.requireNonNull(queue);
 
-    final BiFunction<QueueModel, QueueModel, CompletableFuture<Void>> updateProductOrder =
+    final BiFunction<QueueModel, QueueModel, CompletableFuture<Void>> updateProductOrders =
         (oldQueue, updatedQueue) -> {
           final ArrayList<ProductOrderModel> ordersToUpsert = new ArrayList<>();
           final ArrayList<ProductOrderModel> ordersToDelete =
@@ -223,11 +219,9 @@ public final class QueueRepository
                 .ifPresent(ordersToDelete::remove);
           }
 
-          final CompletableFuture<List<Long>> upsert =
-              this._productOrderRepository.upsert(ordersToUpsert);
-          final CompletableFuture<Integer> delete =
-              this._productOrderRepository.delete(ordersToDelete);
-          return CompletableFuture.allOf(upsert, delete);
+          return CompletableFuture.allOf(
+              this._productOrderRepository.upsert(ordersToUpsert),
+              this._productOrderRepository.delete(ordersToDelete));
         };
 
     final BiFunction<QueueModel, QueueModel, CompletableFuture<Void>> updateCustomer =
@@ -237,34 +231,40 @@ public final class QueueRepository
           final CompletableFuture<CustomerModel> selectOldCustomer =
               this._customerRepository.selectById(oldQueue.customerId());
 
+          final BiFunction<CustomerModel, CustomerModel, CompletableFuture<Integer>>
+              updateOldCustomer =
+                  (oldCustomer, updatedCustomer) ->
+                      oldCustomer != null
+                              && oldCustomer.id() != null
+                              && (updatedCustomer == null
+                                  || !oldCustomer.id().equals(updatedCustomer.id()))
+                          // Revert back old customer balance when different customer selected,
+                          // even when the new one is null.
+                          ? this._customerRepository.update(
+                              CustomerModel.toBuilder(oldCustomer)
+                                  .setBalance(oldCustomer.balanceOnRevertedPayment(oldQueue))
+                                  .build())
+                          : CompletableFuture.completedFuture(0);
+          final BiFunction<CustomerModel, CustomerModel, CompletableFuture<Integer>>
+              updateNewCustomer =
+                  (oldCustomer, updatedCustomer) ->
+                      updatedCustomer != null
+                          // Update customer balance for newly selected customer.
+                          ? this._customerRepository.update(
+                              CustomerModel.toBuilder(updatedCustomer)
+                                  .setBalance(
+                                      updatedCustomer.balanceOnUpdatedPayment(
+                                          oldQueue, updatedQueue))
+                                  .build())
+                          : CompletableFuture.completedFuture(0);
+
           return selectUpdatedCustomer.thenAcceptAsync(
               updatedCustomer ->
                   selectOldCustomer.thenAcceptAsync(
-                      oldCustomer -> {
-                        // Update customer balance for newly selected customer.
-                        if (updatedCustomer != null) {
-                          final long balance =
-                              updatedCustomer.balanceOnUpdatedPayment(oldQueue, updatedQueue);
-                          final CustomerModel newCustomer =
-                              CustomerModel.toBuilder(updatedCustomer).setBalance(balance).build();
-                          this._customerRepository.update(newCustomer);
-                        }
-
-                        final boolean isSameCustomer =
-                            oldCustomer != null
-                                && oldCustomer.id() != null
-                                && updatedCustomer != null
-                                && oldCustomer.id().equals(updatedCustomer.id());
-
-                        // Revert back old customer balance when user selected different customer.
-                        if (oldCustomer != null && !isSameCustomer) {
-                          final CustomerModel updatedOldCustomer =
-                              CustomerModel.toBuilder(oldCustomer)
-                                  .setBalance(oldCustomer.balanceOnRevertedPayment(oldQueue))
-                                  .build();
-                          this._customerRepository.update(updatedOldCustomer);
-                        }
-                      }));
+                      oldCustomer ->
+                          CompletableFuture.allOf(
+                              updateOldCustomer.apply(oldCustomer, updatedCustomer),
+                              updateNewCustomer.apply(oldCustomer, updatedCustomer))));
         };
 
     return this.selectById(queue.id())
@@ -272,26 +272,22 @@ public final class QueueRepository
             oldQueue -> {
               if (oldQueue == null) return CompletableFuture.completedFuture(0);
 
-              final CompletableFuture<Void> updateForeign =
-                  updateProductOrder
+              final CompletableFuture<Void> updateForeignFuture =
+                  updateProductOrders
                       .apply(oldQueue, queue)
                       .thenRunAsync(() -> updateCustomer.apply(oldQueue, queue));
+              final CompletableFuture<Integer> update =
+                  updateForeignFuture.thenApplyAsync(ignore -> this._localDao.update(queue));
+
               // Update foreign column firstly, so that queue
               // already provided with an updated value when returned.
-              final CompletableFuture<Integer> update =
-                  updateForeign.thenComposeAsync(
-                      ignore -> CompletableFuture.supplyAsync(() -> this._localDao.update(queue)));
-
-              update.thenComposeAsync(
+              update.thenAcceptAsync(
                   effected -> {
-                    // TODO: Rollback feature for product order and customer model
-                    //    when something wrong happen when updating queue.
-                    if (effected == 0) CompletableFuture.completedFuture(0);
+                    if (effected == 0) return;
 
                     this.selectById(queue.id())
                         .thenAcceptAsync(
                             updatedQueue -> this.notifyModelUpdated(List.of(updatedQueue)));
-                    return CompletableFuture.completedFuture(effected);
                   });
               return update;
             });
@@ -304,7 +300,6 @@ public final class QueueRepository
 
     // Note: Associated rows on product order table will automatically deleted upon queue deletion.
 
-    // Returns number of row effected.
     final Function<QueueModel, CompletableFuture<Integer>> updateCustomer =
         (oldQueue) ->
             this._customerRepository

@@ -200,11 +200,6 @@ public class MainActivity extends AppCompatActivity
     this._create = new MainCreate(this);
     this._resultHandler = new MainResultHandler(this);
 
-    if (!Environment.isExternalStorageManager()) {
-      this.requireStoragePermission();
-      return;
-    }
-
     this._activityBinding.createButton.setOnClickListener(button -> this._create.openDialog());
     this._activityBinding.bottomNavigation.setOnItemSelectedListener(this);
 
@@ -251,6 +246,8 @@ public class MainActivity extends AppCompatActivity
           productFragment,
           ProductFragment.class.toString());
       this.navigateTabStack(BottomNavigationTabTag.QUEUE.toString());
+
+      if (!Environment.isExternalStorageManager()) this.requireStoragePermission();
     }
   }
 

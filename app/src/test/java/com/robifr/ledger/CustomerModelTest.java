@@ -158,7 +158,7 @@ public class CustomerModelTest {
             .setProductOrders(List.of(this._order, this._order))
             .build();
     final QueueModel completedQueue_accountBalance_noOrder =
-        QueueModel.toBuilder(completedQueue_accountBalance_noCustomer)
+        QueueModel.toBuilder(completedQueue_accountBalance)
             .setProductOrders(Collections.emptyList())
             .build();
 
@@ -284,10 +284,10 @@ public class CustomerModelTest {
         () -> assertEquals(BigDecimal.valueOf(-1000), secondCustomer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue_secondCustomer), "Add debt when queue stays uncompleted with different customer"),
 
         // When the queue has more total price of ordered products.
-        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(completedQueue, completedQueue_doubleOrder), "Keep debt when queue stays completed"),
-        () -> assertEquals(BigDecimal.valueOf(-2000), secondCustomer.debtOnUpdatedPayment(completedQueue, uncompletedQueue_doubleOrder), "Add debt when queue changed to uncompleted with different total price"),
-        () -> assertEquals(BigDecimal.valueOf(1000), secondCustomer.debtOnUpdatedPayment(uncompletedQueue, completedQueue_doubleOrder), "Revert debt when queue changed to completed with different total price"),
-        () -> assertEquals(BigDecimal.valueOf(-2000), secondCustomer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue_doubleOrder), "Add debt when queue stays uncompleted with different total price")
+        () -> assertEquals(BigDecimal.ZERO,  this._customer.debtOnUpdatedPayment(completedQueue, completedQueue_doubleOrder), "Keep debt when queue stays completed"),
+        () -> assertEquals(BigDecimal.valueOf(-2000), this._customer.debtOnUpdatedPayment(completedQueue, uncompletedQueue_doubleOrder), "Add debt when queue changed to uncompleted with different total price"),
+        () -> assertEquals(BigDecimal.valueOf(1000),  this._customer.debtOnUpdatedPayment(uncompletedQueue, completedQueue_doubleOrder), "Revert debt when queue changed to completed with different total price"),
+        () -> assertEquals(BigDecimal.valueOf(-1000),  this._customer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue_doubleOrder), "Add debt when queue stays uncompleted with different total price")
     ); // spotless:on
   }
 }

@@ -24,8 +24,8 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.customer.CustomerCardWideNormalComponent;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
-import com.robifr.ledger.ui.main.customer.CustomerCardWideNormalComponent;
 import java.util.List;
 import java.util.Objects;
 

@@ -15,37 +15,36 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.ui.searchcustomer.recycler;
+package com.robifr.ledger.ui.customer.recycler;
 
-import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardWideNormalComponent;
-import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
+import com.robifr.ledger.ui.customer.CustomerFragment;
 import java.util.Objects;
 
-public class SearchCustomerListHolder extends RecyclerViewHolder<CustomerModel>
-    implements View.OnClickListener {
-  @NonNull private final SearchCustomerFragment _fragment;
+public class CustomerListHolder extends RecyclerViewHolder<CustomerModel> {
+  @NonNull private final CustomerFragment _fragment;
   @NonNull private final CustomerCardWideBinding _cardBinding;
   @NonNull private final CustomerCardWideNormalComponent _normalCard;
+  @NonNull private final CustomerListMenu _menu;
   @Nullable private CustomerModel _boundCustomer;
 
-  public SearchCustomerListHolder(
-      @NonNull SearchCustomerFragment fragment, @NonNull CustomerCardWideBinding binding) {
+  public CustomerListHolder(
+      @NonNull CustomerFragment fragment, @NonNull CustomerCardWideBinding binding) {
     super(binding.getRoot());
     this._fragment = Objects.requireNonNull(fragment);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
         new CustomerCardWideNormalComponent(
             this._fragment.requireContext(), this._cardBinding.normalCard);
+    this._menu = new CustomerListMenu(this._fragment, this);
 
-    this._cardBinding.cardView.setOnClickListener(this);
-    this._cardBinding.normalCard.menuButton.setVisibility(View.GONE);
+    this._cardBinding.cardView.setClickable(false);
+    this._cardBinding.normalCard.menuButton.setOnClickListener(v -> this._menu.openDialog());
   }
 
   @Override
@@ -54,11 +53,8 @@ public class SearchCustomerListHolder extends RecyclerViewHolder<CustomerModel>
     this._normalCard.setCustomer(this._boundCustomer);
   }
 
-  @Override
-  public void onClick(View view) {
-    switch (view.getId()) {
-      case R.id.cardView ->
-          this._fragment.searchCustomerViewModel().onCustomerSelected(this._boundCustomer);
-    }
+  @NonNull
+  public CustomerModel boundCustomer() {
+    return Objects.requireNonNull(this._boundCustomer);
   }
 }

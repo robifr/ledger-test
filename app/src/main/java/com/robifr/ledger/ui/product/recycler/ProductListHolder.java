@@ -15,37 +15,36 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.ui.searchproduct.recycler;
+package com.robifr.ledger.ui.product.recycler;
 
-import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardNormalComponent;
-import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
+import com.robifr.ledger.ui.product.ProductFragment;
 import java.util.Objects;
 
-public class SearchProductListHolder extends RecyclerViewHolder<ProductModel>
-    implements View.OnClickListener {
-  @NonNull private final SearchProductFragment _fragment;
-  @NonNull private final ProductCardWideBinding _cardBinding;
-  @NonNull private final ProductCardNormalComponent _normalCard;
-  @Nullable private ProductModel _boundProduct;
+public class ProductListHolder extends RecyclerViewHolder<ProductModel> {
+  @NonNull protected final ProductFragment _fragment;
+  @NonNull protected final ProductCardWideBinding _cardBinding;
+  @NonNull protected final ProductCardNormalComponent _normalCard;
+  @NonNull protected final ProductListMenu _menu;
+  @Nullable protected ProductModel _boundProduct;
 
-  public SearchProductListHolder(
-      @NonNull SearchProductFragment fragment, @NonNull ProductCardWideBinding binding) {
+  public ProductListHolder(
+      @NonNull ProductFragment fragment, @NonNull ProductCardWideBinding binding) {
     super(binding.getRoot());
     this._fragment = Objects.requireNonNull(fragment);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
         new ProductCardNormalComponent(
             this._fragment.requireContext(), this._cardBinding.normalCard);
+    this._menu = new ProductListMenu(this._fragment, this);
 
-    this._cardBinding.cardView.setOnClickListener(this);
-    this._cardBinding.normalCard.menuButton.setVisibility(View.GONE);
+    this._cardBinding.cardView.setClickable(false);
+    this._cardBinding.normalCard.menuButton.setOnClickListener(v -> this._menu.openDialog());
   }
 
   @Override
@@ -54,11 +53,8 @@ public class SearchProductListHolder extends RecyclerViewHolder<ProductModel>
     this._normalCard.setProduct(this._boundProduct);
   }
 
-  @Override
-  public void onClick(View view) {
-    switch (view.getId()) {
-      case R.id.cardView ->
-          this._fragment.searchProductViewModel().onProductSelected(this._boundProduct);
-    }
+  @NonNull
+  public ProductModel boundProduct() {
+    return Objects.requireNonNull(this._boundProduct);
   }
 }

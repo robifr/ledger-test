@@ -24,7 +24,7 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.main.product.ProductCardNormalComponent;
+import com.robifr.ledger.ui.product.ProductCardNormalComponent;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import java.util.Objects;
 

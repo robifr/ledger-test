@@ -26,7 +26,7 @@ import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.createcustomer.CreateCustomerFragment;
-import com.robifr.ledger.ui.main.customer.CustomerCardWideNormalComponent;
+import com.robifr.ledger.ui.customer.CustomerCardWideNormalComponent;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import java.util.List;
 import java.util.Objects;

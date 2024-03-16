@@ -65,7 +65,7 @@ data class CustomerModel(
 
   /**
    * Check whether balance is sufficient before making a payment. Where current customer belongs to
-   * the new queue.
+   * the [newQueue].
    */
   @Ignore
   fun isBalanceSufficient(oldQueue: QueueModel?, newQueue: QueueModel): Boolean {
@@ -84,7 +84,7 @@ data class CustomerModel(
     return (originalBalance - newQueue.grandTotalPrice()).compareTo(BigDecimal.ZERO) >= 0
   }
 
-  /** Calculate balance when customer assigned to pay a queue. */
+  /** Calculate balance when customer is assigned to pay a queue. */
   @Ignore
   fun balanceOnMadePayment(queue: QueueModel): Long {
     return if (this.id == queue.customer?.id &&
@@ -95,7 +95,9 @@ data class CustomerModel(
     else this.balance
   }
 
-  /** Calculate balance when queue was changed. Where current customer belong to the new queue. */
+  /**
+   * Calculate balance when the queue was changed. Where current customer belongs to the [newQueue].
+   */
   @Ignore
   fun balanceOnUpdatedPayment(oldQueue: QueueModel, newQueue: QueueModel): Long {
     // WARNING: If I were you, I would just stay away from this method.
@@ -160,7 +162,7 @@ data class CustomerModel(
     return this.balance
   }
 
-  /** Calculate balance when going to revert the payment, like deleting queue. */
+  /** Calculate balance when going to revert the payment, like when deleting queue. */
   @Ignore
   fun balanceOnRevertedPayment(queue: QueueModel): Long {
     return if (this.id == queue.customer?.id &&
@@ -170,7 +172,7 @@ data class CustomerModel(
     else this.balance
   }
 
-  /** Calculate debt when customer assigned to pay a queue. */
+  /** Calculate debt when customer is assigned to pay a queue. */
   @Ignore
   fun debtOnMadePayment(queue: QueueModel): BigDecimal {
     return if (this.id == queue.customer?.id && queue.status != QueueModel.Status.COMPLETED)
@@ -178,7 +180,9 @@ data class CustomerModel(
     else this.debt
   }
 
-  /** Calculate debt when queue was changed. Where current customer belong to the new queue. */
+  /**
+   * Calculate debt when the queue was changed. Where current customer belongs to the [newQueue].
+   */
   @Ignore
   fun debtOnUpdatedPayment(oldQueue: QueueModel, newQueue: QueueModel): BigDecimal {
     // WARNING: Although debt will always be calculated based on total price of uncompleted queues.
@@ -213,7 +217,7 @@ data class CustomerModel(
     return this.debt
   }
 
-  /** Calculate debt when going to revert the payment, like deleting queue. */
+  /** Calculate debt when going to revert the payment, like when deleting queue. */
   @Ignore
   fun debtOnRevertedPayment(queue: QueueModel): BigDecimal {
     return if (this.id == queue.customer?.id && queue.status != QueueModel.Status.COMPLETED)

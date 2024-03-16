@@ -16,6 +16,7 @@
   -->
 
 <resources>
+
   <style name="AppTheme.Dark" parent="AppTheme.Light">
     <!-- Branding. -->
     <item name="colorOnPrimary">@color/dark_white</item>

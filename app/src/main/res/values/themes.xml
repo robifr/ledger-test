@@ -16,6 +16,7 @@
   -->
 
 <resources>
+
   <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light">
     <!-- Branding. -->
     <item name="colorPrimary">@color/selector_primary</item>

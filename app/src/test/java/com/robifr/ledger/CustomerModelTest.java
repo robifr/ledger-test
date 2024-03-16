@@ -282,10 +282,10 @@ public class CustomerModelTest {
         () -> assertEquals(BigDecimal.valueOf(-1000), secondCustomer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue_secondCustomer), "Add debt when queue stays uncompleted with different customer"),
 
         // When the queue has more total price of ordered products.
-        () -> assertEquals(BigDecimal.ZERO,  this._customer.debtOnUpdatedPayment(completedQueue, completedQueue_doubleOrder), "Keep debt when queue stays completed"),
+        () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(completedQueue, completedQueue_doubleOrder), "Keep debt when queue stays completed"),
         () -> assertEquals(BigDecimal.valueOf(-2000), this._customer.debtOnUpdatedPayment(completedQueue, uncompletedQueue_doubleOrder), "Add debt when queue changed to uncompleted with different total price"),
-        () -> assertEquals(BigDecimal.valueOf(1000),  this._customer.debtOnUpdatedPayment(uncompletedQueue, completedQueue_doubleOrder), "Revert debt when queue changed to completed with different total price"),
-        () -> assertEquals(BigDecimal.valueOf(-1000),  this._customer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue_doubleOrder), "Add debt when queue stays uncompleted with different total price")
+        () -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnUpdatedPayment(uncompletedQueue, completedQueue_doubleOrder), "Revert debt when queue changed to completed with different total price"),
+        () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue_doubleOrder), "Add debt when queue stays uncompleted with different total price")
     ); // spotless:on
   }
 }

@@ -53,7 +53,8 @@ public class Compats {
         (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
     focusedView.postDelayed(
-        () -> inputManager.showSoftInput(focusedView, InputMethodManager.SHOW_IMPLICIT), 0);
+        () -> inputManager.showSoftInput(focusedView.findFocus(), InputMethodManager.SHOW_IMPLICIT),
+        0);
   }
 
   public static void hideKeyboard(@NonNull Context context, @Nullable View focusedView) {

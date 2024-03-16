@@ -51,13 +51,7 @@ public class ProductFilter implements DialogInterface.OnDismissListener {
   public void onDismiss(@NonNull DialogInterface dialog) {
     Objects.requireNonNull(dialog);
 
-    this._fragment
-        .productViewModel()
-        .onProductsChanged(this._fragment.productViewModel().fetchAllProducts());
-    this._fragment
-        .productViewModel()
-        .filterView()
-        .onFiltersChanged(this._fragment.productViewModel().filterView().inputtedFilters());
+    this._fragment.productViewModel().fetchAllProducts();
 
     if (this._dialog.getCurrentFocus() != null) this._dialog.getCurrentFocus().clearFocus();
   }

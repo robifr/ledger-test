@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 public class QueueViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
@@ -121,18 +120,24 @@ public class QueueViewModel extends ViewModel {
     return this._oldExpandedQueueIndex;
   }
 
-  @NonNull
-  public List<QueueModel> fetchAllQueues() {
-    try {
-      return this._queueRepository.selectAll().get();
-
-    } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(
-          new LiveDataEvent<>(
-              new StringResources.Strings(R.string.text_error_unable_to_retrieve_all_queues)));
-    }
-
-    return new ArrayList<>();
+  public void fetchAllQueues() {
+    this._queueRepository
+        .selectAll()
+        .thenAccept(
+            queues ->
+                new Handler(Looper.getMainLooper())
+                    .post(
+                        () ->
+                            this._filterView.onFiltersChanged(
+                                this._filterView.inputtedFilters(), queues)))
+        .exceptionally(
+            e -> {
+              this._snackbarMessage.setValue(
+                  new LiveDataEvent<>(
+                      new StringResources.Strings(
+                          R.string.text_error_unable_to_retrieve_all_queues)));
+              return null;
+            });
   }
 
   public void deleteQueue(@NonNull QueueModel queue) {

@@ -86,10 +86,10 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    this._productViewModel.onProductsChanged(this._productViewModel.fetchAllProducts());
     this._productViewModel.onSortMethodChanged(
         new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
     this._productViewModel.filterView().onFiltersChanged(ProductFilters.toBuilder().build());
+    this._productViewModel.fetchAllProducts();
   }
 
   @Override

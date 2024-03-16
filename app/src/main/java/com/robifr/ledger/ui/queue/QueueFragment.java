@@ -98,10 +98,10 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
             .setFilteredStatus(Set.of(QueueModel.Status.values()))
             .build();
 
-    this._queueViewModel.onQueuesChanged(this._queueViewModel.fetchAllQueues());
     this._queueViewModel.onSortMethodChanged(
         new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
     this._queueViewModel.filterView().onFiltersChanged(initialFilters);
+    this._queueViewModel.fetchAllQueues();
   }
 
   @Override

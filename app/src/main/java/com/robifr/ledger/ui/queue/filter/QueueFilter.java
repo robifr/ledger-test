@@ -58,13 +58,7 @@ public class QueueFilter implements DialogInterface.OnDismissListener {
   public void onDismiss(@NonNull DialogInterface dialog) {
     Objects.requireNonNull(dialog);
 
-    this._fragment
-        .queueViewModel()
-        .onQueuesChanged(this._fragment.queueViewModel().fetchAllQueues());
-    this._fragment
-        .queueViewModel()
-        .filterView()
-        .onFiltersChanged(this._fragment.queueViewModel().filterView().inputtedFilters());
+    this._fragment.queueViewModel().fetchAllQueues();
 
     if (this._dialog.getCurrentFocus() != null) this._dialog.getCurrentFocus().clearFocus();
   }

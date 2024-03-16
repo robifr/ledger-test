@@ -18,6 +18,8 @@
 package com.robifr.ledger.ui.product.viewmodel;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -36,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 public class ProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
@@ -83,18 +84,24 @@ public class ProductViewModel extends ViewModel {
     return this._sortMethod;
   }
 
-  @NonNull
-  public List<ProductModel> fetchAllProducts() {
-    try {
-      return this._productRepository.selectAll().get();
-
-    } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(
-          new LiveDataEvent<>(
-              new StringResources.Strings(R.string.text_error_unable_to_retrieve_all_products)));
-    }
-
-    return new ArrayList<>();
+  public void fetchAllProducts() {
+    this._productRepository
+        .selectAll()
+        .thenAccept(
+            products ->
+                new Handler(Looper.getMainLooper())
+                    .post(
+                        () ->
+                            this._filterView.onFiltersChanged(
+                                this._filterView.inputtedFilters(), products)))
+        .exceptionally(
+            e -> {
+              this._snackbarMessage.setValue(
+                  new LiveDataEvent<>(
+                      new StringResources.Strings(
+                          R.string.text_error_unable_to_retrieve_all_products)));
+              return null;
+            });
   }
 
   public void deleteProduct(@NonNull ProductModel product) {

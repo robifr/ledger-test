@@ -86,10 +86,10 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    this._customerViewModel.onCustomersChanged(this._customerViewModel.fetchAllCustomers());
     this._customerViewModel.onSortMethodChanged(
         new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
     this._customerViewModel.filterView().onFiltersChanged(CustomerFilters.toBuilder().build());
+    this._customerViewModel.fetchAllCustomers();
   }
 
   @Override

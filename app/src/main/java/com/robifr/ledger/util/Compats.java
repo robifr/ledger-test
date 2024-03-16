@@ -49,22 +49,21 @@ public class Compats {
     Objects.requireNonNull(context);
     Objects.requireNonNull(focusedView);
 
-    focusedView.postDelayed(
-        () -> {
-          final InputMethodManager inputManager =
-              (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-          inputManager.showSoftInput(focusedView.findFocus(), InputMethodManager.SHOW_IMPLICIT);
-        },
-        0);
-  }
-
-  public static void hideKeyboard(@NonNull Context context, @NonNull View focusedView) {
-    Objects.requireNonNull(context);
-    Objects.requireNonNull(focusedView);
-
     final InputMethodManager inputManager =
         (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-    inputManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+
+    focusedView.postDelayed(
+        () -> inputManager.showSoftInput(focusedView, InputMethodManager.SHOW_IMPLICIT), 0);
+  }
+
+  public static void hideKeyboard(@NonNull Context context, @Nullable View focusedView) {
+    Objects.requireNonNull(context);
+
+    final View view = Objects.requireNonNullElse(focusedView, new View(context));
+    final InputMethodManager inputManager =
+        (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+    view.postDelayed(() -> inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0), 0);
   }
 
   @Nullable

@@ -35,6 +35,7 @@ import com.robifr.ledger.databinding.CreateCustomerFragmentBinding;
 import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.createcustomer.viewmodel.CreateCustomerViewModel;
+import com.robifr.ledger.util.Compats;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -149,6 +150,7 @@ public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   public void finish() {
     if (this.requireActivity() instanceof BackStack navigation
         && navigation.currentTabStackTag() != null) {
+      Compats.hideKeyboard(this.requireContext(), this.requireView().findFocus());
       navigation.popFragmentStack(navigation.currentTabStackTag());
     }
   }

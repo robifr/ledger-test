@@ -161,7 +161,7 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
 
     if (this.requireActivity() instanceof BackStack navigation
         && navigation.currentTabStackTag() != null) {
-      Compats.hideKeyboard(this.requireContext(), this._fragmentBinding.seachView);
+      Compats.hideKeyboard(this.requireContext(), this.requireView().findFocus());
       this.requireActivity().getWindow().setStatusBarColor(this._normalStatusBarColor);
       navigation.popFragmentStack(navigation.currentTabStackTag());
     }

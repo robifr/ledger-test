@@ -71,13 +71,6 @@ public class CustomerModelTest {
   public void balanceSufficient() {
     final CustomerModel secondCustomer =
         CustomerModel.toBuilder(this._customer).setId(2L).setName("Ben").build();
-
-    final QueueModel queue_secondCustomer =
-        QueueModel.toBuilder(this._queue)
-            .setCustomerId(secondCustomer.id())
-            .setCustomer(secondCustomer)
-            .build();
-
     final CustomerModel noBalanceCustomer =
         CustomerModel.toBuilder(this._customer).setBalance(0L).build();
 
@@ -98,13 +91,11 @@ public class CustomerModelTest {
             .build();
 
     assertAll( // spotless:off
-        // Customer should equals to the new queue.
-        () -> assertFalse(this._customer.isBalanceSufficient(null, queue_secondCustomer)),
-
         // Before payment is made. Ensure the actual shown balance — the one
         // visible by user — is sufficient.
         () -> assertTrue(this._customer.isBalanceSufficient(this._queue, this._queue)),
         () -> assertTrue(this._customer.isBalanceSufficient(null, this._queue)),
+        () -> assertFalse(secondCustomer.isBalanceSufficient(null, this._queue), "Customer should equals to the one in the new queue"),
 
         // After payment is made. Ensure the balance — from
         // both current and deducted balance — is sufficient.
@@ -169,12 +160,14 @@ public class CustomerModelTest {
         () -> assertEquals(10_000L, this._customer.balanceOnMadePayment(uncompletedQueue_cash), "Keep balance when queue uncompleted"),
         () -> assertEquals(10_000L, this._customer.balanceOnMadePayment(uncompletedQueue_accountBalance), "Keep balance when queue uncompleted"),
         () -> assertEquals(500L, lowBalanceCustomer.balanceOnMadePayment(completedQueue_accountBalance), "Keep balance when the balance low"),
+        () -> assertEquals(10_000L, secondCustomer.balanceOnMadePayment(completedQueue_accountBalance), "Keep balance when the customer differs with the one in the queue"),
 
         // On reverted payment.
         () -> assertEquals(11_000L, this._customer.balanceOnRevertedPayment(completedQueue_accountBalance), "Revert balance when queue completed with account balance"),
         () -> assertEquals(10_000L, this._customer.balanceOnRevertedPayment(completedQueue_cash), "Keep balance when queue completed with cash"),
         () -> assertEquals(10_000L, this._customer.balanceOnRevertedPayment(uncompletedQueue_cash), "Keep balance when queue uncompleted"),
         () -> assertEquals(10_000L, this._customer.balanceOnRevertedPayment(uncompletedQueue_accountBalance), "Keep balance when queue uncompleted"),
+        () -> assertEquals(10_000L, secondCustomer.balanceOnRevertedPayment(completedQueue_accountBalance), "Keep balance when the customer differs with the one in the queue"),
 
         // On updated payment.
 
@@ -187,6 +180,7 @@ public class CustomerModelTest {
         () -> assertEquals(10_000L, this._customer.balanceOnUpdatedPayment(completedQueue_cash, completedQueue_cash), "Keep balance when queue unchanged"),
         () -> assertEquals(10_000L, this._customer.balanceOnUpdatedPayment(completedQueue_cash, uncompletedQueue_accountBalance), "Keep balance when old queue with cash changed to uncompleted"),
         () -> assertEquals(10_000L, this._customer.balanceOnUpdatedPayment(completedQueue_cash, uncompletedQueue_cash), "Keep balance when old queue with cash changed to uncompleted"),
+        () -> assertEquals(10_000L, secondCustomer.balanceOnUpdatedPayment(completedQueue_cash, completedQueue_accountBalance), "Keep balance when the customer differs with the one in the new queue"),
 
         () -> assertEquals(9000L, this._customer.balanceOnUpdatedPayment(uncompletedQueue_accountBalance, completedQueue_accountBalance), "Deduct balance when queue changed to completed with account balance"),
         () -> assertEquals(10_000L, this._customer.balanceOnUpdatedPayment(uncompletedQueue_accountBalance, completedQueue_cash), "Keep balance when queue changed to completed with cash"),
@@ -262,16 +256,20 @@ public class CustomerModelTest {
         // On made payment.
         () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnMadePayment(uncompletedQueue), "Add debt when queue uncompleted"),
         () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnMadePayment(completedQueue), "Keep debt when queue completed"),
+        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnMadePayment(uncompletedQueue), "Keep debt when the customer differs with the one in the queue"),
 
         // On reverted payment.
         () -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnRevertedPayment(uncompletedQueue), "Revert debt when queue uncompleted"),
         () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnRevertedPayment(completedQueue), "Keep debt when queue completed"),
+        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnRevertedPayment(uncompletedQueue), "Keep debt when the customer differs with the one in the queue"),
 
         // On updated payment.
+
         () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(completedQueue, completedQueue), "Keep debt when queue unchanged"),
         () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(completedQueue, uncompletedQueue), "Add debt when queue changed to uncompleted"),
         () -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnUpdatedPayment(uncompletedQueue, completedQueue), "Revert debt when queue changed to completed"),
         () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue), "Keep debt when queue unchanged"),
+        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(completedQueue, uncompletedQueue), "Keep debt when the customer differs with the one in the new queue"),
 
         // When the old queue doesn't have customer beforehand.
         () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(uncompletedQueue_noCustomer, completedQueue), "Keep debt when queue stays completed"),

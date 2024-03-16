@@ -173,16 +173,16 @@ public abstract class CustomerDao implements QueryAccessible<CustomerModel> {
   @NonNull
   @Query(
       """
-        SELECT * FROM customer
-        /**
-         * Use where-in clause because we don't want the data get overriden
-         * from the FTS field, since the string field is spaced.
-         */
-        WHERE customer.rowid IN (
-          SELECT customer_fts.rowid FROM customer_fts
-          WHERE customer_fts MATCH :query
-        )
-        ORDER BY customer.name
+      SELECT * FROM customer
+      /**
+       * Use where-in clause because we don't want the data get overriden
+       * from the FTS field, since the string field is spaced.
+       */
+      WHERE customer.rowid IN (
+        SELECT customer_fts.rowid FROM customer_fts
+        WHERE customer_fts MATCH :query
+      )
+      ORDER BY customer.name
       """)
   protected abstract List<CustomerModel> _search(@NonNull String query);
 
@@ -192,13 +192,13 @@ public abstract class CustomerDao implements QueryAccessible<CustomerModel> {
   @NonNull
   @Query(
       """
-        SELECT product_order.total_price FROM product_order
-        WHERE product_order.queue_id = (
-          SELECT queue.id FROM queue
-          WHERE queue.id = product_order.queue_id
-              AND queue.customer_id = :customerId
-              AND queue.status != 'COMPLETED'
-        )
+      SELECT product_order.total_price FROM product_order
+      WHERE product_order.queue_id = (
+        SELECT queue.id FROM queue
+        WHERE queue.id = product_order.queue_id
+            AND queue.customer_id = :customerId
+            AND queue.status != 'COMPLETED'
+      )
       """)
   protected abstract List<String> _selectUncompletedQueueTotalPrice(@Nullable Long customerId);
 

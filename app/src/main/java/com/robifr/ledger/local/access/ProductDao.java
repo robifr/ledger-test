@@ -154,16 +154,16 @@ public abstract class ProductDao implements QueryAccessible<ProductModel> {
   @NonNull
   @Query(
       """
-        SELECT * FROM product
-        /**
-        * Use where-in clause because we don't want the data get override from the FTS field,
-        * since the string field is spaced.
-        */
-        WHERE product.rowid IN (
-          SELECT product_fts.rowid FROM product_fts
-          WHERE product_fts MATCH :query
-        )
-        ORDER BY product.name
+      SELECT * FROM product
+      /**
+       * Use where-in clause because we don't want the data get override from the FTS field,
+       * since the string field is spaced.
+       */
+      WHERE product.rowid IN (
+        SELECT product_fts.rowid FROM product_fts
+        WHERE product_fts MATCH :query
+      )
+      ORDER BY product.name
       """)
   protected abstract List<ProductModel> _search(@NonNull String query);
 

@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity
   public enum BottomNavigationTabTag {
     QUEUE(R.id.queue),
     CUSTOMER(R.id.customer),
-    PRODUCT(R.id.productLayout);
+    PRODUCT(R.id.product);
 
     @IdRes private final int _resourceId;
 
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity
         .setOnLongClickListener(Compats::hideTooltipText);
     this._activityBinding
         .bottomNavigation
-        .findViewById(R.id.productLayout)
+        .findViewById(R.id.product)
         .setOnLongClickListener(Compats::hideTooltipText);
 
     if (savedInstance == null) {

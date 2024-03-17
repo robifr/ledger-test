@@ -27,7 +27,7 @@
       android:menuCategory="secondary"
       android:title="@string/text_customer" />
   <item
-      android:id="@+id/productLayout"
+      android:id="@+id/product"
       android:icon="@drawable/selector_icon_sell"
       android:menuCategory="secondary"
       android:title="@string/text_product" />

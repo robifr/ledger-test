@@ -24,6 +24,7 @@
       android:id="@+id/title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:enabled="false"
       android:paddingStart="@dimen/bottomdialog_padding"
       android:paddingTop="@dimen/bottomdialog_title_margin"
       android:paddingBottom="@dimen/bottomdialog_title_abovebutton_marginbottom"
@@ -33,35 +34,35 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
-  <androidx.appcompat.widget.SwitchCompat
-      android:id="@+id/showNullCustomerSwitch"
+  <LinearLayout
+      android:id="@+id/showNullCustomer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="?attr/selectableItemBackground"
+      android:background="?selectableItemBackground"
       android:clickable="true"
-      android:focusable="true"
-      android:foreground="?attr/selectableItemBackground"
-      android:gravity="center_vertical"
       android:minHeight="@dimen/bottomdialog_button_minheight"
-      android:paddingStart="@dimen/bottomdialog_padding"
-      android:paddingEnd="@dimen/bottomdialog_padding"
-      android:text="@string/text_show_queue_with_no_customer"
-      android:textColor="?android:attr/textColor"
-      android:textSize="@dimen/text_smallmedium"
-      app:layout_constraintTop_toBottomOf="@id/title" />
+      android:orientation="horizontal"
+      app:layout_constraintTop_toBottomOf="@id/title">
 
-  <!-- Container for any filtered customers. -->
-  <com.google.android.material.chip.ChipGroup
-      android:id="@+id/chipGroup"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/bottomdialog_padding"
-      android:layout_marginEnd="@dimen/bottomdialog_padding"
-      android:layout_marginBottom="8dp"
-      android:visibility="gone"
-      app:chipSpacingHorizontal="@dimen/chip_spacing"
-      app:chipSpacingVertical="@dimen/chip_spacing"
-      app:layout_constraintTop_toBottomOf="@id/showNullCustomerSwitch" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/bottomdialog_item_margin"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/bottomdialog_padding"
+        android:paddingEnd="@dimen/bottomdialog_padding"
+        android:text="@string/text_show_queue_with_no_customer"
+        android:textColor="?android:textColor"
+        android:textSize="@dimen/text_smallmedium" />
+
+    <CheckBox
+        android:id="@+id/showNullCustomerCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/bottomdialog_padding"
+        android:minWidth="0dp" />
+  </LinearLayout>
 
   <!-- Manage filtered customer button. To fill the chip group. -->
   <TextView
@@ -69,7 +70,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/bottomdialog_item_margin"
-      android:background="?attr/selectableItemBackground"
+      android:background="?selectableItemBackground"
       android:clickable="true"
       android:gravity="center_vertical"
       android:minHeight="@dimen/bottomdialog_button_minheight"
@@ -78,5 +79,5 @@
       android:text="@string/text_filter_customers"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chipGroup" />
+      app:layout_constraintTop_toBottomOf="@id/showNullCustomer" />
 </androidx.constraintlayout.widget.ConstraintLayout>

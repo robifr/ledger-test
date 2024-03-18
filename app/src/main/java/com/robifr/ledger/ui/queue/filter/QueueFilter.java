@@ -38,7 +38,9 @@ public class QueueFilter implements DialogInterface.OnDismissListener {
 
   public QueueFilter(@NonNull QueueFragment fragment) {
     this._fragment = Objects.requireNonNull(fragment);
-    this._dialogBinding = QueueDialogFilterBinding.inflate(fragment.getLayoutInflater());
+    this._dialogBinding =
+        QueueDialogFilterBinding.inflate(
+            this._fragment.getLayoutInflater(), this._fragment.fragmentBinding().getRoot(), false);
 
     this._dialog =
         new BottomSheetDialog(this._fragment.requireContext(), R.style.BottomSheetDialog);

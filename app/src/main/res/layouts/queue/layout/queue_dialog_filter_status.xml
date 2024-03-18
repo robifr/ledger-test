@@ -24,6 +24,7 @@
       android:id="@+id/title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:enabled="false"
       android:paddingStart="@dimen/bottomdialog_padding"
       android:paddingTop="@dimen/bottomdialog_title_margin"
       android:paddingBottom="@dimen/bottomdialog_title_margin"
@@ -40,43 +41,57 @@
       android:layout_marginStart="@dimen/bottomdialog_padding"
       android:layout_marginEnd="@dimen/bottomdialog_padding"
       android:paddingBottom="@dimen/bottomdialog_item_margin"
-      app:chipSpacingHorizontal="@dimen/chip_spacing"
-      app:chipSpacingVertical="@dimen/chip_spacing"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintTop_toBottomOf="@id/title"
       app:singleSelection="false">
 
     <!-- Chip tags are based on `QueueModel.Status` enum. -->
     <com.google.android.material.chip.Chip
-        style="@style/Chip.Choice"
+        style="@style/Widget.Material3.Chip.Filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="IN_QUEUE"
         android:text="@string/text_in_queue"
-        app:chipIcon="@null" />
+        android:textSize="@dimen/text_smallmedium"
+        app:checkedIconEnabled="false"
+        app:chipIcon="@null"
+        app:chipStrokeWidth="@dimen/stroke_width"
+        app:ensureMinTouchTargetSize="false" />
 
     <com.google.android.material.chip.Chip
-        style="@style/Chip.Choice"
+        style="@style/Widget.Material3.Chip.Filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="IN_PROCESS"
         android:text="@string/text_in_process"
-        app:chipIcon="@null" />
+        android:textSize="@dimen/text_smallmedium"
+        app:checkedIconEnabled="false"
+        app:chipIcon="@null"
+        app:chipStrokeWidth="@dimen/stroke_width"
+        app:ensureMinTouchTargetSize="false" />
 
     <com.google.android.material.chip.Chip
-        style="@style/Chip.Choice"
+        style="@style/Widget.Material3.Chip.Filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="UNPAID"
         android:text="@string/text_unpaid"
-        app:chipIcon="@null" />
+        android:textSize="@dimen/text_smallmedium"
+        app:checkedIconEnabled="false"
+        app:chipIcon="@null"
+        app:chipStrokeWidth="@dimen/stroke_width"
+        app:ensureMinTouchTargetSize="false" />
 
     <com.google.android.material.chip.Chip
-        style="@style/Chip.Choice"
+        style="@style/Widget.Material3.Chip.Filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="COMPLETED"
         android:text="@string/text_completed"
-        app:chipIcon="@null" />
+        android:textSize="@dimen/text_smallmedium"
+        app:checkedIconEnabled="false"
+        app:chipIcon="@null"
+        app:chipStrokeWidth="@dimen/stroke_width"
+        app:ensureMinTouchTargetSize="false" />
   </com.google.android.material.chip.ChipGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

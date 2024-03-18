@@ -15,7 +15,12 @@
   ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:color="?attr/colorAccent" android:state_checked="true" />
-  <item android:color="@color/stroke" />
-</selector>
+<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chip"
+    style="@style/Widget.Material3.Chip.Input"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:ellipsize="end"
+    app:chipStrokeWidth="@dimen/stroke_width"
+    app:ensureMinTouchTargetSize="false" />

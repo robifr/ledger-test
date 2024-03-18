@@ -21,6 +21,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+  <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+      android:id="@+id/dragHandle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
   <TextView
       android:id="@+id/title"
       style="@style/BottomSheetDialog.Title"
@@ -40,7 +45,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_queue"
-      android:textColor="?android:attr/textColor"
       app:icon="@drawable/icon_assignment_20" />
 
   <com.google.android.material.button.MaterialButton
@@ -49,7 +53,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_customer"
-      android:textColor="?android:attr/textColor"
       app:icon="@drawable/icon_person_20" />
 
   <com.google.android.material.button.MaterialButton
@@ -58,6 +61,5 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_product"
-      android:textColor="?android:attr/textColor"
       app:icon="@drawable/icon_sell_20" />
 </LinearLayout>

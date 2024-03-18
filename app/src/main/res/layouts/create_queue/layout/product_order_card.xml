@@ -17,7 +17,6 @@
 
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,9 +24,7 @@
     android:layout_marginBottom="@dimen/cardlist_margin"
     android:checkable="true"
     app:checkedIcon="@null"
-    app:rippleColor="?android:attr/colorControlHighlight"
-    card_view:cardCornerRadius="@dimen/cardlist_corner_radius"
-    card_view:cardElevation="@dimen/cardlist_elevation">
+    app:strokeWidth="0dp">
 
   <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -57,7 +54,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:button="@drawable/icon_check_32"
-        android:buttonTint="?attr/colorControlNormal"
+        app:buttonTint="?colorControlNormal"
         app:layout_constraintBottom_toBottomOf="@id/productImage"
         app:layout_constraintEnd_toEndOf="@id/productImage"
         app:layout_constraintStart_toStartOf="@id/productImage"

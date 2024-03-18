@@ -23,7 +23,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
-import com.robifr.ledger.databinding.ReusableChipBinding;
+import com.robifr.ledger.databinding.ReusableChipInputBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import java.util.List;
@@ -73,11 +73,11 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
 
     for (int i = 0; i < filteredCustomers.size(); i++) {
       final CustomerModel filteredCustomer = filteredCustomers.get(i);
-      final ReusableChipBinding chipBinding =
+      final ReusableChipInputBinding chipBinding =
           i >= this._chipGroup.getChildCount()
-              ? ReusableChipBinding.inflate(
+              ? ReusableChipInputBinding.inflate(
                   this._fragment.getLayoutInflater(), this._chipGroup, false)
-              : ReusableChipBinding.bind(this._chipGroup.getChildAt(i));
+              : ReusableChipInputBinding.bind(this._chipGroup.getChildAt(i));
 
       // Set chip text based on filtered customer name.
       chipBinding.chip.setText(filteredCustomer.name());

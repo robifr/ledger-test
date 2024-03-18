@@ -46,7 +46,9 @@ public class QueueFilterCustomer
     this._dialog = Objects.requireNonNull(dialog);
 
     this._dialogBinding.filterCustomer.filterCustomerButton.setOnClickListener(this);
-    this._dialogBinding.filterCustomer.showNullCustomerSwitch.setOnCheckedChangeListener(this);
+    this._dialogBinding.filterCustomer.showNullCustomer.setOnClickListener(
+        v -> this._dialogBinding.filterCustomer.showNullCustomerCheckbox.performClick());
+    this._dialogBinding.filterCustomer.showNullCustomerCheckbox.setOnCheckedChangeListener(this);
   }
 
   @Override
@@ -83,7 +85,7 @@ public class QueueFilterCustomer
     Objects.requireNonNull(compoundButton);
 
     switch (compoundButton.getId()) {
-      case R.id.showNullCustomerSwitch ->
+      case R.id.showNullCustomerCheckbox ->
           this._fragment.queueViewModel().filterView().onNullCustomerShownEnabled(isChecked);
     }
   }
@@ -94,8 +96,8 @@ public class QueueFilterCustomer
   public void setNullCustomerShown(boolean isShown) {
     // Remove listener to prevent unintended updates to both view model
     // and the switch itself when manually set the switch.
-    this._dialogBinding.filterCustomer.showNullCustomerSwitch.setOnCheckedChangeListener(null);
-    this._dialogBinding.filterCustomer.showNullCustomerSwitch.setChecked(isShown);
-    this._dialogBinding.filterCustomer.showNullCustomerSwitch.setOnCheckedChangeListener(this);
+    this._dialogBinding.filterCustomer.showNullCustomerCheckbox.setOnCheckedChangeListener(null);
+    this._dialogBinding.filterCustomer.showNullCustomerCheckbox.setChecked(isShown);
+    this._dialogBinding.filterCustomer.showNullCustomerCheckbox.setOnCheckedChangeListener(this);
   }
 }

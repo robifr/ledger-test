@@ -17,23 +17,26 @@
 
 <resources>
 
-  <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light">
+  <style name="AppTheme.Light" parent="Theme.Material3.Light">
     <!-- Branding. -->
     <item name="colorPrimary">@color/selector_primary</item>
     <item name="colorOnPrimary">@color/selector_primary_textview</item>
+    <item name="colorPrimaryContainer">@color/selector_primary</item>
+    <item name="colorOnPrimaryContainer">@color/selector_primary_textview</item>
     <item name="colorSecondary">@color/selector_secondary</item>
     <item name="colorOnSecondary">@color/selector_secondary_textview</item>
-    <item name="colorSurface">@color/selector_surface</item>
-    <!-- Consider having a color selector for chip text color when defining `colorOnSurface`. -->
-    <item name="colorOnSurface">?android:attr/textColor</item>
+    <item name="colorSecondaryContainer">@color/blue_35</item>
+    <item name="colorSurface">@color/dark_white</item>
+    <item name="colorOnSurface">?android:textColor</item>
 
     <!-- Background color. -->
     <item name="android:colorBackground">@color/white</item>
+    <item name="colorSurfaceContainerHigh">@color/white</item> <!-- Dialog. -->
 
     <!-- Color of icon, checkbox, radio button, etc. -->
-    <item name="android:textColorPrimary">?android:attr/textColor</item> <!-- Menu item. -->
-    <item name="actionMenuTextColor">?android:attr/textColor</item> <!-- Menu item. -->
-    <item name="colorControlNormal">?android:attr/textColor</item>
+    <item name="android:textColorPrimary">?android:textColor</item> <!-- Menu item. -->
+    <item name="actionMenuTextColor">?android:textColor</item> <!-- Menu item. -->
+    <item name="colorControlNormal">?android:textColor</item>
 
     <!-- Color of selectable stuff (switch, cursor on edit text, button, etc.) -->
     <item name="colorAccent">@color/surface_selected</item> <!-- Foreground color. -->
@@ -67,7 +70,7 @@
     <item name="colorControlHighlight">@color/black_10</item>
 
     <!-- System status and navigation bar. -->
-    <item name="android:statusBarColor">?android:attr/colorBackground</item>
+    <item name="android:statusBarColor">?android:colorBackground</item>
     <item name="android:windowLightStatusBar">true</item>
     <!--
         Navigation bar background color should be manually set programmatically
@@ -87,8 +90,8 @@
     <!-- Snackbar. -->
     <item name="snackbarTextViewStyle">@style/Snackbar.TextView</item>
 
-    <!-- Button. -->
-    <item name="materialButtonStyle">@style/Button</item>
+    <!-- Disable annoying material things. The one that make every color looks weird. -->
+    <item name="elevationOverlayEnabled">false</item>
 
     <item name="windowNoTitle">true</item>
     <item name="windowActionBar">false</item>

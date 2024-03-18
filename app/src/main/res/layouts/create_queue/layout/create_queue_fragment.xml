@@ -129,40 +129,36 @@
       <com.google.android.material.button.MaterialButton
           android:id="@+id/paymentMethodCashButton"
           android:layout_width="match_parent"
-          android:layout_height="50dp"
+          android:layout_height="wrap_content"
           android:layout_marginStart="@dimen/screen_padding"
           android:layout_marginEnd="@dimen/screen_padding"
-          android:layout_marginBottom="4dp"
           android:checkable="true"
           android:drawableLeft="@drawable/icon_dollar_20"
           android:gravity="start|center_vertical"
-          android:paddingStart="15dp"
-          android:paddingEnd="15dp"
+          android:padding="@dimen/button_padding"
           android:tag="CASH"
           android:text="@string/text_cash"
-          app:backgroundTint="@color/surface"
-          app:cornerRadius="@dimen/cardlist_corner_radius"
+          android:textColor="?android:textColor"
+          app:backgroundTint="?colorSurface"
           app:iconPadding="15dp"
-          app:rippleColor="?android:attr/colorControlHighlight" />
+          app:rippleColor="?android:colorControlHighlight" />
 
       <com.google.android.material.button.MaterialButton
           android:id="@+id/paymentMethodAccountBalanceButton"
           android:layout_width="match_parent"
-          android:layout_height="50dp"
+          android:layout_height="wrap_content"
           android:layout_marginStart="@dimen/screen_padding"
-          android:layout_marginTop="4dp"
           android:layout_marginEnd="@dimen/screen_padding"
           android:checkable="true"
           android:drawableLeft="@drawable/icon_account_wallet_20"
           android:gravity="start|center_vertical"
-          android:paddingStart="15dp"
-          android:paddingEnd="15dp"
+          android:padding="@dimen/button_padding"
           android:tag="ACCOUNT_BALANCE"
           android:text="@string/text_account_balance"
-          app:backgroundTint="@color/surface"
-          app:cornerRadius="@dimen/cardlist_corner_radius"
+          android:textColor="?android:textColor"
+          app:backgroundTint="?colorSurface"
           app:iconPadding="15dp"
-          app:rippleColor="?android:attr/colorControlHighlight" />
+          app:rippleColor="?android:colorControlHighlight" />
 
       <include
           android:id="@+id/productOrder"

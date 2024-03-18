@@ -112,8 +112,8 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
   public void openDialog() {
     final MaterialDatePicker<Pair<Long, Long>> picker =
         MaterialDatePicker.Builder.dateRangePicker()
+            .setTheme(com.google.android.material.R.style.ThemeOverlay_Material3_MaterialCalendar)
             .setTitleText(this._fragment.getString(R.string.text_select_date_range))
-            .setTheme(R.style.MaterialDatePicker)
             .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
             .build();
 

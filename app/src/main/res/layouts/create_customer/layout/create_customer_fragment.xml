@@ -95,35 +95,35 @@
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.button.MaterialButton
-      android:id="@+id/withdrawButton"
-      android:layout_width="0dp"
+      android:id="@+id/depositButton"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/screen_padding"
       android:layout_marginTop="30dp"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:padding="@dimen/button_padding"
+      android:text="@string/text_deposit"
+      android:textColor="?colorOnPrimary"
+      app:backgroundTint="?colorPrimary"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_weight="0.5"
+      app:layout_constraintTop_toBottomOf="@id/debtLayout"
+      app:rippleColor="@color/primary_ripple" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/withdrawButton"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginEnd="@dimen/screen_padding"
+      android:padding="@dimen/button_padding"
       android:text="@string/text_withdraw"
-      android:textColor="?attr/colorOnSecondary"
-      app:backgroundTint="?attr/colorSecondary"
-      app:cornerRadius="@dimen/cardlist_corner_radius"
+      android:textColor="?colorOnSecondary"
+      app:backgroundTint="?colorSecondary"
       app:layout_constraintEnd_toStartOf="@id/depositButton"
       app:layout_constraintHorizontal_chainStyle="packed"
       app:layout_constraintHorizontal_weight="0.5"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/debtLayout"
+      app:layout_constraintTop_toBottomOf="@id/depositButton"
       app:rippleColor="@color/secondary_ripple" />
-
-  <com.google.android.material.button.MaterialButton
-      android:id="@+id/depositButton"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/screen_padding"
-      android:layout_marginEnd="@dimen/screen_padding"
-      android:text="@string/text_deposit"
-      android:textColor="?attr/colorOnPrimary"
-      app:backgroundTint="?attr/colorPrimary"
-      app:cornerRadius="@dimen/cardlist_corner_radius"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_weight="0.5"
-      app:layout_constraintStart_toEndOf="@id/withdrawButton"
-      app:layout_constraintTop_toTopOf="@id/withdrawButton"
-      app:rippleColor="@color/primary_ripple" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -45,8 +45,9 @@
   <dimen name="cardlist_packed_width">160dp</dimen>
   <dimen name="cardlist_padding">10dp</dimen>
   <dimen name="cardlist_margin">5dp</dimen>
-  <dimen name="cardlist_corner_radius">10dp</dimen>
-  <dimen name="cardlist_elevation">0dp</dimen>
+  <dimen name="cardlist_margin_reverse">-5dp</dimen>
+
+  <dimen name="button_padding">15dp</dimen>
 
   <dimen name="chip_spacing">10dp</dimen>
 

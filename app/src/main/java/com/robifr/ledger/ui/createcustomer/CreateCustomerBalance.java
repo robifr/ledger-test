@@ -53,7 +53,7 @@ public class CreateCustomerBalance
     this._withdrawDialogBinding =
         CreateCustomerDialogTransactionBinding.inflate(this._fragment.getLayoutInflater());
     this._withdrawDialog =
-        new MaterialAlertDialogBuilder(this._fragment.requireContext(), R.style.MaterialAlertDialog)
+        new MaterialAlertDialogBuilder(this._fragment.requireContext())
             .setView(this._withdrawDialogBinding.getRoot())
             .setNegativeButton(this._fragment.getString(R.string.text_cancel), this)
             .setPositiveButton(this._fragment.getString(R.string.text_withdraw), this)
@@ -64,7 +64,7 @@ public class CreateCustomerBalance
     this._depositDialogBinding =
         CreateCustomerDialogTransactionBinding.inflate(this._fragment.getLayoutInflater());
     this._depositDialog =
-        new MaterialAlertDialogBuilder(this._fragment.requireContext(), R.style.MaterialAlertDialog)
+        new MaterialAlertDialogBuilder(this._fragment.requireContext())
             .setView(this._depositDialogBinding.getRoot())
             .setNegativeButton(this._fragment.getString(R.string.text_cancel), this)
             .setPositiveButton(this._fragment.getString(R.string.text_deposit), this)

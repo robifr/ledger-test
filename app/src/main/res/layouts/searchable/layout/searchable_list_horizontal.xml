@@ -35,17 +35,18 @@
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/viewMoreButton"
+      style="@style/Widget.Material3.Button.IconButton.Filled"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="@dimen/screen_padding"
-      android:minWidth="0dp"
-      android:minHeight="0dp"
-      android:padding="8dp"
-      app:cornerRadius="50dp"
+      android:gravity="center"
+      app:backgroundTint="@android:color/transparent"
       app:icon="@drawable/icon_arrow_forward"
-      app:iconPadding="0dp"
+      app:iconSize="@dimen/icon_smallmedium"
+      app:iconTint="?android:textColor"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:rippleColor="?android:colorControlHighlight" />
 
   <HorizontalScrollView
       android:layout_width="wrap_content"

@@ -82,10 +82,10 @@
       app:icon="@drawable/icon_morevert_20"
       app:iconPadding="0dp"
       app:iconSize="@dimen/icon_small"
-      app:iconTint="?attr/colorControlNormal"
+      app:iconTint="?colorControlNormal"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:rippleColor="?android:attr/colorControlHighlight" />
+      app:rippleColor="?android:colorControlHighlight" />
 
   <View
       android:id="@+id/dividerLineForCustomer"
@@ -200,9 +200,8 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/coloredSideline"
       app:layout_constraintTop_toBottomOf="@id/paymentMethod"
-      card_view:cardBackgroundColor="?android:attr/colorBackground"
-      card_view:cardCornerRadius="@dimen/cardlist_corner_radius"
-      card_view:cardElevation="@dimen/cardlist_elevation">
+      app:strokeWidth="0dp"
+      card_view:cardBackgroundColor="?android:colorBackground">
 
     <TableLayout
         android:id="@+id/productOrderTable"

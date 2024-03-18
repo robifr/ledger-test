@@ -41,9 +41,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:src="@drawable/icon_add"
-        app:backgroundTint="?attr/colorPrimary"
-        app:rippleColor="@color/primary_ripple"
-        app:tint="?attr/colorOnPrimary" />
+        app:rippleColor="@color/primary_ripple" />
   </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
   <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -51,8 +49,7 @@
       style="@style/BottomNavigationView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="?attr/colorSurface"
-      android:padding="5dp"
+      app:itemBackground="?colorSurface"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

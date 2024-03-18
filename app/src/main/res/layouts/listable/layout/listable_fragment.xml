@@ -34,7 +34,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/colorBackground"
+        android:background="?android:colorBackground"
         app:layout_scrollFlags="scroll|enterAlways|snap"
         app:menu="@menu/reusable_toolbar_main"
         app:navigationIcon="@drawable/icon_arrow_back" />
@@ -43,8 +43,8 @@
         android:id="@+id/horizontalToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/colorBackground"
-        android:scrollbars="@null"
+        android:background="?android:colorBackground"
+        android:scrollbars="none"
         app:layout_scrollFlags="scroll|enterAlways|snap">
 
       <com.google.android.material.chip.ChipGroup
@@ -58,19 +58,29 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/sortByChip"
-            style="@style/Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/screen_padding"
             android:layoutDirection="rtl"
             android:text="@string/text_sort_by"
-            app:chipIcon="@drawable/icon_arrow_dropdown_20" />
+            android:textSize="@dimen/text_smallmedium"
+            app:chipIcon="@drawable/icon_arrow_dropdown_20"
+            app:chipIconTint="?android:textColor"
+            app:chipStrokeWidth="@dimen/stroke_width"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/filtersChip"
-            style="@style/Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/screen_padding"
             android:layoutDirection="rtl"
             android:text="@string/text_filters"
-            app:chipIcon="@drawable/icon_arrow_dropdown_20" />
+            android:textSize="@dimen/text_smallmedium"
+            app:chipIcon="@drawable/icon_arrow_dropdown_20"
+            app:chipIconTint="?android:textColor"
+            app:chipStrokeWidth="@dimen/stroke_width"
+            app:ensureMinTouchTargetSize="false" />
       </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
   </com.google.android.material.appbar.AppBarLayout>

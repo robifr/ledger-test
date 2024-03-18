@@ -55,7 +55,7 @@ public class MakeProductOrder
     this._dialogBinding =
         CreateQueueDialogProductOrderBinding.inflate(this._fragment.getLayoutInflater());
     this._dialog =
-        new MaterialAlertDialogBuilder(this._fragment.requireContext(), R.style.MaterialAlertDialog)
+        new MaterialAlertDialogBuilder(this._fragment.requireContext())
             .setView(this._dialogBinding.getRoot())
             .setNegativeButton(this._fragment.getString(R.string.text_cancel), this)
             .setPositiveButton(this._fragment.getString(R.string.text_add), this)

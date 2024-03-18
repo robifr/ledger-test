@@ -252,6 +252,11 @@ public class MainActivity extends AppCompatActivity
   }
 
   @NonNull
+  public MainActivityBinding activityBinding() {
+    return Objects.requireNonNull(this._activityBinding);
+  }
+
+  @NonNull
   public Intent requireStoragePermission() {
     Objects.requireNonNull(this._resultHandler);
 
@@ -260,7 +265,7 @@ public class MainActivity extends AppCompatActivity
             Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
             Uri.fromParts("package", this.getPackageName(), null));
 
-    new MaterialAlertDialogBuilder(this, R.style.MaterialAlertDialog)
+    new MaterialAlertDialogBuilder(this)
         .setTitle(this.getString(R.string.text_storage_access_permission_required))
         .setMessage(
             HtmlCompat.fromHtml(

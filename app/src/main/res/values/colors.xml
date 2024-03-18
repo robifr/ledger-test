@@ -56,9 +56,9 @@
   <color name="primary_ripple">@color/black_10</color>
 
   <color name="secondary">@color/black</color>
-  <color name="secondary_disabled">@color/text_disabled</color>
+  <color name="secondary_disabled">@color/darker_white</color>
   <color name="secondary_text">@color/white</color>
-  <color name="secondary_text_disabled">@color/white</color>
+  <color name="secondary_text_disabled">@color/black</color>
   <color name="secondary_ripple">@color/white_10</color>
 
   <color name="surface">@color/dark_white</color>

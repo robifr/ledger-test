@@ -175,8 +175,7 @@ public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuIt
 
     @Override
     public void handleOnBackPressed() {
-      new MaterialAlertDialogBuilder(
-              CreateCustomerFragment.this.requireContext(), R.style.MaterialAlertDialog)
+      new MaterialAlertDialogBuilder(CreateCustomerFragment.this.requireContext())
           .setTitle(CreateCustomerFragment.this.getString(R.string.text_discard_this_unsaved_task))
           .setNegativeButton(
               CreateCustomerFragment.this.getString(R.string.text_discard),

@@ -18,6 +18,7 @@
 package com.robifr.ledger.ui.searchcustomer.recycler;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
@@ -43,8 +44,11 @@ public class SearchCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
     final List<CustomerModel> customers =
         this._fragment.searchCustomerViewModel().customers().getValue();
     final int totalCustomers = customers != null ? customers.size() : 0;
+    final String text =
+        this._fragment
+            .getResources()
+            .getQuantityString(R.plurals.args_found_x_customer, totalCustomers, totalCustomers);
 
-    this._textBinding.text.setText(
-        this._fragment.getResources().getQuantityString(R.plurals.text_customer, totalCustomers));
+    this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }
 }

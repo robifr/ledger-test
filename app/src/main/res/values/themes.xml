@@ -93,6 +93,8 @@
     <!-- Disable annoying material things. The one that make every color looks weird. -->
     <item name="elevationOverlayEnabled">false</item>
 
+    <item name="android:forceDarkAllowed">false</item>
+
     <item name="windowNoTitle">true</item>
     <item name="windowActionBar">false</item>
   </style>

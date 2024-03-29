@@ -18,7 +18,6 @@
 package com.robifr.ledger.ui.main;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,6 +29,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -70,17 +70,6 @@ public class MainActivity extends AppCompatActivity
   @Nullable private BackStackNavigation _backStackNavigation;
   @Nullable private MainCreate _create;
   @Nullable private MainResultHandler _resultHandler;
-
-  @Override
-  public void onConfigurationChanged(@NonNull Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-
-    final int nightThemeFlags =
-        this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-    if (nightThemeFlags == Configuration.UI_MODE_NIGHT_YES) this.setTheme(R.style.AppTheme_Dark);
-    else this.setTheme(R.style.AppTheme_Light);
-  }
 
   @Override
   public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -189,7 +178,6 @@ public class MainActivity extends AppCompatActivity
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstance) {
-    this.onConfigurationChanged(this.getResources().getConfiguration());
     super.onCreate(savedInstance);
 
     this._activityBinding = MainActivityBinding.inflate(this.getLayoutInflater());
@@ -202,6 +190,7 @@ public class MainActivity extends AppCompatActivity
 
     this._activityBinding.createButton.setOnClickListener(button -> this._create.openDialog());
     this._activityBinding.bottomNavigation.setOnItemSelectedListener(this);
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
     // Hide annoying tooltip text.
     this._activityBinding

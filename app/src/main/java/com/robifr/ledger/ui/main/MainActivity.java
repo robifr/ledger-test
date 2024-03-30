@@ -40,6 +40,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.MainActivityBinding;
+import com.robifr.ledger.util.Compats;
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
@@ -116,6 +118,14 @@ public class MainActivity extends AppCompatActivity
     this._activityBinding.bottomNavigation.setOnItemSelectedListener(this);
     this.getOnBackPressedDispatcher().addCallback(this, new OnBackPressedHandler());
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+    List.of(R.id.queueFragment, R.id.customerFragment, R.id.productFragment)
+        .forEach(
+            id ->
+                this._activityBinding
+                    .bottomNavigation
+                    .findViewById(id)
+                    .setOnLongClickListener(Compats::hideTooltipText));
 
     final NavHostFragment navHostFragment =
         (NavHostFragment)

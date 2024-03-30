@@ -18,11 +18,11 @@
 package com.robifr.ledger.ui.search;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -65,7 +65,6 @@ public class SearchFragment extends Fragment
   @Nullable private SearchableFragmentBinding _fragmentBinding;
   @Nullable private SearchableListHorizontalBinding _customerListBinding;
   @Nullable private SearchableListHorizontalBinding _productListBinding;
-  @ColorInt private int _normalStatusBarColor;
 
   @Nullable private SearchViewModel _searchViewModel;
   @Nullable private SearchViewModelHandler _viewModelHandler;
@@ -93,7 +92,6 @@ public class SearchFragment extends Fragment
     Objects.requireNonNull(this._customerListBinding);
     Objects.requireNonNull(this._productListBinding);
 
-    this._normalStatusBarColor = this.requireActivity().getWindow().getStatusBarColor();
     this._searchViewModel =
         new ViewModelProvider(this, new SearchViewModel.Factory(this.requireContext()))
             .get(SearchViewModel.class);
@@ -193,7 +191,12 @@ public class SearchFragment extends Fragment
   public void finish() {
     Objects.requireNonNull(this._fragmentBinding);
 
-    this.requireActivity().getWindow().setStatusBarColor(this._normalStatusBarColor);
+    final TypedValue backgroundColor = new TypedValue();
+    this.requireContext()
+        .getTheme()
+        .resolveAttribute(android.R.attr.colorBackground, backgroundColor, true);
+
+    this.requireActivity().getWindow().setStatusBarColor(backgroundColor.data);
     Compats.hideKeyboard(this.requireContext(), this.requireView().findFocus());
     Navigation.findNavController(this._fragmentBinding.getRoot()).popBackStack();
   }

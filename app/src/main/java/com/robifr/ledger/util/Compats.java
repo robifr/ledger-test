@@ -52,9 +52,9 @@ public class Compats {
     final InputMethodManager inputManager =
         (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
-    focusedView.postDelayed(
-        () -> inputManager.showSoftInput(focusedView.findFocus(), InputMethodManager.SHOW_IMPLICIT),
-        0);
+    focusedView.post(
+        () ->
+            inputManager.showSoftInput(focusedView.findFocus(), InputMethodManager.SHOW_IMPLICIT));
   }
 
   public static void hideKeyboard(@NonNull Context context, @Nullable View focusedView) {
@@ -64,7 +64,7 @@ public class Compats {
     final InputMethodManager inputManager =
         (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
-    view.postDelayed(() -> inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0), 0);
+    view.post(() -> inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0));
   }
 
   @Nullable

@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
+public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
+    implements ChipGroup.OnCheckedStateChangeListener {
   @NonNull private final FilterCustomerFragment _fragment;
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final ChipGroup _chipGroup;
@@ -53,6 +54,7 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
     this._chipGroup.setSingleLine(false);
     this._chipGroup.setChipSpacingVertical(chipSpacing);
     this._chipGroup.setChipSpacingHorizontal(chipSpacing);
+    this._chipGroup.setOnCheckedStateChangeListener(this);
     this._headerBinding.selectedItemContainer.addView(this._chipGroup);
     this._headerBinding.selectedItemTitle.setText(
         this._fragment.getString(R.string.text_filtered_customers));
@@ -79,7 +81,8 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
                   this._fragment.getLayoutInflater(), this._chipGroup, false)
               : ReusableChipInputBinding.bind(this._chipGroup.getChildAt(i));
 
-      // Set chip text based on filtered customer name.
+      // Set chip ID based on the customer index to make them easier to find.
+      chipBinding.chip.setId(i);
       chipBinding.chip.setText(filteredCustomer.name());
 
       if (chipBinding.chip.getParent() == null) this._chipGroup.addView(chipBinding.chip);
@@ -90,5 +93,22 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
       final int size = this._chipGroup.getChildCount() - filteredCustomers.size();
       this._chipGroup.removeViews(filteredCustomers.size(), size);
     }
+  }
+
+  @Override
+  public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
+    Objects.requireNonNull(group);
+    Objects.requireNonNull(checkedIds);
+
+    final CustomerModel[] customersToRemove =
+        checkedIds.stream()
+            .map(
+                id -> {
+                  // The ID is the chip index itself.
+                  group.removeViewAt(id);
+                  return this._fragment.filterCustomerViewModel().filteredCustomers().get(id);
+                })
+            .toArray(CustomerModel[]::new);
+    this._fragment.filterCustomerViewModel().onRemoveFilteredCustomer(customersToRemove);
   }
 }

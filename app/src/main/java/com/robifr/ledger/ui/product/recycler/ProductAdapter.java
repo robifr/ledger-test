@@ -25,7 +25,7 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.product.ProductFragment;
-import com.robifr.ledger.util.Enums;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,7 +58,10 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     Objects.requireNonNull(parent);
 
     final ViewType type =
-        Objects.requireNonNull(Enums.valueOf(viewType, ViewType.class, ViewType::value));
+        Arrays.stream(ViewType.values())
+            .filter(e -> e.value() == viewType)
+            .findFirst()
+            .orElse(ViewType.LIST);
     final LayoutInflater inflater = this._fragment.getLayoutInflater();
 
     return switch (type) {

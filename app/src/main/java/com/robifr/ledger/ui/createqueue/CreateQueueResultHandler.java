@@ -25,7 +25,7 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.createqueue.viewmodel.CreateQueueViewModel;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
-import com.robifr.ledger.util.Enums;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class CreateQueueResultHandler {
@@ -55,10 +55,10 @@ public class CreateQueueResultHandler {
       Objects.requireNonNull(result);
 
       final SelectCustomerFragment.Request request =
-          Enums.valueOf(
-              requestKey,
-              SelectCustomerFragment.Request.class,
-              SelectCustomerFragment.Request::key);
+          Arrays.stream(SelectCustomerFragment.Request.values())
+              .filter(e -> e.key().equals(requestKey))
+              .findFirst()
+              .orElse(null);
       if (request == null) return;
 
       switch (request) {
@@ -85,8 +85,10 @@ public class CreateQueueResultHandler {
       Objects.requireNonNull(result);
 
       final SelectProductFragment.Request request =
-          Enums.valueOf(
-              requestKey, SelectProductFragment.Request.class, SelectProductFragment.Request::key);
+          Arrays.stream(SelectProductFragment.Request.values())
+              .filter(e -> e.key().equals(requestKey))
+              .findFirst()
+              .orElse(null);
       if (request == null) return;
 
       switch (request) {

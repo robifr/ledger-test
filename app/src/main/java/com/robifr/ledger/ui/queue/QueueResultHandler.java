@@ -22,8 +22,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentResultListener;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import com.robifr.ledger.util.Compats;
-import com.robifr.ledger.util.Enums;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,10 +48,10 @@ public class QueueResultHandler {
       Objects.requireNonNull(result);
 
       final FilterCustomerFragment.Request request =
-          Enums.valueOf(
-              requestKey,
-              FilterCustomerFragment.Request.class,
-              FilterCustomerFragment.Request::key);
+          Arrays.stream(FilterCustomerFragment.Request.values())
+              .filter(e -> e.key().equals(requestKey))
+              .findFirst()
+              .orElse(null);
       if (request == null) return;
 
       switch (request) {

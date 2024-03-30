@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentResultListener;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
 import com.robifr.ledger.ui.selectcustomer.viewmodel.SelectCustomerViewModel;
-import com.robifr.ledger.util.Enums;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class SelectCustomerResultHandler {
@@ -47,10 +47,10 @@ public class SelectCustomerResultHandler {
       Objects.requireNonNull(result);
 
       final SearchCustomerFragment.Request request =
-          Enums.valueOf(
-              requestKey,
-              SearchCustomerFragment.Request.class,
-              SearchCustomerFragment.Request::key);
+          Arrays.stream(SearchCustomerFragment.Request.values())
+              .filter(e -> e.key().equals(requestKey))
+              .findFirst()
+              .orElse(null);
       if (request == null) return;
 
       switch (request) {

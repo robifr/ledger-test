@@ -130,7 +130,7 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    this._selectProductViewModel.onProductsChanged(this._selectProductViewModel.fetchAllProducts());
+    this._selectProductViewModel.fetchAllProducts();
   }
 
   @Override

@@ -18,6 +18,8 @@
 package com.robifr.ledger.ui.filtercustomer.viewmodel;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -34,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class FilterCustomerViewModel extends ViewModel {
@@ -142,18 +143,20 @@ public class FilterCustomerViewModel extends ViewModel {
     this._filteredCustomerIds.setValue(new LiveDataEvent<>(customerIds));
   }
 
-  @NonNull
-  public List<CustomerModel> fetchAllCustomers() {
-    try {
-      return this._customerRepository.selectAll().get();
-
-    } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(
-          new LiveDataEvent<>(
-              new StringResources.Strings(R.string.text_error_unable_to_retrieve_all_customers)));
-    }
-
-    return new ArrayList<>();
+  public void fetchAllCustomers() {
+    this._customerRepository
+        .selectAll()
+        .thenAccept(
+            customers ->
+                new Handler(Looper.getMainLooper()).post(() -> this.onCustomersChanged(customers)))
+        .exceptionally(
+            e -> {
+              this._snackbarMessage.setValue(
+                  new LiveDataEvent<>(
+                      new StringResources.Strings(
+                          R.string.text_error_unable_to_retrieve_all_customers)));
+              return null;
+            });
   }
 
   public static class Factory implements ViewModelProvider.Factory {

@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.Navigation;
@@ -119,29 +120,50 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    final NavBackStackEntry backStackEntry =
-        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
-    final List<CustomerModel> customers = this._filterCustomerViewModel.fetchAllCustomers();
+    this._filterCustomerViewModel.fetchAllCustomers();
 
-    this._filterCustomerViewModel.onCustomersChanged(customers);
+    // Add filtered customers after the fetch operation completed.
+    this._filterCustomerViewModel
+        .customers()
+        .observe(
+            this.getViewLifecycleOwner(),
+            new Observer<>() {
+              @Override
+              public void onChanged(@Nullable List<CustomerModel> fetchedCustomers) {
+                final NavBackStackEntry backStackEntry =
+                    Navigation.findNavController(
+                            FilterCustomerFragment.this._fragmentBinding.getRoot())
+                        .getCurrentBackStackEntry();
 
-    if (backStackEntry != null && backStackEntry.getArguments() != null) {
-      final long[] initialFilteredCustomerIds =
-          Objects.requireNonNullElse(
-              backStackEntry
-                  .getArguments()
-                  .getLongArray(Arguments.INITIAL_FILTERED_CUSTOMER_IDS.key()),
-              new long[0]);
-      final CustomerModel[] filteredCustomers =
-          customers.stream()
-              .filter(
-                  customer ->
-                      Arrays.stream(initialFilteredCustomerIds)
-                          .anyMatch(id -> customer.id() != null && customer.id().equals(id)))
-              .toArray(CustomerModel[]::new);
+                if (fetchedCustomers == null
+                    || backStackEntry == null
+                    || backStackEntry.getArguments() == null) {
+                  return;
+                }
 
-      this._filterCustomerViewModel.onAddFilteredCustomer(filteredCustomers);
-    }
+                final long[] initialFilteredCustomerIds =
+                    Objects.requireNonNullElse(
+                        backStackEntry
+                            .getArguments()
+                            .getLongArray(Arguments.INITIAL_FILTERED_CUSTOMER_IDS.key()),
+                        new long[0]);
+                final CustomerModel[] filteredCustomers =
+                    fetchedCustomers.stream()
+                        .filter(
+                            customer ->
+                                Arrays.stream(initialFilteredCustomerIds)
+                                    .anyMatch(
+                                        id -> customer.id() != null && customer.id().equals(id)))
+                        .toArray(CustomerModel[]::new);
+
+                FilterCustomerFragment.this._filterCustomerViewModel.onAddFilteredCustomer(
+                    filteredCustomers);
+                FilterCustomerFragment.this
+                    ._filterCustomerViewModel
+                    .customers()
+                    .removeObserver(this);
+              }
+            });
   }
 
   @Override

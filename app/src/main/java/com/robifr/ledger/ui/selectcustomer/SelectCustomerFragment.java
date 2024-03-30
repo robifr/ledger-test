@@ -130,8 +130,7 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    this._selectCustomerViewModel.onCustomersChanged(
-        this._selectCustomerViewModel.fetchAllCustomers());
+    this._selectCustomerViewModel.fetchAllCustomers();
   }
 
   @Override

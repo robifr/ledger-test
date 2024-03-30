@@ -17,14 +17,14 @@
 
 <resources>
 
-  <style name="AppTheme.Dark" parent="AppTheme.Light">
-    <!-- Branding. -->
-    <item name="colorOnPrimary">@color/dark_white</item>
+  <!--  <style name="AppTheme.Dark" parent="AppTheme.Light">-->
+  <!-- Branding. -->
+  <!--    <item name="colorOnPrimary">@color/dark_white</item>-->
 
-    <!-- Background color. -->
-    <item name="android:colorBackground">@color/light_black</item>
+  <!-- Background color. -->
+  <!--    <item name="android:colorBackground">@color/light_black</item>-->
 
-    <!-- Ripple color. -->
-    <item name="colorControlHighlight">@color/white_10</item>
-  </style>
+  <!-- Ripple color. -->
+  <!--    <item name="colorControlHighlight">@color/white_10</item>-->
+  <!--  </style>-->
 </resources>

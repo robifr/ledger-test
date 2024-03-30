@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@Deprecated
 public class BackStackNavigation implements BackStack {
   @NonNull private final FragmentManager _fragmentManager;
   @IdRes private final int _containerId;
@@ -42,6 +43,7 @@ public class BackStackNavigation implements BackStack {
 
   @Nullable private String _currentTabStackTag;
 
+  @Deprecated
   public BackStackNavigation(@NonNull FragmentManager fragmentManager, @IdRes int containerId) {
     this._fragmentManager = Objects.requireNonNull(fragmentManager);
     this._containerId = containerId;

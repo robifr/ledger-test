@@ -17,12 +17,13 @@
 
 package com.robifr.ledger.ui.product.recycler;
 
+import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.ProductCardDialogMenuBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.editproduct.EditProductFragment;
 import com.robifr.ledger.ui.product.ProductFragment;
 import java.util.Objects;
@@ -49,23 +50,15 @@ public class ProductListMenu implements View.OnClickListener {
 
     switch (view.getId()) {
       case R.id.editButton -> {
-        if (this._holder.boundProduct().id() == null) return;
+        final Long productId = this._holder.boundProduct().id();
+        if (productId == null) return;
 
-        final EditProductFragment editProductFragment =
-            (EditProductFragment)
-                new EditProductFragment.Factory(this._holder.boundProduct().id())
-                    .instantiate(
-                        this._fragment.requireContext().getClassLoader(),
-                        EditProductFragment.class.getName());
+        final Bundle bundle = new Bundle();
+        bundle.putLong(EditProductFragment.Arguments.INITIAL_PRODUCT_ID_TO_EDIT.key(), productId);
 
-        if (this._fragment.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              editProductFragment,
-              EditProductFragment.class.toString());
-          this._dialog.dismiss();
-        }
+        Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+            .navigate(R.id.editProductFragment, bundle);
+        this._dialog.dismiss();
       }
 
       case R.id.deleteButton -> {

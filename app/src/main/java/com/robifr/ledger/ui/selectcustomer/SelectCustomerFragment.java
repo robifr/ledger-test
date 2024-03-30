@@ -27,20 +27,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
-import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
 import com.robifr.ledger.ui.selectcustomer.recycler.SelectCustomerAdapter;
 import com.robifr.ledger.ui.selectcustomer.viewmodel.SelectCustomerViewModel;
+import com.robifr.ledger.util.Compats;
 import java.util.Objects;
 
 public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
+  public enum Arguments implements FragmentResultKey {
+    INITIAL_SELECTED_CUSTOMER;
+
+    @Override
+    @NonNull
+    public String key() {
+      return FragmentResultKey.generateKey(this);
+    }
+  }
+
   public enum Request implements FragmentResultKey {
     SELECT_CUSTOMER;
 
@@ -62,22 +72,12 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
-  @Nullable private final CustomerModel _initialSelectedCustomer;
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private SelectCustomerAdapter _adapter;
   @Nullable private SelectCustomerResultHandler _resultHandler;
 
   @Nullable private SelectCustomerViewModel _selectCustomerViewModel;
   @Nullable private SelectCustomerViewModelHandler _viewModelHandler;
-
-  /** Default constructor when configuration changes. */
-  public SelectCustomerFragment() {
-    this(null);
-  }
-
-  protected SelectCustomerFragment(@Nullable CustomerModel initialSelectedCustomer) {
-    this._initialSelectedCustomer = initialSelectedCustomer;
-  }
 
   @Override
   public View onCreateView(
@@ -95,13 +95,22 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
 
+    final NavBackStackEntry backStackEntry =
+        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
+    final CustomerModel initialSelectedCustomer =
+        backStackEntry != null && backStackEntry.getArguments() != null
+            ? Compats.parcelableOf(
+                backStackEntry.getArguments(),
+                Arguments.INITIAL_SELECTED_CUSTOMER.key(),
+                CustomerModel.class)
+            : null;
+
     this._adapter = new SelectCustomerAdapter(this);
     this._resultHandler = new SelectCustomerResultHandler(this);
     this._selectCustomerViewModel =
         new ViewModelProvider(
                 this,
-                new SelectCustomerViewModel.Factory(
-                    this.requireContext(), this._initialSelectedCustomer))
+                new SelectCustomerViewModel.Factory(this.requireContext(), initialSelectedCustomer))
             .get(SelectCustomerViewModel.class);
     this._viewModelHandler =
         new SelectCustomerViewModelHandler(this, this._selectCustomerViewModel);
@@ -128,24 +137,12 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   @Override
   public boolean onMenuItemClick(@NonNull MenuItem item) {
     Objects.requireNonNull(item);
+    Objects.requireNonNull(this._fragmentBinding);
 
     return switch (item.getItemId()) {
       case R.id.search -> {
-        final SearchCustomerFragment searchCustomerFragment =
-            (SearchCustomerFragment)
-                new SearchCustomerFragment.Factory(null)
-                    .instantiate(
-                        this.requireContext().getClassLoader(),
-                        SearchCustomerFragment.class.getName());
-
-        if (this.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              searchCustomerFragment,
-              SearchCustomerFragment.class.toString());
-        }
-
+        Navigation.findNavController(this._fragmentBinding.getRoot())
+            .navigate(R.id.searchCustomerFragment);
         yield true;
       }
 
@@ -169,29 +166,9 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   }
 
   public void finish() {
-    if (this.requireActivity() instanceof BackStack navigation
-        && navigation.currentTabStackTag() != null) {
-      navigation.popFragmentStack(navigation.currentTabStackTag());
-    }
-  }
+    Objects.requireNonNull(this._fragmentBinding);
 
-  public static class Factory extends FragmentFactory {
-    @Nullable private final CustomerModel _initialSelectedCustomer;
-
-    public Factory(@Nullable CustomerModel initialSelectedCustomer) {
-      this._initialSelectedCustomer = initialSelectedCustomer;
-    }
-
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(SelectCustomerFragment.class.getName()))
-          ? new SelectCustomerFragment(this._initialSelectedCustomer)
-          : super.instantiate(classLoader, className);
-    }
+    Navigation.findNavController(this._fragmentBinding.getRoot()).popBackStack();
   }
 
   private class OnBackPressedHandler extends OnBackPressedCallback {

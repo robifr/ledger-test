@@ -25,49 +25,27 @@ import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
-import androidx.annotation.IdRes;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.text.HtmlCompat;
-import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.MainActivityBinding;
-import com.robifr.ledger.ui.BackStack;
-import com.robifr.ledger.ui.BackStackNavigation;
-import com.robifr.ledger.ui.customer.CustomerFragment;
-import com.robifr.ledger.ui.product.ProductFragment;
-import com.robifr.ledger.ui.queue.QueueFragment;
-import com.robifr.ledger.util.Compats;
-import com.robifr.ledger.util.Enums;
-import java.util.Deque;
-import java.util.Map;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
-    implements BackStack, NavigationBarView.OnItemSelectedListener {
-  public enum BottomNavigationTabTag {
-    QUEUE(R.id.queue),
-    CUSTOMER(R.id.customer),
-    PRODUCT(R.id.product);
-
-    @IdRes private final int _resourceId;
-
-    private BottomNavigationTabTag(int resourceId) {
-      this._resourceId = resourceId;
-    }
-
-    @IdRes
-    public int resourceId() {
-      return this._resourceId;
-    }
-  }
-
+    implements NavigationBarView.OnItemSelectedListener,
+        NavController.OnDestinationChangedListener {
   @Nullable private MainActivityBinding _activityBinding;
-  @Nullable private BackStackNavigation _backStackNavigation;
   @Nullable private MainCreate _create;
   @Nullable private MainResultHandler _resultHandler;
 
@@ -76,104 +54,52 @@ public class MainActivity extends AppCompatActivity
     Objects.requireNonNull(item);
     Objects.requireNonNull(this._activityBinding);
 
-    final BottomNavigationTabTag tab =
-        Enums.valueOf(
-            item.getItemId(), BottomNavigationTabTag.class, BottomNavigationTabTag::resourceId);
+    final NavController navController = Navigation.findNavController(this, R.id.fragmentContainer);
+    final NavDestination currentDestination =
+        Objects.requireNonNull(navController.getCurrentDestination());
 
-    // Prevent recursive.
-    if (tab == null || tab.toString().equals(this.currentTabStackTag())) return true;
-
-    // Note: Using `bottomNavigation.setSelectedItemId()` can often result in an infinite loop,
-    //    even if the code placement is correct.
-    this._activityBinding.bottomNavigation.getMenu().findItem(item.getItemId()).setChecked(true);
-    this.navigateTabStack(tab.toString());
-    return false;
+    navController.navigate(
+        item.getItemId(),
+        null,
+        new NavOptions.Builder().setPopUpTo(currentDestination.getId(), true).build());
+    return true;
   }
 
   @Override
-  @NonNull
-  public Map<String, Deque<Fragment>> navigationStacks() {
-    Objects.requireNonNull(this._backStackNavigation);
-
-    return this._backStackNavigation.navigationStacks();
-  }
-
-  @Override
-  @Nullable
-  public String currentTabStackTag() {
-    Objects.requireNonNull(this._backStackNavigation);
-
-    return this._backStackNavigation.currentTabStackTag();
-  }
-
-  @Override
-  public void addTabStack(@NonNull String... tags) {
-    Objects.requireNonNull(tags);
-    Objects.requireNonNull(this._backStackNavigation);
-
-    this._backStackNavigation.addTabStack(tags);
-  }
-
-  @Override
-  public void removeTabStack(@NonNull String tag) {
-    Objects.requireNonNull(tag);
-    Objects.requireNonNull(this._backStackNavigation);
-
-    this._backStackNavigation.removeTabStack(tag);
-  }
-
-  @Override
-  public void pushFragmentStack(@NonNull String tabTag, @NonNull String fragmentTag) {
-    Objects.requireNonNull(tabTag);
-    Objects.requireNonNull(fragmentTag);
-    Objects.requireNonNull(this._backStackNavigation);
-
-    this._backStackNavigation.pushFragmentStack(tabTag, fragmentTag);
-    this._onBackStackChanged(tabTag);
-  }
-
-  @Override
-  public void pushFragmentStack(
-      @NonNull String tabTag, @NonNull Fragment fragment, @NonNull String fragmentTag) {
-    Objects.requireNonNull(tabTag);
-    Objects.requireNonNull(fragment);
-    Objects.requireNonNull(fragmentTag);
-    Objects.requireNonNull(this._backStackNavigation);
-
-    this._backStackNavigation.pushFragmentStack(tabTag, fragment, fragmentTag);
-    this._onBackStackChanged(tabTag);
-  }
-
-  @Override
-  @Nullable
-  public Fragment popFragmentStack(@NonNull String tabTag) {
-    Objects.requireNonNull(tabTag);
-    Objects.requireNonNull(this._backStackNavigation);
-
-    final Fragment poppedFragment = this._backStackNavigation.popFragmentStack(tabTag);
-
-    this._onBackStackChanged(tabTag);
-    return poppedFragment;
-  }
-
-  @Override
-  public boolean navigateTabStack(@NonNull String tabTag) {
-    Objects.requireNonNull(tabTag);
+  public void onDestinationChanged(
+      @NonNull NavController navController,
+      @NonNull NavDestination destination,
+      @Nullable Bundle bundle) {
+    Objects.requireNonNull(navController);
+    Objects.requireNonNull(destination);
     Objects.requireNonNull(this._activityBinding);
-    Objects.requireNonNull(this._backStackNavigation);
 
-    final BottomNavigationTabTag bottomNavStack = BottomNavigationTabTag.valueOf(tabTag);
+    // Match selected item of bottom navigation with the visible fragment.
+    // It doesn't get matched on back pressed.
+    final MenuItem item =
+        this._activityBinding.bottomNavigation.getMenu().findItem(destination.getId());
+    if (item != null) item.setChecked(true);
 
-    // Select bottom navigation item when navigating between tab stack.
-    if (bottomNavStack != null) {
-      this._activityBinding
-          .bottomNavigation
-          .getMenu()
-          .findItem(bottomNavStack.resourceId())
-          .setChecked(true);
-    }
+    final TypedValue backgroundColor = new TypedValue();
+    final int mainViewsVisibility =
+        destination.getParent() != null && destination.getParent().getId() == R.id.mainGraph
+            ? View.VISIBLE
+            : View.GONE;
+    final int navigationBarColor =
+        mainViewsVisibility == View.VISIBLE
+            ? com.google.android.material.R.attr.colorSurface
+            : android.R.attr.colorBackground;
 
-    return this._backStackNavigation.navigateTabStack(tabTag);
+    // Due to bottom navigation on main activity uses a different color — color surface.
+    // Match system navigation bar color into it, otherwise with current background.
+    this.getTheme().resolveAttribute(navigationBarColor, backgroundColor, true);
+    this.getWindow().setNavigationBarColor(this.getColor(backgroundColor.resourceId));
+
+    // Hide views on main activity when user navigating to another fragment other than
+    // the one defined as top of the stack — queue, customer, and product — inside bottom
+    // navigation.
+    this._activityBinding.bottomNavigation.setVisibility(mainViewsVisibility);
+    this._activityBinding.createButton.setVisibility(mainViewsVisibility);
   }
 
   @Override
@@ -183,61 +109,21 @@ public class MainActivity extends AppCompatActivity
     this._activityBinding = MainActivityBinding.inflate(this.getLayoutInflater());
     this.setContentView(this._activityBinding.getRoot());
 
-    this._backStackNavigation =
-        new BackStackNavigation(this.getSupportFragmentManager(), R.id.fragmentContainer);
     this._create = new MainCreate(this);
     this._resultHandler = new MainResultHandler(this);
 
     this._activityBinding.createButton.setOnClickListener(button -> this._create.openDialog());
     this._activityBinding.bottomNavigation.setOnItemSelectedListener(this);
+    this.getOnBackPressedDispatcher().addCallback(this, new OnBackPressedHandler());
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-    // Hide annoying tooltip text.
-    this._activityBinding
-        .bottomNavigation
-        .findViewById(R.id.queue)
-        .setOnLongClickListener(Compats::hideTooltipText);
-    this._activityBinding
-        .bottomNavigation
-        .findViewById(R.id.customer)
-        .setOnLongClickListener(Compats::hideTooltipText);
-    this._activityBinding
-        .bottomNavigation
-        .findViewById(R.id.product)
-        .setOnLongClickListener(Compats::hideTooltipText);
+    final NavHostFragment navHostFragment =
+        (NavHostFragment)
+            Objects.requireNonNull(
+                this.getSupportFragmentManager().findFragmentById(R.id.fragmentContainer));
+    navHostFragment.getNavController().addOnDestinationChangedListener(this);
 
-    if (savedInstance == null) {
-      final QueueFragment queueFragment =
-          (QueueFragment)
-              new QueueFragment.Factory()
-                  .instantiate(this.getClassLoader(), QueueFragment.class.getName());
-      final CustomerFragment customerFragment =
-          (CustomerFragment)
-              new CustomerFragment.Factory()
-                  .instantiate(this.getClassLoader(), CustomerFragment.class.getName());
-      final ProductFragment productFragment =
-          (ProductFragment)
-              new ProductFragment.Factory()
-                  .instantiate(this.getClassLoader(), ProductFragment.class.getName());
-
-      this.addTabStack(
-          BottomNavigationTabTag.QUEUE.toString(),
-          BottomNavigationTabTag.CUSTOMER.toString(),
-          BottomNavigationTabTag.PRODUCT.toString());
-      this.pushFragmentStack(
-          BottomNavigationTabTag.QUEUE.toString(), queueFragment, QueueFragment.class.toString());
-      this.pushFragmentStack(
-          BottomNavigationTabTag.CUSTOMER.toString(),
-          customerFragment,
-          CustomerFragment.class.toString());
-      this.pushFragmentStack(
-          BottomNavigationTabTag.PRODUCT.toString(),
-          productFragment,
-          ProductFragment.class.toString());
-      this.navigateTabStack(BottomNavigationTabTag.QUEUE.toString());
-
-      if (!Environment.isExternalStorageManager()) this.requireStoragePermission();
-    }
+    if (!Environment.isExternalStorageManager()) this.requireStoragePermission();
   }
 
   @NonNull
@@ -270,34 +156,14 @@ public class MainActivity extends AppCompatActivity
     return intent;
   }
 
-  private void _onBackStackChanged(@NonNull String tabTag) {
-    Objects.requireNonNull(tabTag);
-    Objects.requireNonNull(this._activityBinding);
+  private class OnBackPressedHandler extends OnBackPressedCallback {
+    public OnBackPressedHandler() {
+      super(true);
+    }
 
-    final BottomNavigationTabTag bottomNavTabStack =
-        Enums.nameOf(tabTag, BottomNavigationTabTag.class);
-    final Deque<Fragment> bottomNavStack =
-        bottomNavTabStack != null
-            ? this.navigationStacks().get(bottomNavTabStack.toString())
-            : null;
-    final boolean isOnTopBottomNavStack = bottomNavStack != null && bottomNavStack.size() <= 1;
-    final int mainActivityViewsVisibility = isOnTopBottomNavStack ? View.VISIBLE : View.GONE;
-
-    final TypedValue backgroundColor = new TypedValue();
-    final int navigationBarColor =
-        mainActivityViewsVisibility == View.VISIBLE
-            ? com.google.android.material.R.attr.colorSurface
-            : android.R.attr.colorBackground;
-
-    // Due to bottom sheet navigation on main activity uses a different color — color surface.
-    // Match system navigation bar color into it, otherwise with current background.
-    this.getTheme().resolveAttribute(navigationBarColor, backgroundColor, true);
-    this.getWindow().setNavigationBarColor(this.getColor(backgroundColor.resourceId));
-
-    // Hide views on main activity when user navigating to another fragment other than
-    // the one defined as top of the stack — queue, customer, and product — inside bottom
-    // navigation.
-    this._activityBinding.bottomNavigation.setVisibility(mainActivityViewsVisibility);
-    this._activityBinding.createButton.setVisibility(mainActivityViewsVisibility);
+    @Override
+    public void handleOnBackPressed() {
+      MainActivity.this.finish();
+    }
   }
 }

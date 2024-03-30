@@ -21,9 +21,9 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
@@ -34,6 +34,16 @@ import java.time.ZoneId;
 import java.util.Objects;
 
 public class EditQueueFragment extends CreateQueueFragment {
+  public enum Arguments implements FragmentResultKey {
+    INITIAL_QUEUE_ID_TO_EDIT;
+
+    @Override
+    @NonNull
+    public String key() {
+      return FragmentResultKey.generateKey(this);
+    }
+  }
+
   public enum Request implements FragmentResultKey {
     EDIT_QUEUE;
 
@@ -54,17 +64,6 @@ public class EditQueueFragment extends CreateQueueFragment {
     }
   }
 
-  @NonNull private final Long _initialQueueIdToEdit;
-
-  /** Default constructor when configuration changes. */
-  public EditQueueFragment() {
-    this(0L);
-  }
-
-  protected EditQueueFragment(@NonNull Long initialQueueIdToEdit) {
-    this._initialQueueIdToEdit = Objects.requireNonNull(initialQueueIdToEdit);
-  }
-
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     super.onViewCreated(view, savedInstance);
@@ -78,9 +77,15 @@ public class EditQueueFragment extends CreateQueueFragment {
 
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_queue));
 
-    if (this._createQueueViewModel instanceof EditQueueViewModel editQueueViewModel) {
+    final NavBackStackEntry backStackEntry =
+        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
+
+    if (this._createQueueViewModel instanceof EditQueueViewModel editQueueViewModel
+        && backStackEntry != null
+        && backStackEntry.getArguments() != null) {
       final QueueModel initialQueue =
-          editQueueViewModel.selectQueueById(this._initialQueueIdToEdit);
+          editQueueViewModel.selectQueueById(
+              backStackEntry.getArguments().getLong(Arguments.INITIAL_QUEUE_ID_TO_EDIT.key(), 0L));
       Objects.requireNonNull(initialQueue); // Logically shouldn't be null when editing data.
 
       editQueueViewModel.setInitialQueueToEdit(initialQueue);
@@ -90,25 +95,6 @@ public class EditQueueFragment extends CreateQueueFragment {
       editQueueViewModel.onPaymentMethodChanged(initialQueue.paymentMethod());
       editQueueViewModel.onAddProductOrder(
           initialQueue.productOrders().toArray(new ProductOrderModel[0]));
-    }
-  }
-
-  public static class Factory extends FragmentFactory {
-    @NonNull private final Long _initialQueueIdToEdit;
-
-    public Factory(@NonNull Long initialQueueIdToEdit) {
-      this._initialQueueIdToEdit = Objects.requireNonNull(initialQueueIdToEdit);
-    }
-
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(EditQueueFragment.class.getName()))
-          ? new EditQueueFragment(this._initialQueueIdToEdit)
-          : super.instantiate(classLoader, className);
     }
   }
 }

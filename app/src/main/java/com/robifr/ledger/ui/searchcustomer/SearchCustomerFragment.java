@@ -27,12 +27,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.SearchableFragmentBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.searchcustomer.recycler.SearchCustomerAdapter;
 import com.robifr.ledger.ui.searchcustomer.viewmodel.SearchCustomerViewModel;
@@ -40,6 +40,16 @@ import com.robifr.ledger.util.Compats;
 import java.util.Objects;
 
 public class SearchCustomerFragment extends Fragment implements SearchView.OnQueryTextListener {
+  public enum Arguments implements FragmentResultKey {
+    INITIAL_QUERY;
+
+    @Override
+    @NonNull
+    public String key() {
+      return FragmentResultKey.generateKey(this);
+    }
+  }
+
   public enum Request implements FragmentResultKey {
     SELECT_CUSTOMER;
 
@@ -61,22 +71,12 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
-  @Nullable private final String _initialQuery;
   @Nullable private SearchableFragmentBinding _fragmentBinding;
   @Nullable private SearchCustomerAdapter _adapter;
   @ColorInt private int _normalStatusBarColor;
 
   @Nullable private SearchCustomerViewModel _searchCustomerViewModel;
   @Nullable private SearchCustomerViewModelHandler _viewModelHandler;
-
-  /** Default constructor when configuration changes. */
-  public SearchCustomerFragment() {
-    this(null);
-  }
-
-  private SearchCustomerFragment(@Nullable String initialQuery) {
-    this._initialQuery = initialQuery;
-  }
 
   @Override
   public View onCreateView(
@@ -122,8 +122,12 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    if (this._initialQuery != null) {
-      this._fragmentBinding.seachView.setQuery(this._initialQuery, true);
+    final NavBackStackEntry backStackEntry =
+        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
+
+    if (backStackEntry != null && backStackEntry.getArguments() != null) {
+      this._fragmentBinding.seachView.setQuery(
+          backStackEntry.getArguments().getString(Arguments.INITIAL_QUERY.key()), true);
     } else {
       Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
     }
@@ -160,31 +164,9 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
   public void finish() {
     Objects.requireNonNull(this._fragmentBinding);
 
-    if (this.requireActivity() instanceof BackStack navigation
-        && navigation.currentTabStackTag() != null) {
-      Compats.hideKeyboard(this.requireContext(), this.requireView().findFocus());
-      this.requireActivity().getWindow().setStatusBarColor(this._normalStatusBarColor);
-      navigation.popFragmentStack(navigation.currentTabStackTag());
-    }
-  }
-
-  public static class Factory extends FragmentFactory {
-    @Nullable private final String _initialQuery;
-
-    public Factory(@Nullable String initialQuery) {
-      this._initialQuery = initialQuery;
-    }
-
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(SearchCustomerFragment.class.getName()))
-          ? new SearchCustomerFragment(this._initialQuery)
-          : super.instantiate(classLoader, className);
-    }
+    this.requireActivity().getWindow().setStatusBarColor(this._normalStatusBarColor);
+    Compats.hideKeyboard(this.requireContext(), this.requireView().findFocus());
+    Navigation.findNavController(this._fragmentBinding.getRoot()).popBackStack();
   }
 
   private class OnBackPressedHandler extends OnBackPressedCallback {

@@ -26,18 +26,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.CustomerFilters;
 import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.customer.filter.CustomerFilter;
 import com.robifr.ledger.ui.customer.recycler.CustomerAdapter;
 import com.robifr.ledger.ui.customer.viewmodel.CustomerViewModel;
-import com.robifr.ledger.ui.search.SearchFragment;
 import java.util.Objects;
 
 public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
@@ -86,30 +84,22 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    this._customerViewModel.onSortMethodChanged(
-        new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
-    this._customerViewModel.filterView().onFiltersChanged(CustomerFilters.toBuilder().build());
-    this._customerViewModel.fetchAllCustomers();
+    if (this._customerViewModel.customers().getValue() == null) {
+      this._customerViewModel.onSortMethodChanged(
+          new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
+      this._customerViewModel.filterView().onFiltersChanged(CustomerFilters.toBuilder().build());
+      this._customerViewModel.fetchAllCustomers();
+    }
   }
 
   @Override
   public boolean onMenuItemClick(@NonNull MenuItem item) {
     Objects.requireNonNull(item);
+    Objects.requireNonNull(this._fragmentBinding);
 
     return switch (item.getItemId()) {
       case R.id.search -> {
-        final SearchFragment searchFragment =
-            (SearchFragment)
-                new SearchFragment.Factory()
-                    .instantiate(
-                        this.requireContext().getClassLoader(), SearchFragment.class.getName());
-
-        if (this.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(), searchFragment, SearchFragment.class.toString());
-        }
-
+        Navigation.findNavController(this._fragmentBinding.getRoot()).navigate(R.id.searchFragment);
         yield true;
       }
 
@@ -140,18 +130,5 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
   @NonNull
   public CustomerViewModel customerViewModel() {
     return Objects.requireNonNull(this._customerViewModel);
-  }
-
-  public static class Factory extends FragmentFactory {
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(CustomerFragment.class.getName()))
-          ? new CustomerFragment()
-          : super.instantiate(classLoader, className);
-    }
   }
 }

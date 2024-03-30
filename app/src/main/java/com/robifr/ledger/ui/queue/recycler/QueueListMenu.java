@@ -17,12 +17,13 @@
 
 package com.robifr.ledger.ui.queue.recycler;
 
+import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.QueueCardDialogMenuBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.editqueue.EditQueueFragment;
 import com.robifr.ledger.ui.queue.QueueFragment;
 import java.util.Objects;
@@ -49,23 +50,15 @@ public class QueueListMenu implements View.OnClickListener {
 
     switch (view.getId()) {
       case R.id.editButton -> {
-        if (this._holder.boundQueue().id() == null) return;
+        final Long queueId = this._holder.boundQueue().id();
+        if (queueId == null) return;
 
-        final EditQueueFragment editQueueFragment =
-            (EditQueueFragment)
-                new EditQueueFragment.Factory(this._holder.boundQueue().id())
-                    .instantiate(
-                        this._fragment.requireContext().getClassLoader(),
-                        EditQueueFragment.class.getName());
+        final Bundle bundle = new Bundle();
+        bundle.putLong(EditQueueFragment.Arguments.INITIAL_QUEUE_ID_TO_EDIT.key(), queueId);
 
-        if (this._fragment.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              editQueueFragment,
-              EditQueueFragment.class.toString());
-          this._dialog.dismiss();
-        }
+        Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+            .navigate(R.id.editQueueFragment, bundle);
+        this._dialog.dismiss();
       }
 
       case R.id.deleteButton -> {

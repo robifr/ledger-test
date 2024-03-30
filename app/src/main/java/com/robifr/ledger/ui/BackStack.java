@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 import java.util.Deque;
 import java.util.Map;
 
+@Deprecated
 public interface BackStack {
   /**
    * Map of back stacks where the key is the tab tag, and stack of fragments as value. It's when
@@ -36,14 +37,18 @@ public interface BackStack {
    *  tab 3 = fragment 6
    * </pre>
    */
+  @Deprecated
   @NonNull
   public Map<String, Deque<Fragment>> navigationStacks();
 
+  @Deprecated
   @Nullable
   public String currentTabStackTag();
 
+  @Deprecated
   public void addTabStack(@NonNull String... tabTags);
 
+  @Deprecated
   public void removeTabStack(@NonNull String tabTag);
 
   /**
@@ -51,6 +56,7 @@ public interface BackStack {
    * the same tag (identified by {@code fragmentTag}) already exists in the tab stack, it will be
    * replaced and moved to the top without being added multiple times.
    */
+  @Deprecated
   public void pushFragmentStack(
       @NonNull String tabTag, @NonNull Fragment fragment, @NonNull String fragmentTag);
 
@@ -61,9 +67,11 @@ public interface BackStack {
    * fragment already pushed beforehand with {@link BackStack#pushFragmentStack(String, Fragment,
    * String)} method.
    */
+  @Deprecated
   public void pushFragmentStack(@NonNull String tabTag, @NonNull String fragmentTag);
 
   /** Pops and removes the top fragment from the specified tab stack. */
+  @Deprecated
   @Nullable
   public Fragment popFragmentStack(@NonNull String tabTag);
 
@@ -73,5 +81,6 @@ public interface BackStack {
    *
    * @return {@code true} if the operation was successful, {@code false} otherwise.
    */
+  @Deprecated
   public boolean navigateTabStack(@NonNull String tabTag);
 }

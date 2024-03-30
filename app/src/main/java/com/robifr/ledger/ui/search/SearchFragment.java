@@ -27,12 +27,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.SearchableFragmentBinding;
 import com.robifr.ledger.databinding.SearchableListHorizontalBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.search.viewmodel.SearchViewModel;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
@@ -137,38 +136,22 @@ public class SearchFragment extends Fragment
     switch (view.getId()) {
       case R.id.viewMoreButton -> {
         if (view == this._customerListBinding.viewMoreButton) {
-          final SearchCustomerFragment searchCustomerFragment =
-              (SearchCustomerFragment)
-                  new SearchCustomerFragment.Factory(
-                          this._fragmentBinding.seachView.getQuery().toString())
-                      .instantiate(
-                          this.requireContext().getClassLoader(),
-                          SearchCustomerFragment.class.getName());
+          final Bundle bundle = new Bundle();
+          bundle.putString(
+              SearchCustomerFragment.Arguments.INITIAL_QUERY.key(),
+              this._fragmentBinding.seachView.getQuery().toString());
 
-          if (this.requireActivity() instanceof BackStack navigation
-              && navigation.currentTabStackTag() != null) {
-            navigation.pushFragmentStack(
-                navigation.currentTabStackTag(),
-                searchCustomerFragment,
-                SearchCustomerFragment.class.toString());
-          }
+          Navigation.findNavController(this._fragmentBinding.getRoot())
+              .navigate(R.id.searchCustomerFragment, bundle);
 
         } else if (view == this._productListBinding.viewMoreButton) {
-          final SearchProductFragment searchProductFragment =
-              (SearchProductFragment)
-                  new SearchProductFragment.Factory(
-                          this._fragmentBinding.seachView.getQuery().toString())
-                      .instantiate(
-                          this.requireContext().getClassLoader(),
-                          SearchProductFragment.class.getName());
+          final Bundle bundle = new Bundle();
+          bundle.putString(
+              SearchProductFragment.Arguments.INITIAL_QUERY.key(),
+              this._fragmentBinding.seachView.getQuery().toString());
 
-          if (this.requireActivity() instanceof BackStack navigation
-              && navigation.currentTabStackTag() != null) {
-            navigation.pushFragmentStack(
-                navigation.currentTabStackTag(),
-                searchProductFragment,
-                SearchProductFragment.class.toString());
-          }
+          Navigation.findNavController(this._fragmentBinding.getRoot())
+              .navigate(R.id.searchProductFragment, bundle);
         }
       }
     }
@@ -210,25 +193,9 @@ public class SearchFragment extends Fragment
   public void finish() {
     Objects.requireNonNull(this._fragmentBinding);
 
-    if (this.requireActivity() instanceof BackStack navigation
-        && navigation.currentTabStackTag() != null) {
-      Compats.hideKeyboard(this.requireContext(), this.requireView().findFocus());
-      this.requireActivity().getWindow().setStatusBarColor(this._normalStatusBarColor);
-      navigation.popFragmentStack(navigation.currentTabStackTag());
-    }
-  }
-
-  public static class Factory extends FragmentFactory {
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(SearchFragment.class.getName()))
-          ? new SearchFragment()
-          : super.instantiate(classLoader, className);
-    }
+    this.requireActivity().getWindow().setStatusBarColor(this._normalStatusBarColor);
+    Compats.hideKeyboard(this.requireContext(), this.requireView().findFocus());
+    Navigation.findNavController(this._fragmentBinding.getRoot()).popBackStack();
   }
 
   private class OnBackPressedHandler extends OnBackPressedCallback {

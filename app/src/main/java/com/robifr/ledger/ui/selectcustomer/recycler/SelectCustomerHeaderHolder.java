@@ -19,13 +19,12 @@ package com.robifr.ledger.ui.selectcustomer.recycler;
 
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.createcustomer.CreateCustomerFragment;
 import com.robifr.ledger.ui.customer.CustomerCardWideNormalComponent;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import java.util.List;
@@ -113,22 +112,9 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
     Objects.requireNonNull(view);
 
     switch (view.getId()) {
-      case R.id.newButton -> {
-        final CreateCustomerFragment createCustomerFragment =
-            (CreateCustomerFragment)
-                new CreateCustomerFragment.Factory()
-                    .instantiate(
-                        this._fragment.requireContext().getClassLoader(),
-                        CreateCustomerFragment.class.getName());
-
-        if (this._fragment.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              createCustomerFragment,
-              CreateCustomerFragment.class.toString());
-        }
-      }
+      case R.id.newButton ->
+          Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+              .navigate(R.id.createCustomerFragment);
     }
   }
 }

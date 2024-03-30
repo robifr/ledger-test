@@ -18,6 +18,7 @@
 package com.robifr.ledger.ui.createqueue;
 
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -29,11 +30,11 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.navigation.Navigation;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.CreateQueueDialogProductOrderBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.CurrencyTextWatcher;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import com.robifr.ledger.util.CurrencyFormat;
@@ -76,27 +77,18 @@ public class MakeProductOrder
 
     switch (view.getId()) {
       case R.id.product -> {
-        final ProductModel product =
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(
+            SelectProductFragment.Arguments.INITIAL_SELECTED_PRODUCT.key(),
             this._fragment
                 .createQueueViewModel()
                 .makeProductOrderView()
                 .inputtedProduct()
-                .getValue();
-        final SelectProductFragment selectProductFragment =
-            (SelectProductFragment)
-                new SelectProductFragment.Factory(product)
-                    .instantiate(
-                        this._fragment.requireContext().getClassLoader(),
-                        SelectProductFragment.class.getName());
+                .getValue());
 
-        if (this._fragment.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              selectProductFragment,
-              SelectProductFragment.class.toString());
-          this._dialog.hide();
-        }
+        Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+            .navigate(R.id.selectProductFragment);
+        this._dialog.hide();
       }
     }
   }

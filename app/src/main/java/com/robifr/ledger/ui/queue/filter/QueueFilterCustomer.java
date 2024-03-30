@@ -17,14 +17,15 @@
 
 package com.robifr.ledger.ui.queue.filter;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.databinding.QueueDialogFilterBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import com.robifr.ledger.ui.queue.QueueFragment;
 import java.util.ArrayList;
@@ -61,21 +62,15 @@ public class QueueFilterCustomer
             Objects.requireNonNullElse(
                 this._fragment.queueViewModel().filterView().inputtedCustomerIds().getValue(),
                 new ArrayList<>());
-        final FilterCustomerFragment filterCustomerFragment =
-            (FilterCustomerFragment)
-                new FilterCustomerFragment.Factory(filteredCustomerIds)
-                    .instantiate(
-                        this._fragment.requireContext().getClassLoader(),
-                        FilterCustomerFragment.class.getName());
 
-        if (this._fragment.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              filterCustomerFragment,
-              FilterCustomerFragment.class.toString());
-          this._dialog.hide();
-        }
+        final Bundle bundle = new Bundle();
+        bundle.putLongArray(
+            FilterCustomerFragment.Arguments.INITIAL_FILTERED_CUSTOMER_IDS.key(),
+            filteredCustomerIds.stream().mapToLong(Long::longValue).toArray());
+
+        Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+            .navigate(R.id.filterCustomerFragment, bundle);
+        this._dialog.dismiss();
       }
     }
   }

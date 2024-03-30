@@ -19,12 +19,11 @@ package com.robifr.ledger.ui.main;
 
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.MainDialogCreateBinding;
-import com.robifr.ledger.ui.createcustomer.CreateCustomerFragment;
-import com.robifr.ledger.ui.createproduct.CreateProductFragment;
-import com.robifr.ledger.ui.createqueue.CreateQueueFragment;
 import java.util.Objects;
 
 public class MainCreate implements View.OnClickListener {
@@ -47,48 +46,13 @@ public class MainCreate implements View.OnClickListener {
   public void onClick(@NonNull View view) {
     Objects.requireNonNull(view);
 
+    final NavController navController =
+        Navigation.findNavController(this._activity, R.id.fragmentContainer);
+
     switch (view.getId()) {
-      case R.id.createQueueButton -> {
-        final CreateQueueFragment createQueueFragment =
-            (CreateQueueFragment)
-                new CreateQueueFragment.Factory()
-                    .instantiate(
-                        this._activity.getClassLoader(), CreateQueueFragment.class.getName());
-
-        this._activity.pushFragmentStack(
-            MainActivity.BottomNavigationTabTag.QUEUE.toString(),
-            createQueueFragment,
-            CreateQueueFragment.class.toString());
-        this._activity.navigateTabStack(MainActivity.BottomNavigationTabTag.QUEUE.toString());
-      }
-
-      case R.id.createCustomerButton -> {
-        final CreateCustomerFragment createCustomerFragment =
-            (CreateCustomerFragment)
-                new CreateCustomerFragment.Factory()
-                    .instantiate(
-                        this._activity.getClassLoader(), CreateCustomerFragment.class.getName());
-
-        this._activity.pushFragmentStack(
-            MainActivity.BottomNavigationTabTag.CUSTOMER.toString(),
-            createCustomerFragment,
-            CreateCustomerFragment.class.toString());
-        this._activity.navigateTabStack(MainActivity.BottomNavigationTabTag.CUSTOMER.toString());
-      }
-
-      case R.id.createProductButton -> {
-        final CreateProductFragment createProductFragment =
-            (CreateProductFragment)
-                new CreateProductFragment.Factory()
-                    .instantiate(
-                        this._activity.getClassLoader(), CreateProductFragment.class.getName());
-
-        this._activity.pushFragmentStack(
-            MainActivity.BottomNavigationTabTag.PRODUCT.toString(),
-            createProductFragment,
-            CreateProductFragment.class.toString());
-        this._activity.navigateTabStack(MainActivity.BottomNavigationTabTag.PRODUCT.toString());
-      }
+      case R.id.createQueueButton -> navController.navigate(R.id.createQueueFragment);
+      case R.id.createCustomerButton -> navController.navigate(R.id.createCustomerFragment);
+      case R.id.createProductButton -> navController.navigate(R.id.createProductFragment);
     }
 
     this._dialog.dismiss();

@@ -27,20 +27,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
-import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
 import com.robifr.ledger.ui.selectproduct.recycler.SelectProductAdapter;
 import com.robifr.ledger.ui.selectproduct.viewmodel.SelectProductViewModel;
+import com.robifr.ledger.util.Compats;
 import java.util.Objects;
 
 public class SelectProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
+  public enum Arguments implements FragmentResultKey {
+    INITIAL_SELECTED_PRODUCT;
+
+    @Override
+    @NonNull
+    public String key() {
+      return FragmentResultKey.generateKey(this);
+    }
+  }
+
   public enum Request implements FragmentResultKey {
     SELECT_PRODUCT;
 
@@ -62,22 +72,12 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
-  @Nullable private final ProductModel _initialSelectedProduct;
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private SelectProductAdapter _adapter;
   @Nullable private SelectProductResultHandler _resultHandler;
 
   @Nullable private SelectProductViewModel _selectProductViewModel;
   @Nullable private SelectProductViewModelHandler _viewModelHandler;
-
-  /** Default constructor when configuration changes. */
-  public SelectProductFragment() {
-    this(null);
-  }
-
-  protected SelectProductFragment(@Nullable ProductModel initialSelectedProduct) {
-    this._initialSelectedProduct = initialSelectedProduct;
-  }
 
   @Override
   public View onCreateView(
@@ -96,13 +96,22 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
 
+    final NavBackStackEntry backStackEntry =
+        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
+    final ProductModel initialSelectedProduct =
+        backStackEntry != null && backStackEntry.getArguments() != null
+            ? Compats.parcelableOf(
+                backStackEntry.getArguments(),
+                Arguments.INITIAL_SELECTED_PRODUCT.key(),
+                ProductModel.class)
+            : null;
+
     this._adapter = new SelectProductAdapter(this);
     this._resultHandler = new SelectProductResultHandler(this);
     this._selectProductViewModel =
         new ViewModelProvider(
                 this,
-                new SelectProductViewModel.Factory(
-                    this.requireContext(), this._initialSelectedProduct))
+                new SelectProductViewModel.Factory(this.requireContext(), initialSelectedProduct))
             .get(SelectProductViewModel.class);
     this._viewModelHandler = new SelectProductViewModelHandler(this, this._selectProductViewModel);
 
@@ -127,24 +136,12 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
   @Override
   public boolean onMenuItemClick(@NonNull MenuItem item) {
     Objects.requireNonNull(item);
+    Objects.requireNonNull(this._fragmentBinding);
 
     return switch (item.getItemId()) {
       case R.id.search -> {
-        final SearchProductFragment searchProductFragment =
-            (SearchProductFragment)
-                new SearchProductFragment.Factory(null)
-                    .instantiate(
-                        this.requireContext().getClassLoader(),
-                        SearchProductFragment.class.getName());
-
-        if (this.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              searchProductFragment,
-              SearchProductFragment.class.toString());
-        }
-
+        Navigation.findNavController(this._fragmentBinding.getRoot())
+            .navigate(R.id.searchProductFragment);
         yield true;
       }
 
@@ -168,29 +165,9 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
   }
 
   public void finish() {
-    if (this.requireActivity() instanceof BackStack navigation
-        && navigation.currentTabStackTag() != null) {
-      navigation.popFragmentStack(navigation.currentTabStackTag());
-    }
-  }
+    Objects.requireNonNull(this._fragmentBinding);
 
-  public static class Factory extends FragmentFactory {
-    @Nullable private final ProductModel _initialSelectedProduct;
-
-    public Factory(@Nullable ProductModel initialSelectedProduct) {
-      this._initialSelectedProduct = initialSelectedProduct;
-    }
-
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(SelectProductFragment.class.getName()))
-          ? new SelectProductFragment(this._initialSelectedProduct)
-          : super.instantiate(classLoader, className);
-    }
+    Navigation.findNavController(this._fragmentBinding.getRoot()).popBackStack();
   }
 
   private class OnBackPressedHandler extends OnBackPressedCallback {

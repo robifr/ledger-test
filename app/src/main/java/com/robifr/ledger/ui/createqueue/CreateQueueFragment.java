@@ -27,13 +27,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.CreateQueueFragmentBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.createqueue.viewmodel.CreateQueueViewModel;
 import java.math.BigDecimal;
@@ -171,23 +170,9 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
   }
 
   public void finish() {
-    if (this.requireActivity() instanceof BackStack navigation
-        && navigation.currentTabStackTag() != null) {
-      navigation.popFragmentStack(navigation.currentTabStackTag());
-    }
-  }
+    Objects.requireNonNull(this._fragmentBinding);
 
-  public static class Factory extends FragmentFactory {
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(CreateQueueFragment.class.getName()))
-          ? new CreateQueueFragment()
-          : super.instantiate(classLoader, className);
-    }
+    Navigation.findNavController(this._fragmentBinding.getRoot()).popBackStack();
   }
 
   private class OnBackPressedHandler extends OnBackPressedCallback {

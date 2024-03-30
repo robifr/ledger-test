@@ -17,12 +17,13 @@
 
 package com.robifr.ledger.ui.createqueue;
 
+import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import java.util.Objects;
 
@@ -47,22 +48,13 @@ public class CreateQueueCustomer implements View.OnClickListener {
 
     switch (view.getId()) {
       case R.id.customer -> {
-        final CustomerModel customer =
-            this._fragment.createQueueViewModel().inputtedCustomer().getValue();
-        final SelectCustomerFragment selectCustomerFragment =
-            (SelectCustomerFragment)
-                new SelectCustomerFragment.Factory(customer)
-                    .instantiate(
-                        this._fragment.requireContext().getClassLoader(),
-                        SelectCustomerFragment.class.getName());
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(
+            SelectCustomerFragment.Arguments.INITIAL_SELECTED_CUSTOMER.key(),
+            this._fragment.createQueueViewModel().inputtedCustomer().getValue());
 
-        if (this._fragment.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              selectCustomerFragment,
-              SelectCustomerFragment.class.toString());
-        }
+        Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+            .navigate(R.id.selectCustomerFragment);
       }
     }
   }

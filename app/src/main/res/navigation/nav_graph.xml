@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2024 Robi
+  ~
+  ~ Ledger is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Ledger is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainGraph">
+
+  <navigation
+      android:id="@+id/mainGraph"
+      app:startDestination="@id/queueFragment">
+
+    <fragment
+        android:id="@+id/queueFragment"
+        android:name="com.robifr.ledger.ui.queue.QueueFragment"
+        tools:layout="@layout/listable_fragment" />
+
+    <fragment
+        android:id="@+id/customerFragment"
+        android:name="com.robifr.ledger.ui.customer.CustomerFragment"
+        tools:layout="@layout/listable_fragment" />
+
+    <fragment
+        android:id="@+id/productFragment"
+        android:name="com.robifr.ledger.ui.product.ProductFragment"
+        tools:layout="@layout/listable_fragment" />
+  </navigation>
+
+  <fragment
+      android:id="@+id/searchFragment"
+      android:name="com.robifr.ledger.ui.search.SearchFragment"
+      tools:layout="@layout/searchable_fragment" />
+
+  <fragment
+      android:id="@+id/searchCustomerFragment"
+      android:name="com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment"
+      tools:layout="@layout/searchable_fragment" />
+
+  <fragment
+      android:id="@+id/searchProductFragment"
+      android:name="com.robifr.ledger.ui.searchproduct.SearchProductFragment"
+      tools:layout="@layout/searchable_fragment" />
+
+  <fragment
+      android:id="@+id/createCustomerFragment"
+      android:name="com.robifr.ledger.ui.createcustomer.CreateCustomerFragment"
+      tools:layout="@layout/create_customer_fragment" />
+
+  <fragment
+      android:id="@+id/editCustomerFragment"
+      android:name="com.robifr.ledger.ui.editcustomer.EditCustomerFragment"
+      tools:layout="@layout/create_customer_fragment" />
+
+  <fragment
+      android:id="@+id/createProductFragment"
+      android:name="com.robifr.ledger.ui.createproduct.CreateProductFragment"
+      tools:layout="@layout/create_product_fragment" />
+
+  <fragment
+      android:id="@+id/editProductFragment"
+      android:name="com.robifr.ledger.ui.editproduct.EditProductFragment"
+      tools:layout="@layout/create_product_fragment" />
+
+  <fragment
+      android:id="@+id/createQueueFragment"
+      android:name="com.robifr.ledger.ui.createqueue.CreateQueueFragment"
+      tools:layout="@layout/create_queue_fragment" />
+
+  <fragment
+      android:id="@+id/editQueueFragment"
+      android:name="com.robifr.ledger.ui.editqueue.EditQueueFragment"
+      tools:layout="@layout/create_queue_fragment" />
+
+  <fragment
+      android:id="@+id/selectCustomerFragment"
+      android:name="com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment"
+      tools:layout="@layout/listable_fragment" />
+
+  <fragment
+      android:id="@+id/selectProductFragment"
+      android:name="com.robifr.ledger.ui.selectproduct.SelectProductFragment"
+      tools:layout="@layout/listable_fragment" />
+
+  <fragment
+      android:id="@+id/filterCustomerFragment"
+      android:name="com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment"
+      tools:layout="@layout/listable_fragment" />
+</navigation>

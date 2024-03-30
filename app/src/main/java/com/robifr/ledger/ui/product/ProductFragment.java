@@ -26,18 +26,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.ProductFilters;
 import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.product.filter.ProductFilter;
 import com.robifr.ledger.ui.product.recycler.ProductAdapter;
 import com.robifr.ledger.ui.product.viewmodel.ProductViewModel;
-import com.robifr.ledger.ui.search.SearchFragment;
 import java.util.Objects;
 
 public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
@@ -86,30 +84,22 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
-    this._productViewModel.onSortMethodChanged(
-        new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
-    this._productViewModel.filterView().onFiltersChanged(ProductFilters.toBuilder().build());
-    this._productViewModel.fetchAllProducts();
+    if (this._productViewModel.products().getValue() == null) {
+      this._productViewModel.onSortMethodChanged(
+          new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
+      this._productViewModel.filterView().onFiltersChanged(ProductFilters.toBuilder().build());
+      this._productViewModel.fetchAllProducts();
+    }
   }
 
   @Override
   public boolean onMenuItemClick(@NonNull MenuItem item) {
     Objects.requireNonNull(item);
+    Objects.requireNonNull(this._fragmentBinding);
 
     return switch (item.getItemId()) {
       case R.id.search -> {
-        final SearchFragment searchFragment =
-            (SearchFragment)
-                new SearchFragment.Factory()
-                    .instantiate(
-                        this.requireContext().getClassLoader(), SearchFragment.class.getName());
-
-        if (this.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(), searchFragment, SearchFragment.class.toString());
-        }
-
+        Navigation.findNavController(this._fragmentBinding.getRoot()).navigate(R.id.searchFragment);
         yield true;
       }
 
@@ -140,18 +130,5 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
   @NonNull
   public ProductViewModel productViewModel() {
     return Objects.requireNonNull(this._productViewModel);
-  }
-
-  public static class Factory extends FragmentFactory {
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(ProductFragment.class.getName()))
-          ? new ProductFragment()
-          : super.instantiate(classLoader, className);
-    }
   }
 }

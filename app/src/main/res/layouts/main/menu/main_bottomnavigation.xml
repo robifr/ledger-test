@@ -17,17 +17,17 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
-      android:id="@+id/queue"
+      android:id="@+id/queueFragment"
       android:icon="@drawable/selector_icon_assignment"
       android:menuCategory="secondary"
       android:title="@string/text_queue" />
   <item
-      android:id="@+id/customer"
+      android:id="@+id/customerFragment"
       android:icon="@drawable/selector_icon_person"
       android:menuCategory="secondary"
       android:title="@string/text_customer" />
   <item
-      android:id="@+id/product"
+      android:id="@+id/productFragment"
       android:icon="@drawable/selector_icon_sell"
       android:menuCategory="secondary"
       android:title="@string/text_product" />

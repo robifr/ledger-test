@@ -21,9 +21,9 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.FragmentResultKey;
@@ -34,6 +34,16 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class EditProductFragment extends CreateProductFragment {
+  public enum Arguments implements FragmentResultKey {
+    INITIAL_PRODUCT_ID_TO_EDIT;
+
+    @Override
+    @NonNull
+    public String key() {
+      return FragmentResultKey.generateKey(this);
+    }
+  }
+
   public enum Request implements FragmentResultKey {
     EDIT_PRODUCT;
 
@@ -54,17 +64,6 @@ public class EditProductFragment extends CreateProductFragment {
     }
   }
 
-  @NonNull private final Long _initialProductIdToEdit;
-
-  /** Default constructor when configuration changes. */
-  public EditProductFragment() {
-    this(0L);
-  }
-
-  protected EditProductFragment(@NonNull Long initialProductIdToEdit) {
-    this._initialProductIdToEdit = Objects.requireNonNull(initialProductIdToEdit);
-  }
-
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     super.onViewCreated(view, savedInstance);
@@ -78,34 +77,23 @@ public class EditProductFragment extends CreateProductFragment {
 
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_product));
 
-    if (this._createProductViewModel instanceof EditProductViewModel editProductViewModel) {
+    final NavBackStackEntry backStackEntry =
+        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
+
+    if (this._createProductViewModel instanceof EditProductViewModel editProductViewModel
+        && backStackEntry != null
+        && backStackEntry.getArguments() != null) {
       final ProductModel initialProduct =
-          editProductViewModel.selectProductById(this._initialProductIdToEdit);
+          editProductViewModel.selectProductById(
+              backStackEntry
+                  .getArguments()
+                  .getLong(Arguments.INITIAL_PRODUCT_ID_TO_EDIT.key(), 0L));
       Objects.requireNonNull(initialProduct); // Logically shouldn't be null when editing data.
 
       editProductViewModel.setInitialProductToEdit(initialProduct);
       editProductViewModel.onNameTextChanged(initialProduct.name());
       editProductViewModel.onPriceTextChanged(
           CurrencyFormat.format(BigDecimal.valueOf(initialProduct.price()), "id", "ID"));
-    }
-  }
-
-  public static class Factory extends FragmentFactory {
-    @NonNull private final Long _initialProductIdToEdit;
-
-    public Factory(@NonNull Long initialProductIdToEdit) {
-      this._initialProductIdToEdit = Objects.requireNonNull(initialProductIdToEdit);
-    }
-
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(EditProductFragment.class.getName()))
-          ? new EditProductFragment(this._initialProductIdToEdit)
-          : super.instantiate(classLoader, className);
     }
   }
 }

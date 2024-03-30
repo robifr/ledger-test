@@ -17,12 +17,13 @@
 
 package com.robifr.ledger.ui.customer.recycler;
 
+import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.CustomerCardDialogMenuBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.customer.CustomerFragment;
 import com.robifr.ledger.ui.editcustomer.EditCustomerFragment;
 import java.util.Objects;
@@ -49,23 +50,16 @@ public class CustomerListMenu implements View.OnClickListener {
 
     switch (view.getId()) {
       case R.id.editButton -> {
-        if (this._holder.boundCustomer().id() == null) return;
+        final Long customerId = this._holder.boundCustomer().id();
+        if (customerId == null) return;
 
-        final EditCustomerFragment editCustomerFragment =
-            (EditCustomerFragment)
-                new EditCustomerFragment.Factory(this._holder.boundCustomer().id())
-                    .instantiate(
-                        this._fragment.requireContext().getClassLoader(),
-                        EditCustomerFragment.class.getName());
+        final Bundle bundle = new Bundle();
+        bundle.putLong(
+            EditCustomerFragment.Arguments.INITIAL_CUSTOMER_ID_TO_EDIT.key(), customerId);
 
-        if (this._fragment.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              editCustomerFragment,
-              EditCustomerFragment.class.toString());
-          this._dialog.dismiss();
-        }
+        Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+            .navigate(R.id.editCustomerFragment, bundle);
+        this._dialog.dismiss();
       }
 
       case R.id.deleteButton -> {

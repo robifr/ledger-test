@@ -21,9 +21,9 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.FragmentResultKey;
@@ -32,6 +32,16 @@ import com.robifr.ledger.ui.editcustomer.viewmodel.EditCustomerViewModel;
 import java.util.Objects;
 
 public class EditCustomerFragment extends CreateCustomerFragment {
+  public enum Arguments implements FragmentResultKey {
+    INITIAL_CUSTOMER_ID_TO_EDIT;
+
+    @Override
+    @NonNull
+    public String key() {
+      return FragmentResultKey.generateKey(this);
+    }
+  }
+
   public enum Request implements FragmentResultKey {
     EDIT_CUSTOMER;
 
@@ -52,17 +62,6 @@ public class EditCustomerFragment extends CreateCustomerFragment {
     }
   }
 
-  @NonNull private final Long _initialCustomerIdToEdit;
-
-  /** Default constructor when configuration changes. */
-  public EditCustomerFragment() {
-    this(0L);
-  }
-
-  private EditCustomerFragment(@NonNull Long initialCustomerIdToEdit) {
-    this._initialCustomerIdToEdit = Objects.requireNonNull(initialCustomerIdToEdit);
-  }
-
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     super.onViewCreated(view, savedInstance);
@@ -77,34 +76,23 @@ public class EditCustomerFragment extends CreateCustomerFragment {
 
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_customer));
 
-    if (this._createCustomerViewModel instanceof EditCustomerViewModel editCustomerViewModel) {
+    final NavBackStackEntry backStackEntry =
+        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
+
+    if (this._createCustomerViewModel instanceof EditCustomerViewModel editCustomerViewModel
+        && backStackEntry != null
+        && backStackEntry.getArguments() != null) {
       final CustomerModel initialCustomer =
-          editCustomerViewModel.selectCustomerById(this._initialCustomerIdToEdit);
+          editCustomerViewModel.selectCustomerById(
+              backStackEntry
+                  .getArguments()
+                  .getLong(Arguments.INITIAL_CUSTOMER_ID_TO_EDIT.key(), 0L));
       Objects.requireNonNull(initialCustomer); // Logically shouldn't be null when editing data.
 
       editCustomerViewModel.setInitialCustomerToEdit(initialCustomer);
       editCustomerViewModel.onNameTextChanged(initialCustomer.name());
       editCustomerViewModel.onBalanceChanged(initialCustomer.balance());
       editCustomerViewModel.onDebtChanged(initialCustomer.debt());
-    }
-  }
-
-  public static class Factory extends FragmentFactory {
-    @NonNull private final Long _initialCustomerIdToEdit;
-
-    public Factory(@NonNull Long initialCustomerIdToEdit) {
-      this._initialCustomerIdToEdit = Objects.requireNonNull(initialCustomerIdToEdit);
-    }
-
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(EditCustomerFragment.class.getName()))
-          ? new EditCustomerFragment(this._initialCustomerIdToEdit)
-          : super.instantiate(classLoader, className);
     }
   }
 }

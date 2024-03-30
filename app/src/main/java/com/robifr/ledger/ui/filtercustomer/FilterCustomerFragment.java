@@ -27,22 +27,31 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.filtercustomer.recycler.FilterCustomerAdapter;
 import com.robifr.ledger.ui.filtercustomer.viewmodel.FilterCustomerViewModel;
-import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
+  public enum Arguments implements FragmentResultKey {
+    INITIAL_FILTERED_CUSTOMER_IDS;
+
+    @Override
+    @NonNull
+    public String key() {
+      return FragmentResultKey.generateKey(this);
+    }
+  }
+
   public enum Request implements FragmentResultKey {
     FILTER_CUSTOMER;
 
@@ -64,22 +73,12 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
-  @NonNull private final List<Long> _initialFilteredCustomerIds;
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private FilterCustomerAdapter _adapter;
   @Nullable private FilterCustomerResultHandler _resultHandler;
 
   @Nullable private FilterCustomerViewModel _filterCustomerViewModel;
   @Nullable private FilterCustomerViewModelHandler _viewModelHandler;
-
-  /** Default constructor when configuration changes. */
-  public FilterCustomerFragment() {
-    this(new ArrayList<>());
-  }
-
-  public FilterCustomerFragment(@NonNull List<Long> initialFilteredCustomerIds) {
-    this._initialFilteredCustomerIds = Objects.requireNonNull(initialFilteredCustomerIds);
-  }
 
   @Override
   public View onCreateView(
@@ -120,41 +119,41 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
 
+    final NavBackStackEntry backStackEntry =
+        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
     final List<CustomerModel> customers = this._filterCustomerViewModel.fetchAllCustomers();
-    final CustomerModel[] filteredCustomers =
-        this._initialFilteredCustomerIds.stream()
-            .flatMap(
-                id ->
-                    customers.stream()
-                        .filter(customer -> customer.id() != null && customer.id().equals(id)))
-            .toArray(CustomerModel[]::new);
 
     this._filterCustomerViewModel.onCustomersChanged(customers);
-    this._filterCustomerViewModel.onAddFilteredCustomer(filteredCustomers);
+
+    if (backStackEntry != null && backStackEntry.getArguments() != null) {
+      final long[] initialFilteredCustomerIds =
+          Objects.requireNonNullElse(
+              backStackEntry
+                  .getArguments()
+                  .getLongArray(Arguments.INITIAL_FILTERED_CUSTOMER_IDS.key()),
+              new long[0]);
+      final CustomerModel[] filteredCustomers =
+          customers.stream()
+              .filter(
+                  customer ->
+                      Arrays.stream(initialFilteredCustomerIds)
+                          .anyMatch(id -> customer.id() != null && customer.id().equals(id)))
+              .toArray(CustomerModel[]::new);
+
+      this._filterCustomerViewModel.onAddFilteredCustomer(filteredCustomers);
+    }
   }
 
   @Override
   public boolean onMenuItemClick(@NonNull MenuItem item) {
     Objects.requireNonNull(item);
+    Objects.requireNonNull(this._fragmentBinding);
     Objects.requireNonNull(this._filterCustomerViewModel);
 
     return switch (item.getItemId()) {
       case R.id.search -> {
-        final SearchCustomerFragment searchCustomerFragment =
-            (SearchCustomerFragment)
-                new SearchCustomerFragment.Factory(null)
-                    .instantiate(
-                        this.requireContext().getClassLoader(),
-                        SearchCustomerFragment.class.getName());
-
-        if (this.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              searchCustomerFragment,
-              SearchCustomerFragment.class.toString());
-        }
-
+        Navigation.findNavController(this._fragmentBinding.getRoot())
+            .navigate(R.id.searchCustomerFragment);
         yield true;
       }
 
@@ -183,29 +182,9 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   }
 
   public void finish() {
-    if (this.requireActivity() instanceof BackStack navigation
-        && navigation.currentTabStackTag() != null) {
-      navigation.popFragmentStack(navigation.currentTabStackTag());
-    }
-  }
+    Objects.requireNonNull(this._fragmentBinding);
 
-  public static class Factory extends FragmentFactory {
-    @NonNull private final List<Long> _initialFilteredCustomerIds;
-
-    public Factory(@NonNull List<Long> initialFilteredCustomerIds) {
-      this._initialFilteredCustomerIds = Objects.requireNonNull(initialFilteredCustomerIds);
-    }
-
-    @Override
-    @NonNull
-    public Fragment instantiate(@NonNull ClassLoader classLoader, @NonNull String className) {
-      Objects.requireNonNull(classLoader);
-      Objects.requireNonNull(className);
-
-      return (className.equals(FilterCustomerFragment.class.getName()))
-          ? new FilterCustomerFragment(this._initialFilteredCustomerIds)
-          : super.instantiate(classLoader, className);
-    }
+    Navigation.findNavController(this._fragmentBinding.getRoot()).popBackStack();
   }
 
   private class OnBackPressedHandler extends OnBackPressedCallback {

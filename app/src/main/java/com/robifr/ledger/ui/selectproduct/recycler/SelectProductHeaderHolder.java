@@ -19,13 +19,12 @@ package com.robifr.ledger.ui.selectproduct.recycler;
 
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
-import com.robifr.ledger.ui.BackStack;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.createproduct.CreateProductFragment;
 import com.robifr.ledger.ui.product.ProductCardNormalComponent;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import java.util.List;
@@ -110,22 +109,9 @@ public class SelectProductHeaderHolder extends RecyclerViewHolder<Optional<Produ
     Objects.requireNonNull(view);
 
     switch (view.getId()) {
-      case R.id.newButton -> {
-        final CreateProductFragment createProductFragment =
-            (CreateProductFragment)
-                new CreateProductFragment.Factory()
-                    .instantiate(
-                        this._fragment.requireContext().getClassLoader(),
-                        CreateProductFragment.class.getName());
-
-        if (this._fragment.requireActivity() instanceof BackStack navigation
-            && navigation.currentTabStackTag() != null) {
-          navigation.pushFragmentStack(
-              navigation.currentTabStackTag(),
-              createProductFragment,
-              CreateProductFragment.class.toString());
-        }
-      }
+      case R.id.newButton ->
+          Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+              .navigate(R.id.createProductFragment);
     }
   }
 }

@@ -35,6 +35,7 @@ android {
           listOf(
               file("src/main/res/layouts/").listFiles(),
               "src/main/res/layouts",
+              file("src/main/res/drawables/icon/selector").listFiles(),
               file("src/main/res/drawables/icon/size_20").listFiles(),
               file("src/main/res/drawables/icon/size_32").listFiles(),
               file("src/main/res/drawables/icon/").listFiles(),

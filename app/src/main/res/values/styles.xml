@@ -70,7 +70,8 @@
     <item name="android:button">@null</item>
     <item name="android:textSize">@dimen/text_smallmedium</item>
     <item name="android:textColor">@color/selector_textview_selectable</item>
-    <item name="android:background">@drawable/shape_bottomdialog_radio_roundedright</item>
+    <item name="android:background">@drawable/shape_radio_roundedright</item>
+    <item name="android:drawableStart">@drawable/selector_icon_radio_check</item>
     <item name="android:drawablePadding">@dimen/bottomdialog_icon_padding</item>
     <item name="android:drawableTint">@color/selector_textview_selectable</item>
   </style>

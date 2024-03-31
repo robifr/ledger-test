@@ -137,5 +137,6 @@
 
   <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
     <item name="titleTextColor">?android:textColor</item>
+    <item name="titleTextAppearance">@style/TextAppearance.Material3.HeadlineSmall</item>
   </style>
 </resources>

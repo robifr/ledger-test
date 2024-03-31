@@ -62,7 +62,6 @@
   <color name="secondary_ripple">@color/white_10</color>
 
   <color name="surface">@color/dark_white</color>
-  <color name="surface_selected">@color/blue_20</color>
 
   <color name="stroke">@color/darker_white</color>
 

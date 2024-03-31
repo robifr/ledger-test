@@ -39,6 +39,7 @@ public class SearchViewModel extends ViewModel {
 
   @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
   @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
+  @NonNull private String _query = "";
 
   public SearchViewModel(
       @NonNull CustomerRepository customerRepository,
@@ -57,8 +58,13 @@ public class SearchViewModel extends ViewModel {
     return this._products;
   }
 
+  @NonNull
+  public String query() {
+    return this._query;
+  }
+
   public void onSearch(@NonNull String query) {
-    Objects.requireNonNull(query);
+    this._query = Objects.requireNonNull(query);
 
     // Remove old runnable to ensure old query result wouldn't appear in future.
     this._handler.removeCallbacksAndMessages(null);
@@ -66,12 +72,14 @@ public class SearchViewModel extends ViewModel {
         () -> {
           // Send null when user hasn't type anything to prevent
           // no-results-found illustration shows up.
-          if (query.isEmpty()) {
+          if (this._query.isEmpty()) {
             this._customers.postValue(null);
             this._products.postValue(null);
           } else {
-            this._customerRepository.search(query).thenAcceptAsync(this._customers::postValue);
-            this._productRepository.search(query).thenAcceptAsync(this._products::postValue);
+            this._customerRepository
+                .search(this._query)
+                .thenAcceptAsync(this._customers::postValue);
+            this._productRepository.search(this._query).thenAcceptAsync(this._products::postValue);
           }
         },
         300);

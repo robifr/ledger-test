@@ -121,7 +121,9 @@ public class SearchFragment extends Fragment
     this._productListBinding.viewMoreButton.setOnClickListener(this);
     this._productListBinding.getRoot().setVisibility(View.GONE);
 
-    Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
+    if (this._searchViewModel.query().isEmpty()) {
+      Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
+    }
   }
 
   @Override

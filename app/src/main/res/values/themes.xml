@@ -25,13 +25,16 @@
     <item name="colorOnPrimaryContainer">@color/primary_text_toggleable</item>
     <item name="colorSecondary">@color/secondary_toggleable</item>
     <item name="colorOnSecondary">@color/secondary_text_toggleable</item>
-    <item name="colorSecondaryContainer">@color/blue_35</item>
+    <item name="colorSecondaryContainer">@color/blue_20</item>
     <item name="colorSurface">@color/dark_white</item>
     <item name="colorOnSurface">?android:textColor</item>
 
     <!-- Background color. -->
     <item name="android:colorBackground">@color/white</item>
     <item name="colorSurfaceContainerHigh">@color/white</item> <!-- Dialog. -->
+
+    <!-- Cursor on text input. -->
+    <item name="colorAccent">@color/primary</item>
 
     <!-- Color of icon, checkbox, radio button, etc. -->
     <item name="android:textColorPrimary">?android:textColor</item> <!-- Menu item. -->

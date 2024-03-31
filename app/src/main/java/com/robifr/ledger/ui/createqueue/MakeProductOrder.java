@@ -87,7 +87,7 @@ public class MakeProductOrder
                 .getValue());
 
         Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
-            .navigate(R.id.selectProductFragment);
+            .navigate(R.id.selectProductFragment, bundle);
         this._dialog.hide();
       }
     }

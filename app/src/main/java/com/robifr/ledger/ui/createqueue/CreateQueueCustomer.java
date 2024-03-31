@@ -54,7 +54,7 @@ public class CreateQueueCustomer implements View.OnClickListener {
             this._fragment.createQueueViewModel().inputtedCustomer().getValue());
 
         Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
-            .navigate(R.id.selectCustomerFragment);
+            .navigate(R.id.selectCustomerFragment, bundle);
       }
     }
   }

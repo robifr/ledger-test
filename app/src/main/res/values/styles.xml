@@ -47,7 +47,8 @@
     <item name="iconSize">@dimen/icon_small</item>
     <item name="iconTint">?android:textColor</item>
     <item name="cornerSize">0dp</item>
-  </style>a
+  </style>
+  a
 
   <style name="BottomSheetDialog.Style" parent="Widget.Material3.BottomSheet.Modal">
     <item name="android:paddingBottom">@dimen/bottomdialog_button_minheight</item>
@@ -69,11 +70,11 @@
     <item name="android:paddingStart">@dimen/bottomdialog_padding</item>
     <item name="android:button">@null</item>
     <item name="android:textSize">@dimen/text_smallmedium</item>
-    <item name="android:textColor">@color/selector_textview_selectable</item>
+    <item name="android:textColor">@color/text_selectable</item>
     <item name="android:background">@drawable/shape_radio_roundedright</item>
-    <item name="android:drawableStart">@drawable/selector_icon_radio_check</item>
+    <item name="android:drawableStart">@drawable/icon_radio_check_hideable</item>
     <item name="android:drawablePadding">@dimen/bottomdialog_icon_padding</item>
-    <item name="android:drawableTint">@color/selector_textview_selectable</item>
+    <item name="android:drawableTint">@color/text_selectable</item>
   </style>
 
   <style name="ContextualToolbar" parent="Widget.AppCompat.ActionMode">
@@ -117,7 +118,7 @@
   <style name="TextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox">
     <item name="hintTextColor">?android:textColor</item>
     <item name="boxBackgroundColor">@android:color/transparent</item>
-    <item name="boxStrokeColor">@color/selector_textinput_boxstroke</item>
+    <item name="boxStrokeColor">@color/textinput_boxstroke</item>
     <item name="boxStrokeWidth">1dp</item>
     <item name="boxStrokeWidthFocused">1dp</item>
     <item name="errorIconDrawable">@null</item>
@@ -127,7 +128,7 @@
   <style name="TextInputLayout.OutlinedBox" parent="Widget.Material3.TextInputLayout.OutlinedBox.Dense">
     <item name="hintTextColor">?android:textColor</item>
     <item name="boxBackgroundColor">@android:color/transparent</item>
-    <item name="boxStrokeColor">@color/selector_textinput_boxstroke</item>
+    <item name="boxStrokeColor">@color/textinput_boxstroke</item>
     <item name="boxStrokeWidth">1dp</item>
     <item name="boxStrokeWidthFocused">1dp</item>
     <item name="errorIconDrawable">@null</item>

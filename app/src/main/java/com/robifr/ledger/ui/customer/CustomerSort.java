@@ -85,7 +85,7 @@ public class CustomerSort implements RadioButton.OnClickListener {
         this._fragment.requireContext().getDrawable(icon));
     radioIcon.addState(
         new int[] {},
-        this._fragment.requireContext().getDrawable(R.drawable.selector_icon_radio_check));
+        this._fragment.requireContext().getDrawable(R.drawable.icon_radio_check_hideable));
     radio.setCompoundDrawablesWithIntrinsicBounds(radioIcon, null, null, null);
   }
 }

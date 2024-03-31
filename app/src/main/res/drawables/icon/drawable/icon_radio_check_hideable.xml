@@ -15,20 +15,7 @@
   ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item
-      android:id="@+id/queueFragment"
-      android:icon="@drawable/icon_assignment_checkable"
-      android:menuCategory="secondary"
-      android:title="@string/text_queue" />
-  <item
-      android:id="@+id/customerFragment"
-      android:icon="@drawable/icon_person_checkable"
-      android:menuCategory="secondary"
-      android:title="@string/text_customer" />
-  <item
-      android:id="@+id/productFragment"
-      android:icon="@drawable/icon_sell_checkable"
-      android:menuCategory="secondary"
-      android:title="@string/text_product" />
-</menu>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:drawable="@drawable/icon_check" android:state_checked="true" />
+  <item android:drawable="@drawable/icon_transparent" />
+</selector>

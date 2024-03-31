@@ -24,7 +24,7 @@
 
   <color name="white">#FFFFFF</color>
   <color name="white_10">#1AFFFFFF</color>
-  <color name="dark_white">#F6F7FB</color>
+  <color name="dark_white">#F3F5FB</color>
   <color name="darker_white">#DADEDF</color>
 
   <color name="light_red">#F58989</color>
@@ -37,7 +37,6 @@
   <color name="light_blue">#95CEFF</color>
   <color name="blue">#3696EE</color>
   <color name="blue_20">#333696EE</color>
-  <color name="blue_35">#593696EE</color>
   <color name="dark_blue">#284BA8</color>
 
   <color name="light_gray">#B7BBBC</color>
@@ -58,11 +57,10 @@
   <color name="secondary">@color/black</color>
   <color name="secondary_disabled">@color/darker_white</color>
   <color name="secondary_text">@color/white</color>
-  <color name="secondary_text_disabled">@color/black</color>
+  <color name="secondary_text_disabled">@color/gray</color>
   <color name="secondary_ripple">@color/white_10</color>
 
   <color name="surface">@color/dark_white</color>
-  <color name="surface_selected">@color/blue_20</color>
 
   <color name="stroke">@color/darker_white</color>
 

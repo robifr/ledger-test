@@ -73,7 +73,7 @@ public class CreateQueuePaymentMethod implements View.OnClickListener {
 
       final Drawable[] buttonIcons = button.getCompoundDrawables();
       final ColorStateList buttonColor =
-          this._fragment.requireContext().getColorStateList(R.color.selector_textview);
+          this._fragment.requireContext().getColorStateList(R.color.text);
 
       DrawableCompat.setTintList(buttonIcons[0], buttonColor);
       button.setEnabled(paymentMethods.contains(paymentMethod));

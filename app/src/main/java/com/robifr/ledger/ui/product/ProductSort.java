@@ -17,9 +17,7 @@
 
 package com.robifr.ledger.ui.product;
 
-import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
+import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 import android.widget.RadioButton;
 import androidx.annotation.NonNull;
@@ -61,64 +59,32 @@ public class ProductSort implements RadioButton.OnClickListener {
     final ProductSortMethod sortMethod = this._fragment.productViewModel().sortMethod().getValue();
     if (sortMethod == null) return;
 
-    // Setting up initial state radio, invisible icon and background tint.
     for (ProductSortMethod.SortBy sortBy : ProductSortMethod.SortBy.values()) {
-      final RadioButton radio = this._dialogBinding.radioGroup.findViewWithTag(sortBy.toString());
       // Don't use `RadioGroup#OnCheckedChangeListener` interface,
       // cause that wouldn't work when user re-select same radio to revert sort order.
-      radio.setOnClickListener(this);
-      this._unselectRadio(radio, sortMethod.isAscending());
+      this._dialogBinding.radioGroup.findViewWithTag(sortBy.toString()).setOnClickListener(this);
     }
 
     final RadioButton initialRadio =
         this._dialogBinding.radioGroup.findViewWithTag(sortMethod.sortBy().toString());
 
     this._dialogBinding.radioGroup.check(initialRadio.getId());
-    this._selectRadio(initialRadio, sortMethod.isAscending());
+    this._updateRadioIcon(initialRadio, sortMethod.isAscending());
     this._dialog.show();
   }
 
-  private void _selectRadio(@NonNull RadioButton radio, boolean isAscending) {
+  private void _updateRadioIcon(@NonNull RadioButton radio, boolean isAscending) {
     Objects.requireNonNull(radio);
 
-    final TypedValue backgroundColor = new TypedValue();
-    this._fragment
-        .requireContext()
-        .getTheme()
-        .resolveAttribute(androidx.appcompat.R.attr.colorAccent, backgroundColor, true);
+    final int icon = isAscending ? R.drawable.icon_arrow_upward : R.drawable.icon_arrow_downward;
+    final StateListDrawable radioIcon = new StateListDrawable();
 
-    final int icon =
-        isAscending ? R.drawable.icon_arrow_upward_20 : R.drawable.icon_arrow_downward_20;
-    final Drawable leftIcon =
-        Objects.requireNonNull(this._fragment.requireContext().getDrawable(icon));
-
-    leftIcon.setAlpha(255); // Bring back icon to be visible.
-    radio.setBackgroundTintList(
-        ColorStateList.valueOf(
-            // Use background tint to maintain ripple and rounded corner of drawable shape.
-            this._fragment.requireContext().getColor(backgroundColor.resourceId)));
-    radio.setCompoundDrawablesWithIntrinsicBounds(leftIcon, null, null, null);
-  }
-
-  private void _unselectRadio(@NonNull RadioButton radio, boolean isAscending) {
-    Objects.requireNonNull(radio);
-
-    final TypedValue backgroundColor = new TypedValue();
-    this._fragment
-        .requireContext()
-        .getTheme()
-        .resolveAttribute(com.google.android.material.R.attr.colorSurface, backgroundColor, true);
-
-    final int icon =
-        isAscending ? R.drawable.icon_arrow_upward_20 : R.drawable.icon_arrow_downward_20;
-    final Drawable leftIcon =
-        Objects.requireNonNull(this._fragment.requireContext().getDrawable(icon));
-
-    leftIcon.setAlpha(0); // Hide icon, so that we can reserve its space width.
-    radio.setBackgroundTintList(
-        ColorStateList.valueOf(
-            // Use background tint to maintain ripple and rounded corner of drawable shape.
-            this._fragment.requireContext().getColor(backgroundColor.resourceId)));
-    radio.setCompoundDrawablesWithIntrinsicBounds(leftIcon, null, null, null);
+    radioIcon.addState(
+        new int[] {android.R.attr.state_checked},
+        this._fragment.requireContext().getDrawable(icon));
+    radioIcon.addState(
+        new int[] {},
+        this._fragment.requireContext().getDrawable(R.drawable.icon_radio_check_hideable));
+    radio.setCompoundDrawablesWithIntrinsicBounds(radioIcon, null, null, null);
   }
 }

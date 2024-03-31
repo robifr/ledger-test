@@ -17,10 +17,6 @@
 
 package com.robifr.ledger.ui.createqueue;
 
-import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -74,63 +70,15 @@ public class CreateQueueStatus implements RadioGroup.OnCheckedChangeListener {
   }
 
   private void _openDialog() {
-    // Setting up initial state radio, invisible icon and background tint.
-    for (QueueModel.Status status : QueueModel.Status.values()) {
-      this._unselectRadio(this._dialogBinding.radioGroup.findViewWithTag(status.toString()));
-    }
-
     final QueueModel.Status inputtedStatus =
         this._fragment.createQueueViewModel().inputtedStatus().getValue();
 
     if (inputtedStatus != null) {
-      final RadioButton initialRadio =
-          this._dialogBinding.radioGroup.findViewWithTag(inputtedStatus.toString());
-
-      this._dialogBinding.radioGroup.check(initialRadio.getId());
-      this._selectRadio(initialRadio);
+      this._dialogBinding.radioGroup.check(
+          this._dialogBinding.radioGroup.findViewWithTag(inputtedStatus.toString()).getId());
     }
 
     this._dialogBinding.radioGroup.setOnCheckedChangeListener(this);
     this._dialog.show();
-  }
-
-  private void _selectRadio(@NonNull RadioButton radio) {
-    Objects.requireNonNull(radio);
-
-    final TypedValue backgroundColor = new TypedValue();
-    this._fragment
-        .requireActivity()
-        .getTheme()
-        .resolveAttribute(androidx.appcompat.R.attr.colorAccent, backgroundColor, true);
-
-    final Drawable leftIcon =
-        Objects.requireNonNull(this._fragment.requireContext().getDrawable(R.drawable.icon_check));
-    leftIcon.setAlpha(255); // Bring back icon to be visible.
-
-    radio.setBackgroundTintList(
-        ColorStateList.valueOf(
-            // Use background tint to maintain ripple and rounded corner of drawable shape.
-            this._fragment.requireContext().getColor(backgroundColor.resourceId)));
-    radio.setCompoundDrawablesWithIntrinsicBounds(leftIcon, null, null, null);
-  }
-
-  private void _unselectRadio(@NonNull RadioButton radio) {
-    Objects.requireNonNull(radio);
-
-    final TypedValue backgroundColor = new TypedValue();
-    this._fragment
-        .requireActivity()
-        .getTheme()
-        .resolveAttribute(com.google.android.material.R.attr.colorSurface, backgroundColor, true);
-
-    final Drawable leftIcon =
-        Objects.requireNonNull(this._fragment.requireContext().getDrawable(R.drawable.icon_check));
-    leftIcon.setAlpha(0); // Hide icon, so that we can reserve its space width.
-
-    radio.setBackgroundTintList(
-        ColorStateList.valueOf(
-            // Use background tint to maintain ripple and rounded corner of drawable shape.
-            this._fragment.requireContext().getColor(backgroundColor.resourceId)));
-    radio.setCompoundDrawablesWithIntrinsicBounds(leftIcon, null, null, null);
   }
 }

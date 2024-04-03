@@ -35,15 +35,13 @@
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/viewMoreButton"
-      style="@style/Widget.Material3.Button.IconButton.Filled"
+      style="@style/Widget.Material3.Button.IconButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="@dimen/screen_padding"
-      android:gravity="center"
-      app:backgroundTint="@android:color/transparent"
       app:icon="@drawable/icon_arrow_forward"
       app:iconSize="@dimen/icon_smallmedium"
-      app:iconTint="?android:textColor"
+      app:iconTint="?colorControlNormal"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:rippleColor="?android:colorControlHighlight" />

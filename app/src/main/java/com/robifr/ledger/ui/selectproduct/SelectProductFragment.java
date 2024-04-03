@@ -127,8 +127,9 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
     this._fragmentBinding.horizontalToolbar.setVisibility(View.GONE);
     this._fragmentBinding.recyclerView.setLayoutManager(
         new LinearLayoutManager(this.requireContext()));
-    this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+
+    view.post(() -> this._fragmentBinding.recyclerView.setAdapter(this._adapter));
 
     this._selectProductViewModel.fetchAllProducts();
   }

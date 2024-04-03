@@ -119,8 +119,9 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
         this.getString(R.string.text_cant_find_any_matching_customers));
     this._fragmentBinding.recyclerView.setLayoutManager(
         new LinearLayoutManager(this.requireContext()));
-    this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+
+    view.post(() -> this._fragmentBinding.recyclerView.setAdapter(this._adapter));
 
     final NavBackStackEntry backStackEntry =
         Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();

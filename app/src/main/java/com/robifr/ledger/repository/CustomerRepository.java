@@ -197,7 +197,8 @@ public final class CustomerRepository
   public CompletableFuture<List<CustomerModel>> search(@NonNull String query) {
     Objects.requireNonNull(query);
 
-    return CompletableFuture.supplyAsync(() -> this._localDao.search(query));
+    return CompletableFuture.supplyAsync(() -> this._localDao.search(query))
+        .thenComposeAsync(this::_mapFields);
   }
 
   /**

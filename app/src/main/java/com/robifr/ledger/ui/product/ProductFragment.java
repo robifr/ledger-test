@@ -81,9 +81,8 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
     this._fragmentBinding.filtersChip.setOnClickListener(chip -> this._filter.openDialog());
     this._fragmentBinding.recyclerView.setLayoutManager(
         new LinearLayoutManager(this.requireContext()));
+    this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
-
-    view.post(() -> this._fragmentBinding.recyclerView.setAdapter(this._adapter));
 
     if (this._productViewModel.products().getValue() == null) {
       this._productViewModel.onSortMethodChanged(

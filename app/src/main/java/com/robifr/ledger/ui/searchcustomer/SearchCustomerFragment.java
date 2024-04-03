@@ -110,9 +110,9 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
         .setStatusBarColor(this.requireContext().getColor(R.color.surface));
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
-    this._fragmentBinding.seachView.setQueryHint(this.getString(R.string.text_search_customers));
-    this._fragmentBinding.seachView.setOnQueryTextListener(this);
-    this._fragmentBinding.seachView.requestFocus();
+    this._fragmentBinding.searchView.setQueryHint(this.getString(R.string.text_search_customers));
+    this._fragmentBinding.searchView.setOnQueryTextListener(this);
+    this._fragmentBinding.searchView.requestFocus();
     this._fragmentBinding.noResultsImage.image.setImageResource(R.drawable.image_noresultsfound);
     this._fragmentBinding.noResultsImage.title.setText(R.string.text_no_results_found);
     this._fragmentBinding.noResultsImage.description.setText(
@@ -126,10 +126,10 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
         Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
 
     if (backStackEntry != null && backStackEntry.getArguments() != null) {
-      this._fragmentBinding.seachView.setQuery(
+      this._fragmentBinding.searchView.setQuery(
           backStackEntry.getArguments().getString(Arguments.INITIAL_QUERY.key()), true);
     } else {
-      Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
+      Compats.showKeyboard(this.requireContext(), this._fragmentBinding.searchView);
     }
   }
 

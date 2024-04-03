@@ -44,22 +44,21 @@ public class SearchViewModelHandler {
   }
 
   private void _onCustomers(@Nullable List<CustomerModel> customers) {
-    final int horizontalListVisibility =
+    final int listVisibility =
         customers == null || customers.size() == 0 ? View.GONE : View.VISIBLE;
     final int noResultsVisibility =
         customers != null
                 && customers.size() == 0
+                // Show illustration when both customers and products are empty.
                 && (this._viewModel.products().getValue() == null
                     || this._viewModel.products().getValue().isEmpty())
             ? View.VISIBLE
             : View.GONE;
 
-    this._fragment.customerListBinding().getRoot().setVisibility(horizontalListVisibility);
-    this._fragment.fragmentBinding().horizontalListContainer.setVisibility(noResultsVisibility);
+    this._fragment.customerListBinding().getRoot().setVisibility(listVisibility);
     this._fragment.fragmentBinding().noResultsImage.getRoot().setVisibility(noResultsVisibility);
 
     if (customers != null) {
-      // TODO: Can be improved with object pool.
       this._fragment.customerListBinding().listContainer.removeAllViews();
 
       for (CustomerModel customer : customers) {
@@ -78,8 +77,7 @@ public class SearchViewModelHandler {
   }
 
   private void _onProducts(@Nullable List<ProductModel> products) {
-    final int horizontalListVisibility =
-        products == null || products.size() == 0 ? View.GONE : View.VISIBLE;
+    final int listVisibility = products == null || products.size() == 0 ? View.GONE : View.VISIBLE;
     final int noResultsVisibility =
         products != null
                 && products.size() == 0
@@ -89,12 +87,10 @@ public class SearchViewModelHandler {
             ? View.VISIBLE
             : View.GONE;
 
-    this._fragment.productListBinding().getRoot().setVisibility(horizontalListVisibility);
-    this._fragment.fragmentBinding().horizontalListContainer.setVisibility(noResultsVisibility);
+    this._fragment.productListBinding().getRoot().setVisibility(listVisibility);
     this._fragment.fragmentBinding().noResultsImage.getRoot().setVisibility(noResultsVisibility);
 
     if (products != null) {
-      // TODO: Can be improved with object pool.
       this._fragment.productListBinding().listContainer.removeAllViews();
 
       for (ProductModel product : products) {

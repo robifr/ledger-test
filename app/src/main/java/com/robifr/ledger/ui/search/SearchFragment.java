@@ -80,8 +80,6 @@ public class SearchFragment extends Fragment
     this._customerListBinding = SearchableListHorizontalBinding.inflate(inflater, container, false);
     this._productListBinding = SearchableListHorizontalBinding.inflate(inflater, container, false);
 
-    this._fragmentBinding.getRoot().addView(this._customerListBinding.getRoot());
-    this._fragmentBinding.getRoot().addView(this._productListBinding.getRoot());
     return this._fragmentBinding.getRoot();
   }
 
@@ -105,15 +103,17 @@ public class SearchFragment extends Fragment
         .setStatusBarColor(this.requireContext().getColor(R.color.surface));
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
-    this._fragmentBinding.seachView.setQueryHint(
+    this._fragmentBinding.searchView.setQueryHint(
         this.getString(R.string.text_search_customers_and_products));
-    this._fragmentBinding.seachView.setOnQueryTextListener(this);
-    this._fragmentBinding.seachView.requestFocus();
+    this._fragmentBinding.searchView.setOnQueryTextListener(this);
+    this._fragmentBinding.searchView.requestFocus();
     this._fragmentBinding.noResultsImage.image.setImageResource(R.drawable.image_noresultsfound);
     this._fragmentBinding.noResultsImage.title.setText(R.string.text_no_results_found);
     this._fragmentBinding.noResultsImage.description.setText(
         this.getString(R.string.text_cant_find_any_matching_customers_nor_products));
     this._fragmentBinding.recyclerView.setVisibility(View.GONE);
+    this._fragmentBinding.horizontalListContainer.addView(this._customerListBinding.getRoot());
+    this._fragmentBinding.horizontalListContainer.addView(this._productListBinding.getRoot());
     this._customerListBinding.title.setText(R.string.text_customers);
     this._customerListBinding.viewMoreButton.setOnClickListener(this);
     this._customerListBinding.getRoot().setVisibility(View.GONE);
@@ -122,7 +122,7 @@ public class SearchFragment extends Fragment
     this._productListBinding.getRoot().setVisibility(View.GONE);
 
     if (this._searchViewModel.query().isEmpty()) {
-      Compats.showKeyboard(this.requireContext(), this._fragmentBinding.seachView);
+      Compats.showKeyboard(this.requireContext(), this._fragmentBinding.searchView);
     }
   }
 
@@ -139,7 +139,7 @@ public class SearchFragment extends Fragment
           final Bundle bundle = new Bundle();
           bundle.putString(
               SearchCustomerFragment.Arguments.INITIAL_QUERY.key(),
-              this._fragmentBinding.seachView.getQuery().toString());
+              this._fragmentBinding.searchView.getQuery().toString());
 
           Navigation.findNavController(this._fragmentBinding.getRoot())
               .navigate(R.id.searchCustomerFragment, bundle);
@@ -148,7 +148,7 @@ public class SearchFragment extends Fragment
           final Bundle bundle = new Bundle();
           bundle.putString(
               SearchProductFragment.Arguments.INITIAL_QUERY.key(),
-              this._fragmentBinding.seachView.getQuery().toString());
+              this._fragmentBinding.searchView.getQuery().toString());
 
           Navigation.findNavController(this._fragmentBinding.getRoot())
               .navigate(R.id.searchProductFragment, bundle);

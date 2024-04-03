@@ -26,6 +26,11 @@
       app:startDestination="@id/queueFragment">
 
     <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.robifr.ledger.ui.dashboard.DashboardFragment"
+        tools:layout="@layout/dashboard_fragment" />
+
+    <fragment
         android:id="@+id/queueFragment"
         android:name="com.robifr.ledger.ui.queue.QueueFragment"
         tools:layout="@layout/listable_fragment" />

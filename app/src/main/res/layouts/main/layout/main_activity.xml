@@ -54,6 +54,7 @@
       android:background="?colorSurface"
       app:itemTextAppearanceActive="@style/BottomNavigationView.TextAppearanceActive"
       app:itemTextAppearanceInactive="@style/TextAppearance.Material3.LabelSmall"
+      app:labelVisibilityMode="labeled"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

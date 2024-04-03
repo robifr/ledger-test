@@ -43,6 +43,7 @@
   <string name="text_customer_id">Customer ID</string>
   <string name="text_customer_name">Customer name</string>
   <string name="text_customer_name_is_required">Customer name is required</string>
+  <string name="text_dashboard">Dashboard</string>
   <string name="text_date">Date</string>
   <string name="text_debt">Debt</string>
   <string name="text_delete">Delete</string>
@@ -119,6 +120,8 @@
   <string name="text_this_week">This week</string>
   <string name="text_today">Today</string>
   <string name="text_total">Total</string>
+  <string name="text_total_debts">Total debts</string>
+  <string name="text_total_deposits">Total deposits</string>
   <string name="text_total_discount">Total discount</string>
   <string name="text_total_price">Total price</string>
   <string name="text_unpaid">Unpaid</string>

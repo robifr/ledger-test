@@ -82,13 +82,19 @@ public class MainActivity extends AppCompatActivity
         this._activityBinding.bottomNavigation.getMenu().findItem(destination.getId());
     if (item != null) item.setChecked(true);
 
-    final TypedValue backgroundColor = new TypedValue();
-    final int mainViewsVisibility =
+    final int bottomNavigationVisibility =
         destination.getParent() != null && destination.getParent().getId() == R.id.mainGraph
             ? View.VISIBLE
             : View.GONE;
+    final int createButtonVisibility =
+        destination.getParent() != null
+                && destination.getParent().getId() == R.id.mainGraph
+                && destination.getId() != R.id.dashboardFragment
+            ? View.VISIBLE
+            : View.GONE;
+    final TypedValue backgroundColor = new TypedValue();
     final int navigationBarColor =
-        mainViewsVisibility == View.VISIBLE
+        bottomNavigationVisibility == View.VISIBLE
             ? com.google.android.material.R.attr.colorSurface
             : android.R.attr.colorBackground;
 
@@ -100,8 +106,8 @@ public class MainActivity extends AppCompatActivity
     // Hide views on main activity when user navigating to another fragment other than
     // the one defined as top of the stack — queue, customer, and product — inside bottom
     // navigation.
-    this._activityBinding.bottomNavigation.setVisibility(mainViewsVisibility);
-    this._activityBinding.createButton.setVisibility(mainViewsVisibility);
+    this._activityBinding.bottomNavigation.setVisibility(bottomNavigationVisibility);
+    this._activityBinding.createButton.setVisibility(createButtonVisibility);
   }
 
   @Override

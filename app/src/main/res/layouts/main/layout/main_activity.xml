@@ -51,7 +51,7 @@
       android:id="@+id/bottomNavigation"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:itemBackground="?colorSurface"
+      android:background="?colorSurface"
       app:itemTextAppearanceActive="@style/BottomNavigationView.TextAppearanceActive"
       app:itemTextAppearanceInactive="@style/TextAppearance.Material3.LabelSmall"
       app:layout_constraintBottom_toBottomOf="parent"

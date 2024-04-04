@@ -64,12 +64,6 @@ public class QueueViewModel extends ViewModel {
    */
   @NonNull private final MutableLiveData<Integer> _expandedQueueIndex = new MutableLiveData<>();
 
-  /**
-   * Old value of {@link QueueViewModel#_expandedQueueIndex expanded queue index} from {@link
-   * QueueViewModel#_queues queues}. -1 or null to represent none being expanded.
-   */
-  @NonNull private final MutableLiveData<Integer> _oldExpandedQueueIndex = new MutableLiveData<>();
-
   public QueueViewModel(
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
@@ -111,13 +105,6 @@ public class QueueViewModel extends ViewModel {
    */
   public LiveData<Integer> expandedQueueIndex() {
     return this._expandedQueueIndex;
-  }
-
-  /**
-   * @see QueueViewModel#_oldExpandedQueueIndex
-   */
-  public LiveData<Integer> oldExpandedQueueIndex() {
-    return this._oldExpandedQueueIndex;
   }
 
   public void fetchAllQueues() {
@@ -228,7 +215,6 @@ public class QueueViewModel extends ViewModel {
   }
 
   public void onExpandedQueueIndexChanged(int index) {
-    this._oldExpandedQueueIndex.setValue(this._expandedQueueIndex.getValue());
     this._expandedQueueIndex.setValue(index);
   }
 

@@ -48,10 +48,7 @@ public class QueueViewModelHandler {
     this._viewModel.queues().observe(this._fragment.requireActivity(), this::_onQueues);
     this._viewModel
         .expandedQueueIndex()
-        .observe(this._fragment.requireActivity(), this::_onExpandedQueueIndex);
-    this._viewModel
-        .oldExpandedQueueIndex()
-        .observe(this._fragment.requireActivity(), this::_onOldExpandedQueueIndex);
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onExpandedQueueIndex);
 
     this._viewModel
         .filterView()
@@ -90,24 +87,24 @@ public class QueueViewModelHandler {
   }
 
   private void _onExpandedQueueIndex(@Nullable Integer index) {
-    if (index != null && index != -1) {
-      final RecyclerView.ViewHolder expandedCardHolder =
-          // +1 offset because header holder.
-          this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
+    // Shrink all cards.
+    for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
+      final RecyclerView.ViewHolder viewHolder =
+          this._fragment
+              .fragmentBinding()
+              .recyclerView
+              .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
 
-      // Expand card or shrink when the same index being selected.
-      if (expandedCardHolder instanceof QueueListHolder holder) holder.setCardExpanded(true);
+      if (viewHolder instanceof QueueListHolder holder) holder.setCardExpanded(false);
     }
-  }
 
-  private void _onOldExpandedQueueIndex(@Nullable Integer index) {
+    // Expand the selected card.
     if (index != null && index != -1) {
-      final RecyclerView.ViewHolder oldExpandedCardHolder =
+      final RecyclerView.ViewHolder viewHolder =
           // +1 offset because header holder.
           this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
 
-      // Shrink old expanded card. Ensuring there will be only single card being expanded.
-      if (oldExpandedCardHolder instanceof QueueListHolder holder) holder.setCardExpanded(false);
+      if (viewHolder instanceof QueueListHolder holder) holder.setCardExpanded(true);
     }
   }
 

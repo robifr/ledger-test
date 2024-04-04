@@ -28,11 +28,11 @@ import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class CustomerCardWideNormalComponent {
+public class CustomerCardNormalComponent {
   @NonNull private final Context _context;
   @NonNull private final CustomerCardWideNormalBinding _binding;
 
-  public CustomerCardWideNormalComponent(
+  public CustomerCardNormalComponent(
       @NonNull Context context, @NonNull CustomerCardWideNormalBinding binding) {
     this._context = Objects.requireNonNull(context);
     this._binding = Objects.requireNonNull(binding);

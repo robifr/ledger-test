@@ -25,7 +25,7 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerCardWideNormalComponent;
+import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
   @NonNull private final SelectCustomerFragment _fragment;
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final CustomerCardWideBinding _selectedCardBinding;
-  @NonNull private final CustomerCardWideNormalComponent _selectedNormalCard;
+  @NonNull private final CustomerCardNormalComponent _selectedNormalCard;
 
   public SelectCustomerHeaderHolder(
       @NonNull SelectCustomerFragment fragment, @NonNull ListableListSelectedItemBinding binding) {
@@ -47,7 +47,7 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
         CustomerCardWideBinding.inflate(
             this._fragment.getLayoutInflater(), this._headerBinding.selectedItemContainer, false);
     this._selectedNormalCard =
-        new CustomerCardWideNormalComponent(
+        new CustomerCardNormalComponent(
             this._fragment.requireContext(), this._selectedCardBinding.normalCard);
 
     this._headerBinding.selectedItemTitle.setText(

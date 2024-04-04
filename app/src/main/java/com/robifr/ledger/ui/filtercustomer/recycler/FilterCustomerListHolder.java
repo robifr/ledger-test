@@ -24,7 +24,7 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerCardWideNormalComponent;
+import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +33,7 @@ public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
     implements View.OnClickListener {
   @NonNull private final FilterCustomerFragment _fragment;
   @NonNull private final CustomerCardWideBinding _cardBinding;
-  @NonNull private final CustomerCardWideNormalComponent _normalCard;
+  @NonNull private final CustomerCardNormalComponent _normalCard;
   @Nullable private CustomerModel _boundCustomer;
 
   public FilterCustomerListHolder(
@@ -42,7 +42,7 @@ public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
     this._fragment = Objects.requireNonNull(fragment);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new CustomerCardWideNormalComponent(
+        new CustomerCardNormalComponent(
             this._fragment.requireContext(), this._cardBinding.normalCard);
 
     this._cardBinding.cardView.setOnClickListener(this);

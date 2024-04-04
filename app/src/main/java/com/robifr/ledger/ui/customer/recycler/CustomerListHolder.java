@@ -22,14 +22,14 @@ import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerCardWideNormalComponent;
+import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
 import com.robifr.ledger.ui.customer.CustomerFragment;
 import java.util.Objects;
 
 public class CustomerListHolder extends RecyclerViewHolder<CustomerModel> {
   @NonNull private final CustomerFragment _fragment;
   @NonNull private final CustomerCardWideBinding _cardBinding;
-  @NonNull private final CustomerCardWideNormalComponent _normalCard;
+  @NonNull private final CustomerCardNormalComponent _normalCard;
   @NonNull private final CustomerListMenu _menu;
   @Nullable private CustomerModel _boundCustomer;
 
@@ -39,7 +39,7 @@ public class CustomerListHolder extends RecyclerViewHolder<CustomerModel> {
     this._fragment = Objects.requireNonNull(fragment);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new CustomerCardWideNormalComponent(
+        new CustomerCardNormalComponent(
             this._fragment.requireContext(), this._cardBinding.normalCard);
     this._menu = new CustomerListMenu(this._fragment, this);
 

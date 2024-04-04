@@ -30,4 +30,9 @@
   <include
       android:id="@+id/normalCard"
       layout="@layout/product_card_wide_normal" />
+
+  <include
+      android:id="@+id/expandedCard"
+      layout="@layout/product_card_wide_expanded"
+      android:visibility="gone" />
 </com.google.android.material.card.MaterialCardView>

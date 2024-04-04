@@ -52,6 +52,12 @@ public class CustomerViewModel extends ViewModel {
   @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
   @NonNull private final MutableLiveData<CustomerSortMethod> _sortMethod = new MutableLiveData<>();
 
+  /**
+   * Currently expanded customer index from {@link CustomerViewModel#_customers customers}. -1 or
+   * null to represent none being expanded.
+   */
+  @NonNull private final MutableLiveData<Integer> _expandedCustomerIndex = new MutableLiveData<>();
+
   public CustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
     this._customersUpdater = new CustomersUpdater(this._customers);
@@ -82,6 +88,13 @@ public class CustomerViewModel extends ViewModel {
   @NonNull
   public LiveData<CustomerSortMethod> sortMethod() {
     return this._sortMethod;
+  }
+
+  /**
+   * @see CustomerViewModel#_expandedCustomerIndex
+   */
+  public LiveData<Integer> expandedCustomerIndex() {
+    return this._expandedCustomerIndex;
   }
 
   public void fetchAllCustomers() {
@@ -170,6 +183,10 @@ public class CustomerViewModel extends ViewModel {
         sortMethod.sortBy() == sortBy ? !sortMethod.isAscending() : sortMethod.isAscending();
 
     this.onSortMethodChanged(new CustomerSortMethod(sortBy, isAscending), customers);
+  }
+
+  public void onExpandedCustomerIndexChanged(int index) {
+    this._expandedCustomerIndex.setValue(index);
   }
 
   public static class Factory implements ViewModelProvider.Factory {

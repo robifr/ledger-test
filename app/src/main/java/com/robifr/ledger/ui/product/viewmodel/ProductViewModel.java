@@ -52,6 +52,12 @@ public class ProductViewModel extends ViewModel {
   @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
   @NonNull private final MutableLiveData<ProductSortMethod> _sortMethod = new MutableLiveData<>();
 
+  /**
+   * Currently expanded product index from {@link ProductViewModel#_products products}. -1 or null
+   * to represent none being expanded.
+   */
+  @NonNull private final MutableLiveData<Integer> _expandedProductIndex = new MutableLiveData<>();
+
   public ProductViewModel(@NonNull ProductRepository productRepository) {
     this._productRepository = Objects.requireNonNull(productRepository);
     this._productsUpdater = new ProductsUpdater(this._products);
@@ -82,6 +88,13 @@ public class ProductViewModel extends ViewModel {
   @NonNull
   public LiveData<ProductSortMethod> sortMethod() {
     return this._sortMethod;
+  }
+
+  /**
+   * @see ProductViewModel#_expandedProductIndex
+   */
+  public LiveData<Integer> expandedProductIndex() {
+    return this._expandedProductIndex;
   }
 
   public void fetchAllProducts() {
@@ -169,6 +182,10 @@ public class ProductViewModel extends ViewModel {
         sortMethod.sortBy() == sortBy ? !sortMethod.isAscending() : sortMethod.isAscending();
 
     this.onSortMethodChanged(new ProductSortMethod(sortBy, isAscending), products);
+  }
+
+  public void onExpandedProductIndexChanged(int index) {
+    this._expandedProductIndex.setValue(index);
   }
 
   public static class Factory implements ViewModelProvider.Factory {

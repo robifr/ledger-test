@@ -20,10 +20,12 @@ package com.robifr.ledger.ui.product;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.ui.product.recycler.ProductListHolder;
 import com.robifr.ledger.ui.product.viewmodel.ProductViewModel;
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +43,9 @@ public class ProductViewModelHandler {
         .snackbarMessage()
         .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.products().observe(this._fragment.requireActivity(), this::_onProducts);
+    this._viewModel
+        .expandedProductIndex()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onExpandedProductIndex);
 
     this._viewModel
         .filterView()
@@ -64,6 +69,28 @@ public class ProductViewModelHandler {
 
   private void _onProducts(@Nullable List<ProductModel> products) {
     this._fragment.adapter().notifyDataSetChanged();
+  }
+
+  private void _onExpandedProductIndex(@Nullable Integer index) {
+    // Shrink all cards.
+    for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
+      final RecyclerView.ViewHolder viewHolder =
+          this._fragment
+              .fragmentBinding()
+              .recyclerView
+              .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
+
+      if (viewHolder instanceof ProductListHolder holder) holder.setCardExpanded(false);
+    }
+
+    // Expand the selected card.
+    if (index != null && index != -1) {
+      final RecyclerView.ViewHolder viewHolder =
+          // +1 offset because header holder.
+          this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
+
+      if (viewHolder instanceof ProductListHolder holder) holder.setCardExpanded(true);
+    }
   }
 
   private void _onFilteredMinPriceText(@Nullable String minPrice) {

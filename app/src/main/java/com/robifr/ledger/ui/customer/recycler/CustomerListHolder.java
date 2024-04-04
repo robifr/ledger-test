@@ -17,19 +17,25 @@
 
 package com.robifr.ledger.ui.customer.recycler;
 
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.customer.CustomerCardExpandedComponent;
 import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
 import com.robifr.ledger.ui.customer.CustomerFragment;
+import java.util.List;
 import java.util.Objects;
 
-public class CustomerListHolder extends RecyclerViewHolder<CustomerModel> {
+public class CustomerListHolder extends RecyclerViewHolder<CustomerModel>
+    implements View.OnClickListener {
   @NonNull private final CustomerFragment _fragment;
   @NonNull private final CustomerCardWideBinding _cardBinding;
   @NonNull private final CustomerCardNormalComponent _normalCard;
+  @NonNull private final CustomerCardExpandedComponent _expandedCard;
   @NonNull private final CustomerListMenu _menu;
   @Nullable private CustomerModel _boundCustomer;
 
@@ -41,20 +47,72 @@ public class CustomerListHolder extends RecyclerViewHolder<CustomerModel> {
     this._normalCard =
         new CustomerCardNormalComponent(
             this._fragment.requireContext(), this._cardBinding.normalCard);
+    this._expandedCard =
+        new CustomerCardExpandedComponent(
+            this._fragment.requireContext(), this._cardBinding.expandedCard);
     this._menu = new CustomerListMenu(this._fragment, this);
 
-    this._cardBinding.cardView.setClickable(false);
+    this._cardBinding.cardView.setOnClickListener(this);
     this._cardBinding.normalCard.menuButton.setOnClickListener(v -> this._menu.openDialog());
+    this._cardBinding.expandedCard.menuButton.setOnClickListener(v -> this._menu.openDialog());
   }
 
   @Override
   public void bind(@NonNull CustomerModel customer) {
     this._boundCustomer = Objects.requireNonNull(customer);
+
     this._normalCard.setCustomer(this._boundCustomer);
+    this._expandedCard.reset();
+
+    // Prevent reused view holder to expand the card
+    // if current bound customer is different with selected expanded card.
+    final List<CustomerModel> customers = this._fragment.customerViewModel().customers().getValue();
+    final int expandedCustomerIndex =
+        Objects.requireNonNullElse(
+            this._fragment.customerViewModel().expandedCustomerIndex().getValue(), -1);
+    final boolean shouldCardExpanded =
+        expandedCustomerIndex != -1
+            && customers != null
+            && this._boundCustomer.equals(customers.get(expandedCustomerIndex));
+
+    this.setCardExpanded(shouldCardExpanded);
+  }
+
+  @Override
+  public void onClick(@NonNull View view) {
+    Objects.requireNonNull(view);
+
+    switch (view.getId()) {
+      case R.id.cardView -> {
+        final List<CustomerModel> customers =
+            this._fragment.customerViewModel().customers().getValue();
+        if (customers == null) return;
+
+        // Only expand when it shrank.
+        final int expandedCustomerIndex =
+            this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
+                ? customers.indexOf(this._boundCustomer)
+                : -1;
+        this._fragment.customerViewModel().onExpandedCustomerIndexChanged(expandedCustomerIndex);
+      }
+    }
   }
 
   @NonNull
   public CustomerModel boundCustomer() {
     return Objects.requireNonNull(this._boundCustomer);
+  }
+
+  public void setCardExpanded(boolean isExpanded) {
+    Objects.requireNonNull(this._boundCustomer);
+
+    final int normalCardVisibility = isExpanded ? View.GONE : View.VISIBLE;
+    final int expandedCardVisibility = isExpanded ? View.VISIBLE : View.GONE;
+
+    this._cardBinding.normalCard.getRoot().setVisibility(normalCardVisibility);
+    this._cardBinding.expandedCard.getRoot().setVisibility(expandedCardVisibility);
+
+    // Only fill the view when it's shown on screen.
+    if (isExpanded) this._expandedCard.setCustomer(this._boundCustomer);
   }
 }

@@ -20,10 +20,12 @@ package com.robifr.ledger.ui.customer;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.ui.customer.recycler.CustomerListHolder;
 import com.robifr.ledger.ui.customer.viewmodel.CustomerViewModel;
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +43,9 @@ public class CustomerViewModelHandler {
         .snackbarMessage()
         .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.customers().observe(this._fragment.requireActivity(), this::_onCustomers);
+    this._viewModel
+        .expandedCustomerIndex()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onExpandedCustomerIndex);
 
     this._viewModel
         .filterView()
@@ -72,6 +77,28 @@ public class CustomerViewModelHandler {
 
   private void _onCustomers(@Nullable List<CustomerModel> customers) {
     this._fragment.adapter().notifyDataSetChanged();
+  }
+
+  private void _onExpandedCustomerIndex(@Nullable Integer index) {
+    // Shrink all cards.
+    for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
+      final RecyclerView.ViewHolder viewHolder =
+          this._fragment
+              .fragmentBinding()
+              .recyclerView
+              .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
+
+      if (viewHolder instanceof CustomerListHolder holder) holder.setCardExpanded(false);
+    }
+
+    // Expand the selected card.
+    if (index != null && index != -1) {
+      final RecyclerView.ViewHolder viewHolder =
+          // +1 offset because header holder.
+          this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
+
+      if (viewHolder instanceof CustomerListHolder holder) holder.setCardExpanded(true);
+    }
   }
 
   private void _onFilterMinBalanceText(@Nullable String minBalance) {

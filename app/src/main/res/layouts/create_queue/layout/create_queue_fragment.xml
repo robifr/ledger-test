@@ -25,7 +25,6 @@
       android:id="@+id/toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_scrollFlags="enterAlways"
       app:menu="@menu/reusable_toolbar_edit"
       app:navigationIcon="@drawable/icon_arrow_back"
       app:title="@string/text_create_queue" />

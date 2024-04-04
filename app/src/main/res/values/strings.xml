@@ -39,10 +39,10 @@
   <string name="text_create_queue">Create queue</string>
   <string name="text_custom_range">Custom range</string>
   <string name="text_customer">Customer</string>
-  <string name="text_customers">Customers</string>
   <string name="text_customer_id">Customer ID</string>
   <string name="text_customer_name">Customer name</string>
   <string name="text_customer_name_is_required">Customer name is required</string>
+  <string name="text_customers">Customers</string>
   <string name="text_dashboard">Dashboard</string>
   <string name="text_date">Date</string>
   <string name="text_debt">Debt</string>
@@ -94,10 +94,10 @@
   <string name="text_please_to_include_at_least_one_product_order">Please to include at least one product order</string>
   <string name="text_price">Price</string>
   <string name="text_product">Product</string>
-  <string name="text_products">Products</string>
   <string name="text_product_id">Product ID</string>
   <string name="text_product_name_is_required">Product name is required</string>
   <string name="text_product_orders">Product orders</string>
+  <string name="text_products">Products</string>
   <string name="text_quantity">Quantity</string>
   <string name="text_queue">Queue</string>
   <string name="text_queue_id">Queue ID</string>

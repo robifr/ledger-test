@@ -52,29 +52,21 @@
     <!--
         Ripple color.
 
-        Note: Each material widgets use their own ripple color (can be seen in their github
-          repository). Like `color/mtrl_btn_ripple_color` for button, don't override them because
-          they're internal. I have tried to override `color/mtrl_btn_text_btn_ripple_color` for
-          alert dialog and `InflateException` get thrown in runtime.
-
-          Also `MaterialButton` uses `colorOnPrimary` for their ripple. Of course it's inconvenience
-          to straight override `colorOnPrimary`. While its true you can override them via
-          `materialButtonStyle` -> `materialThemeOverlay` -> `colorOnPrimary` right here,
-          but there are still buttons which doesn't get overrode.
-          It's when you set a custom `style` attribute on the `MaterialButton` itself.
-          e.g. Buttons inside bottom sheet dialog uses `style/BottomSheetDialog.MaterialButton`.
-
-          In conclusion it's better to manually set `app:rippleColor` on everything.
+        Note: Each material widgets use their own ripple color.
+          Ensure to correctly set `app:rippleColor` on the widget.
     -->
     <item name="colorControlHighlight">@color/black_10</item>
 
-    <!-- System status and navigation bar. -->
+    <!--
+        System status and navigation bar.
+
+        Note: Sometimes there's few screens where we have to manually set the color.
+          Like when contextual toolbar is shown, we match the status bar color to it,
+          or when bottom navigation is shown, we match the navigation bar color.
+    -->
     <item name="android:statusBarColor">?android:colorBackground</item>
     <item name="android:windowLightStatusBar">true</item>
-    <!--
-        Navigation bar background color should be manually set programmatically
-        to match current background or bottom navigation.
-    -->
+    <item name="android:navigationBarColor">?android:colorBackground</item>
     <item name="android:windowLightNavigationBar">true</item>
 
     <!-- Toolbar. -->

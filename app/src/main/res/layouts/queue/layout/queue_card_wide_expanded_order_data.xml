@@ -41,8 +41,6 @@
         android:textSize="@dimen/text_smallmedium" />
   </LinearLayout>
 
-  <!-- TODO: For unknown reason both quantity and total price text color default to gray. -->
-
   <TextView
       android:id="@+id/quantity"
       android:layout_width="0dp"
@@ -51,7 +49,6 @@
       android:gravity="center_horizontal"
       android:paddingStart="@dimen/table_column_padding"
       android:paddingEnd="@dimen/table_column_padding"
-      android:textColor="@color/text_enabled"
       android:textSize="@dimen/text_smallmedium" />
 
   <TextView
@@ -60,6 +57,5 @@
       android:layout_height="match_parent"
       android:layout_weight="0.35"
       android:gravity="end"
-      android:textColor="@color/text_enabled"
       android:textSize="@dimen/text_smallmedium" />
 </TableRow>

@@ -16,6 +16,7 @@
   -->
 
 <resources>
+
   <style name="BottomNavigationView.TextAppearanceActive" parent="TextAppearance.Material3.LabelSmall">
     <item name="android:textStyle">bold</item>
   </style>

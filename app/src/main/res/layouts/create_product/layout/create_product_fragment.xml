@@ -25,21 +25,18 @@
       android:id="@+id/toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_scrollFlags="enterAlways"
       app:menu="@menu/reusable_toolbar_edit"
       app:navigationIcon="@drawable/icon_arrow_back"
       app:title="@string/text_create_product" />
 
   <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/nameLayout"
-      style="@style/TextInputLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/screen_padding"
+      android:layout_marginTop="@dimen/textinput_margintop"
       android:layout_marginEnd="@dimen/screen_padding"
-      android:layout_marginBottom="5dp"
-      android:hint="@string/text_name"
-      android:paddingTop="5dp">
+      android:hint="@string/text_name">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/name"
@@ -54,11 +51,10 @@
 
   <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/priceLayout"
-      style="@style/TextInputLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/screen_padding"
-      android:layout_marginTop="5dp"
+      android:layout_marginTop="@dimen/textinput_margintop"
       android:layout_marginEnd="@dimen/screen_padding"
       android:hint="@string/text_price">
 

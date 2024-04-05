@@ -20,17 +20,33 @@ package com.robifr.ledger.ui.editproduct;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.createproduct.CreateProductViewModelHandler;
 import com.robifr.ledger.ui.editproduct.viewmodel.EditProductViewModel;
+import com.robifr.ledger.util.CurrencyFormat;
+import java.math.BigDecimal;
 
 public class EditProductViewModelHandler extends CreateProductViewModelHandler {
   public EditProductViewModelHandler(
       @NonNull EditProductFragment fragment, @NonNull EditProductViewModel viewModel) {
     super(fragment, viewModel);
     viewModel
+        .initializedInitialProductToEdit()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onInitializedInitialProductToEdit));
+    viewModel
         .editedProductId()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onEditedProductId));
+  }
+
+  private void _onInitializedInitialProductToEdit(@Nullable ProductModel product) {
+    if (product == null) return;
+
+    this._viewModel.onNameTextChanged(product.name());
+    this._viewModel.onPriceTextChanged(
+        CurrencyFormat.format(BigDecimal.valueOf(product.price()), "id", "ID"));
   }
 
   private void _onEditedProductId(@Nullable Long productId) {

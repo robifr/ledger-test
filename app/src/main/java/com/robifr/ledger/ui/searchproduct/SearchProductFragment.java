@@ -28,7 +28,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
@@ -37,8 +36,10 @@ import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.searchproduct.recycler.SearchProductAdapter;
 import com.robifr.ledger.ui.searchproduct.viewmodel.SearchProductViewModel;
 import com.robifr.ledger.util.Compats;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class SearchProductFragment extends Fragment implements SearchView.OnQueryTextListener {
   public enum Arguments implements FragmentResultKey {
     INITIAL_QUERY;
@@ -79,13 +80,22 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
   @Nullable private SearchProductViewModelHandler _viewModelHandler;
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this._searchProductViewModel = new ViewModelProvider(this).get(SearchProductViewModel.class);
+  }
+
+  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
+    Objects.requireNonNull(this._searchProductViewModel);
 
     this._fragmentBinding = SearchableFragmentBinding.inflate(inflater, container, false);
+    this._viewModelHandler = new SearchProductViewModelHandler(this, this._searchProductViewModel);
+
     return this._fragmentBinding.getRoot();
   }
 
@@ -96,10 +106,6 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
 
     this._adapter = new SearchProductAdapter(this);
     this._normalStatusBarColor = this.requireActivity().getWindow().getStatusBarColor();
-    this._searchProductViewModel =
-        new ViewModelProvider(this, new SearchProductViewModel.Factory(this.requireContext()))
-            .get(SearchProductViewModel.class);
-    this._viewModelHandler = new SearchProductViewModelHandler(this, this._searchProductViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()
@@ -120,16 +126,6 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
-
-    final NavBackStackEntry backStackEntry =
-        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
-
-    if (backStackEntry != null && backStackEntry.getArguments() != null) {
-      this._fragmentBinding.searchView.setQuery(
-          backStackEntry.getArguments().getString(Arguments.INITIAL_QUERY.key()), true);
-    } else {
-      Compats.showKeyboard(this.requireContext(), this._fragmentBinding.searchView);
-    }
   }
 
   @Override

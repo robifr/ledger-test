@@ -18,21 +18,20 @@
 package com.robifr.ledger.ui.editqueue;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
-import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.ProductOrderModel;
-import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.createqueue.CreateQueueFragment;
 import com.robifr.ledger.ui.editqueue.viewmodel.EditQueueViewModel;
-import java.time.ZoneId;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class EditQueueFragment extends CreateQueueFragment {
   public enum Arguments implements FragmentResultKey {
     INITIAL_QUEUE_ID_TO_EDIT;
@@ -65,36 +64,30 @@ public class EditQueueFragment extends CreateQueueFragment {
   }
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this._createQueueViewModel = new ViewModelProvider(this).get(EditQueueViewModel.class);
+  }
+
+  @Override
+  public View onCreateView(
+      @NonNull LayoutInflater inflater,
+      @Nullable ViewGroup container,
+      @Nullable Bundle savedInstance) {
+    Objects.requireNonNull(this._createQueueViewModel);
+
+    final View view = super.onCreateView(inflater, container, savedInstance);
+    this._viewModelHandler =
+        new EditQueueViewModelHandler(this, (EditQueueViewModel) this._createQueueViewModel);
+
+    return view;
+  }
+
+  @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     super.onViewCreated(view, savedInstance);
     Objects.requireNonNull(this._fragmentBinding);
 
-    this._createQueueViewModel =
-        new ViewModelProvider(this, new EditQueueViewModel.Factory(this.requireContext()))
-            .get(EditQueueViewModel.class);
-    this._viewModelHandler =
-        new EditQueueViewModelHandler(this, (EditQueueViewModel) this._createQueueViewModel);
-
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_queue));
-
-    final NavBackStackEntry backStackEntry =
-        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
-
-    if (this._createQueueViewModel instanceof EditQueueViewModel editQueueViewModel
-        && backStackEntry != null
-        && backStackEntry.getArguments() != null) {
-      final QueueModel initialQueue =
-          editQueueViewModel.selectQueueById(
-              backStackEntry.getArguments().getLong(Arguments.INITIAL_QUEUE_ID_TO_EDIT.key(), 0L));
-      Objects.requireNonNull(initialQueue); // Logically shouldn't be null when editing data.
-
-      editQueueViewModel.setInitialQueueToEdit(initialQueue);
-      editQueueViewModel.onCustomerChanged(initialQueue.customer());
-      editQueueViewModel.onDateChanged(initialQueue.date().atZone(ZoneId.systemDefault()));
-      editQueueViewModel.onStatusChanged(initialQueue.status());
-      editQueueViewModel.onPaymentMethodChanged(initialQueue.paymentMethod());
-      editQueueViewModel.onAddProductOrder(
-          initialQueue.productOrders().toArray(new ProductOrderModel[0]));
-    }
   }
 }

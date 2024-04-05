@@ -27,6 +27,7 @@ import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class MakeProductOrderViewModel {
@@ -173,13 +174,18 @@ public class MakeProductOrderViewModel {
   }
 
   public void onSave() {
-    final int indexToUpdate =
-        this._viewModel.inputtedProductOrders().indexOf(this._productOrderToEdit);
+    final ArrayList<ProductOrderModel> productOrders =
+        this._viewModel.inputtedProductOrders().getValue() != null
+            ? new ArrayList<>(this._viewModel.inputtedProductOrders().getValue())
+            : new ArrayList<>();
+    final int indexToUpdate = productOrders.indexOf(this._productOrderToEdit);
 
     // Add as new when there's no product order to update,
     // otherwise update them with the one user inputted.
-    if (indexToUpdate == -1) this._viewModel.onAddProductOrder(this.inputtedProductOrder());
-    else this._viewModel.onUpdateProductOrder(indexToUpdate, this.inputtedProductOrder());
+    if (indexToUpdate == -1) productOrders.add(this.inputtedProductOrder());
+    else productOrders.set(indexToUpdate, this.inputtedProductOrder());
+
+    this._viewModel.onProductOrdersChanged(productOrders);
   }
 
   public void onReset() {

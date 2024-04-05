@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.searchcustomer.viewmodel.SearchCustomerViewModel;
+import com.robifr.ledger.util.Compats;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,10 +38,24 @@ public class SearchCustomerViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
+        .initializedInitialQuery()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onInitializedInitialQuery));
+    this._viewModel
         .selectedCustomerId()
         .observe(
             this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSelectedCustomerId));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
+  }
+
+  private void _onInitializedInitialQuery(@Nullable String query) {
+    if (query != null) {
+      this._fragment.fragmentBinding().searchView.setQuery(query, true);
+    } else {
+      Compats.showKeyboard(
+          this._fragment.requireContext(), this._fragment.fragmentBinding().searchView);
+    }
   }
 
   private void _onSelectedCustomerId(@Nullable Long customerId) {

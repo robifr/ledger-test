@@ -67,11 +67,7 @@ public class SelectProductResultHandler {
                       .orElse(null)
                   : null;
 
-          if (selectedProduct != null
-              && selectedProduct.id() != null
-              && !selectedProduct.id().equals(viewModel.selectedProductId())) {
-            viewModel.onProductSelected(selectedProduct);
-          }
+          if (selectedProduct != null) viewModel.onProductSelected(selectedProduct);
         }
       }
     }

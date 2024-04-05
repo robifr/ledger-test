@@ -17,14 +17,12 @@
 
 package com.robifr.ledger.ui.createqueue.viewmodel;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
@@ -35,19 +33,19 @@ import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class CreateQueueViewModel extends ViewModel {
   @NonNull protected final QueueRepository _queueRepository;
   @NonNull protected final MakeProductOrderViewModel _makeProductOrderView;
@@ -74,6 +72,10 @@ public class CreateQueueViewModel extends ViewModel {
   protected final MutableLiveData<QueueModel.Status> _inputtedStatus = new MutableLiveData<>();
 
   @NonNull
+  protected final MutableLiveData<List<ProductOrderModel>> _inputtedProductOrders =
+      new MutableLiveData<>();
+
+  @NonNull
   protected final MutableLiveData<QueueModel.PaymentMethod> _inputtedPaymentMethod =
       new MutableLiveData<>();
 
@@ -84,26 +86,13 @@ public class CreateQueueViewModel extends ViewModel {
   @NonNull
   protected final MutableLiveData<Boolean> _isPaymentMethodsViewVisible = new MutableLiveData<>();
 
-  @NonNull
-  protected final MutableLiveData<LiveDataEvent<List<Integer>>> _addedProductOrderIndexes =
-      new MutableLiveData<>();
-
-  @NonNull
-  protected final MutableLiveData<LiveDataEvent<List<Integer>>> _removedProductOrderIndexes =
-      new MutableLiveData<>();
-
-  @NonNull
-  protected final MutableLiveData<LiveDataEvent<List<Integer>>> _updatedProductOrderIndexes =
-      new MutableLiveData<>();
-
-  @NonNull protected final ArrayList<ProductOrderModel> _inputtedProductOrders = new ArrayList<>();
-
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final ProductRepository _productRepository;
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<Long>> _createdQueueId = new MutableLiveData<>();
 
+  @Inject
   public CreateQueueViewModel(
       @NonNull QueueRepository queueRepository,
       @NonNull CustomerRepository customerRepository,
@@ -159,6 +148,11 @@ public class CreateQueueViewModel extends ViewModel {
   }
 
   @NonNull
+  public LiveData<List<ProductOrderModel>> inputtedProductOrders() {
+    return this._inputtedProductOrders;
+  }
+
+  @NonNull
   public LiveData<QueueModel.PaymentMethod> inputtedPaymentMethod() {
     return this._inputtedPaymentMethod;
   }
@@ -177,26 +171,6 @@ public class CreateQueueViewModel extends ViewModel {
   @NonNull
   public LiveData<Boolean> isPaymentMethodsViewVisible() {
     return this._isPaymentMethodsViewVisible;
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<List<Integer>>> addedProductOrderIndexes() {
-    return this._addedProductOrderIndexes;
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<List<Integer>>> removedProductOrderIndexes() {
-    return this._removedProductOrderIndexes;
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<List<Integer>>> updatedProductOrderIndexes() {
-    return this._updatedProductOrderIndexes;
-  }
-
-  @NonNull
-  public List<ProductOrderModel> inputtedProductOrders() {
-    return Collections.unmodifiableList(this._inputtedProductOrders);
   }
 
   /**
@@ -226,6 +200,9 @@ public class CreateQueueViewModel extends ViewModel {
         this._inputtedCustomer.getValue() != null && this._inputtedCustomer.getValue().id() != null
             ? this._inputtedCustomer.getValue().id()
             : defaultQueue.customerId();
+    final List<ProductOrderModel> orders =
+        Objects.requireNonNullElse(
+            this._inputtedProductOrders.getValue(), defaultQueue.productOrders());
 
     return QueueModel.toBuilder()
         .setStatus(status)
@@ -233,7 +210,7 @@ public class CreateQueueViewModel extends ViewModel {
         .setPaymentMethod(paymentMethod)
         .setCustomerId(customerId)
         .setCustomer(this._inputtedCustomer.getValue())
-        .setProductOrders(this._inputtedProductOrders)
+        .setProductOrders(orders)
         .build();
   }
 
@@ -263,6 +240,15 @@ public class CreateQueueViewModel extends ViewModel {
     this._onUpdateTemporalInputtedCustomer();
   }
 
+  public void onProductOrdersChanged(@NonNull List<ProductOrderModel> productOrders) {
+    Objects.requireNonNull(productOrders);
+
+    this._inputtedProductOrders.setValue(Collections.unmodifiableList(productOrders));
+    this._onUpdateAllowedPaymentMethod();
+    // Update after allowed payment methods updated, in case payment method changed.
+    this._onUpdateTemporalInputtedCustomer();
+  }
+
   public void onPaymentMethodChanged(@NonNull QueueModel.PaymentMethod paymentMethod) {
     Objects.requireNonNull(paymentMethod);
 
@@ -270,51 +256,10 @@ public class CreateQueueViewModel extends ViewModel {
     this._onUpdateTemporalInputtedCustomer();
   }
 
-  public void onAddProductOrder(@NonNull ProductOrderModel... productOrder) {
-    Objects.requireNonNull(productOrder);
-
-    final List<Integer> addedIndexes =
-        IntStream.rangeClosed(
-                this._inputtedProductOrders.size(),
-                this._inputtedProductOrders.size() + productOrder.length - 1)
-            .boxed()
-            .collect(Collectors.toList());
-
-    this._inputtedProductOrders.addAll(List.of(productOrder));
-    this._addedProductOrderIndexes.setValue(new LiveDataEvent<>(addedIndexes));
-    this._onUpdateAllowedPaymentMethod();
-    // Update after allowed payment methods updated, in case payment method changed.
-    this._onUpdateTemporalInputtedCustomer();
-  }
-
-  public void onRemoveProductOrder(@NonNull ProductOrderModel... productOrder) {
-    Objects.requireNonNull(productOrder);
-
-    final ArrayList<Integer> removedIndexes = new ArrayList<>();
-
-    for (int i = productOrder.length; i-- > 0; ) {
-      removedIndexes.add(this._inputtedProductOrders.indexOf(productOrder[i]));
-      this._inputtedProductOrders.remove(productOrder[i]);
-    }
-
-    this._removedProductOrderIndexes.setValue(new LiveDataEvent<>(removedIndexes));
-    this._onUpdateAllowedPaymentMethod();
-    // Update after allowed payment methods updated, in case payment method changed.
-    this._onUpdateTemporalInputtedCustomer();
-  }
-
-  public void onUpdateProductOrder(int index, @NonNull ProductOrderModel newProductOrder) {
-    Objects.requireNonNull(newProductOrder);
-
-    this._inputtedProductOrders.set(index, newProductOrder);
-    this._updatedProductOrderIndexes.setValue(new LiveDataEvent<>(List.of(index)));
-    this._onUpdateAllowedPaymentMethod();
-    // Update after allowed payment methods updated, in case payment method changed.
-    this._onUpdateTemporalInputtedCustomer();
-  }
-
   public void onSave() {
-    if (this._inputtedProductOrders.size() == 0) {
+    final QueueModel inputtedQueue = this.inputtedQueue();
+
+    if (inputtedQueue.productOrders().size() == 0) {
       this._snackbarMessage.setValue(
           new LiveDataEvent<>(
               new StringResources.Strings(
@@ -322,7 +267,7 @@ public class CreateQueueViewModel extends ViewModel {
       return;
     }
 
-    this._addQueue(this.inputtedQueue());
+    this._addQueue(inputtedQueue);
   }
 
   @Nullable
@@ -410,28 +355,5 @@ public class CreateQueueViewModel extends ViewModel {
                       : new StringResources.Strings(R.string.text_error_failed_to_add_queue);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final CreateQueueViewModel viewModel =
-          new CreateQueueViewModel(
-              QueueRepository.instance(this._context),
-              CustomerRepository.instance(this._context),
-              ProductRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 }

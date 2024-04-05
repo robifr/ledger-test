@@ -25,8 +25,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.robifr.ledger.databinding.DashboardFragmentBinding;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class DashboardFragment extends Fragment {
   @Nullable protected DashboardFragmentBinding _fragmentBinding;
 

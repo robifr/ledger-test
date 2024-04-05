@@ -41,9 +41,11 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.MainActivityBinding;
 import com.robifr.ledger.util.Compats;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.List;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity
     implements NavigationBarView.OnItemSelectedListener,
         NavController.OnDestinationChangedListener {

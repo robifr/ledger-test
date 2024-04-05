@@ -28,18 +28,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.selectcustomer.recycler.SelectCustomerAdapter;
 import com.robifr.ledger.ui.selectcustomer.viewmodel.SelectCustomerViewModel;
-import com.robifr.ledger.util.Compats;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Arguments implements FragmentResultKey {
     INITIAL_SELECTED_CUSTOMER;
@@ -80,13 +79,26 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   @Nullable private SelectCustomerViewModelHandler _viewModelHandler;
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this._selectCustomerViewModel = new ViewModelProvider(this).get(SelectCustomerViewModel.class);
+    this._selectCustomerViewModel
+        .selectAllCustomers()
+        .observe(this, this._selectCustomerViewModel::onCustomersChanged);
+  }
+
+  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
+    Objects.requireNonNull(this._selectCustomerViewModel);
 
     this._fragmentBinding = ListableFragmentBinding.inflate(inflater, container, false);
+    this._viewModelHandler =
+        new SelectCustomerViewModelHandler(this, this._selectCustomerViewModel);
+
     return this._fragmentBinding.getRoot();
   }
 
@@ -95,25 +107,8 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
 
-    final NavBackStackEntry backStackEntry =
-        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
-    final CustomerModel initialSelectedCustomer =
-        backStackEntry != null && backStackEntry.getArguments() != null
-            ? Compats.parcelableOf(
-                backStackEntry.getArguments(),
-                Arguments.INITIAL_SELECTED_CUSTOMER.key(),
-                CustomerModel.class)
-            : null;
-
     this._adapter = new SelectCustomerAdapter(this);
     this._resultHandler = new SelectCustomerResultHandler(this);
-    this._selectCustomerViewModel =
-        new ViewModelProvider(
-                this,
-                new SelectCustomerViewModel.Factory(this.requireContext(), initialSelectedCustomer))
-            .get(SelectCustomerViewModel.class);
-    this._viewModelHandler =
-        new SelectCustomerViewModelHandler(this, this._selectCustomerViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()
@@ -129,8 +124,6 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
-
-    this._selectCustomerViewModel.fetchAllCustomers();
   }
 
   @Override

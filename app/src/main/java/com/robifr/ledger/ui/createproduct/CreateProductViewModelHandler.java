@@ -38,7 +38,7 @@ public class CreateProductViewModelHandler {
 
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel
         .createdProductId()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onCreatedProductId));

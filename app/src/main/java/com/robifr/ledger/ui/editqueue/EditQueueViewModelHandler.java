@@ -20,17 +20,36 @@ package com.robifr.ledger.ui.editqueue;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.createqueue.CreateQueueViewModelHandler;
 import com.robifr.ledger.ui.editqueue.viewmodel.EditQueueViewModel;
+import java.time.ZoneId;
+import java.util.Set;
 
 public class EditQueueViewModelHandler extends CreateQueueViewModelHandler {
   public EditQueueViewModelHandler(
       @NonNull EditQueueFragment fragment, @NonNull EditQueueViewModel viewModel) {
     super(fragment, viewModel);
     viewModel
+        .initializedInitialQueueToEdit()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onInitializedInitialQueueToEdit));
+    viewModel
         .editedQueueId()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onEditedQueueId));
+  }
+
+  private void _onInitializedInitialQueueToEdit(@Nullable QueueModel queue) {
+    if (queue == null) return;
+
+    this._viewModel.onCustomerChanged(queue.customer());
+    this._viewModel.onDateChanged(queue.date().atZone(ZoneId.systemDefault()));
+    this._viewModel.onStatusChanged(queue.status());
+    this._viewModel.onPaymentMethodChanged(queue.paymentMethod());
+    this._viewModel.setAllowedPaymentMethods(Set.of(queue.paymentMethod()));
+    this._viewModel.onProductOrdersChanged(queue.productOrders());
   }
 
   private void _onEditedQueueId(@Nullable Long queueId) {

@@ -17,14 +17,12 @@
 
 package com.robifr.ledger.ui.filtercustomer.viewmodel;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.data.CustomerSorter;
@@ -32,14 +30,26 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
+import dagger.hilt.android.lifecycle.HiltViewModel;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class FilterCustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final CustomerSorter _sorter = new CustomerSorter();
+
+  @NonNull
+  private final MediatorLiveData<LiveDataEvent<List<CustomerModel>>>
+      _initializedInitialFilteredCustomers = new MediatorLiveData<>();
+
+  @NonNull
+  private final MutableLiveData<List<CustomerModel>> _filteredCustomers = new MutableLiveData<>();
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
@@ -51,13 +61,44 @@ public class FilterCustomerViewModel extends ViewModel {
 
   @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
 
-  @NonNull
-  private final MutableLiveData<List<CustomerModel>> _filteredCustomers = new MutableLiveData<>();
+  @Inject
+  public FilterCustomerViewModel(
+      @NonNull CustomerRepository customerRepository, @NonNull SavedStateHandle savedStateHandle) {
+    Objects.requireNonNull(savedStateHandle);
 
-  public FilterCustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
 
     this._sorter.setSortMethod(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
+    this._initializedInitialFilteredCustomers.addSource(
+        this._customers,
+        customers -> {
+          final long[] filteredCustomerIds =
+              Objects.requireNonNullElse(
+                  savedStateHandle.get(
+                      FilterCustomerFragment.Arguments.INITIAL_FILTERED_CUSTOMER_IDS.key()),
+                  new long[] {});
+          final List<CustomerModel> filteredCustomers =
+              customers.stream()
+                  .filter(
+                      customer ->
+                          Arrays.stream(filteredCustomerIds)
+                              .boxed()
+                              .anyMatch(id -> customer.id() != null && customer.id().equals(id)))
+                  .collect(Collectors.toList());
+
+          this._initializedInitialFilteredCustomers.setValue(
+              new LiveDataEvent<>(filteredCustomers));
+        });
+  }
+
+  @NonNull
+  public LiveData<LiveDataEvent<List<CustomerModel>>> initializedInitialFilteredCustomers() {
+    return this._initializedInitialFilteredCustomers;
+  }
+
+  @NonNull
+  public LiveData<List<CustomerModel>> filteredCustomers() {
+    return this._filteredCustomers;
   }
 
   @NonNull
@@ -73,11 +114,6 @@ public class FilterCustomerViewModel extends ViewModel {
   @NonNull
   public LiveData<List<CustomerModel>> customers() {
     return this._customers;
-  }
-
-  @NonNull
-  public LiveData<List<CustomerModel>> filteredCustomers() {
-    return this._filteredCustomers;
   }
 
   public void onCustomersChanged(@NonNull List<CustomerModel> customers) {
@@ -103,39 +139,23 @@ public class FilterCustomerViewModel extends ViewModel {
     this._filteredCustomerIds.setValue(new LiveDataEvent<>(customerIds));
   }
 
-  public void fetchAllCustomers() {
+  @NonNull
+  public LiveData<List<CustomerModel>> selectAllCustomers() {
+    final MutableLiveData<List<CustomerModel>> result = new MutableLiveData<>();
+
     this._customerRepository
         .selectAll()
-        .thenAccept(
-            customers ->
-                new Handler(Looper.getMainLooper()).post(() -> this.onCustomersChanged(customers)))
-        .exceptionally(
-            e -> {
-              this._snackbarMessage.setValue(
-                  new LiveDataEvent<>(
-                      new StringResources.Strings(
-                          R.string.text_error_unable_to_retrieve_all_customers)));
-              return null;
+        .thenAcceptAsync(
+            customers -> {
+              if (customers == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_customers)));
+              }
+
+              result.postValue(customers);
             });
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final FilterCustomerViewModel viewModel =
-          new FilterCustomerViewModel(CustomerRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
+    return result;
   }
 }

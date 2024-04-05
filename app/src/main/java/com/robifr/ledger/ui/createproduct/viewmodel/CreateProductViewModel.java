@@ -17,22 +17,23 @@
 
 package com.robifr.ledger.ui.createproduct.viewmodel;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.util.CurrencyFormat;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.text.ParseException;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class CreateProductViewModel extends ViewModel {
   @NonNull protected final ProductRepository _productRepository;
 
@@ -50,6 +51,7 @@ public class CreateProductViewModel extends ViewModel {
   @NonNull
   private final MutableLiveData<LiveDataEvent<Long>> _createdProductId = new MutableLiveData<>();
 
+  @Inject
   public CreateProductViewModel(@NonNull ProductRepository productRepository) {
     this._productRepository = Objects.requireNonNull(productRepository);
   }
@@ -140,25 +142,5 @@ public class CreateProductViewModel extends ViewModel {
                       : new StringResources.Strings(R.string.text_error_failed_to_add_product);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final CreateProductViewModel viewModel =
-          new CreateProductViewModel(ProductRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 }

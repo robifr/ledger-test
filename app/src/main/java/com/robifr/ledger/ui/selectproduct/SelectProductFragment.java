@@ -28,18 +28,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.selectproduct.recycler.SelectProductAdapter;
 import com.robifr.ledger.ui.selectproduct.viewmodel.SelectProductViewModel;
-import com.robifr.ledger.util.Compats;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class SelectProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Arguments implements FragmentResultKey {
     INITIAL_SELECTED_PRODUCT;
@@ -80,14 +79,26 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
   @Nullable private SelectProductViewModelHandler _viewModelHandler;
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this._selectProductViewModel = new ViewModelProvider(this).get(SelectProductViewModel.class);
+    this._selectProductViewModel
+        .selectAllProducts()
+        .observe(this, this._selectProductViewModel::onProductsChanged);
+  }
+
+  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
+    Objects.requireNonNull(this._selectProductViewModel);
 
     this._fragmentBinding =
         ListableFragmentBinding.inflate(this.getLayoutInflater(), container, false);
+    this._viewModelHandler = new SelectProductViewModelHandler(this, this._selectProductViewModel);
+
     return this._fragmentBinding.getRoot();
   }
 
@@ -96,24 +107,8 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
 
-    final NavBackStackEntry backStackEntry =
-        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
-    final ProductModel initialSelectedProduct =
-        backStackEntry != null && backStackEntry.getArguments() != null
-            ? Compats.parcelableOf(
-                backStackEntry.getArguments(),
-                Arguments.INITIAL_SELECTED_PRODUCT.key(),
-                ProductModel.class)
-            : null;
-
     this._adapter = new SelectProductAdapter(this);
     this._resultHandler = new SelectProductResultHandler(this);
-    this._selectProductViewModel =
-        new ViewModelProvider(
-                this,
-                new SelectProductViewModel.Factory(this.requireContext(), initialSelectedProduct))
-            .get(SelectProductViewModel.class);
-    this._viewModelHandler = new SelectProductViewModelHandler(this, this._selectProductViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()
@@ -129,8 +124,6 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
-
-    this._selectProductViewModel.fetchAllProducts();
   }
 
   @Override

@@ -36,8 +36,10 @@ import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.customer.filter.CustomerFilter;
 import com.robifr.ledger.ui.customer.recycler.CustomerAdapter;
 import com.robifr.ledger.ui.customer.viewmodel.CustomerViewModel;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private CustomerSort _sort;
@@ -48,13 +50,26 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
   @Nullable private CustomerViewModelHandler _viewModelHandler;
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this._customerViewModel = new ViewModelProvider(this).get(CustomerViewModel.class);
+    this._customerViewModel.onSortMethodChanged(
+        new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
+    this._customerViewModel.filterView().onFiltersChanged(CustomerFilters.toBuilder().build());
+    this._customerViewModel.fetchAllCustomers();
+  }
+
+  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
+    Objects.requireNonNull(this._customerViewModel);
 
     this._fragmentBinding = ListableFragmentBinding.inflate(inflater, container, false);
+    this._viewModelHandler = new CustomerViewModelHandler(this, this._customerViewModel);
+
     return this._fragmentBinding.getRoot();
   }
 
@@ -62,15 +77,11 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
+    Objects.requireNonNull(this._customerViewModel);
 
     this._sort = new CustomerSort(this);
     this._filter = new CustomerFilter(this);
     this._adapter = new CustomerAdapter(this);
-    this._customerViewModel =
-        new ViewModelProvider(
-                this.requireActivity(), new CustomerViewModel.Factory(this.requireContext()))
-            .get(CustomerViewModel.class);
-    this._viewModelHandler = new CustomerViewModelHandler(this, this._customerViewModel);
 
     this._fragmentBinding.toolbar.getMenu().clear();
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_main);
@@ -83,13 +94,6 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
-
-    if (this._customerViewModel.customers().getValue() == null) {
-      this._customerViewModel.onSortMethodChanged(
-          new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
-      this._customerViewModel.filterView().onFiltersChanged(CustomerFilters.toBuilder().build());
-      this._customerViewModel.fetchAllCustomers();
-    }
   }
 
   @Override

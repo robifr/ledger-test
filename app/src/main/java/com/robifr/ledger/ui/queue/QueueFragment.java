@@ -37,9 +37,11 @@ import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.queue.filter.QueueFilter;
 import com.robifr.ledger.ui.queue.recycler.QueueAdapter;
 import com.robifr.ledger.ui.queue.viewmodel.QueueViewModel;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 import java.util.Set;
 
+@AndroidEntryPoint
 public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private QueueSort _sort;
@@ -51,13 +53,34 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
   @Nullable private QueueViewModelHandler _viewModelHandler;
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this._queueViewModel = new ViewModelProvider(this).get(QueueViewModel.class);
+    this._queueViewModel.onSortMethodChanged(
+        new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
+    this._queueViewModel
+        .filterView()
+        .onFiltersChanged(
+            QueueFilters.toBuilder()
+                .setNullCustomerShown(true)
+                .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
+                .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
+                .setFilteredStatus(Set.of(QueueModel.Status.values()))
+                .build());
+    this._queueViewModel.fetchAllQueues();
+  }
+
+  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
+    Objects.requireNonNull(this._queueViewModel);
 
     this._fragmentBinding = ListableFragmentBinding.inflate(inflater, container, false);
+    this._viewModelHandler = new QueueViewModelHandler(this, this._queueViewModel);
+
     return this._fragmentBinding.getRoot();
   }
 
@@ -65,16 +88,12 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
+    Objects.requireNonNull(this._queueViewModel);
 
     this._sort = new QueueSort(this);
     this._filter = new QueueFilter(this);
     this._adapter = new QueueAdapter(this);
     this._resultHandler = new QueueResultHandler(this);
-    this._queueViewModel =
-        new ViewModelProvider(
-                this.requireActivity(), new QueueViewModel.Factory(this.requireContext()))
-            .get(QueueViewModel.class);
-    this._viewModelHandler = new QueueViewModelHandler(this, this._queueViewModel);
 
     this._fragmentBinding.toolbar.getMenu().clear();
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_main);
@@ -87,21 +106,6 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
-
-    if (this._queueViewModel.queues().getValue() == null) {
-      final QueueFilters initialFilters =
-          QueueFilters.toBuilder()
-              .setNullCustomerShown(true)
-              .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
-              .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
-              .setFilteredStatus(Set.of(QueueModel.Status.values()))
-              .build();
-
-      this._queueViewModel.onSortMethodChanged(
-          new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
-      this._queueViewModel.filterView().onFiltersChanged(initialFilters);
-      this._queueViewModel.fetchAllQueues();
-    }
   }
 
   @Override

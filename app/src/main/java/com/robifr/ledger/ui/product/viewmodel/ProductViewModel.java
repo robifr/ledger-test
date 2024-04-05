@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.ui.product.viewmodel;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.MainThread;
@@ -25,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.data.ProductSorter;
@@ -34,11 +32,14 @@ import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
 import com.robifr.ledger.ui.StringResources;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class ProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
   @NonNull private final ProductsUpdater _productsUpdater;
@@ -58,6 +59,7 @@ public class ProductViewModel extends ViewModel {
    */
   @NonNull private final MutableLiveData<Integer> _expandedProductIndex = new MutableLiveData<>();
 
+  @Inject
   public ProductViewModel(@NonNull ProductRepository productRepository) {
     this._productRepository = Objects.requireNonNull(productRepository);
     this._productsUpdater = new ProductsUpdater(this._products);
@@ -109,7 +111,7 @@ public class ProductViewModel extends ViewModel {
                                 this._filterView.inputtedFilters(), products)))
         .exceptionally(
             e -> {
-              this._snackbarMessage.setValue(
+              this._snackbarMessage.postValue(
                   new LiveDataEvent<>(
                       new StringResources.Strings(
                           R.string.text_error_unable_to_retrieve_all_products)));
@@ -186,26 +188,6 @@ public class ProductViewModel extends ViewModel {
 
   public void onExpandedProductIndexChanged(int index) {
     this._expandedProductIndex.setValue(index);
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final ProductViewModel viewModel =
-          new ProductViewModel(ProductRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 
   private class ProductsUpdater extends LiveDataModelUpdater<ProductModel> {

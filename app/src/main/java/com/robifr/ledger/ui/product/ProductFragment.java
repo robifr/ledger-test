@@ -36,8 +36,10 @@ import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.product.filter.ProductFilter;
 import com.robifr.ledger.ui.product.recycler.ProductAdapter;
 import com.robifr.ledger.ui.product.viewmodel.ProductViewModel;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private ProductSort _sort;
@@ -48,13 +50,26 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
   @Nullable private ProductViewModelHandler _viewModelHandler;
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this._productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+    this._productViewModel.onSortMethodChanged(
+        new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
+    this._productViewModel.filterView().onFiltersChanged(ProductFilters.toBuilder().build());
+    this._productViewModel.fetchAllProducts();
+  }
+
+  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
+    Objects.requireNonNull(this._productViewModel);
 
     this._fragmentBinding = ListableFragmentBinding.inflate(inflater, container, false);
+    this._viewModelHandler = new ProductViewModelHandler(this, this._productViewModel);
+
     return this._fragmentBinding.getRoot();
   }
 
@@ -62,15 +77,11 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
+    Objects.requireNonNull(this._productViewModel);
 
     this._sort = new ProductSort(this);
     this._filter = new ProductFilter(this);
     this._adapter = new ProductAdapter(this);
-    this._productViewModel =
-        new ViewModelProvider(
-                this.requireActivity(), new ProductViewModel.Factory(this.requireContext()))
-            .get(ProductViewModel.class);
-    this._viewModelHandler = new ProductViewModelHandler(this, this._productViewModel);
 
     this._fragmentBinding.toolbar.getMenu().clear();
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_main);
@@ -83,13 +94,6 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
-
-    if (this._productViewModel.products().getValue() == null) {
-      this._productViewModel.onSortMethodChanged(
-          new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
-      this._productViewModel.filterView().onFiltersChanged(ProductFilters.toBuilder().build());
-      this._productViewModel.fetchAllProducts();
-    }
   }
 
   @Override

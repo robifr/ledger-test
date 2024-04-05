@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.ui.queue.viewmodel;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.MainThread;
@@ -26,7 +25,6 @@ import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.QueueSortMethod;
 import com.robifr.ledger.data.QueueSorter;
@@ -38,11 +36,14 @@ import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
 import com.robifr.ledger.ui.StringResources;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class QueueViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
@@ -64,6 +65,7 @@ public class QueueViewModel extends ViewModel {
    */
   @NonNull private final MutableLiveData<Integer> _expandedQueueIndex = new MutableLiveData<>();
 
+  @Inject
   public QueueViewModel(
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
@@ -216,27 +218,6 @@ public class QueueViewModel extends ViewModel {
 
   public void onExpandedQueueIndexChanged(int index) {
     this._expandedQueueIndex.setValue(index);
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final QueueViewModel viewModel =
-          new QueueViewModel(
-              QueueRepository.instance(this._context), CustomerRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 
   private class QueuesUpdater extends LiveDataModelUpdater<QueueModel> {

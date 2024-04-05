@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.searchproduct.viewmodel.SearchProductViewModel;
+import com.robifr.ledger.util.Compats;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,10 +38,24 @@ public class SearchProductViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
+        .initializedInitialQuery()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onInitializedInitialQuery));
+    this._viewModel
         .selectedProductId()
         .observe(
             this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSelectedProductId));
     this._viewModel.products().observe(this._fragment.getViewLifecycleOwner(), this::_onProducts);
+  }
+
+  private void _onInitializedInitialQuery(@Nullable String query) {
+    if (query != null) {
+      this._fragment.fragmentBinding().searchView.setQuery(query, true);
+    } else {
+      Compats.showKeyboard(
+          this._fragment.requireContext(), this._fragment.fragmentBinding().searchView);
+    }
   }
 
   private void _onSelectedProductId(@Nullable Long productId) {

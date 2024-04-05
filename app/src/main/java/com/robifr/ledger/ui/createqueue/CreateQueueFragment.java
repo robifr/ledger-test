@@ -35,12 +35,13 @@ import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.CreateQueueFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.createqueue.viewmodel.CreateQueueViewModel;
-import java.math.BigDecimal;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Set;
 
+@AndroidEntryPoint
 public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Request implements FragmentResultKey {
     CREATE_QUEUE;
@@ -75,13 +76,26 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
   @Nullable protected CreateQueueViewModelHandler _viewModelHandler;
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this._createQueueViewModel = new ViewModelProvider(this).get(CreateQueueViewModel.class);
+    this._createQueueViewModel.onDateChanged(ZonedDateTime.now(ZoneId.systemDefault()));
+    this._createQueueViewModel.onStatusChanged(QueueModel.Status.IN_QUEUE);
+    this._createQueueViewModel.onPaymentMethodChanged(QueueModel.PaymentMethod.CASH);
+    this._createQueueViewModel.setAllowedPaymentMethods(Set.of(QueueModel.PaymentMethod.CASH));
+  }
+
+  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
+    Objects.requireNonNull(this._createQueueViewModel);
 
     this._fragmentBinding = CreateQueueFragmentBinding.inflate(inflater, container, false);
+    this._viewModelHandler = new CreateQueueViewModelHandler(this, this._createQueueViewModel);
+
     return this._fragmentBinding.getRoot();
   }
 
@@ -89,6 +103,7 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
+    Objects.requireNonNull(this._createQueueViewModel);
 
     this._inputCustomer = new CreateQueueCustomer(this);
     this._inputDate = new CreateQueueDate(this);
@@ -96,10 +111,6 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
     this._inputPaymentMethod = new CreateQueuePaymentMethod(this);
     this._inputProductOrder = new CreateQueueProductOrder(this);
     this._resultHandler = new CreateQueueResultHandler(this);
-    this._createQueueViewModel =
-        new ViewModelProvider(this, new CreateQueueViewModel.Factory(this.requireContext()))
-            .get(CreateQueueViewModel.class);
-    this._viewModelHandler = new CreateQueueViewModelHandler(this, this._createQueueViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()
@@ -109,14 +120,6 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
     this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
-
-    this._createQueueViewModel.onCustomerChanged(null);
-    this._createQueueViewModel.onDateChanged(ZonedDateTime.now(ZoneId.systemDefault()));
-    this._createQueueViewModel.onStatusChanged(QueueModel.Status.IN_QUEUE);
-    this._createQueueViewModel.onPaymentMethodChanged(QueueModel.PaymentMethod.CASH);
-    this._createQueueViewModel.setAllowedPaymentMethods(Set.of(QueueModel.PaymentMethod.CASH));
-    this._createQueueViewModel.onAddProductOrder(); // Trigger update for total price and discount.
-    this._createQueueViewModel.makeProductOrderView().onTotalPriceChanged(BigDecimal.ZERO);
   }
 
   @Override

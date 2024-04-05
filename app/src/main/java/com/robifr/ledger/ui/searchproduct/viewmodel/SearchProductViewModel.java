@@ -17,32 +17,52 @@
 
 package com.robifr.ledger.ui.searchproduct.viewmodel;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
+import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.List;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class SearchProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
+
+  @NonNull
+  private final MutableLiveData<LiveDataEvent<String>> _initializedInitialQuery =
+      new MutableLiveData<>();
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<Long>> _selectedProductId = new MutableLiveData<>();
 
   @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
 
-  public SearchProductViewModel(@NonNull ProductRepository productRepository) {
+  @Inject
+  public SearchProductViewModel(
+      @NonNull ProductRepository productRepository, @NonNull SavedStateHandle savedStateHandle) {
+    Objects.requireNonNull(savedStateHandle);
+
     this._productRepository = Objects.requireNonNull(productRepository);
+
+    this._initializedInitialQuery.setValue(
+        new LiveDataEvent<>(
+            savedStateHandle.get(SearchProductFragment.Arguments.INITIAL_QUERY.key())));
+  }
+
+  @NonNull
+  public LiveData<LiveDataEvent<String>> initializedInitialQuery() {
+    return this._initializedInitialQuery;
   }
 
   @NonNull
@@ -73,25 +93,5 @@ public class SearchProductViewModel extends ViewModel {
   public void onProductSelected(@Nullable ProductModel product) {
     final Long productId = product != null && product.id() != null ? product.id() : null;
     this._selectedProductId.setValue(new LiveDataEvent<>(productId));
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final SearchProductViewModel viewModel =
-          new SearchProductViewModel(ProductRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 }

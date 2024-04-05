@@ -40,7 +40,7 @@ public class SelectCustomerViewModelHandler {
 
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel
         .selectedCustomerId()
         .observe(

@@ -1,6 +1,7 @@
 plugins {
   kotlin("android")
   id("com.android.application")
+  id("com.google.dagger.hilt.android")
   id("kotlin-parcelize")
 }
 
@@ -91,6 +92,9 @@ dependencies {
   implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 
   implementation("com.google.android.material:material:1.11.0")
+
+  implementation("com.google.dagger:hilt-android:2.44")
+  annotationProcessor("com.google.dagger:hilt-android-compiler:2.44")
 
   implementation("androidx.core:core-ktx:1.12.0")
   implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")

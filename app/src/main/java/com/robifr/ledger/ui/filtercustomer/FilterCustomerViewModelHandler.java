@@ -42,12 +42,17 @@ public class FilterCustomerViewModelHandler {
 
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel
         .filteredCustomerIds()
         .observe(
             this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onFilteredCustomerIds));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
+    this._viewModel
+        .initializedInitialFilteredCustomers()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onInitializedInitialFilteredCustomers));
     this._viewModel
         .filteredCustomers()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onFilteredCustomers);
@@ -81,6 +86,10 @@ public class FilterCustomerViewModelHandler {
 
   private void _onCustomers(@Nullable List<CustomerModel> customers) {
     this._fragment.adapter().notifyDataSetChanged();
+  }
+
+  private void _onInitializedInitialFilteredCustomers(@Nullable List<CustomerModel> customers) {
+    if (customers != null) this._viewModel.onFilteredCustomersChanged(customers);
   }
 
   private void _onFilteredCustomers(@Nullable List<CustomerModel> customers) {

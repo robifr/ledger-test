@@ -17,13 +17,12 @@
 
 package com.robifr.ledger.ui.editqueue.viewmodel;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.SavedStateHandle;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.QueueModel;
@@ -33,23 +32,43 @@ import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createqueue.viewmodel.CreateQueueViewModel;
+import com.robifr.ledger.ui.editqueue.EditQueueFragment;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class EditQueueViewModel extends CreateQueueViewModel {
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _editedQueueId = new MutableLiveData<>();
+  private final MediatorLiveData<LiveDataEvent<QueueModel>> _initializedInitialQueueToEdit =
+      new MediatorLiveData<>();
 
   @Nullable private QueueModel _initialQueueToEdit = null;
 
+  @NonNull
+  private final MutableLiveData<LiveDataEvent<Long>> _editedQueueId = new MutableLiveData<>();
+
+  @Inject
   public EditQueueViewModel(
       @NonNull QueueRepository queueRepository,
       @NonNull CustomerRepository customerRepository,
-      @NonNull ProductRepository productRepository) {
+      @NonNull ProductRepository productRepository,
+      @NonNull SavedStateHandle savedStateHandle) {
     super(queueRepository, customerRepository, productRepository);
+    Objects.requireNonNull(savedStateHandle);
+
+    this._initializedInitialQueueToEdit.addSource(
+        // Shouldn't be null when editing data.
+        this.selectQueueById(
+            Objects.requireNonNull(
+                savedStateHandle.get(EditQueueFragment.Arguments.INITIAL_QUEUE_ID_TO_EDIT.key()))),
+        queue -> {
+          this._initialQueueToEdit = queue;
+          this._initializedInitialQueueToEdit.setValue(new LiveDataEvent<>(queue));
+        });
   }
 
   @Override
@@ -64,7 +83,9 @@ public class EditQueueViewModel extends CreateQueueViewModel {
 
   @Override
   public void onSave() {
-    if (this._inputtedProductOrders.size() == 0) {
+    final QueueModel inputtedQueue = this.inputtedQueue();
+
+    if (inputtedQueue.productOrders().size() == 0) {
       this._snackbarMessage.setValue(
           new LiveDataEvent<>(
               new StringResources.Strings(
@@ -72,11 +93,12 @@ public class EditQueueViewModel extends CreateQueueViewModel {
       return;
     }
 
-    this._updateQueue(this.inputtedQueue());
+    this._updateQueue(inputtedQueue);
   }
 
-  public void setInitialQueueToEdit(@NonNull QueueModel queue) {
-    this._initialQueueToEdit = Objects.requireNonNull(queue);
+  @NonNull
+  public LiveData<LiveDataEvent<QueueModel>> initializedInitialQueueToEdit() {
+    return this._initializedInitialQueueToEdit;
   }
 
   @NonNull
@@ -84,21 +106,24 @@ public class EditQueueViewModel extends CreateQueueViewModel {
     return this._editedQueueId;
   }
 
-  @Nullable
-  public QueueModel selectQueueById(@Nullable Long queueId) {
-    final StringResources notFoundRes =
-        new StringResources.Strings(R.string.text_error_failed_to_find_related_queue);
-    QueueModel queue = null;
+  @NonNull
+  public LiveData<QueueModel> selectQueueById(@Nullable Long queueId) {
+    final MutableLiveData<QueueModel> result = new MutableLiveData<>();
 
-    try {
-      queue = this._queueRepository.selectById(queueId).get();
-      if (queue == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
+    this._queueRepository
+        .selectById(queueId)
+        .thenAcceptAsync(
+            queue -> {
+              if (queue == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_failed_to_find_related_queue)));
+              }
 
-    } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
-    }
-
-    return queue;
+              result.postValue(queue);
+            });
+    return result;
   }
 
   @Override
@@ -109,9 +134,10 @@ public class EditQueueViewModel extends CreateQueueViewModel {
             ? new HashSet<>(this._allowedPaymentMethods.getValue())
             : new HashSet<>(Set.of(QueueModel.PaymentMethod.CASH));
 
-    if ((inputtedQueue.status() == QueueModel.Status.COMPLETED
+    if (this._initialQueueToEdit != null
+        && inputtedQueue.status() == QueueModel.Status.COMPLETED
         && inputtedQueue.customer() != null
-        && inputtedQueue.customer().isBalanceSufficient(this._initialQueueToEdit, inputtedQueue))) {
+        && inputtedQueue.customer().isBalanceSufficient(this._initialQueueToEdit, inputtedQueue)) {
       allowedPaymentMethods.add(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
     } else {
       allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
@@ -127,11 +153,9 @@ public class EditQueueViewModel extends CreateQueueViewModel {
 
   @Override
   protected void _onUpdateTemporalInputtedCustomer() {
-    Objects.requireNonNull(this._initialQueueToEdit);
-
     final QueueModel inputtedQueue = this.inputtedQueue();
     final CustomerModel customer =
-        inputtedQueue.customer() != null
+        inputtedQueue.customer() != null && this._initialQueueToEdit != null
             ? CustomerModel.toBuilder(inputtedQueue.customer())
                 .setBalance(
                     inputtedQueue
@@ -163,28 +187,5 @@ public class EditQueueViewModel extends CreateQueueViewModel {
                       : new StringResources.Strings(R.string.text_error_failed_to_update_queue);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final EditQueueViewModel viewModel =
-          new EditQueueViewModel(
-              QueueRepository.instance(this._context),
-              CustomerRepository.instance(this._context),
-              ProductRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 }

@@ -35,8 +35,10 @@ import com.robifr.ledger.databinding.CreateProductFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.createproduct.viewmodel.CreateProductViewModel;
 import com.robifr.ledger.util.Compats;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class CreateProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Request implements FragmentResultKey {
     CREATE_PRODUCT;
@@ -67,13 +69,22 @@ public class CreateProductFragment extends Fragment implements Toolbar.OnMenuIte
   @Nullable protected CreateProductViewModelHandler _viewModelHandler;
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this._createProductViewModel = new ViewModelProvider(this).get(CreateProductViewModel.class);
+  }
+
+  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
+    Objects.requireNonNull(this._createProductViewModel);
 
     this._fragmentBinding = CreateProductFragmentBinding.inflate(inflater, container, false);
+    this._viewModelHandler = new CreateProductViewModelHandler(this, this._createProductViewModel);
+
     return this._fragmentBinding.getRoot();
   }
 
@@ -81,13 +92,10 @@ public class CreateProductFragment extends Fragment implements Toolbar.OnMenuIte
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
+    Objects.requireNonNull(this._createProductViewModel);
 
     this._inputName = new CreateProductName(this);
     this._inputPrice = new CreateProductPrice(this);
-    this._createProductViewModel =
-        new ViewModelProvider(this, new CreateProductViewModel.Factory(this.requireContext()))
-            .get(CreateProductViewModel.class);
-    this._viewModelHandler = new CreateProductViewModelHandler(this, this._createProductViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()

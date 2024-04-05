@@ -67,11 +67,7 @@ public class SelectCustomerResultHandler {
                       .orElse(null)
                   : null;
 
-          if (selectedCustomer != null
-              && selectedCustomer.id() != null
-              && !selectedCustomer.id().equals(viewModel.selectedCustomerId())) {
-            viewModel.onCustomerSelected(selectedCustomer);
-          }
+          if (selectedCustomer != null) viewModel.onCustomerSelected(selectedCustomer);
         }
       }
     }

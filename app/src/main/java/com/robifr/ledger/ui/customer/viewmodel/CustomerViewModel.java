@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.ui.customer.viewmodel;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.MainThread;
@@ -25,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.data.CustomerSorter;
@@ -34,11 +32,14 @@ import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
 import com.robifr.ledger.ui.StringResources;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class CustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final CustomersUpdater _customersUpdater;
@@ -58,6 +59,7 @@ public class CustomerViewModel extends ViewModel {
    */
   @NonNull private final MutableLiveData<Integer> _expandedCustomerIndex = new MutableLiveData<>();
 
+  @Inject
   public CustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
     this._customersUpdater = new CustomersUpdater(this._customers);
@@ -109,7 +111,7 @@ public class CustomerViewModel extends ViewModel {
                                 this._filterView.inputtedFilters(), customers)))
         .exceptionally(
             e -> {
-              this._snackbarMessage.setValue(
+              this._snackbarMessage.postValue(
                   new LiveDataEvent<>(
                       new StringResources.Strings(
                           R.string.text_error_unable_to_retrieve_all_customers)));
@@ -187,26 +189,6 @@ public class CustomerViewModel extends ViewModel {
 
   public void onExpandedCustomerIndexChanged(int index) {
     this._expandedCustomerIndex.setValue(index);
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final CustomerViewModel viewModel =
-          new CustomerViewModel(CustomerRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 
   private class CustomersUpdater extends LiveDataModelUpdater<CustomerModel> {

@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentResultListener;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.filtercustomer.viewmodel.FilterCustomerViewModel;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -69,11 +70,18 @@ public class FilterCustomerResultHandler {
                   : null;
           if (selectedCustomer == null) return;
 
-          if (viewModel.filteredCustomers().contains(selectedCustomer)) {
-            viewModel.onRemoveFilteredCustomer(selectedCustomer);
+          final ArrayList<CustomerModel> filteredCustomers =
+              viewModel.filteredCustomers().getValue() != null
+                  ? new ArrayList<>(viewModel.filteredCustomers().getValue())
+                  : new ArrayList<>();
+
+          if (filteredCustomers.contains(selectedCustomer)) {
+            filteredCustomers.remove(selectedCustomer);
           } else {
-            viewModel.onAddFilteredCustomer(selectedCustomer);
+            filteredCustomers.add(selectedCustomer);
           }
+
+          viewModel.onFilteredCustomersChanged(filteredCustomers);
         }
       }
     }

@@ -26,7 +26,7 @@ import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
@@ -53,8 +53,11 @@ public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
   @Override
   public void bind(@NonNull CustomerModel customer) {
     this._boundCustomer = Objects.requireNonNull(customer);
-    final List<CustomerModel> filteredCustomers =
-        this._fragment.filterCustomerViewModel().filteredCustomers();
+    final ArrayList<CustomerModel> filteredCustomers =
+        this._fragment.filterCustomerViewModel().filteredCustomers().getValue() != null
+            ? new ArrayList<>(
+                this._fragment.filterCustomerViewModel().filteredCustomers().getValue())
+            : new ArrayList<>();
 
     this._normalCard.setCustomer(this._boundCustomer);
     this._cardBinding.cardView.setChecked(filteredCustomers.contains(this._boundCustomer));
@@ -67,15 +70,16 @@ public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
 
     switch (view.getId()) {
       case R.id.cardView -> {
-        final List<CustomerModel> customers =
-            this._fragment.filterCustomerViewModel().customers().getValue();
-        if (customers == null) return;
+        final ArrayList<CustomerModel> filteredCustomers =
+            this._fragment.filterCustomerViewModel().filteredCustomers().getValue() != null
+                ? new ArrayList<>(
+                    this._fragment.filterCustomerViewModel().filteredCustomers().getValue())
+                : new ArrayList<>();
 
-        if (this._cardBinding.cardView.isChecked()) {
-          this._fragment.filterCustomerViewModel().onRemoveFilteredCustomer(this._boundCustomer);
-        } else {
-          this._fragment.filterCustomerViewModel().onAddFilteredCustomer(this._boundCustomer);
-        }
+        if (this._cardBinding.cardView.isChecked()) filteredCustomers.remove(this._boundCustomer);
+        else filteredCustomers.add(this._boundCustomer);
+
+        this._fragment.filterCustomerViewModel().onFilteredCustomersChanged(filteredCustomers);
       }
     }
   }

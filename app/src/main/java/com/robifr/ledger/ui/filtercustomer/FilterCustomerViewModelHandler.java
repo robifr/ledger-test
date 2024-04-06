@@ -48,17 +48,9 @@ public class FilterCustomerViewModelHandler {
         .observe(
             this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onFilteredCustomerIds));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
-
     this._viewModel
-        .addedFilteredCustomerIndexes()
-        .observe(
-            this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onAddedFilteredCustomerIndexes));
-    this._viewModel
-        .removedFilteredCustomerIndexes()
-        .observe(
-            this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onRemovedFilteredCustomerIndexes));
+        .filteredCustomers()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onFilteredCustomers);
   }
 
   private void _onSnackbarMessage(@Nullable StringResources stringRes) {
@@ -91,31 +83,33 @@ public class FilterCustomerViewModelHandler {
     this._fragment.adapter().notifyDataSetChanged();
   }
 
-  private void _onAddedFilteredCustomerIndexes(@Nullable List<Integer> indexes) {
-    if (indexes == null) return;
-
-    this._fragment.adapter().notifyItemChanged(0); // Update header holder.
-
-    for (int index : indexes) {
+  private void _onFilteredCustomers(@Nullable List<CustomerModel> customers) {
+    // Uncheck all cards.
+    for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
       final RecyclerView.ViewHolder holder =
-          // +1 offset because header holder.
-          this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
-
-      if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setChecked(true);
-    }
-  }
-
-  private void _onRemovedFilteredCustomerIndexes(@Nullable List<Integer> indexes) {
-    if (indexes == null) return;
-
-    this._fragment.adapter().notifyItemChanged(0); // Update header holder.
-
-    for (int index : indexes) {
-      final RecyclerView.ViewHolder holder =
-          // +1 offset because header holder.
-          this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
+          this._fragment
+              .fragmentBinding()
+              .recyclerView
+              .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
 
       if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setChecked(false);
     }
+
+    // Check the selected card.
+    if (customers != null && this._viewModel.customers().getValue() != null) {
+      for (CustomerModel customer : customers) {
+        final int customerIndex = this._viewModel.customers().getValue().indexOf(customer);
+        final RecyclerView.ViewHolder holder =
+            // +1 offset because header holder.
+            this._fragment
+                .fragmentBinding()
+                .recyclerView
+                .findViewHolderForLayoutPosition(customerIndex + 1);
+
+        if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setChecked(true);
+      }
+    }
+
+    this._fragment.adapter().notifyItemChanged(0); // Notify header holder.
   }
 }

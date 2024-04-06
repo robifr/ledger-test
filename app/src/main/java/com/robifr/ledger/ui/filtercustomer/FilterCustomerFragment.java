@@ -40,7 +40,7 @@ import com.robifr.ledger.ui.filtercustomer.recycler.FilterCustomerAdapter;
 import com.robifr.ledger.ui.filtercustomer.viewmodel.FilterCustomerViewModel;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.Objects;import java.util.stream.Collectors;
 
 public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Arguments implements FragmentResultKey {
@@ -147,16 +147,16 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
                             .getArguments()
                             .getLongArray(Arguments.INITIAL_FILTERED_CUSTOMER_IDS.key()),
                         new long[0]);
-                final CustomerModel[] filteredCustomers =
+                final List<CustomerModel> filteredCustomers =
                     fetchedCustomers.stream()
                         .filter(
                             customer ->
                                 Arrays.stream(initialFilteredCustomerIds)
                                     .anyMatch(
                                         id -> customer.id() != null && customer.id().equals(id)))
-                        .toArray(CustomerModel[]::new);
+                        .collect(Collectors.toList());
 
-                FilterCustomerFragment.this._filterCustomerViewModel.onAddFilteredCustomer(
+                FilterCustomerFragment.this._filterCustomerViewModel.onFilteredCustomersChanged(
                     filteredCustomers);
                 FilterCustomerFragment.this
                     ._filterCustomerViewModel

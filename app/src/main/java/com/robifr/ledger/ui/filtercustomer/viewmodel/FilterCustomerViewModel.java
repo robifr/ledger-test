@@ -32,7 +32,6 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -53,14 +52,7 @@ public class FilterCustomerViewModel extends ViewModel {
   @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<List<Integer>>> _addedFilteredCustomerIndexes =
-      new MutableLiveData<>();
-
-  @NonNull
-  private final MutableLiveData<LiveDataEvent<List<Integer>>> _removedFilteredCustomerIndexes =
-      new MutableLiveData<>();
-
-  @NonNull private final ArrayList<CustomerModel> _filteredCustomers = new ArrayList<>();
+  private final MutableLiveData<List<CustomerModel>> _filteredCustomers = new MutableLiveData<>();
 
   public FilterCustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
@@ -84,18 +76,8 @@ public class FilterCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<List<Integer>>> addedFilteredCustomerIndexes() {
-    return this._addedFilteredCustomerIndexes;
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<List<Integer>>> removedFilteredCustomerIndexes() {
-    return this._removedFilteredCustomerIndexes;
-  }
-
-  @NonNull
-  public List<CustomerModel> filteredCustomers() {
-    return Collections.unmodifiableList(this._filteredCustomers);
+  public LiveData<List<CustomerModel>> filteredCustomers() {
+    return this._filteredCustomers;
   }
 
   public void onCustomersChanged(@NonNull List<CustomerModel> customers) {
@@ -104,40 +86,18 @@ public class FilterCustomerViewModel extends ViewModel {
     this._customers.setValue(Collections.unmodifiableList(this._sorter.sort(customers)));
   }
 
-  public void onAddFilteredCustomer(@NonNull CustomerModel... customers) {
+  public void onFilteredCustomersChanged(@NonNull List<CustomerModel> customers) {
     Objects.requireNonNull(customers);
 
-    final ArrayList<Integer> addedIndexes = new ArrayList<>();
-
-    for (CustomerModel customer : customers) {
-      if (this._customers.getValue() == null) return;
-
-      addedIndexes.add(this._customers.getValue().indexOf(customer));
-      this._filteredCustomers.add(customer);
-    }
-
-    this._addedFilteredCustomerIndexes.setValue(new LiveDataEvent<>(addedIndexes));
-  }
-
-  public void onRemoveFilteredCustomer(@NonNull CustomerModel... customers) {
-    Objects.requireNonNull(customers);
-
-    final ArrayList<Integer> removedIndexes = new ArrayList<>();
-
-    for (int i = customers.length; i-- > 0; ) {
-      if (this._customers.getValue() == null) return;
-
-      removedIndexes.add(this._customers.getValue().indexOf(customers[i]));
-      this._filteredCustomers.remove(customers[i]);
-    }
-
-    this._removedFilteredCustomerIndexes.setValue(new LiveDataEvent<>(removedIndexes));
+    this._filteredCustomers.setValue(Collections.unmodifiableList(customers));
   }
 
   public void onSave() {
     final List<Long> customerIds =
-        this._customers.getValue() != null
-            ? this._filteredCustomers.stream().map(CustomerModel::id).collect(Collectors.toList())
+        this._customers.getValue() != null && this._filteredCustomers.getValue() != null
+            ? this._filteredCustomers.getValue().stream()
+                .map(CustomerModel::id)
+                .collect(Collectors.toList())
             : List.of();
 
     this._filteredCustomerIds.setValue(new LiveDataEvent<>(customerIds));

@@ -26,6 +26,7 @@ import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.databinding.ReusableChipInputBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -65,8 +66,11 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final List<CustomerModel> filteredCustomers =
-        this._fragment.filterCustomerViewModel().filteredCustomers();
+    final ArrayList<CustomerModel> filteredCustomers =
+        this._fragment.filterCustomerViewModel().filteredCustomers().getValue() != null
+            ? new ArrayList<>(
+                this._fragment.filterCustomerViewModel().filteredCustomers().getValue())
+            : new ArrayList<>();
     final int filteredCustomersViewsVisibility =
         !filteredCustomers.isEmpty() ? View.VISIBLE : View.GONE;
 
@@ -100,15 +104,23 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
     Objects.requireNonNull(group);
     Objects.requireNonNull(checkedIds);
 
-    final CustomerModel[] customersToRemove =
-        checkedIds.stream()
-            .map(
-                id -> {
-                  // The ID is the chip index itself.
-                  group.removeViewAt(id);
-                  return this._fragment.filterCustomerViewModel().filteredCustomers().get(id);
-                })
-            .toArray(CustomerModel[]::new);
-    this._fragment.filterCustomerViewModel().onRemoveFilteredCustomer(customersToRemove);
+    final ArrayList<CustomerModel> filteredCustomers =
+        this._fragment.filterCustomerViewModel().filteredCustomers().getValue() != null
+            ? new ArrayList<>(
+                this._fragment.filterCustomerViewModel().filteredCustomers().getValue())
+            : new ArrayList<>();
+
+    for (int id : checkedIds) {
+      for (int i = filteredCustomers.size(); i-- > 0; ) {
+        if (id == i) {
+          // The ID is the chip index itself.
+          group.removeViewAt(id);
+          filteredCustomers.remove(id);
+          break;
+        }
+      }
+    }
+
+    this._fragment.filterCustomerViewModel().onFilteredCustomersChanged(filteredCustomers);
   }
 }

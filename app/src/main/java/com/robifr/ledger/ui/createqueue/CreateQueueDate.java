@@ -19,6 +19,8 @@ package com.robifr.ledger.ui.createqueue;
 
 import android.view.View;
 import androidx.annotation.NonNull;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.robifr.ledger.R;
 import java.time.Instant;
@@ -50,7 +52,11 @@ public class CreateQueueDate implements View.OnClickListener {
                 .setTheme(
                     com.google.android.material.R.style.ThemeOverlay_Material3_MaterialCalendar)
                 .setTitleText(this._fragment.getString(R.string.text_select_date))
-                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR);
+                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+                .setCalendarConstraints(
+                    new CalendarConstraints.Builder()
+                        .setValidator(DateValidatorPointBackward.now())
+                        .build());
 
         if (inputtedDate != null) {
           pickerBuilder.setSelection(

@@ -41,12 +41,13 @@ public class FilterCustomerViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
+        .resultFilteredCustomerIds()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onResultFilteredCustomerIds));
+    this._viewModel
         .snackbarMessage()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel
-        .filteredCustomerIds()
-        .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onFilteredCustomerIds));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
     this._viewModel
         .initializedInitialFilteredCustomers()
@@ -58,17 +59,7 @@ public class FilterCustomerViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onFilteredCustomers);
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
-
-    Snackbar.make(
-            (View) this._fragment.fragmentBinding().getRoot().getParent(),
-            StringResources.stringOf(this._fragment.requireContext(), stringRes),
-            Snackbar.LENGTH_LONG)
-        .show();
-  }
-
-  private void _onFilteredCustomerIds(@Nullable List<Long> customerIds) {
+  private void _onResultFilteredCustomerIds(@Nullable List<Long> customerIds) {
     final long[] filteredCustomerIds =
         customerIds != null
             ? customerIds.stream().mapToLong(Long::longValue).toArray()
@@ -82,6 +73,16 @@ public class FilterCustomerViewModelHandler {
         .getParentFragmentManager()
         .setFragmentResult(FilterCustomerFragment.Request.FILTER_CUSTOMER.key(), bundle);
     this._fragment.finish();
+  }
+
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onCustomers(@Nullable List<CustomerModel> customers) {

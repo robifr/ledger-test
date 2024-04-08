@@ -49,7 +49,8 @@ public class CreateProductViewModel extends ViewModel {
   @NonNull protected final MutableLiveData<String> _inputtedPriceText = new MutableLiveData<>();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _createdProductId = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<Long>> _resultCreatedProductId =
+      new MutableLiveData<>();
 
   @Inject
   public CreateProductViewModel(@NonNull ProductRepository productRepository) {
@@ -59,11 +60,6 @@ public class CreateProductViewModel extends ViewModel {
   @NonNull
   public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<Long>> createdProductId() {
-    return this._createdProductId;
   }
 
   @NonNull
@@ -79,6 +75,11 @@ public class CreateProductViewModel extends ViewModel {
   @NonNull
   public LiveData<String> inputtedPriceText() {
     return this._inputtedPriceText;
+  }
+
+  @NonNull
+  public LiveData<LiveDataEvent<Long>> resultCreatedProductId() {
+    return this._resultCreatedProductId;
   }
 
   /**
@@ -134,7 +135,7 @@ public class CreateProductViewModel extends ViewModel {
         .add(product)
         .thenAcceptAsync(
             id -> {
-              if (id != 0L) this._createdProductId.postValue(new LiveDataEvent<>(id));
+              if (id != 0L) this._resultCreatedProductId.postValue(new LiveDataEvent<>(id));
 
               final StringResources stringRes =
                   id != 0L

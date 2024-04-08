@@ -43,7 +43,8 @@ public class EditProductViewModel extends CreateProductViewModel {
   @Nullable private ProductModel _initialProductToEdit = null;
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _editedProductId = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<Long>> _resultEditedProductId =
+      new MutableLiveData<>();
 
   @Inject
   public EditProductViewModel(
@@ -90,8 +91,8 @@ public class EditProductViewModel extends CreateProductViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> editedProductId() {
-    return this._editedProductId;
+  public LiveData<LiveDataEvent<Long>> resultEditedProductId() {
+    return this._resultEditedProductId;
   }
 
   @NonNull
@@ -121,7 +122,9 @@ public class EditProductViewModel extends CreateProductViewModel {
         .update(product)
         .thenAcceptAsync(
             effected -> {
-              if (effected > 0) this._editedProductId.postValue(new LiveDataEvent<>(product.id()));
+              if (effected > 0) {
+                this._resultEditedProductId.postValue(new LiveDataEvent<>(product.id()));
+              }
 
               final StringResources stringRes =
                   effected > 0

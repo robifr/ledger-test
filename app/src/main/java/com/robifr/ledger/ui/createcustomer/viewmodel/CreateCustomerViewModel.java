@@ -52,7 +52,8 @@ public class CreateCustomerViewModel extends ViewModel {
   @NonNull protected final MutableLiveData<BigDecimal> _inputtedDebt = new MutableLiveData<>();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _createdCustomerId = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<Long>> _resultCreatedCustomerId =
+      new MutableLiveData<>();
 
   @Inject
   public CreateCustomerViewModel(@NonNull CustomerRepository customerRepository) {
@@ -74,11 +75,6 @@ public class CreateCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> createdCustomerId() {
-    return this._createdCustomerId;
-  }
-
-  @NonNull
   public LiveData<String> inputtedNameText() {
     return this._inputtedNameText;
   }
@@ -91,6 +87,11 @@ public class CreateCustomerViewModel extends ViewModel {
   @NonNull
   public LiveData<BigDecimal> inputtedDebt() {
     return this._inputtedDebt;
+  }
+
+  @NonNull
+  public LiveData<LiveDataEvent<Long>> resultCreatedCustomerId() {
+    return this._resultCreatedCustomerId;
   }
 
   /**
@@ -150,7 +151,7 @@ public class CreateCustomerViewModel extends ViewModel {
         .add(customer)
         .thenAcceptAsync(
             id -> {
-              if (id != 0L) this._createdCustomerId.postValue(new LiveDataEvent<>(id));
+              if (id != 0L) this._resultCreatedCustomerId.postValue(new LiveDataEvent<>(id));
 
               final StringResources stringRes =
                   id != 0L

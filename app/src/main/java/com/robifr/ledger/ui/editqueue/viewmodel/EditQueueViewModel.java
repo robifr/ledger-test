@@ -49,7 +49,7 @@ public class EditQueueViewModel extends CreateQueueViewModel {
   @Nullable private QueueModel _initialQueueToEdit = null;
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _editedQueueId = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<Long>> _resultEditedQueueId = new MutableLiveData<>();
 
   @Inject
   public EditQueueViewModel(
@@ -102,8 +102,8 @@ public class EditQueueViewModel extends CreateQueueViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> editedQueueId() {
-    return this._editedQueueId;
+  public LiveData<LiveDataEvent<Long>> resultEditedQueueId() {
+    return this._resultEditedQueueId;
   }
 
   @NonNull
@@ -178,7 +178,9 @@ public class EditQueueViewModel extends CreateQueueViewModel {
         .update(queue)
         .thenAcceptAsync(
             effected -> {
-              if (effected > 0) this._editedQueueId.postValue(new LiveDataEvent<>(queue.id()));
+              if (effected > 0) {
+                this._resultEditedQueueId.postValue(new LiveDataEvent<>(queue.id()));
+              }
 
               final StringResources stringRes =
                   effected > 0

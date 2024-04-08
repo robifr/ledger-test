@@ -32,13 +32,27 @@ public class EditQueueViewModelHandler extends CreateQueueViewModelHandler {
       @NonNull EditQueueFragment fragment, @NonNull EditQueueViewModel viewModel) {
     super(fragment, viewModel);
     viewModel
+        .resultEditedQueueId()
+        .observe(
+            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onResultEditedQueueId));
+    viewModel
         .initializedInitialQueueToEdit()
         .observe(
             this._fragment.getViewLifecycleOwner(),
             new Observer<>(this::_onInitializedInitialQueueToEdit));
-    viewModel
-        .editedQueueId()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onEditedQueueId));
+  }
+
+  private void _onResultEditedQueueId(@Nullable Long queueId) {
+    if (queueId != null) {
+      final Bundle bundle = new Bundle();
+      bundle.putLong(EditQueueFragment.Result.EDITED_QUEUE_ID.key(), queueId);
+
+      this._fragment
+          .getParentFragmentManager()
+          .setFragmentResult(EditQueueFragment.Request.EDIT_QUEUE.key(), bundle);
+    }
+
+    this._fragment.finish();
   }
 
   private void _onInitializedInitialQueueToEdit(@Nullable QueueModel queue) {
@@ -50,18 +64,5 @@ public class EditQueueViewModelHandler extends CreateQueueViewModelHandler {
     this._viewModel.onPaymentMethodChanged(queue.paymentMethod());
     this._viewModel.setAllowedPaymentMethods(Set.of(queue.paymentMethod()));
     this._viewModel.onProductOrdersChanged(queue.productOrders());
-  }
-
-  private void _onEditedQueueId(@Nullable Long queueId) {
-    if (queueId != null) {
-      final Bundle bundle = new Bundle();
-      bundle.putLong(EditQueueFragment.Result.EDITED_QUEUE_ID.key(), queueId);
-
-      this._fragment
-          .getParentFragmentManager()
-          .setFragmentResult(EditQueueFragment.Request.EDIT_QUEUE.key(), bundle);
-    }
-
-    this._fragment.finish();
   }
 }

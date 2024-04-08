@@ -51,10 +51,11 @@ public class SelectCustomerViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _selectedCustomerId = new MutableLiveData<>();
-
   @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
+
+  @NonNull
+  private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedCustomerId =
+      new MutableLiveData<>();
 
   @Inject
   public SelectCustomerViewModel(
@@ -86,13 +87,13 @@ public class SelectCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> selectedCustomerId() {
-    return this._selectedCustomerId;
+  public LiveData<List<CustomerModel>> customers() {
+    return this._customers;
   }
 
   @NonNull
-  public LiveData<List<CustomerModel>> customers() {
-    return this._customers;
+  public LiveData<LiveDataEvent<Long>> resultSelectedCustomerId() {
+    return this._resultSelectedCustomerId;
   }
 
   public void onCustomersChanged(@NonNull List<CustomerModel> customers) {
@@ -103,7 +104,7 @@ public class SelectCustomerViewModel extends ViewModel {
 
   public void onCustomerSelected(@Nullable CustomerModel customer) {
     final Long customerId = customer != null && customer.id() != null ? customer.id() : null;
-    this._selectedCustomerId.setValue(new LiveDataEvent<>(customerId));
+    this._resultSelectedCustomerId.setValue(new LiveDataEvent<>(customerId));
   }
 
   @NonNull

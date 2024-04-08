@@ -32,24 +32,17 @@ public class EditProductViewModelHandler extends CreateProductViewModelHandler {
       @NonNull EditProductFragment fragment, @NonNull EditProductViewModel viewModel) {
     super(fragment, viewModel);
     viewModel
+        .resultEditedProductId()
+        .observe(
+            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onResultEditedProductId));
+    viewModel
         .initializedInitialProductToEdit()
         .observe(
             this._fragment.getViewLifecycleOwner(),
             new Observer<>(this::_onInitializedInitialProductToEdit));
-    viewModel
-        .editedProductId()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onEditedProductId));
   }
 
-  private void _onInitializedInitialProductToEdit(@Nullable ProductModel product) {
-    if (product == null) return;
-
-    this._viewModel.onNameTextChanged(product.name());
-    this._viewModel.onPriceTextChanged(
-        CurrencyFormat.format(BigDecimal.valueOf(product.price()), "id", "ID"));
-  }
-
-  private void _onEditedProductId(@Nullable Long productId) {
+  private void _onResultEditedProductId(@Nullable Long productId) {
     if (productId != null) {
       final Bundle bundle = new Bundle();
       bundle.putLong(EditProductFragment.Result.EDITED_PRODUCT_ID.key(), productId);
@@ -60,5 +53,13 @@ public class EditProductViewModelHandler extends CreateProductViewModelHandler {
     }
 
     this._fragment.finish();
+  }
+
+  private void _onInitializedInitialProductToEdit(@Nullable ProductModel product) {
+    if (product == null) return;
+
+    this._viewModel.onNameTextChanged(product.name());
+    this._viewModel.onPriceTextChanged(
+        CurrencyFormat.format(BigDecimal.valueOf(product.price()), "id", "ID"));
   }
 }

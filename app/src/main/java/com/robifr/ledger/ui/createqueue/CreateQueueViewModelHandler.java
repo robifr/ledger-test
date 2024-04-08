@@ -46,11 +46,12 @@ public class CreateQueueViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
+        .resultCreatedQueueId()
+        .observe(
+            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onResultCreatedQueueId));
+    this._viewModel
         .snackbarMessage()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel
-        .createdQueueId()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onCreatedQueueId));
 
     this._viewModel
         .inputtedCustomer()
@@ -106,17 +107,7 @@ public class CreateQueueViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSelectOrderSelectedIndexes);
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
-
-    Snackbar.make(
-            (View) this._fragment.fragmentBinding().getRoot().getParent(),
-            StringResources.stringOf(this._fragment.requireContext(), stringRes),
-            Snackbar.LENGTH_LONG)
-        .show();
-  }
-
-  private void _onCreatedQueueId(@Nullable Long queueId) {
+  private void _onResultCreatedQueueId(@Nullable Long queueId) {
     if (queueId != null) {
       final Bundle bundle = new Bundle();
       bundle.putLong(CreateQueueFragment.Result.CREATED_QUEUE_ID.key(), queueId);
@@ -127,6 +118,16 @@ public class CreateQueueViewModelHandler {
     }
 
     this._fragment.finish();
+  }
+
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onInputtedCustomer(@Nullable CustomerModel customer) {

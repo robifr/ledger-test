@@ -90,7 +90,8 @@ public class CreateQueueViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _createdQueueId = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<Long>> _resultCreatedQueueId =
+      new MutableLiveData<>();
 
   @Inject
   public CreateQueueViewModel(
@@ -117,11 +118,6 @@ public class CreateQueueViewModel extends ViewModel {
   @NonNull
   public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<Long>> createdQueueId() {
-    return this._createdQueueId;
   }
 
   @NonNull
@@ -171,6 +167,11 @@ public class CreateQueueViewModel extends ViewModel {
   @NonNull
   public LiveData<Boolean> isPaymentMethodsViewVisible() {
     return this._isPaymentMethodsViewVisible;
+  }
+
+  @NonNull
+  public LiveData<LiveDataEvent<Long>> resultCreatedQueueId() {
+    return this._resultCreatedQueueId;
   }
 
   /**
@@ -347,7 +348,7 @@ public class CreateQueueViewModel extends ViewModel {
         .add(queue)
         .thenAcceptAsync(
             id -> {
-              if (id != 0L) this._createdQueueId.postValue(new LiveDataEvent<>(id));
+              if (id != 0L) this._resultCreatedQueueId.postValue(new LiveDataEvent<>(id));
 
               final StringResources stringRes =
                   id != 0L

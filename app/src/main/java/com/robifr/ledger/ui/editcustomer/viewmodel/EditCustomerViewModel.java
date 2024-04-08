@@ -43,7 +43,8 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
   @Nullable private CustomerModel _initialCustomerToEdit = null;
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _editedCustomerId = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<Long>> _resultEditedCustomerId =
+      new MutableLiveData<>();
 
   @Inject
   public EditCustomerViewModel(
@@ -91,8 +92,8 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> editedCustomerId() {
-    return this._editedCustomerId;
+  public LiveData<LiveDataEvent<Long>> resultEditedCustomerId() {
+    return this._resultEditedCustomerId;
   }
 
   @NonNull
@@ -123,7 +124,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
         .thenAcceptAsync(
             effected -> {
               if (effected > 0) {
-                this._editedCustomerId.postValue(new LiveDataEvent<>(customer.id()));
+                this._resultEditedCustomerId.postValue(new LiveDataEvent<>(customer.id()));
               }
 
               final StringResources stringRes =

@@ -43,10 +43,11 @@ public class SearchProductViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<String>> _initializedInitialQuery =
       new MutableLiveData<>();
 
-  @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _selectedProductId = new MutableLiveData<>();
-
   @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
+
+  @NonNull
+  private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedProductId =
+      new MutableLiveData<>();
 
   @Inject
   public SearchProductViewModel(
@@ -66,13 +67,13 @@ public class SearchProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> selectedProductId() {
-    return this._selectedProductId;
+  public LiveData<List<ProductModel>> products() {
+    return this._products;
   }
 
   @NonNull
-  public LiveData<List<ProductModel>> products() {
-    return this._products;
+  public LiveData<LiveDataEvent<Long>> resultSelectedProductId() {
+    return this._resultSelectedProductId;
   }
 
   public void onSearch(@NonNull String query) {
@@ -92,6 +93,6 @@ public class SearchProductViewModel extends ViewModel {
 
   public void onProductSelected(@Nullable ProductModel product) {
     final Long productId = product != null && product.id() != null ? product.id() : null;
-    this._selectedProductId.setValue(new LiveDataEvent<>(productId));
+    this._resultSelectedProductId.setValue(new LiveDataEvent<>(productId));
   }
 }

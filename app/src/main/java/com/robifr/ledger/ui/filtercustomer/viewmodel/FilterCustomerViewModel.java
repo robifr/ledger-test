@@ -55,11 +55,11 @@ public class FilterCustomerViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull
-  private final MutableLiveData<LiveDataEvent<List<Long>>> _filteredCustomerIds =
-      new MutableLiveData<>();
-
   @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
+
+  @NonNull
+  private final MutableLiveData<LiveDataEvent<List<Long>>> _resultFilteredCustomerIds =
+      new MutableLiveData<>();
 
   @Inject
   public FilterCustomerViewModel(
@@ -107,13 +107,13 @@ public class FilterCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<List<Long>>> filteredCustomerIds() {
-    return this._filteredCustomerIds;
+  public LiveData<List<CustomerModel>> customers() {
+    return this._customers;
   }
 
   @NonNull
-  public LiveData<List<CustomerModel>> customers() {
-    return this._customers;
+  public LiveData<LiveDataEvent<List<Long>>> resultFilteredCustomerIds() {
+    return this._resultFilteredCustomerIds;
   }
 
   public void onCustomersChanged(@NonNull List<CustomerModel> customers) {
@@ -136,7 +136,7 @@ public class FilterCustomerViewModel extends ViewModel {
                 .collect(Collectors.toList())
             : List.of();
 
-    this._filteredCustomerIds.setValue(new LiveDataEvent<>(customerIds));
+    this._resultFilteredCustomerIds.setValue(new LiveDataEvent<>(customerIds));
   }
 
   @NonNull

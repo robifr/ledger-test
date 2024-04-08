@@ -38,27 +38,19 @@ public class SearchProductViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
+        .resultSelectedProductId()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onResultSelectedProductId));
+    this._viewModel
         .initializedInitialQuery()
         .observe(
             this._fragment.getViewLifecycleOwner(),
             new Observer<>(this::_onInitializedInitialQuery));
-    this._viewModel
-        .selectedProductId()
-        .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSelectedProductId));
     this._viewModel.products().observe(this._fragment.getViewLifecycleOwner(), this::_onProducts);
   }
 
-  private void _onInitializedInitialQuery(@Nullable String query) {
-    if (query != null) {
-      this._fragment.fragmentBinding().searchView.setQuery(query, true);
-    } else {
-      Compats.showKeyboard(
-          this._fragment.requireContext(), this._fragment.fragmentBinding().searchView);
-    }
-  }
-
-  private void _onSelectedProductId(@Nullable Long productId) {
+  private void _onResultSelectedProductId(@Nullable Long productId) {
     final Bundle bundle = new Bundle();
 
     if (productId != null) {
@@ -69,6 +61,15 @@ public class SearchProductViewModelHandler {
         .getParentFragmentManager()
         .setFragmentResult(SearchProductFragment.Request.SELECT_PRODUCT.key(), bundle);
     this._fragment.finish();
+  }
+
+  private void _onInitializedInitialQuery(@Nullable String query) {
+    if (query != null) {
+      this._fragment.fragmentBinding().searchView.setQuery(query, true);
+    } else {
+      Compats.showKeyboard(
+          this._fragment.requireContext(), this._fragment.fragmentBinding().searchView);
+    }
   }
 
   private void _onProducts(@Nullable List<ProductModel> products) {

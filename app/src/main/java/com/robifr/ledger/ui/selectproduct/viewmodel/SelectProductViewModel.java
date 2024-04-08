@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
@@ -69,6 +70,20 @@ public class SelectProductViewModel extends ViewModel {
 
     this._sorter.setSortMethod(new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
     this._productRepository.addModelChangedListener(this._productsUpdater);
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    final LiveData<List<ProductModel>> selectAllProducts = this.selectAllProducts();
+    selectAllProducts.observeForever(
+        new Observer<>() {
+          @Override
+          public void onChanged(@Nullable List<ProductModel> products) {
+            if (products != null) SelectProductViewModel.this.onProductsChanged(products);
+            selectAllProducts.removeObserver(this);
+          }
+        });
   }
 
   @Override

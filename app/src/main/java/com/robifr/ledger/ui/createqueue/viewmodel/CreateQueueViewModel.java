@@ -103,6 +103,16 @@ public class CreateQueueViewModel extends ViewModel {
     this._productRepository = Objects.requireNonNull(productRepository);
     this._makeProductOrderView = new MakeProductOrderViewModel(this);
     this._selectProductOrderView = new SelectProductOrderViewModel(this);
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    this.onCustomerChanged(null);
+    this.onDateChanged(ZonedDateTime.now(ZoneId.systemDefault()));
+    this.onStatusChanged(QueueModel.Status.IN_QUEUE);
+    this.onPaymentMethodChanged(QueueModel.PaymentMethod.CASH);
+    this.setAllowedPaymentMethods(Set.of(QueueModel.PaymentMethod.CASH));
   }
 
   @NonNull

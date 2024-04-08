@@ -80,23 +80,13 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
   @Nullable private SearchCustomerViewModelHandler _viewModelHandler;
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    this._searchCustomerViewModel = new ViewModelProvider(this).get(SearchCustomerViewModel.class);
-  }
-
-  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
-    Objects.requireNonNull(this._searchCustomerViewModel);
 
     this._fragmentBinding = SearchableFragmentBinding.inflate(inflater, container, false);
-    this._viewModelHandler =
-        new SearchCustomerViewModelHandler(this, this._searchCustomerViewModel);
-
     return this._fragmentBinding.getRoot();
   }
 
@@ -107,6 +97,9 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
 
     this._adapter = new SearchCustomerAdapter(this);
     this._normalStatusBarColor = this.requireActivity().getWindow().getStatusBarColor();
+    this._searchCustomerViewModel = new ViewModelProvider(this).get(SearchCustomerViewModel.class);
+    this._viewModelHandler =
+        new SearchCustomerViewModelHandler(this, this._searchCustomerViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()

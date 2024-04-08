@@ -72,23 +72,15 @@ public class SearchFragment extends Fragment
   @Nullable private SearchViewModelHandler _viewModelHandler;
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    this._searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
-  }
-
-  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
-    Objects.requireNonNull(this._searchViewModel);
 
     this._fragmentBinding = SearchableFragmentBinding.inflate(inflater, container, false);
     this._customerListBinding = SearchableListHorizontalBinding.inflate(inflater, container, false);
     this._productListBinding = SearchableListHorizontalBinding.inflate(inflater, container, false);
-    this._viewModelHandler = new SearchViewModelHandler(this, this._searchViewModel);
 
     return this._fragmentBinding.getRoot();
   }
@@ -99,7 +91,9 @@ public class SearchFragment extends Fragment
     Objects.requireNonNull(this._fragmentBinding);
     Objects.requireNonNull(this._customerListBinding);
     Objects.requireNonNull(this._productListBinding);
-    Objects.requireNonNull(this._searchViewModel);
+
+    this._searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+    this._viewModelHandler = new SearchViewModelHandler(this, this._searchViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()

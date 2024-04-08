@@ -79,26 +79,13 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   @Nullable private FilterCustomerViewModelHandler _viewModelHandler;
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    this._filterCustomerViewModel = new ViewModelProvider(this).get(FilterCustomerViewModel.class);
-    this._filterCustomerViewModel
-        .selectAllCustomers()
-        .observe(this, this._filterCustomerViewModel::onCustomersChanged);
-  }
-
-  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
-    Objects.requireNonNull(this._filterCustomerViewModel);
 
     this._fragmentBinding = ListableFragmentBinding.inflate(inflater, container, false);
-    this._viewModelHandler =
-        new FilterCustomerViewModelHandler(this, this._filterCustomerViewModel);
-
     return this._fragmentBinding.getRoot();
   }
 
@@ -106,10 +93,11 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
-    Objects.requireNonNull(this._filterCustomerViewModel);
 
     this._adapter = new FilterCustomerAdapter(this);
-    this._resultHandler = new FilterCustomerResultHandler(this);
+    this._filterCustomerViewModel = new ViewModelProvider(this).get(FilterCustomerViewModel.class);
+    this._viewModelHandler =
+        new FilterCustomerViewModelHandler(this, this._filterCustomerViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()
@@ -125,6 +113,16 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    // Should be called after `FilterCustomerViewModelHandler` called. `onStart` is perfect place
+    // for it. If there's a fragment inherit from this class, which mostly inherit their own
+    // view model handler too. Then it's impossible to not call them both inside `onViewCreated`,
+    // unless `super` call is omitted entirely.
+    this._resultHandler = new FilterCustomerResultHandler(this);
   }
 
   @Override

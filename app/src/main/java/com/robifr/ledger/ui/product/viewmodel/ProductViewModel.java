@@ -19,10 +19,13 @@ package com.robifr.ledger.ui.product.viewmodel;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.ProductFilters;
 import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.data.ProductSorter;
 import com.robifr.ledger.data.model.ProductModel;
@@ -63,6 +66,26 @@ public class ProductViewModel extends ViewModel {
     this._productsUpdater = new ProductsUpdater(this._products);
 
     this._productRepository.addModelChangedListener(this._productsUpdater);
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    this.onSortMethodChanged(new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
+
+    final LiveData<List<ProductModel>> selectAllProducts = this.selectAllProducts();
+    selectAllProducts.observeForever(
+        new Observer<>() {
+          @Override
+          public void onChanged(@Nullable List<ProductModel> products) {
+            if (products != null) {
+              ProductViewModel.this._filterView.onFiltersChanged(
+                  ProductFilters.toBuilder().build(), products);
+            }
+
+            selectAllProducts.removeObserver(this);
+          }
+        });
   }
 
   @Override

@@ -21,8 +21,10 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.CustomerFilters;
 import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.data.CustomerSorter;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -63,6 +65,26 @@ public class CustomerViewModel extends ViewModel {
     this._customersUpdater = new CustomersUpdater(this._customers);
 
     this._customerRepository.addModelChangedListener(this._customersUpdater);
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    this.onSortMethodChanged(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
+
+    final LiveData<List<CustomerModel>> selectAllCustomers = this.selectAllCustomers();
+    selectAllCustomers.observeForever(
+        new Observer<>() {
+          @Override
+          public void onChanged(List<CustomerModel> customers) {
+            if (customers != null) {
+              CustomerViewModel.this._filterView.onFiltersChanged(
+                  CustomerFilters.toBuilder().build(), customers);
+            }
+
+            selectAllCustomers.removeObserver(this);
+          }
+        });
   }
 
   @Override

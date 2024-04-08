@@ -79,26 +79,13 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   @Nullable private SelectCustomerViewModelHandler _viewModelHandler;
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    this._selectCustomerViewModel = new ViewModelProvider(this).get(SelectCustomerViewModel.class);
-    this._selectCustomerViewModel
-        .selectAllCustomers()
-        .observe(this, this._selectCustomerViewModel::onCustomersChanged);
-  }
-
-  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
-    Objects.requireNonNull(this._selectCustomerViewModel);
 
     this._fragmentBinding = ListableFragmentBinding.inflate(inflater, container, false);
-    this._viewModelHandler =
-        new SelectCustomerViewModelHandler(this, this._selectCustomerViewModel);
-
     return this._fragmentBinding.getRoot();
   }
 
@@ -108,7 +95,9 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     Objects.requireNonNull(this._fragmentBinding);
 
     this._adapter = new SelectCustomerAdapter(this);
-    this._resultHandler = new SelectCustomerResultHandler(this);
+    this._selectCustomerViewModel = new ViewModelProvider(this).get(SelectCustomerViewModel.class);
+    this._viewModelHandler =
+        new SelectCustomerViewModelHandler(this, this._selectCustomerViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()
@@ -124,6 +113,16 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    // Should be called after `SelectCustomerViewModelHandler` called. `onStart` is perfect place
+    // for it. If there's a fragment inherit from this class, which mostly inherit their own
+    // view model handler too. Then it's impossible to not call them both inside `onViewCreated`,
+    // unless `super` call is omitted entirely.
+    this._resultHandler = new SelectCustomerResultHandler(this);
   }
 
   @Override

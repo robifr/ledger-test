@@ -30,8 +30,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.ProductFilters;
-import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.product.filter.ProductFilter;
 import com.robifr.ledger.ui.product.recycler.ProductAdapter;
@@ -50,32 +48,13 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
   @Nullable private ProductViewModelHandler _viewModelHandler;
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    this._productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-    this._productViewModel.onSortMethodChanged(
-        new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
-    this._productViewModel
-        .selectAllProducts()
-        .observe(
-            this,
-            products ->
-                this._productViewModel
-                    .filterView()
-                    .onFiltersChanged(ProductFilters.toBuilder().build(), products));
-  }
-
-  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
-    Objects.requireNonNull(this._productViewModel);
 
     this._fragmentBinding = ListableFragmentBinding.inflate(inflater, container, false);
-    this._viewModelHandler = new ProductViewModelHandler(this, this._productViewModel);
-
     return this._fragmentBinding.getRoot();
   }
 
@@ -83,11 +62,15 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
-    Objects.requireNonNull(this._productViewModel);
 
     this._sort = new ProductSort(this);
     this._filter = new ProductFilter(this);
     this._adapter = new ProductAdapter(this);
+    // Use activity store owner because this fragment is used by bottom navigation.
+    // Which to prevents view model recreation.
+    this._productViewModel =
+        new ViewModelProvider(this.requireActivity()).get(ProductViewModel.class);
+    this._viewModelHandler = new ProductViewModelHandler(this, this._productViewModel);
 
     this._fragmentBinding.toolbar.getMenu().clear();
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_main);

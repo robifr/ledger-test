@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
@@ -88,6 +89,20 @@ public class FilterCustomerViewModel extends ViewModel {
 
           this._initializedInitialFilteredCustomers.setValue(
               new LiveDataEvent<>(filteredCustomers));
+        });
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    final LiveData<List<CustomerModel>> selectAllCustomers = this.selectAllCustomers();
+    selectAllCustomers.observeForever(
+        new Observer<>() {
+          @Override
+          public void onChanged(List<CustomerModel> customers) {
+            if (customers != null) FilterCustomerViewModel.this.onCustomersChanged(customers);
+            selectAllCustomers.removeObserver(this);
+          }
         });
   }
 

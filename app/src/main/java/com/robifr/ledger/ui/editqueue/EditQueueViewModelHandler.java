@@ -25,7 +25,6 @@ import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.createqueue.CreateQueueViewModelHandler;
 import com.robifr.ledger.ui.editqueue.viewmodel.EditQueueViewModel;
 import java.time.ZoneId;
-import java.util.Set;
 
 public class EditQueueViewModelHandler extends CreateQueueViewModelHandler {
   public EditQueueViewModelHandler(
@@ -62,7 +61,6 @@ public class EditQueueViewModelHandler extends CreateQueueViewModelHandler {
     this._viewModel.onDateChanged(queue.date().atZone(ZoneId.systemDefault()));
     this._viewModel.onStatusChanged(queue.status());
     this._viewModel.onPaymentMethodChanged(queue.paymentMethod());
-    this._viewModel.setAllowedPaymentMethods(Set.of(queue.paymentMethod()));
     this._viewModel.onProductOrdersChanged(queue.productOrders());
   }
 }

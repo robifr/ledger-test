@@ -18,9 +18,7 @@
 package com.robifr.ledger.ui.editcustomer;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
@@ -64,30 +62,14 @@ public class EditCustomerFragment extends CreateCustomerFragment {
   }
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    this._createCustomerViewModel = new ViewModelProvider(this).get(EditCustomerViewModel.class);
-  }
-
-  @Override
-  public View onCreateView(
-      @NonNull LayoutInflater inflater,
-      @Nullable ViewGroup container,
-      @Nullable Bundle savedInstance) {
-    Objects.requireNonNull(this._createCustomerViewModel);
-
-    final View view = super.onCreateView(inflater, container, savedInstance);
-    this._viewModelHandler =
-        new EditCustomerViewModelHandler(
-            this, (EditCustomerViewModel) this._createCustomerViewModel);
-
-    return view;
-  }
-
-  @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     super.onViewCreated(view, savedInstance);
     Objects.requireNonNull(this._fragmentBinding);
+
+    this._createCustomerViewModel = new ViewModelProvider(this).get(EditCustomerViewModel.class);
+    this._viewModelHandler =
+        new EditCustomerViewModelHandler(
+            this, (EditCustomerViewModel) this._createCustomerViewModel);
 
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_customer));
   }

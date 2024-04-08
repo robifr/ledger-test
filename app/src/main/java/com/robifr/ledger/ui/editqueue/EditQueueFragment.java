@@ -18,9 +18,7 @@
 package com.robifr.ledger.ui.editqueue;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
@@ -64,29 +62,13 @@ public class EditQueueFragment extends CreateQueueFragment {
   }
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    this._createQueueViewModel = new ViewModelProvider(this).get(EditQueueViewModel.class);
-  }
-
-  @Override
-  public View onCreateView(
-      @NonNull LayoutInflater inflater,
-      @Nullable ViewGroup container,
-      @Nullable Bundle savedInstance) {
-    Objects.requireNonNull(this._createQueueViewModel);
-
-    final View view = super.onCreateView(inflater, container, savedInstance);
-    this._viewModelHandler =
-        new EditQueueViewModelHandler(this, (EditQueueViewModel) this._createQueueViewModel);
-
-    return view;
-  }
-
-  @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstance) {
     super.onViewCreated(view, savedInstance);
     Objects.requireNonNull(this._fragmentBinding);
+
+    this._createQueueViewModel = new ViewModelProvider(this).get(EditQueueViewModel.class);
+    this._viewModelHandler =
+        new EditQueueViewModelHandler(this, (EditQueueViewModel) this._createQueueViewModel);
 
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_queue));
   }

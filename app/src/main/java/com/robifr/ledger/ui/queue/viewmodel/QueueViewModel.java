@@ -21,11 +21,14 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.data.QueueSortMethod;
 import com.robifr.ledger.data.QueueSorter;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -41,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -74,6 +78,32 @@ public class QueueViewModel extends ViewModel {
 
     this._queueRepository.addModelChangedListener(this._queuesUpdater);
     this._customerRepository.addModelChangedListener(this._customerUpdater);
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    this.onSortMethodChanged(new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
+
+    final LiveData<List<QueueModel>> selectAllQueues = this.selectAllQueues();
+    selectAllQueues.observeForever(
+        new Observer<>() {
+          @Override
+          public void onChanged(@Nullable List<QueueModel> queues) {
+            if (queues != null) {
+              QueueViewModel.this._filterView.onFiltersChanged(
+                  QueueFilters.toBuilder()
+                      .setNullCustomerShown(true)
+                      .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
+                      .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
+                      .setFilteredStatus(Set.of(QueueModel.Status.values()))
+                      .build(),
+                  queues);
+            }
+
+            selectAllQueues.removeObserver(this);
+          }
+        });
   }
 
   @Override

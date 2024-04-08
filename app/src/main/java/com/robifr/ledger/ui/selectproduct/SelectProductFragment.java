@@ -79,26 +79,14 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
   @Nullable private SelectProductViewModelHandler _viewModelHandler;
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    this._selectProductViewModel = new ViewModelProvider(this).get(SelectProductViewModel.class);
-    this._selectProductViewModel
-        .selectAllProducts()
-        .observe(this, this._selectProductViewModel::onProductsChanged);
-  }
-
-  @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstance) {
     Objects.requireNonNull(inflater);
-    Objects.requireNonNull(this._selectProductViewModel);
 
     this._fragmentBinding =
         ListableFragmentBinding.inflate(this.getLayoutInflater(), container, false);
-    this._viewModelHandler = new SelectProductViewModelHandler(this, this._selectProductViewModel);
-
     return this._fragmentBinding.getRoot();
   }
 
@@ -108,7 +96,8 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
     Objects.requireNonNull(this._fragmentBinding);
 
     this._adapter = new SelectProductAdapter(this);
-    this._resultHandler = new SelectProductResultHandler(this);
+    this._selectProductViewModel = new ViewModelProvider(this).get(SelectProductViewModel.class);
+    this._viewModelHandler = new SelectProductViewModelHandler(this, this._selectProductViewModel);
 
     this.requireActivity()
         .getOnBackPressedDispatcher()
@@ -124,6 +113,16 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    // Should be called after `SelectProductViewModelHandler` called. `onStart` is perfect place
+    // for it. If there's a fragment inherit from this class, which mostly inherit their own
+    // view model handler too. Then it's impossible to not call them both inside `onViewCreated`,
+    // unless `super` call is omitted entirely.
+    this._resultHandler = new SelectProductResultHandler(this);
   }
 
   @Override

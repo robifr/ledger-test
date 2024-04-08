@@ -38,7 +38,7 @@ import java.util.Set;
 
 public class QueueFilterViewModel {
   @NonNull private final QueueViewModel _viewModel;
-  @NonNull private final QueueFilterer _filterer = new QueueFilterer();
+  @NonNull private final QueueFilterer _filterer;
 
   @NonNull private final MutableLiveData<List<Long>> _inputtedCustomerIds = new MutableLiveData<>();
 
@@ -61,8 +61,9 @@ public class QueueFilterViewModel {
   private Pair<ZonedDateTime, ZonedDateTime> _inputtedDateStartEnd =
       QueueFilters.toBuilder().build().filteredDateStartEnd();
 
-  public QueueFilterViewModel(@NonNull QueueViewModel viewModel) {
+  public QueueFilterViewModel(@NonNull QueueViewModel viewModel, @NonNull QueueFilterer filterer) {
     this._viewModel = Objects.requireNonNull(viewModel);
+    this._filterer = Objects.requireNonNull(filterer);
   }
 
   @NonNull
@@ -103,23 +104,23 @@ public class QueueFilterViewModel {
    */
   @NonNull
   public QueueFilters inputtedFilters() {
-    final QueueFilters defaultFilters = QueueFilters.toBuilder().build();
-
     final List<Long> customerIds =
         Objects.requireNonNullElse(
-            this._inputtedCustomerIds.getValue(), defaultFilters.filteredCustomerIds());
+            this._inputtedCustomerIds.getValue(), this._filterer.filters().filteredCustomerIds());
     final boolean isNullCustomerShown =
         Objects.requireNonNullElse(
-            this._inputtedIsNullCustomerShown.getValue(), defaultFilters.isNullCustomerShown());
+            this._inputtedIsNullCustomerShown.getValue(),
+            this._filterer.filters().isNullCustomerShown());
     final Set<QueueModel.Status> status =
         Objects.requireNonNullElse(
-            this._inputtedStatus.getValue(), defaultFilters.filteredStatus());
+            this._inputtedStatus.getValue(), this._filterer.filters().filteredStatus());
     final QueueFilters.DateRange date =
-        Objects.requireNonNullElse(this._inputtedDate.getValue(), defaultFilters.filteredDate());
+        Objects.requireNonNullElse(
+            this._inputtedDate.getValue(), this._filterer.filters().filteredDate());
 
     // Nullable value to represent unbounded range.
-    BigDecimal minTotalPrice = defaultFilters.filteredTotalPrice().first;
-    BigDecimal maxTotalPrice = defaultFilters.filteredTotalPrice().second;
+    BigDecimal minTotalPrice = this._filterer.filters().filteredTotalPrice().first;
+    BigDecimal maxTotalPrice = this._filterer.filters().filteredTotalPrice().second;
 
     try {
       final String minTotalPriceText = this._inputtedMinTotalPriceText.getValue();

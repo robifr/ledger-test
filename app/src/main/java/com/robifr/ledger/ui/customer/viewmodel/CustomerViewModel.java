@@ -24,7 +24,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.CustomerFilters;
+import com.robifr.ledger.data.CustomerFilterer;
 import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.data.CustomerSorter;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -43,7 +43,7 @@ import javax.inject.Inject;
 public class CustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final CustomersUpdater _customersUpdater;
-  @NonNull private final CustomerFilterViewModel _filterView = new CustomerFilterViewModel(this);
+  @NonNull private final CustomerFilterViewModel _filterView;
   @NonNull private final CustomerSorter _sorter = new CustomerSorter();
 
   @NonNull
@@ -63,6 +63,7 @@ public class CustomerViewModel extends ViewModel {
   public CustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
     this._customersUpdater = new CustomersUpdater(this._customers);
+    this._filterView = new CustomerFilterViewModel(this, new CustomerFilterer());
 
     this._customerRepository.addModelChangedListener(this._customersUpdater);
 
@@ -79,7 +80,7 @@ public class CustomerViewModel extends ViewModel {
           public void onChanged(List<CustomerModel> customers) {
             if (customers != null) {
               CustomerViewModel.this._filterView.onFiltersChanged(
-                  CustomerFilters.toBuilder().build(), customers);
+                  CustomerViewModel.this._filterView.inputtedFilters(), customers);
             }
 
             selectAllCustomers.removeObserver(this);

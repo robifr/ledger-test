@@ -35,14 +35,16 @@ import java.util.Objects;
 
 public class CustomerFilterViewModel {
   @NonNull private final CustomerViewModel _viewModel;
-  @NonNull private final CustomerFilterer _filterer = new CustomerFilterer();
+  @NonNull private final CustomerFilterer _filterer;
   @NonNull private final MutableLiveData<String> _inputtedMinBalanceText = new MutableLiveData<>();
   @NonNull private final MutableLiveData<String> _inputtedMaxBalanceText = new MutableLiveData<>();
   @NonNull private final MutableLiveData<String> _inputtedMinDebtText = new MutableLiveData<>();
   @NonNull private final MutableLiveData<String> _inputtedMaxDebtText = new MutableLiveData<>();
 
-  public CustomerFilterViewModel(@NonNull CustomerViewModel viewModel) {
+  public CustomerFilterViewModel(
+      @NonNull CustomerViewModel viewModel, @NonNull CustomerFilterer filterer) {
     this._viewModel = Objects.requireNonNull(viewModel);
+    this._filterer = Objects.requireNonNull(filterer);
   }
 
   @NonNull
@@ -73,12 +75,11 @@ public class CustomerFilterViewModel {
    */
   @NonNull
   public CustomerFilters inputtedFilters() {
-    final CustomerFilters defaultFilters = CustomerFilters.toBuilder().build();
     // Nullable value to represent unbounded range.
-    Long minBalance = defaultFilters.filteredBalance().first;
-    Long maxBalance = defaultFilters.filteredBalance().second;
-    BigDecimal minDebt = defaultFilters.filteredDebt().first;
-    BigDecimal maxDebt = defaultFilters.filteredDebt().second;
+    Long minBalance = this._filterer.filters().filteredBalance().first;
+    Long maxBalance = this._filterer.filters().filteredBalance().second;
+    BigDecimal minDebt = this._filterer.filters().filteredDebt().first;
+    BigDecimal maxDebt = this._filterer.filters().filteredDebt().second;
 
     try {
       final String minBalanceText = this._inputtedMinBalanceText.getValue();

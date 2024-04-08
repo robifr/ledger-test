@@ -28,6 +28,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.QueueFilterer;
 import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.data.QueueSortMethod;
 import com.robifr.ledger.data.QueueSorter;
@@ -53,7 +54,7 @@ public class QueueViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final QueuesUpdater _queuesUpdater;
   @NonNull private final CustomerUpdater _customerUpdater = new CustomerUpdater();
-  @NonNull private final QueueFilterViewModel _filterView = new QueueFilterViewModel(this);
+  @NonNull private final QueueFilterViewModel _filterView;
   @NonNull private final QueueSorter _sorter = new QueueSorter();
 
   @NonNull
@@ -76,6 +77,17 @@ public class QueueViewModel extends ViewModel {
     this._customerRepository = Objects.requireNonNull(customerRepository);
     this._queuesUpdater = new QueuesUpdater(this._queues);
 
+    final QueueFilterer filterer = new QueueFilterer();
+    filterer.setFilters(
+        QueueFilters.toBuilder()
+            .setNullCustomerShown(true)
+            .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
+            .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
+            .setFilteredStatus(Set.of(QueueModel.Status.values()))
+            .build());
+
+    this._filterView = new QueueFilterViewModel(this, filterer);
+
     this._queueRepository.addModelChangedListener(this._queuesUpdater);
     this._customerRepository.addModelChangedListener(this._customerUpdater);
 
@@ -92,13 +104,7 @@ public class QueueViewModel extends ViewModel {
           public void onChanged(@Nullable List<QueueModel> queues) {
             if (queues != null) {
               QueueViewModel.this._filterView.onFiltersChanged(
-                  QueueFilters.toBuilder()
-                      .setNullCustomerShown(true)
-                      .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
-                      .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
-                      .setFilteredStatus(Set.of(QueueModel.Status.values()))
-                      .build(),
-                  queues);
+                  QueueViewModel.this._filterView.inputtedFilters(), queues);
             }
 
             selectAllQueues.removeObserver(this);

@@ -25,7 +25,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.ProductFilters;
+import com.robifr.ledger.data.ProductFilterer;
 import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.data.ProductSorter;
 import com.robifr.ledger.data.model.ProductModel;
@@ -44,7 +44,8 @@ import javax.inject.Inject;
 public class ProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
   @NonNull private final ProductsUpdater _productsUpdater;
-  @NonNull private final ProductFilterViewModel _filterView = new ProductFilterViewModel(this);
+  @NonNull private final ProductFilterViewModel _filterView;
+
   @NonNull private final ProductSorter _sorter = new ProductSorter();
 
   @NonNull
@@ -64,6 +65,7 @@ public class ProductViewModel extends ViewModel {
   public ProductViewModel(@NonNull ProductRepository productRepository) {
     this._productRepository = Objects.requireNonNull(productRepository);
     this._productsUpdater = new ProductsUpdater(this._products);
+    this._filterView = new ProductFilterViewModel(this, new ProductFilterer());
 
     this._productRepository.addModelChangedListener(this._productsUpdater);
 
@@ -80,7 +82,7 @@ public class ProductViewModel extends ViewModel {
           public void onChanged(@Nullable List<ProductModel> products) {
             if (products != null) {
               ProductViewModel.this._filterView.onFiltersChanged(
-                  ProductFilters.toBuilder().build(), products);
+                  ProductViewModel.this._filterView.inputtedFilters(), products);
             }
 
             selectAllProducts.removeObserver(this);

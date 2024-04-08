@@ -35,12 +35,14 @@ import java.util.Objects;
 
 public class ProductFilterViewModel {
   @NonNull private final ProductViewModel _viewModel;
-  @NonNull private final ProductFilterer _filterer = new ProductFilterer();
+  @NonNull private final ProductFilterer _filterer;
   @NonNull private final MutableLiveData<String> _inputtedMinPriceText = new MutableLiveData<>();
   @NonNull private final MutableLiveData<String> _inputtedMaxPriceText = new MutableLiveData<>();
 
-  public ProductFilterViewModel(@NonNull ProductViewModel viewModel) {
+  public ProductFilterViewModel(
+      @NonNull ProductViewModel viewModel, @NonNull ProductFilterer filterer) {
     this._viewModel = Objects.requireNonNull(viewModel);
+    this._filterer = Objects.requireNonNull(filterer);
   }
 
   @NonNull
@@ -61,10 +63,9 @@ public class ProductFilterViewModel {
    */
   @NonNull
   public ProductFilters inputtedFilters() {
-    final ProductFilters defaultFilters = ProductFilters.toBuilder().build();
     // Nullable value to represent unbounded range.
-    Long minPrice = defaultFilters.filteredPrice().first;
-    Long maxPrice = defaultFilters.filteredPrice().second;
+    Long minPrice = this._filterer.filters().filteredPrice().first;
+    Long maxPrice = this._filterer.filters().filteredPrice().second;
 
     try {
       final String minPriceText = this._inputtedMinPriceText.getValue();

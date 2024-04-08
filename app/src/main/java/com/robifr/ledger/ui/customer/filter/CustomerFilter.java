@@ -54,7 +54,18 @@ public class CustomerFilter implements DialogInterface.OnDismissListener {
   public void onDismiss(@NonNull DialogInterface dialog) {
     Objects.requireNonNull(dialog);
 
-    this._fragment.customerViewModel().fetchAllCustomers();
+    this._fragment
+        .customerViewModel()
+        .selectAllCustomers()
+        .observe(
+            this._fragment,
+            customers ->
+                this._fragment
+                    .customerViewModel()
+                    .filterView()
+                    .onFiltersChanged(
+                        this._fragment.customerViewModel().filterView().inputtedFilters(),
+                        customers));
 
     if (this._dialog.getCurrentFocus() != null) this._dialog.getCurrentFocus().clearFocus();
   }

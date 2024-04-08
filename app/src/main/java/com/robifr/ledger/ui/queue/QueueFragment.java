@@ -59,15 +59,20 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
     this._queueViewModel.onSortMethodChanged(
         new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
     this._queueViewModel
-        .filterView()
-        .onFiltersChanged(
-            QueueFilters.toBuilder()
-                .setNullCustomerShown(true)
-                .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
-                .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
-                .setFilteredStatus(Set.of(QueueModel.Status.values()))
-                .build());
-    this._queueViewModel.fetchAllQueues();
+        .selectAllQueues()
+        .observe(
+            this.getViewLifecycleOwner(),
+            queues ->
+                this._queueViewModel
+                    .filterView()
+                    .onFiltersChanged(
+                        QueueFilters.toBuilder()
+                            .setNullCustomerShown(true)
+                            .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
+                            .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
+                            .setFilteredStatus(Set.of(QueueModel.Status.values()))
+                            .build(),
+                        queues));
   }
 
   @Override

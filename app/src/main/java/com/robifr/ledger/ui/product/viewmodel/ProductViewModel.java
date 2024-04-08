@@ -17,8 +17,6 @@
 
 package com.robifr.ledger.ui.product.viewmodel;
 
-import android.os.Handler;
-import android.os.Looper;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -99,24 +97,24 @@ public class ProductViewModel extends ViewModel {
     return this._expandedProductIndex;
   }
 
-  public void fetchAllProducts() {
+  @NonNull
+  public LiveData<List<ProductModel>> selectAllProducts() {
+    final MutableLiveData<List<ProductModel>> result = new MutableLiveData<>();
+
     this._productRepository
         .selectAll()
         .thenAccept(
-            products ->
-                new Handler(Looper.getMainLooper())
-                    .post(
-                        () ->
-                            this._filterView.onFiltersChanged(
-                                this._filterView.inputtedFilters(), products)))
-        .exceptionally(
-            e -> {
-              this._snackbarMessage.postValue(
-                  new LiveDataEvent<>(
-                      new StringResources.Strings(
-                          R.string.text_error_unable_to_retrieve_all_products)));
-              return null;
+            products -> {
+              if (products == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_products)));
+              }
+
+              result.postValue(products);
             });
+    return result;
   }
 
   public void deleteProduct(@NonNull ProductModel product) {

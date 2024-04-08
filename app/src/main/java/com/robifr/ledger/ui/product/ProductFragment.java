@@ -55,8 +55,14 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
     this._productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
     this._productViewModel.onSortMethodChanged(
         new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
-    this._productViewModel.filterView().onFiltersChanged(ProductFilters.toBuilder().build());
-    this._productViewModel.fetchAllProducts();
+    this._productViewModel
+        .selectAllProducts()
+        .observe(
+            this,
+            products ->
+                this._productViewModel
+                    .filterView()
+                    .onFiltersChanged(ProductFilters.toBuilder().build(), products));
   }
 
   @Override

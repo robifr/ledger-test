@@ -55,8 +55,14 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
     this._customerViewModel = new ViewModelProvider(this).get(CustomerViewModel.class);
     this._customerViewModel.onSortMethodChanged(
         new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
-    this._customerViewModel.filterView().onFiltersChanged(CustomerFilters.toBuilder().build());
-    this._customerViewModel.fetchAllCustomers();
+    this._customerViewModel
+        .selectAllCustomers()
+        .observe(
+            this,
+            customers ->
+                this._customerViewModel
+                    .filterView()
+                    .onFiltersChanged(CustomerFilters.toBuilder().build(), customers));
   }
 
   @Override

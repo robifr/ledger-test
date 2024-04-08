@@ -109,24 +109,24 @@ public class QueueViewModel extends ViewModel {
     return this._expandedQueueIndex;
   }
 
-  public void fetchAllQueues() {
+  @NonNull
+  public LiveData<List<QueueModel>> selectAllQueues() {
+    final MutableLiveData<List<QueueModel>> result = new MutableLiveData<>();
+
     this._queueRepository
         .selectAll()
         .thenAccept(
-            queues ->
-                new Handler(Looper.getMainLooper())
-                    .post(
-                        () ->
-                            this._filterView.onFiltersChanged(
-                                this._filterView.inputtedFilters(), queues)))
-        .exceptionally(
-            e -> {
-              this._snackbarMessage.setValue(
-                  new LiveDataEvent<>(
-                      new StringResources.Strings(
-                          R.string.text_error_unable_to_retrieve_all_queues)));
-              return null;
+            queues -> {
+              if (queues == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_queues)));
+              }
+
+              result.postValue(queues);
             });
+    return result;
   }
 
   public void deleteQueue(@NonNull QueueModel queue) {

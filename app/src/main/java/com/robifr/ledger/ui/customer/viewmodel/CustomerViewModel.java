@@ -17,8 +17,6 @@
 
 package com.robifr.ledger.ui.customer.viewmodel;
 
-import android.os.Handler;
-import android.os.Looper;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -99,24 +97,24 @@ public class CustomerViewModel extends ViewModel {
     return this._expandedCustomerIndex;
   }
 
-  public void fetchAllCustomers() {
+  @NonNull
+  public LiveData<List<CustomerModel>> selectAllCustomers() {
+    final MutableLiveData<List<CustomerModel>> result = new MutableLiveData<>();
+
     this._customerRepository
         .selectAll()
-        .thenAccept(
-            customers ->
-                new Handler(Looper.getMainLooper())
-                    .post(
-                        () ->
-                            this._filterView.onFiltersChanged(
-                                this._filterView.inputtedFilters(), customers)))
-        .exceptionally(
-            e -> {
-              this._snackbarMessage.postValue(
-                  new LiveDataEvent<>(
-                      new StringResources.Strings(
-                          R.string.text_error_unable_to_retrieve_all_customers)));
-              return null;
+        .thenAcceptAsync(
+            customers -> {
+              if (customers == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_customers)));
+              }
+
+              result.postValue(customers);
             });
+    return result;
   }
 
   public void deleteCustomer(@NonNull CustomerModel customer) {

@@ -17,16 +17,14 @@
 
 package com.robifr.ledger.ui.customer.viewmodel;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.CustomerFilters;
 import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.data.CustomerSorter;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -34,11 +32,14 @@ import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
 import com.robifr.ledger.ui.StringResources;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class CustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final CustomersUpdater _customersUpdater;
@@ -58,11 +59,32 @@ public class CustomerViewModel extends ViewModel {
    */
   @NonNull private final MutableLiveData<Integer> _expandedCustomerIndex = new MutableLiveData<>();
 
+  @Inject
   public CustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
     this._customersUpdater = new CustomersUpdater(this._customers);
 
     this._customerRepository.addModelChangedListener(this._customersUpdater);
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    this.onSortMethodChanged(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
+
+    final LiveData<List<CustomerModel>> selectAllCustomers = this.selectAllCustomers();
+    selectAllCustomers.observeForever(
+        new Observer<>() {
+          @Override
+          public void onChanged(List<CustomerModel> customers) {
+            if (customers != null) {
+              CustomerViewModel.this._filterView.onFiltersChanged(
+                  CustomerFilters.toBuilder().build(), customers);
+            }
+
+            selectAllCustomers.removeObserver(this);
+          }
+        });
   }
 
   @Override
@@ -97,24 +119,24 @@ public class CustomerViewModel extends ViewModel {
     return this._expandedCustomerIndex;
   }
 
-  public void fetchAllCustomers() {
+  @NonNull
+  public LiveData<List<CustomerModel>> selectAllCustomers() {
+    final MutableLiveData<List<CustomerModel>> result = new MutableLiveData<>();
+
     this._customerRepository
         .selectAll()
-        .thenAccept(
-            customers ->
-                new Handler(Looper.getMainLooper())
-                    .post(
-                        () ->
-                            this._filterView.onFiltersChanged(
-                                this._filterView.inputtedFilters(), customers)))
-        .exceptionally(
-            e -> {
-              this._snackbarMessage.setValue(
-                  new LiveDataEvent<>(
-                      new StringResources.Strings(
-                          R.string.text_error_unable_to_retrieve_all_customers)));
-              return null;
+        .thenAcceptAsync(
+            customers -> {
+              if (customers == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_customers)));
+              }
+
+              result.postValue(customers);
             });
+    return result;
   }
 
   public void deleteCustomer(@NonNull CustomerModel customer) {
@@ -187,26 +209,6 @@ public class CustomerViewModel extends ViewModel {
 
   public void onExpandedCustomerIndexChanged(int index) {
     this._expandedCustomerIndex.setValue(index);
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final CustomerViewModel viewModel =
-          new CustomerViewModel(CustomerRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 
   private class CustomersUpdater extends LiveDataModelUpdater<CustomerModel> {

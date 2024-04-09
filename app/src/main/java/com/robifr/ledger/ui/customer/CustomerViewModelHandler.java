@@ -41,8 +41,8 @@ public class CustomerViewModelHandler {
 
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel.customers().observe(this._fragment.requireActivity(), this::_onCustomers);
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+    this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
     this._viewModel
         .expandedCustomerIndex()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onExpandedCustomerIndex);

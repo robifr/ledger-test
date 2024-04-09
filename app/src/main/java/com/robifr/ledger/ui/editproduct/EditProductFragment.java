@@ -22,17 +22,14 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
-import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.createproduct.CreateProductFragment;
 import com.robifr.ledger.ui.editproduct.viewmodel.EditProductViewModel;
-import com.robifr.ledger.util.CurrencyFormat;
-import java.math.BigDecimal;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class EditProductFragment extends CreateProductFragment {
   public enum Arguments implements FragmentResultKey {
     INITIAL_PRODUCT_ID_TO_EDIT;
@@ -69,31 +66,10 @@ public class EditProductFragment extends CreateProductFragment {
     super.onViewCreated(view, savedInstance);
     Objects.requireNonNull(this._fragmentBinding);
 
-    this._createProductViewModel =
-        new ViewModelProvider(this, new EditProductViewModel.Factory(this.requireContext()))
-            .get(EditProductViewModel.class);
+    this._createProductViewModel = new ViewModelProvider(this).get(EditProductViewModel.class);
     this._viewModelHandler =
         new EditProductViewModelHandler(this, (EditProductViewModel) this._createProductViewModel);
 
     this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_product));
-
-    final NavBackStackEntry backStackEntry =
-        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
-
-    if (this._createProductViewModel instanceof EditProductViewModel editProductViewModel
-        && backStackEntry != null
-        && backStackEntry.getArguments() != null) {
-      final ProductModel initialProduct =
-          editProductViewModel.selectProductById(
-              backStackEntry
-                  .getArguments()
-                  .getLong(Arguments.INITIAL_PRODUCT_ID_TO_EDIT.key(), 0L));
-      Objects.requireNonNull(initialProduct); // Logically shouldn't be null when editing data.
-
-      editProductViewModel.setInitialProductToEdit(initialProduct);
-      editProductViewModel.onNameTextChanged(initialProduct.name());
-      editProductViewModel.onPriceTextChanged(
-          CurrencyFormat.format(BigDecimal.valueOf(initialProduct.price()), "id", "ID"));
-    }
   }
 }

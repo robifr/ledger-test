@@ -17,30 +17,51 @@
 
 package com.robifr.ledger.ui.editcustomer.viewmodel;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.SavedStateHandle;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createcustomer.viewmodel.CreateCustomerViewModel;
+import com.robifr.ledger.ui.editcustomer.EditCustomerFragment;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class EditCustomerViewModel extends CreateCustomerViewModel {
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _editedCustomerId = new MutableLiveData<>();
+  private final MediatorLiveData<LiveDataEvent<CustomerModel>> _initializedInitialCustomerToEdit =
+      new MediatorLiveData<>();
 
   @Nullable private CustomerModel _initialCustomerToEdit = null;
 
-  public EditCustomerViewModel(@NonNull CustomerRepository customerRepository) {
+  @NonNull
+  private final MutableLiveData<LiveDataEvent<Long>> _resultEditedCustomerId =
+      new MutableLiveData<>();
+
+  @Inject
+  public EditCustomerViewModel(
+      @NonNull CustomerRepository customerRepository, @NonNull SavedStateHandle savedStateHandle) {
     super(customerRepository);
+    Objects.requireNonNull(savedStateHandle);
+
+    this._initializedInitialCustomerToEdit.addSource(
+        // Shouldn't be null when editing data.
+        this.selectCustomerById(
+            Objects.requireNonNull(
+                savedStateHandle.get(
+                    EditCustomerFragment.Arguments.INITIAL_CUSTOMER_ID_TO_EDIT.key()))),
+        customer -> {
+          this._initialCustomerToEdit = customer;
+          this._initializedInitialCustomerToEdit.setValue(new LiveDataEvent<>(customer));
+        });
   }
 
   @Override
@@ -65,30 +86,34 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
     this._updateCustomer(this.inputtedCustomer());
   }
 
-  public void setInitialCustomerToEdit(@NonNull CustomerModel customer) {
-    this._initialCustomerToEdit = Objects.requireNonNull(customer);
+  @NonNull
+  public LiveData<LiveDataEvent<CustomerModel>> initializedInitialCustomerToEdit() {
+    return this._initializedInitialCustomerToEdit;
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> editedCustomerId() {
-    return this._editedCustomerId;
+  public LiveData<LiveDataEvent<Long>> resultEditedCustomerId() {
+    return this._resultEditedCustomerId;
   }
 
-  @Nullable
-  public CustomerModel selectCustomerById(@Nullable Long customerId) {
-    final StringResources notFoundRes =
-        new StringResources.Strings(R.string.text_error_failed_to_find_related_customer);
-    CustomerModel customer = null;
+  @NonNull
+  public LiveData<CustomerModel> selectCustomerById(@Nullable Long customerId) {
+    final MutableLiveData<CustomerModel> result = new MutableLiveData<>();
 
-    try {
-      customer = this._customerRepository.selectById(customerId).get();
-      if (customer == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
+    this._customerRepository
+        .selectById(customerId)
+        .thenAcceptAsync(
+            customer -> {
+              if (customer == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_failed_to_find_related_customer)));
+              }
 
-    } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
-    }
-
-    return customer;
+              result.postValue(customer);
+            });
+    return result;
   }
 
   private void _updateCustomer(@NonNull CustomerModel customer) {
@@ -99,7 +124,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
         .thenAcceptAsync(
             effected -> {
               if (effected > 0) {
-                this._editedCustomerId.postValue(new LiveDataEvent<>(customer.id()));
+                this._resultEditedCustomerId.postValue(new LiveDataEvent<>(customer.id()));
               }
 
               final StringResources stringRes =
@@ -109,25 +134,5 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
                       : new StringResources.Strings(R.string.text_error_failed_to_update_customer);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final EditCustomerViewModel viewModel =
-          new EditCustomerViewModel(CustomerRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 }

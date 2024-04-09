@@ -17,16 +17,14 @@
 
 package com.robifr.ledger.ui.selectproduct.viewmodel;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.data.ProductSorter;
@@ -35,33 +33,57 @@ import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class SelectProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
-  @Nullable private final ProductModel _initialSelectedProduct;
   @NonNull private final ProductsUpdater _productsUpdater;
   @NonNull private final ProductSorter _sorter = new ProductSorter();
+
+  @Nullable private final ProductModel _initialSelectedProduct;
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _selectedProductId = new MutableLiveData<>();
-
   @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
 
+  @NonNull
+  private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedProductId =
+      new MutableLiveData<>();
+
+  @Inject
   public SelectProductViewModel(
-      @NonNull ProductRepository productRepository, @Nullable ProductModel initialSelectedProduct) {
+      @NonNull ProductRepository productRepository, @NonNull SavedStateHandle savedStateHandle) {
+    Objects.requireNonNull(savedStateHandle);
+
     this._productRepository = Objects.requireNonNull(productRepository);
-    this._initialSelectedProduct = initialSelectedProduct;
     this._productsUpdater = new ProductsUpdater(this._products);
+    this._initialSelectedProduct =
+        savedStateHandle.get(SelectProductFragment.Arguments.INITIAL_SELECTED_PRODUCT.key());
 
     this._sorter.setSortMethod(new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
     this._productRepository.addModelChangedListener(this._productsUpdater);
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    final LiveData<List<ProductModel>> selectAllProducts = this.selectAllProducts();
+    selectAllProducts.observeForever(
+        new Observer<>() {
+          @Override
+          public void onChanged(@Nullable List<ProductModel> products) {
+            if (products != null) SelectProductViewModel.this.onProductsChanged(products);
+            selectAllProducts.removeObserver(this);
+          }
+        });
   }
 
   @Override
@@ -80,13 +102,13 @@ public class SelectProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> selectedProductId() {
-    return this._selectedProductId;
+  public LiveData<List<ProductModel>> products() {
+    return this._products;
   }
 
   @NonNull
-  public LiveData<List<ProductModel>> products() {
-    return this._products;
+  public LiveData<LiveDataEvent<Long>> resultSelectedProductId() {
+    return this._resultSelectedProductId;
   }
 
   public void onProductsChanged(@NonNull List<ProductModel> products) {
@@ -97,46 +119,27 @@ public class SelectProductViewModel extends ViewModel {
 
   public void onProductSelected(@Nullable ProductModel product) {
     final Long productId = product != null && product.id() != null ? product.id() : null;
-    this._selectedProductId.setValue(new LiveDataEvent<>(productId));
+    this._resultSelectedProductId.setValue(new LiveDataEvent<>(productId));
   }
 
-  public void fetchAllProducts() {
+  @NonNull
+  public LiveData<List<ProductModel>> selectAllProducts() {
+    final MutableLiveData<List<ProductModel>> result = new MutableLiveData<>();
+
     this._productRepository
         .selectAll()
-        .thenAccept(
-            products ->
-                new Handler(Looper.getMainLooper()).post(() -> this.onProductsChanged(products)))
-        .exceptionally(
-            e -> {
-              this._snackbarMessage.setValue(
-                  new LiveDataEvent<>(
-                      new StringResources.Strings(
-                          R.string.text_error_unable_to_retrieve_all_products)));
-              return null;
+        .thenAcceptAsync(
+            products -> {
+              if (products == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_products)));
+              }
+
+              result.postValue(products);
             });
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-    @Nullable private final ProductModel _initialSelectedProduct;
-
-    public Factory(@NonNull Context context, @Nullable ProductModel initialSelectedProduct) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-      this._initialSelectedProduct = initialSelectedProduct;
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final SelectProductViewModel viewModel =
-          new SelectProductViewModel(
-              ProductRepository.instance(this._context), this._initialSelectedProduct);
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
+    return result;
   }
 
   private class ProductsUpdater extends LiveDataModelUpdater<ProductModel> {

@@ -30,16 +30,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.QueueFilters;
-import com.robifr.ledger.data.QueueSortMethod;
-import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.queue.filter.QueueFilter;
 import com.robifr.ledger.ui.queue.recycler.QueueAdapter;
 import com.robifr.ledger.ui.queue.viewmodel.QueueViewModel;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
-import java.util.Set;
 
+@AndroidEntryPoint
 public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private QueueSort _sort;
@@ -69,11 +67,9 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
     this._sort = new QueueSort(this);
     this._filter = new QueueFilter(this);
     this._adapter = new QueueAdapter(this);
-    this._resultHandler = new QueueResultHandler(this);
-    this._queueViewModel =
-        new ViewModelProvider(
-                this.requireActivity(), new QueueViewModel.Factory(this.requireContext()))
-            .get(QueueViewModel.class);
+    // Use activity store owner because this fragment is used by bottom navigation.
+    // Which to prevents view model recreation.
+    this._queueViewModel = new ViewModelProvider(this.requireActivity()).get(QueueViewModel.class);
     this._viewModelHandler = new QueueViewModelHandler(this, this._queueViewModel);
 
     this._fragmentBinding.toolbar.getMenu().clear();
@@ -87,21 +83,16 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+  }
 
-    if (this._queueViewModel.queues().getValue() == null) {
-      final QueueFilters initialFilters =
-          QueueFilters.toBuilder()
-              .setNullCustomerShown(true)
-              .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
-              .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
-              .setFilteredStatus(Set.of(QueueModel.Status.values()))
-              .build();
-
-      this._queueViewModel.onSortMethodChanged(
-          new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
-      this._queueViewModel.filterView().onFiltersChanged(initialFilters);
-      this._queueViewModel.fetchAllQueues();
-    }
+  @Override
+  public void onStart() {
+    super.onStart();
+    // Should be called after `QueueViewModelHandler` called. `onStart` is perfect place
+    // for it. If there's a fragment inherit from this class, which mostly inherit their own
+    // view model handler too. Then it's impossible to not call them both inside `onViewCreated`,
+    // unless `super` call is omitted entirely.
+    this._resultHandler = new QueueResultHandler(this);
   }
 
   @Override

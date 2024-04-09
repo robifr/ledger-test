@@ -30,14 +30,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.CustomerFilters;
-import com.robifr.ledger.data.CustomerSortMethod;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.customer.filter.CustomerFilter;
 import com.robifr.ledger.ui.customer.recycler.CustomerAdapter;
 import com.robifr.ledger.ui.customer.viewmodel.CustomerViewModel;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private CustomerSort _sort;
@@ -66,10 +66,10 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
     this._sort = new CustomerSort(this);
     this._filter = new CustomerFilter(this);
     this._adapter = new CustomerAdapter(this);
+    // Use activity store owner because this fragment is used by bottom navigation.
+    // Which to prevents view model recreation.
     this._customerViewModel =
-        new ViewModelProvider(
-                this.requireActivity(), new CustomerViewModel.Factory(this.requireContext()))
-            .get(CustomerViewModel.class);
+        new ViewModelProvider(this.requireActivity()).get(CustomerViewModel.class);
     this._viewModelHandler = new CustomerViewModelHandler(this, this._customerViewModel);
 
     this._fragmentBinding.toolbar.getMenu().clear();
@@ -83,13 +83,6 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
-
-    if (this._customerViewModel.customers().getValue() == null) {
-      this._customerViewModel.onSortMethodChanged(
-          new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
-      this._customerViewModel.filterView().onFiltersChanged(CustomerFilters.toBuilder().build());
-      this._customerViewModel.fetchAllCustomers();
-    }
   }
 
   @Override

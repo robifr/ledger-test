@@ -17,42 +17,64 @@
 
 package com.robifr.ledger.ui.searchcustomer.viewmodel;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
+import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.List;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class SearchCustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _selectedCustomerId = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<String>> _initializedInitialQuery =
+      new MediatorLiveData<>();
 
   @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
 
-  public SearchCustomerViewModel(@NonNull CustomerRepository customerRepository) {
+  @NonNull
+  private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedCustomerId =
+      new MutableLiveData<>();
+
+  @Inject
+  public SearchCustomerViewModel(
+      @NonNull CustomerRepository customerRepository, @NonNull SavedStateHandle savedStateHandle) {
+    Objects.requireNonNull(savedStateHandle);
+
     this._customerRepository = Objects.requireNonNull(customerRepository);
+
+    this._initializedInitialQuery.setValue(
+        new LiveDataEvent<>(
+            savedStateHandle.get(SearchCustomerFragment.Arguments.INITIAL_QUERY.key())));
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> selectedCustomerId() {
-    return this._selectedCustomerId;
+  public LiveData<LiveDataEvent<String>> initializedInitialQuery() {
+    return this._initializedInitialQuery;
   }
 
   @NonNull
   public LiveData<List<CustomerModel>> customers() {
     return this._customers;
+  }
+
+  @NonNull
+  public LiveData<LiveDataEvent<Long>> resultSelectedCustomerId() {
+    return this._resultSelectedCustomerId;
   }
 
   public void onSearch(@NonNull String query) {
@@ -72,26 +94,6 @@ public class SearchCustomerViewModel extends ViewModel {
 
   public void onCustomerSelected(@Nullable CustomerModel customer) {
     final Long customerId = customer != null && customer.id() != null ? customer.id() : null;
-    this._selectedCustomerId.setValue(new LiveDataEvent<>(customerId));
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final SearchCustomerViewModel viewModel =
-          new SearchCustomerViewModel(CustomerRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
+    this._resultSelectedCustomerId.setValue(new LiveDataEvent<>(customerId));
   }
 }

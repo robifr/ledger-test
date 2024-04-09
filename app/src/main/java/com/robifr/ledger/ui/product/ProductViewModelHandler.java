@@ -41,8 +41,8 @@ public class ProductViewModelHandler {
 
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel.products().observe(this._fragment.requireActivity(), this::_onProducts);
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+    this._viewModel.products().observe(this._fragment.getViewLifecycleOwner(), this::_onProducts);
     this._viewModel
         .expandedProductIndex()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onExpandedProductIndex);

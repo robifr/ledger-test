@@ -37,11 +37,13 @@ public class CreateProductViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
-        .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
+        .resultCreatedProductId()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onResultCreatedProductId));
     this._viewModel
-        .createdProductId()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onCreatedProductId));
+        .snackbarMessage()
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel
         .inputtedNameError()
         .observe(
@@ -54,17 +56,7 @@ public class CreateProductViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onInputtedPriceText);
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
-
-    Snackbar.make(
-            (View) this._fragment.fragmentBinding().getRoot().getParent(),
-            StringResources.stringOf(this._fragment.requireContext(), stringRes),
-            Snackbar.LENGTH_LONG)
-        .show();
-  }
-
-  private void _onCreatedProductId(@Nullable Long id) {
+  private void _onResultCreatedProductId(@Nullable Long id) {
     if (id != null) {
       final Bundle bundle = new Bundle();
       bundle.putLong(CreateProductFragment.Result.CREATED_PRODUCT_ID.key(), id);
@@ -75,6 +67,16 @@ public class CreateProductViewModelHandler {
     }
 
     this._fragment.finish();
+  }
+
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onInputtedNameError(@Nullable StringResources stringRes) {

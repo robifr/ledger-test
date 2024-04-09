@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
+import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
@@ -45,11 +46,12 @@ public class CreateQueueViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
-        .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
+        .resultCreatedQueueId()
+        .observe(
+            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onResultCreatedQueueId));
     this._viewModel
-        .createdQueueId()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onCreatedQueueId));
+        .snackbarMessage()
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
 
     this._viewModel
         .inputtedCustomer()
@@ -64,6 +66,9 @@ public class CreateQueueViewModelHandler {
     this._viewModel
         .inputtedStatus()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onInputtedStatus);
+    this._viewModel
+        .inputtedProductOrders()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onProductOrders);
 
     this._viewModel
         .inputtedPaymentMethod()
@@ -74,19 +79,6 @@ public class CreateQueueViewModelHandler {
     this._viewModel
         .isPaymentMethodsViewVisible()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onPaymentMethodsViewVisible);
-
-    this._viewModel
-        .addedProductOrderIndexes()
-        .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onAddedOrderIndexes));
-    this._viewModel
-        .removedProductOrderIndexes()
-        .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onRemovedOrderIndexes));
-    this._viewModel
-        .updatedProductOrderIndexes()
-        .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onUpdatedOrderIndexes));
 
     this._viewModel
         .makeProductOrderView()
@@ -115,17 +107,7 @@ public class CreateQueueViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSelectOrderSelectedIndexes);
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
-
-    Snackbar.make(
-            (View) this._fragment.fragmentBinding().getRoot().getParent(),
-            StringResources.stringOf(this._fragment.requireContext(), stringRes),
-            Snackbar.LENGTH_LONG)
-        .show();
-  }
-
-  private void _onCreatedQueueId(@Nullable Long queueId) {
+  private void _onResultCreatedQueueId(@Nullable Long queueId) {
     if (queueId != null) {
       final Bundle bundle = new Bundle();
       bundle.putLong(CreateQueueFragment.Result.CREATED_QUEUE_ID.key(), queueId);
@@ -136,6 +118,16 @@ public class CreateQueueViewModelHandler {
     }
 
     this._fragment.finish();
+  }
+
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onInputtedCustomer(@Nullable CustomerModel customer) {
@@ -177,46 +169,16 @@ public class CreateQueueViewModelHandler {
     if (status != null) this._fragment.inputStatus().setInputtedStatus(status);
   }
 
-  private void _onAddedOrderIndexes(@Nullable List<Integer> indexes) {
-    if (indexes == null) return;
+  private void _onProductOrders(@Nullable List<ProductOrderModel> productOrders) {
+    if (productOrders == null) return;
 
-    this._fragment
-        .inputProductOrder()
-        .notifyProductOrderAdded(indexes.stream().mapToInt(Integer::intValue).toArray());
-    this._fragment
-        .inputProductOrder()
-        .setGrandTotalPrice(this._viewModel.inputtedQueue().grandTotalPrice());
+    this._fragment.inputProductOrder().setInputtedProductOrders(productOrders);
     this._fragment
         .inputProductOrder()
         .setTotalDiscount(this._viewModel.inputtedQueue().totalDiscount());
-  }
-
-  private void _onRemovedOrderIndexes(@Nullable List<Integer> indexes) {
-    if (indexes == null) return;
-
-    this._fragment
-        .inputProductOrder()
-        .notifyProductOrderRemoved(indexes.stream().mapToInt(Integer::intValue).toArray());
     this._fragment
         .inputProductOrder()
         .setGrandTotalPrice(this._viewModel.inputtedQueue().grandTotalPrice());
-    this._fragment
-        .inputProductOrder()
-        .setTotalDiscount(this._viewModel.inputtedQueue().totalDiscount());
-  }
-
-  private void _onUpdatedOrderIndexes(@Nullable List<Integer> indexes) {
-    if (indexes == null) return;
-
-    this._fragment
-        .inputProductOrder()
-        .notifyProductOrderUpdated(indexes.stream().mapToInt(Integer::intValue).toArray());
-    this._fragment
-        .inputProductOrder()
-        .setGrandTotalPrice(this._viewModel.inputtedQueue().grandTotalPrice());
-    this._fragment
-        .inputProductOrder()
-        .setTotalDiscount(this._viewModel.inputtedQueue().totalDiscount());
   }
 
   private void _onInputtedPaymentMethod(@Nullable QueueModel.PaymentMethod paymentMethod) {

@@ -39,13 +39,27 @@ public class SelectProductViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
-        .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel
-        .selectedProductId()
+        .resultSelectedProductId()
         .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSelectedProductId));
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onResultSelectedProductId));
+    this._viewModel
+        .snackbarMessage()
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.products().observe(this._fragment.getViewLifecycleOwner(), this::_onProducts);
+  }
+
+  private void _onResultSelectedProductId(@Nullable Long productId) {
+    final Bundle bundle = new Bundle();
+
+    if (productId != null) {
+      bundle.putLong(SelectProductFragment.Result.SELECTED_PRODUCT_ID.key(), productId);
+    }
+
+    this._fragment
+        .getParentFragmentManager()
+        .setFragmentResult(SelectProductFragment.Request.SELECT_PRODUCT.key(), bundle);
+    this._fragment.finish();
   }
 
   private void _onSnackbarMessage(@Nullable StringResources stringRes) {
@@ -60,18 +74,5 @@ public class SelectProductViewModelHandler {
 
   private void _onProducts(@Nullable List<ProductModel> products) {
     this._fragment.adapter().notifyDataSetChanged();
-  }
-
-  private void _onSelectedProductId(@Nullable Long productId) {
-    final Bundle bundle = new Bundle();
-
-    if (productId != null) {
-      bundle.putLong(SelectProductFragment.Result.SELECTED_PRODUCT_ID.key(), productId);
-    }
-
-    this._fragment
-        .getParentFragmentManager()
-        .setFragmentResult(SelectProductFragment.Request.SELECT_PRODUCT.key(), bundle);
-    this._fragment.finish();
   }
 }

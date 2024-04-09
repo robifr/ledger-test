@@ -38,12 +38,13 @@ public class CreateCustomerViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
-        .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel
-        .createdCustomerId()
+        .resultCreatedCustomerId()
         .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onCreatedCustomerId));
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onResultCreatedCustomerId));
+    this._viewModel
+        .snackbarMessage()
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel
         .inputtedNameError()
         .observe(
@@ -72,17 +73,7 @@ public class CreateCustomerViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onAvailableBalanceToWithdraw);
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
-
-    Snackbar.make(
-            (View) this._fragment.fragmentBinding().getRoot().getParent(),
-            StringResources.stringOf(this._fragment.requireContext(), stringRes),
-            Snackbar.LENGTH_LONG)
-        .show();
-  }
-
-  private void _onCreatedCustomerId(@Nullable Long id) {
+  private void _onResultCreatedCustomerId(@Nullable Long id) {
     if (id != null) {
       final Bundle bundle = new Bundle();
       bundle.putLong(CreateCustomerFragment.Result.CREATED_CUSTOMER_ID.key(), id);
@@ -93,6 +84,16 @@ public class CreateCustomerViewModelHandler {
     }
 
     this._fragment.finish();
+  }
+
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onInputtedNameError(@Nullable StringResources stringRes) {

@@ -17,21 +17,22 @@
 
 package com.robifr.ledger.ui.createcustomer.viewmodel;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class CreateCustomerViewModel extends ViewModel {
   @NonNull protected final CustomerRepository _customerRepository;
 
@@ -51,10 +52,19 @@ public class CreateCustomerViewModel extends ViewModel {
   @NonNull protected final MutableLiveData<BigDecimal> _inputtedDebt = new MutableLiveData<>();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _createdCustomerId = new MutableLiveData<>();
+  private final MutableLiveData<LiveDataEvent<Long>> _resultCreatedCustomerId =
+      new MutableLiveData<>();
 
+  @Inject
   public CreateCustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    this.onBalanceChanged(0L);
+    this.onDebtChanged(BigDecimal.ZERO);
   }
 
   public CustomerBalanceViewModel balanceView() {
@@ -72,11 +82,6 @@ public class CreateCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> createdCustomerId() {
-    return this._createdCustomerId;
-  }
-
-  @NonNull
   public LiveData<String> inputtedNameText() {
     return this._inputtedNameText;
   }
@@ -89,6 +94,11 @@ public class CreateCustomerViewModel extends ViewModel {
   @NonNull
   public LiveData<BigDecimal> inputtedDebt() {
     return this._inputtedDebt;
+  }
+
+  @NonNull
+  public LiveData<LiveDataEvent<Long>> resultCreatedCustomerId() {
+    return this._resultCreatedCustomerId;
   }
 
   /**
@@ -148,7 +158,7 @@ public class CreateCustomerViewModel extends ViewModel {
         .add(customer)
         .thenAcceptAsync(
             id -> {
-              if (id != 0L) this._createdCustomerId.postValue(new LiveDataEvent<>(id));
+              if (id != 0L) this._resultCreatedCustomerId.postValue(new LiveDataEvent<>(id));
 
               final StringResources stringRes =
                   id != 0L
@@ -156,25 +166,5 @@ public class CreateCustomerViewModel extends ViewModel {
                       : new StringResources.Strings(R.string.text_error_failed_to_add_customer);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final CreateCustomerViewModel viewModel =
-          new CreateCustomerViewModel(CustomerRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 }

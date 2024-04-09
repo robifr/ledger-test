@@ -20,15 +20,19 @@ package com.robifr.ledger.ui.createqueue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
+import com.google.android.material.card.MaterialCardView;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.databinding.ProductOrderCardBinding;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -78,11 +82,14 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
 
           // Edit selected product order.
         } else {
+          final List<ProductOrderModel> productOrders =
+              this._fragment.createQueueViewModel().inputtedProductOrders().getValue();
+          if (productOrders == null) return;
+
           this._fragment
               .createQueueViewModel()
               .makeProductOrderView()
-              .onProductOrderToEditChanged(
-                  this._fragment.createQueueViewModel().inputtedProductOrders().get(cardIndex));
+              .onProductOrderToEditChanged(productOrders.get(cardIndex));
           this._makeProductOrder.openEditDialog();
         }
       }
@@ -217,43 +224,38 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
     this._fragment.fragmentBinding().productOrder.customerDebt.setVisibility(viewVisibility);
   }
 
-  public void notifyProductOrderAdded(int... productOrderIndex) {
-    for (int index : productOrderIndex) {
+  public void setInputtedProductOrders(@NonNull List<ProductOrderModel> productOrders) {
+    Objects.requireNonNull(productOrders);
+
+    final LinearLayout listLayout = this._fragment.fragmentBinding().productOrder.listLayout;
+
+    if (listLayout.getChildCount() > productOrders.size()) {
+      for (int i = listLayout.getChildCount(); i-- > 0; ) {
+        listLayout.removeViewAt(i); // Remove all the extra views.
+      }
+    }
+
+    for (int i = 0; i < productOrders.size(); i++) {
       final ProductOrderCardBinding cardBinding =
-          ProductOrderCardBinding.inflate(
-              this._fragment.getLayoutInflater(),
-              this._fragment.fragmentBinding().productOrder.listLayout,
-              false);
+          // Reuse already inflated view if available to reduce overhead.
+          listLayout.getChildAt(i) instanceof MaterialCardView cardView
+              ? ProductOrderCardBinding.bind(cardView)
+              : ProductOrderCardBinding.inflate(
+                  this._fragment.getLayoutInflater(),
+                  this._fragment.fragmentBinding().productOrder.listLayout,
+                  false);
       final ProductOrderCardComponent components =
           new ProductOrderCardComponent(this._fragment.requireContext(), cardBinding);
 
-      components.setProductOrder(
-          this._fragment.createQueueViewModel().inputtedProductOrders().get(index));
+      components.setProductOrder(productOrders.get(i));
       cardBinding.cardView.setOnClickListener(this);
       cardBinding.cardView.setOnLongClickListener(this);
       cardBinding.checkbox.setChecked(false);
       cardBinding.checkbox.setVisibility(View.GONE);
       cardBinding.productImage.text.setVisibility(View.VISIBLE);
-      this._fragment.fragmentBinding().productOrder.listLayout.addView(cardBinding.cardView);
-    }
-  }
 
-  public void notifyProductOrderRemoved(int... productOrderIndex) {
-    for (int index : productOrderIndex) {
-      this._fragment.fragmentBinding().productOrder.listLayout.removeViewAt(index);
-    }
-  }
-
-  public void notifyProductOrderUpdated(int... productOrderIndex) {
-    for (int index : productOrderIndex) {
-      final ProductOrderCardBinding cardBinding =
-          ProductOrderCardBinding.bind(
-              this._fragment.fragmentBinding().productOrder.listLayout.getChildAt(index));
-      final ProductOrderCardComponent components =
-          new ProductOrderCardComponent(this._fragment.requireContext(), cardBinding);
-
-      components.setProductOrder(
-          this._fragment.createQueueViewModel().inputtedProductOrders().get(index));
+      // Add to layout until the amount of child view match the orders size.
+      if (listLayout.getChildCount() < i + 1) listLayout.addView(cardBinding.getRoot());
     }
   }
 

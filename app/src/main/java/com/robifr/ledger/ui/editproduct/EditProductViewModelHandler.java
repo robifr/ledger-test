@@ -20,20 +20,29 @@ package com.robifr.ledger.ui.editproduct;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.createproduct.CreateProductViewModelHandler;
 import com.robifr.ledger.ui.editproduct.viewmodel.EditProductViewModel;
+import com.robifr.ledger.util.CurrencyFormat;
+import java.math.BigDecimal;
 
 public class EditProductViewModelHandler extends CreateProductViewModelHandler {
   public EditProductViewModelHandler(
       @NonNull EditProductFragment fragment, @NonNull EditProductViewModel viewModel) {
     super(fragment, viewModel);
     viewModel
-        .editedProductId()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onEditedProductId));
+        .resultEditedProductId()
+        .observe(
+            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onResultEditedProductId));
+    viewModel
+        .initializedInitialProductToEdit()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onInitializedInitialProductToEdit));
   }
 
-  private void _onEditedProductId(@Nullable Long productId) {
+  private void _onResultEditedProductId(@Nullable Long productId) {
     if (productId != null) {
       final Bundle bundle = new Bundle();
       bundle.putLong(EditProductFragment.Result.EDITED_PRODUCT_ID.key(), productId);
@@ -44,5 +53,13 @@ public class EditProductViewModelHandler extends CreateProductViewModelHandler {
     }
 
     this._fragment.finish();
+  }
+
+  private void _onInitializedInitialProductToEdit(@Nullable ProductModel product) {
+    if (product == null) return;
+
+    this._viewModel.onNameTextChanged(product.name());
+    this._viewModel.onPriceTextChanged(
+        CurrencyFormat.format(BigDecimal.valueOf(product.price()), "id", "ID"));
   }
 }

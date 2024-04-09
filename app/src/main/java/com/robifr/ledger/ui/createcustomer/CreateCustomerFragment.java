@@ -35,9 +35,10 @@ import com.robifr.ledger.databinding.CreateCustomerFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.createcustomer.viewmodel.CreateCustomerViewModel;
 import com.robifr.ledger.util.Compats;
-import java.math.BigDecimal;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Request implements FragmentResultKey {
     CREATE_CUSTOMER;
@@ -87,9 +88,7 @@ public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     this._inputName = new CreateCustomerName(this);
     this._inputBalance = new CreateCustomerBalance(this);
     this._inputDebt = new CreateCustomerDebt(this);
-    this._createCustomerViewModel =
-        new ViewModelProvider(this, new CreateCustomerViewModel.Factory(this.requireContext()))
-            .get(CreateCustomerViewModel.class);
+    this._createCustomerViewModel = new ViewModelProvider(this).get(CreateCustomerViewModel.class);
     this._viewModelHandler =
         new CreateCustomerViewModelHandler(this, this._createCustomerViewModel);
 
@@ -101,9 +100,6 @@ public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
-
-    this._createCustomerViewModel.onBalanceChanged(0L);
-    this._createCustomerViewModel.onDebtChanged(BigDecimal.ZERO);
   }
 
   @Override

@@ -37,8 +37,10 @@ import com.robifr.ledger.ui.search.viewmodel.SearchViewModel;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
 import com.robifr.ledger.util.Compats;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class SearchFragment extends Fragment
     implements View.OnClickListener, SearchView.OnQueryTextListener {
   public enum Request implements FragmentResultKey {
@@ -90,9 +92,7 @@ public class SearchFragment extends Fragment
     Objects.requireNonNull(this._customerListBinding);
     Objects.requireNonNull(this._productListBinding);
 
-    this._searchViewModel =
-        new ViewModelProvider(this, new SearchViewModel.Factory(this.requireContext()))
-            .get(SearchViewModel.class);
+    this._searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
     this._viewModelHandler = new SearchViewModelHandler(this, this._searchViewModel);
 
     this.requireActivity()

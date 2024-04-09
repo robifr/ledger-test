@@ -44,8 +44,8 @@ public class QueueViewModelHandler {
 
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel.queues().observe(this._fragment.requireActivity(), this::_onQueues);
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+    this._viewModel.queues().observe(this._fragment.getViewLifecycleOwner(), this::_onQueues);
     this._viewModel
         .expandedQueueIndex()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onExpandedQueueIndex);

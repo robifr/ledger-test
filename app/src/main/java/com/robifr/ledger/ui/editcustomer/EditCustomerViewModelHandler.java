@@ -20,6 +20,7 @@ package com.robifr.ledger.ui.editcustomer;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.createcustomer.CreateCustomerViewModelHandler;
 import com.robifr.ledger.ui.editcustomer.viewmodel.EditCustomerViewModel;
@@ -29,11 +30,18 @@ public class EditCustomerViewModelHandler extends CreateCustomerViewModelHandler
       @NonNull EditCustomerFragment fragment, @NonNull EditCustomerViewModel viewModel) {
     super(fragment, viewModel);
     viewModel
-        .editedCustomerId()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onEditedCustomerId));
+        .resultEditedCustomerId()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onResultEditedCustomerId));
+    viewModel
+        .initializedInitialCustomerToEdit()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onInitializedInitialCustomerToEdit));
   }
 
-  private void _onEditedCustomerId(@Nullable Long customerId) {
+  private void _onResultEditedCustomerId(@Nullable Long customerId) {
     if (customerId != null) {
       final Bundle bundle = new Bundle();
       bundle.putLong(EditCustomerFragment.Result.EDITED_CUSTOMER_ID.key(), customerId);
@@ -44,5 +52,13 @@ public class EditCustomerViewModelHandler extends CreateCustomerViewModelHandler
     }
 
     this._fragment.finish();
+  }
+
+  private void _onInitializedInitialCustomerToEdit(@Nullable CustomerModel customer) {
+    if (customer == null) return;
+
+    this._viewModel.onNameTextChanged(customer.name());
+    this._viewModel.onBalanceChanged(customer.balance());
+    this._viewModel.onDebtChanged(customer.debt());
   }
 }

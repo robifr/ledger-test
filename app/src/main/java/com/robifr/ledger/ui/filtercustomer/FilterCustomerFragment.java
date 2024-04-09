@@ -27,21 +27,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.filtercustomer.recycler.FilterCustomerAdapter;
 import com.robifr.ledger.ui.filtercustomer.viewmodel.FilterCustomerViewModel;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;import java.util.stream.Collectors;
+import dagger.hilt.android.AndroidEntryPoint;
+import java.util.Objects;
 
+@AndroidEntryPoint
 public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Arguments implements FragmentResultKey {
     INITIAL_FILTERED_CUSTOMER_IDS;
@@ -98,10 +95,7 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     Objects.requireNonNull(this._fragmentBinding);
 
     this._adapter = new FilterCustomerAdapter(this);
-    this._resultHandler = new FilterCustomerResultHandler(this);
-    this._filterCustomerViewModel =
-        new ViewModelProvider(this, new FilterCustomerViewModel.Factory(this.requireContext()))
-            .get(FilterCustomerViewModel.class);
+    this._filterCustomerViewModel = new ViewModelProvider(this).get(FilterCustomerViewModel.class);
     this._viewModelHandler =
         new FilterCustomerViewModelHandler(this, this._filterCustomerViewModel);
 
@@ -119,51 +113,16 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+  }
 
-    this._filterCustomerViewModel.fetchAllCustomers();
-
-    // Add filtered customers after the fetch operation completed.
-    this._filterCustomerViewModel
-        .customers()
-        .observe(
-            this.getViewLifecycleOwner(),
-            new Observer<>() {
-              @Override
-              public void onChanged(@Nullable List<CustomerModel> fetchedCustomers) {
-                final NavBackStackEntry backStackEntry =
-                    Navigation.findNavController(
-                            FilterCustomerFragment.this._fragmentBinding.getRoot())
-                        .getCurrentBackStackEntry();
-
-                if (fetchedCustomers == null
-                    || backStackEntry == null
-                    || backStackEntry.getArguments() == null) {
-                  return;
-                }
-
-                final long[] initialFilteredCustomerIds =
-                    Objects.requireNonNullElse(
-                        backStackEntry
-                            .getArguments()
-                            .getLongArray(Arguments.INITIAL_FILTERED_CUSTOMER_IDS.key()),
-                        new long[0]);
-                final List<CustomerModel> filteredCustomers =
-                    fetchedCustomers.stream()
-                        .filter(
-                            customer ->
-                                Arrays.stream(initialFilteredCustomerIds)
-                                    .anyMatch(
-                                        id -> customer.id() != null && customer.id().equals(id)))
-                        .collect(Collectors.toList());
-
-                FilterCustomerFragment.this._filterCustomerViewModel.onFilteredCustomersChanged(
-                    filteredCustomers);
-                FilterCustomerFragment.this
-                    ._filterCustomerViewModel
-                    .customers()
-                    .removeObserver(this);
-              }
-            });
+  @Override
+  public void onStart() {
+    super.onStart();
+    // Should be called after `FilterCustomerViewModelHandler` called. `onStart` is perfect place
+    // for it. If there's a fragment inherit from this class, which mostly inherit their own
+    // view model handler too. Then it's impossible to not call them both inside `onViewCreated`,
+    // unless `super` call is omitted entirely.
+    this._resultHandler = new FilterCustomerResultHandler(this);
   }
 
   @Override

@@ -17,30 +17,51 @@
 
 package com.robifr.ledger.ui.editproduct.viewmodel;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.SavedStateHandle;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createproduct.viewmodel.CreateProductViewModel;
+import com.robifr.ledger.ui.editproduct.EditProductFragment;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class EditProductViewModel extends CreateProductViewModel {
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _editedProductId = new MutableLiveData<>();
+  private final MediatorLiveData<LiveDataEvent<ProductModel>> _initializedInitialProductToEdit =
+      new MediatorLiveData<>();
 
   @Nullable private ProductModel _initialProductToEdit = null;
 
-  public EditProductViewModel(@NonNull ProductRepository productRepository) {
+  @NonNull
+  private final MutableLiveData<LiveDataEvent<Long>> _resultEditedProductId =
+      new MutableLiveData<>();
+
+  @Inject
+  public EditProductViewModel(
+      @NonNull ProductRepository productRepository, @NonNull SavedStateHandle savedStateHandle) {
     super(productRepository);
+    Objects.requireNonNull(savedStateHandle);
+
+    this._initializedInitialProductToEdit.addSource(
+        // Shouldn't be null when editing data.
+        this.selectProductById(
+            Objects.requireNonNull(
+                savedStateHandle.get(
+                    EditProductFragment.Arguments.INITIAL_PRODUCT_ID_TO_EDIT.key()))),
+        product -> {
+          this._initialProductToEdit = product;
+          this._initializedInitialProductToEdit.setValue(new LiveDataEvent<>(product));
+        });
   }
 
   @Override
@@ -64,30 +85,34 @@ public class EditProductViewModel extends CreateProductViewModel {
     this._updateProduct(this.inputtedProduct());
   }
 
-  public void setInitialProductToEdit(@NonNull ProductModel product) {
-    this._initialProductToEdit = Objects.requireNonNull(product);
+  @NonNull
+  public LiveData<LiveDataEvent<ProductModel>> initializedInitialProductToEdit() {
+    return this._initializedInitialProductToEdit;
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> editedProductId() {
-    return this._editedProductId;
+  public LiveData<LiveDataEvent<Long>> resultEditedProductId() {
+    return this._resultEditedProductId;
   }
 
-  @Nullable
-  public ProductModel selectProductById(@Nullable Long productId) {
-    final StringResources notFoundRes =
-        new StringResources.Strings(R.string.text_error_failed_to_find_related_product);
-    ProductModel product = null;
+  @NonNull
+  public LiveData<ProductModel> selectProductById(@Nullable Long productId) {
+    final MutableLiveData<ProductModel> result = new MutableLiveData<>();
 
-    try {
-      product = this._productRepository.selectById(productId).get();
-      if (product == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
+    this._productRepository
+        .selectById(productId)
+        .thenAcceptAsync(
+            product -> {
+              if (product == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_failed_to_find_related_product)));
+              }
 
-    } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
-    }
-
-    return product;
+              result.postValue(product);
+            });
+    return result;
   }
 
   private void _updateProduct(@NonNull ProductModel product) {
@@ -97,7 +122,9 @@ public class EditProductViewModel extends CreateProductViewModel {
         .update(product)
         .thenAcceptAsync(
             effected -> {
-              if (effected > 0) this._editedProductId.postValue(new LiveDataEvent<>(product.id()));
+              if (effected > 0) {
+                this._resultEditedProductId.postValue(new LiveDataEvent<>(product.id()));
+              }
 
               final StringResources stringRes =
                   effected > 0
@@ -106,25 +133,5 @@ public class EditProductViewModel extends CreateProductViewModel {
                       : new StringResources.Strings(R.string.text_error_failed_to_update_product);
               this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
             });
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final EditProductViewModel viewModel =
-          new EditProductViewModel(ProductRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 }

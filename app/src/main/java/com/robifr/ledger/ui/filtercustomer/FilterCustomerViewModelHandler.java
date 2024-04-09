@@ -41,29 +41,25 @@ public class FilterCustomerViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
-        .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel
-        .filteredCustomerIds()
+        .resultFilteredCustomerIds()
         .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onFilteredCustomerIds));
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onResultFilteredCustomerIds));
+    this._viewModel
+        .snackbarMessage()
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
+    this._viewModel
+        .initializedInitialFilteredCustomers()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onInitializedInitialFilteredCustomers));
     this._viewModel
         .filteredCustomers()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onFilteredCustomers);
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
-
-    Snackbar.make(
-            (View) this._fragment.fragmentBinding().getRoot().getParent(),
-            StringResources.stringOf(this._fragment.requireContext(), stringRes),
-            Snackbar.LENGTH_LONG)
-        .show();
-  }
-
-  private void _onFilteredCustomerIds(@Nullable List<Long> customerIds) {
+  private void _onResultFilteredCustomerIds(@Nullable List<Long> customerIds) {
     final long[] filteredCustomerIds =
         customerIds != null
             ? customerIds.stream().mapToLong(Long::longValue).toArray()
@@ -79,8 +75,22 @@ public class FilterCustomerViewModelHandler {
     this._fragment.finish();
   }
 
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
+  }
+
   private void _onCustomers(@Nullable List<CustomerModel> customers) {
     this._fragment.adapter().notifyDataSetChanged();
+  }
+
+  private void _onInitializedInitialFilteredCustomers(@Nullable List<CustomerModel> customers) {
+    if (customers != null) this._viewModel.onFilteredCustomersChanged(customers);
   }
 
   private void _onFilteredCustomers(@Nullable List<CustomerModel> customers) {

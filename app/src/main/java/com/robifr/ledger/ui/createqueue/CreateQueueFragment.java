@@ -31,16 +31,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.CreateQueueFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.createqueue.viewmodel.CreateQueueViewModel;
-import java.math.BigDecimal;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
-import java.util.Set;
 
+@AndroidEntryPoint
 public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Request implements FragmentResultKey {
     CREATE_QUEUE;
@@ -95,10 +92,7 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
     this._inputStatus = new CreateQueueStatus(this);
     this._inputPaymentMethod = new CreateQueuePaymentMethod(this);
     this._inputProductOrder = new CreateQueueProductOrder(this);
-    this._resultHandler = new CreateQueueResultHandler(this);
-    this._createQueueViewModel =
-        new ViewModelProvider(this, new CreateQueueViewModel.Factory(this.requireContext()))
-            .get(CreateQueueViewModel.class);
+    this._createQueueViewModel = new ViewModelProvider(this).get(CreateQueueViewModel.class);
     this._viewModelHandler = new CreateQueueViewModelHandler(this, this._createQueueViewModel);
 
     this.requireActivity()
@@ -109,14 +103,16 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
     this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
+  }
 
-    this._createQueueViewModel.onCustomerChanged(null);
-    this._createQueueViewModel.onDateChanged(ZonedDateTime.now(ZoneId.systemDefault()));
-    this._createQueueViewModel.onStatusChanged(QueueModel.Status.IN_QUEUE);
-    this._createQueueViewModel.onPaymentMethodChanged(QueueModel.PaymentMethod.CASH);
-    this._createQueueViewModel.setAllowedPaymentMethods(Set.of(QueueModel.PaymentMethod.CASH));
-    this._createQueueViewModel.onAddProductOrder(); // Trigger update for total price and discount.
-    this._createQueueViewModel.makeProductOrderView().onTotalPriceChanged(BigDecimal.ZERO);
+  @Override
+  public void onStart() {
+    super.onStart();
+    // Should be called after `CreateQueueViewModelHandler` called. `onStart` is perfect place
+    // for it. If there's a fragment inherit from this class, which mostly inherit their own
+    // view model handler too. Then it's impossible to not call them both inside `onViewCreated`,
+    // unless `super` call is omitted entirely.
+    this._resultHandler = new CreateQueueResultHandler(this);
   }
 
   @Override

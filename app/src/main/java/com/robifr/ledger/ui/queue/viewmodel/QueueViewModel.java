@@ -17,17 +17,18 @@
 
 package com.robifr.ledger.ui.queue.viewmodel;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.data.QueueSortMethod;
 import com.robifr.ledger.data.QueueSorter;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -38,11 +39,15 @@ import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
 import com.robifr.ledger.ui.StringResources;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class QueueViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
@@ -64,6 +69,7 @@ public class QueueViewModel extends ViewModel {
    */
   @NonNull private final MutableLiveData<Integer> _expandedQueueIndex = new MutableLiveData<>();
 
+  @Inject
   public QueueViewModel(
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
@@ -72,6 +78,32 @@ public class QueueViewModel extends ViewModel {
 
     this._queueRepository.addModelChangedListener(this._queuesUpdater);
     this._customerRepository.addModelChangedListener(this._customerUpdater);
+
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    this.onSortMethodChanged(new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
+
+    final LiveData<List<QueueModel>> selectAllQueues = this.selectAllQueues();
+    selectAllQueues.observeForever(
+        new Observer<>() {
+          @Override
+          public void onChanged(@Nullable List<QueueModel> queues) {
+            if (queues != null) {
+              QueueViewModel.this._filterView.onFiltersChanged(
+                  QueueFilters.toBuilder()
+                      .setNullCustomerShown(true)
+                      .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
+                      .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
+                      .setFilteredStatus(Set.of(QueueModel.Status.values()))
+                      .build(),
+                  queues);
+            }
+
+            selectAllQueues.removeObserver(this);
+          }
+        });
   }
 
   @Override
@@ -107,24 +139,24 @@ public class QueueViewModel extends ViewModel {
     return this._expandedQueueIndex;
   }
 
-  public void fetchAllQueues() {
+  @NonNull
+  public LiveData<List<QueueModel>> selectAllQueues() {
+    final MutableLiveData<List<QueueModel>> result = new MutableLiveData<>();
+
     this._queueRepository
         .selectAll()
         .thenAccept(
-            queues ->
-                new Handler(Looper.getMainLooper())
-                    .post(
-                        () ->
-                            this._filterView.onFiltersChanged(
-                                this._filterView.inputtedFilters(), queues)))
-        .exceptionally(
-            e -> {
-              this._snackbarMessage.setValue(
-                  new LiveDataEvent<>(
-                      new StringResources.Strings(
-                          R.string.text_error_unable_to_retrieve_all_queues)));
-              return null;
+            queues -> {
+              if (queues == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_queues)));
+              }
+
+              result.postValue(queues);
             });
+    return result;
   }
 
   public void deleteQueue(@NonNull QueueModel queue) {
@@ -216,27 +248,6 @@ public class QueueViewModel extends ViewModel {
 
   public void onExpandedQueueIndexChanged(int index) {
     this._expandedQueueIndex.setValue(index);
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final QueueViewModel viewModel =
-          new QueueViewModel(
-              QueueRepository.instance(this._context), CustomerRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 
   private class QueuesUpdater extends LiveDataModelUpdater<QueueModel> {

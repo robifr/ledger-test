@@ -17,21 +17,22 @@
 
 package com.robifr.ledger.ui.search.viewmodel;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.ProductRepository;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.List;
 import java.util.Objects;
+import javax.inject.Inject;
 
+@HiltViewModel
 public class SearchViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final ProductRepository _productRepository;
@@ -41,6 +42,7 @@ public class SearchViewModel extends ViewModel {
   @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
   @NonNull private String _query = "";
 
+  @Inject
   public SearchViewModel(
       @NonNull CustomerRepository customerRepository,
       @NonNull ProductRepository productRepository) {
@@ -83,27 +85,5 @@ public class SearchViewModel extends ViewModel {
           }
         },
         300);
-  }
-
-  public static class Factory implements ViewModelProvider.Factory {
-    @NonNull private final Context _context;
-
-    public Factory(@NonNull Context context) {
-      Objects.requireNonNull(context);
-
-      this._context = context.getApplicationContext();
-    }
-
-    @Override
-    @NonNull
-    public <T extends ViewModel> T create(@NonNull Class<T> cls) {
-      Objects.requireNonNull(cls);
-
-      final SearchViewModel viewModel =
-          new SearchViewModel(
-              CustomerRepository.instance(this._context),
-              ProductRepository.instance(this._context));
-      return Objects.requireNonNull(cls.cast(viewModel));
-    }
   }
 }

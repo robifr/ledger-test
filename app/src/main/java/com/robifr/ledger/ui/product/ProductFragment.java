@@ -30,14 +30,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.ProductFilters;
-import com.robifr.ledger.data.ProductSortMethod;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.product.filter.ProductFilter;
 import com.robifr.ledger.ui.product.recycler.ProductAdapter;
 import com.robifr.ledger.ui.product.viewmodel.ProductViewModel;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   @Nullable private ListableFragmentBinding _fragmentBinding;
   @Nullable private ProductSort _sort;
@@ -66,10 +66,10 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
     this._sort = new ProductSort(this);
     this._filter = new ProductFilter(this);
     this._adapter = new ProductAdapter(this);
+    // Use activity store owner because this fragment is used by bottom navigation.
+    // Which to prevents view model recreation.
     this._productViewModel =
-        new ViewModelProvider(
-                this.requireActivity(), new ProductViewModel.Factory(this.requireContext()))
-            .get(ProductViewModel.class);
+        new ViewModelProvider(this.requireActivity()).get(ProductViewModel.class);
     this._viewModelHandler = new ProductViewModelHandler(this, this._productViewModel);
 
     this._fragmentBinding.toolbar.getMenu().clear();
@@ -83,13 +83,6 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
-
-    if (this._productViewModel.products().getValue() == null) {
-      this._productViewModel.onSortMethodChanged(
-          new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
-      this._productViewModel.filterView().onFiltersChanged(ProductFilters.toBuilder().build());
-      this._productViewModel.fetchAllProducts();
-    }
   }
 
   @Override

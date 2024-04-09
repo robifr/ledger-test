@@ -35,8 +35,10 @@ import com.robifr.ledger.databinding.CreateProductFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.createproduct.viewmodel.CreateProductViewModel;
 import com.robifr.ledger.util.Compats;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class CreateProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Request implements FragmentResultKey {
     CREATE_PRODUCT;
@@ -84,9 +86,7 @@ public class CreateProductFragment extends Fragment implements Toolbar.OnMenuIte
 
     this._inputName = new CreateProductName(this);
     this._inputPrice = new CreateProductPrice(this);
-    this._createProductViewModel =
-        new ViewModelProvider(this, new CreateProductViewModel.Factory(this.requireContext()))
-            .get(CreateProductViewModel.class);
+    this._createProductViewModel = new ViewModelProvider(this).get(CreateProductViewModel.class);
     this._viewModelHandler = new CreateProductViewModelHandler(this, this._createProductViewModel);
 
     this.requireActivity()

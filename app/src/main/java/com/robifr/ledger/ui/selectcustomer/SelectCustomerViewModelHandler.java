@@ -39,26 +39,17 @@ public class SelectCustomerViewModelHandler {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._viewModel
-        .snackbarMessage()
-        .observe(this._fragment.requireActivity(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel
-        .selectedCustomerId()
+        .resultSelectedCustomerId()
         .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSelectedCustomerId));
+            this._fragment.getViewLifecycleOwner(),
+            new Observer<>(this::_onResultSelectedCustomerId));
+    this._viewModel
+        .snackbarMessage()
+        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
-
-    Snackbar.make(
-            (View) this._fragment.fragmentBinding().getRoot().getParent(),
-            StringResources.stringOf(this._fragment.requireContext(), stringRes),
-            Snackbar.LENGTH_LONG)
-        .show();
-  }
-
-  private void _onSelectedCustomerId(@Nullable Long customerId) {
+  private void _onResultSelectedCustomerId(@Nullable Long customerId) {
     final Bundle bundle = new Bundle();
 
     if (customerId != null) {
@@ -69,6 +60,16 @@ public class SelectCustomerViewModelHandler {
         .getParentFragmentManager()
         .setFragmentResult(SelectCustomerFragment.Request.SELECT_CUSTOMER.key(), bundle);
     this._fragment.finish();
+  }
+
+  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
+    if (stringRes == null) return;
+
+    Snackbar.make(
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onCustomers(@Nullable List<CustomerModel> customers) {

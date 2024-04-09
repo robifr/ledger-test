@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.robifr.ledger.data.model.ProductOrderModel;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -84,13 +85,15 @@ public class SelectProductOrderViewModel {
         this._selectedIndexes.getValue() != null
             ? new TreeSet<>(this._selectedIndexes.getValue())
             : new TreeSet<>();
-    final List<ProductOrderModel> productOrdersToDelete =
-        selectedIndexes.stream()
-            .map(index -> this._viewModel.inputtedProductOrders().get(index))
-            .collect(Collectors.toList());
+    final ArrayList<ProductOrderModel> inputtedProductOrders =
+        this._viewModel.inputtedProductOrders().getValue() != null
+            ? new ArrayList<>(this._viewModel.inputtedProductOrders().getValue())
+            : new ArrayList<>();
+    final List<ProductOrderModel> productOrders =
+        selectedIndexes.stream().map(inputtedProductOrders::get).collect(Collectors.toList());
 
     this.reset();
-    this._viewModel.onRemoveProductOrder(productOrdersToDelete.toArray(new ProductOrderModel[0]));
+    this._viewModel.onProductOrdersChanged(productOrders);
   }
 
   public void reset() {

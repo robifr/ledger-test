@@ -28,18 +28,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.selectproduct.recycler.SelectProductAdapter;
 import com.robifr.ledger.ui.selectproduct.viewmodel.SelectProductViewModel;
-import com.robifr.ledger.util.Compats;
+import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
+@AndroidEntryPoint
 public class SelectProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Arguments implements FragmentResultKey {
     INITIAL_SELECTED_PRODUCT;
@@ -96,23 +95,8 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
 
-    final NavBackStackEntry backStackEntry =
-        Navigation.findNavController(this._fragmentBinding.getRoot()).getCurrentBackStackEntry();
-    final ProductModel initialSelectedProduct =
-        backStackEntry != null && backStackEntry.getArguments() != null
-            ? Compats.parcelableOf(
-                backStackEntry.getArguments(),
-                Arguments.INITIAL_SELECTED_PRODUCT.key(),
-                ProductModel.class)
-            : null;
-
     this._adapter = new SelectProductAdapter(this);
-    this._resultHandler = new SelectProductResultHandler(this);
-    this._selectProductViewModel =
-        new ViewModelProvider(
-                this,
-                new SelectProductViewModel.Factory(this.requireContext(), initialSelectedProduct))
-            .get(SelectProductViewModel.class);
+    this._selectProductViewModel = new ViewModelProvider(this).get(SelectProductViewModel.class);
     this._viewModelHandler = new SelectProductViewModelHandler(this, this._selectProductViewModel);
 
     this.requireActivity()
@@ -129,8 +113,16 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+  }
 
-    this._selectProductViewModel.fetchAllProducts();
+  @Override
+  public void onStart() {
+    super.onStart();
+    // Should be called after `SelectProductViewModelHandler` called. `onStart` is perfect place
+    // for it. If there's a fragment inherit from this class, which mostly inherit their own
+    // view model handler too. Then it's impossible to not call them both inside `onViewCreated`,
+    // unless `super` call is omitted entirely.
+    this._resultHandler = new SelectProductResultHandler(this);
   }
 
   @Override

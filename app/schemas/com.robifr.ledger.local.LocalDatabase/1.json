@@ -2,17 +2,17 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d46570c6287012cb8ef8ed94f3d77c04",
+    "identityHash": "d6f365d666d087de90e5bf19bb4525a1",
     "entities": [
       {
         "tableName": "queue",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `customer_id` INTEGER, `status` TEXT NOT NULL, `date` TEXT NOT NULL, `payment_method` TEXT NOT NULL, FOREIGN KEY(`customer_id`) REFERENCES `customer`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `customer_id` INTEGER, `status` TEXT NOT NULL, `date` TEXT NOT NULL, `payment_method` TEXT NOT NULL, FOREIGN KEY(`customer_id`) REFERENCES `customer`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "customerId",
@@ -72,13 +72,13 @@
       },
       {
         "tableName": "customer",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `balance` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `balance` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -136,13 +136,13 @@
       },
       {
         "tableName": "product_order",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `queue_id` INTEGER, `product_id` INTEGER, `product_name` TEXT, `product_price` INTEGER, `quantity` REAL NOT NULL, `discount` INTEGER NOT NULL, `total_price` TEXT NOT NULL, FOREIGN KEY(`queue_id`) REFERENCES `queue`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`product_id`) REFERENCES `product`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `queue_id` INTEGER, `product_id` INTEGER, `product_name` TEXT, `product_price` INTEGER, `quantity` REAL NOT NULL, `discount` INTEGER NOT NULL, `total_price` TEXT NOT NULL, FOREIGN KEY(`queue_id`) REFERENCES `queue`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`product_id`) REFERENCES `product`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "queueId",
@@ -240,13 +240,13 @@
       },
       {
         "tableName": "product",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `price` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `price` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -306,7 +306,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd46570c6287012cb8ef8ed94f3d77c04')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd6f365d666d087de90e5bf19bb4525a1')"
     ]
   }
 }

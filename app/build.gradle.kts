@@ -20,11 +20,9 @@ android {
 
     javaCompileOptions {
       annotationProcessorOptions {
-        arguments.plus(
-            mutableMapOf(
-                "room.schemaLocation" to file("$projectDir/schemas").absolutePath,
-                "room.incremental" to "true",
-                "room.expandProjection" to "true"))
+        arguments["room.schemaLocation"] = "$projectDir/schemas"
+        arguments["room.incremental"] = "true"
+        arguments["room.expandProjection"] = "true"
       }
     }
   }

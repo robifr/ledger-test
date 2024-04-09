@@ -8,12 +8,12 @@ plugins {
 android {
   compileSdk = 34
   namespace = "com.robifr.ledger"
-  buildToolsVersion = "33.0.1"
+  buildToolsVersion = "34.0.0"
 
   defaultConfig {
     applicationId = "com.robifr.ledger"
     minSdk = 30
-    targetSdk = 33
+    targetSdk = 34
     versionCode = 1
     versionName = "1.0"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -83,23 +83,23 @@ dependencies {
   implementation("androidx.appcompat:appcompat:1.6.1")
   implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-  implementation("androidx.room:room-runtime:2.6.0")
-  annotationProcessor("androidx.room:room-compiler:2.6.0")
+  implementation("androidx.room:room-runtime:2.6.1")
+  annotationProcessor("androidx.room:room-compiler:2.6.1")
 
   implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
   implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 
   implementation("com.google.android.material:material:1.11.0")
 
-  implementation("com.google.dagger:hilt-android:2.44")
-  annotationProcessor("com.google.dagger:hilt-android-compiler:2.44")
+  implementation("com.google.dagger:hilt-android:2.51.1")
+  annotationProcessor("com.google.dagger:hilt-android-compiler:2.51.1")
 
   implementation("androidx.core:core-ktx:1.12.0")
-  implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.23")
   implementation("org.jetbrains.kotlin:kotlin-test")
 
-  testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-  testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+  testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
   testRuntimeOnly("org.junit.vintage:junit-vintage-engine")

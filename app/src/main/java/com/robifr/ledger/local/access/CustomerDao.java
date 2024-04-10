@@ -24,6 +24,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.TypeConverters;
 import androidx.room.Update;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.local.ColumnConverter.BigDecimalConverter;
@@ -139,14 +140,8 @@ public abstract class CustomerDao implements QueryAccessible<CustomerModel> {
   @NonNull
   @Transaction
   public BigDecimal totalDebtById(@Nullable Long customerId) {
-    final List<String> uncompletedTotalPrices = this._selectUncompletedQueueTotalPrice(customerId);
-    BigDecimal totalDebt = BigDecimal.ZERO;
-
-    for (String totalPrice : uncompletedTotalPrices) {
-      totalDebt = totalDebt.subtract(BigDecimalConverter.toBigDecimal(totalPrice));
-    }
-
-    return totalDebt;
+    return this._selectUncompletedQueueTotalPrice(customerId).stream()
+        .reduce(BigDecimal.ZERO, BigDecimal::subtract);
   }
 
   /**
@@ -200,7 +195,8 @@ public abstract class CustomerDao implements QueryAccessible<CustomerModel> {
             AND queue.status != 'COMPLETED'
       )
       """)
-  protected abstract List<String> _selectUncompletedQueueTotalPrice(@Nullable Long customerId);
+  @TypeConverters(BigDecimalConverter.class)
+  protected abstract List<BigDecimal> _selectUncompletedQueueTotalPrice(@Nullable Long customerId);
 
   /**
    * Delete customer virtual row from FTS table. It should be used before updating or deleting

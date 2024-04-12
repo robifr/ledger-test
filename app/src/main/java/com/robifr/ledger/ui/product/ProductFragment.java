@@ -67,7 +67,7 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
     this._filter = new ProductFilter(this);
     this._adapter = new ProductAdapter(this);
     // Use activity store owner because this fragment is used by bottom navigation.
-    // Which to prevents view model recreation.
+    // Which to prevents view model re-instantiation.
     this._productViewModel =
         new ViewModelProvider(this.requireActivity()).get(ProductViewModel.class);
     this._viewModelHandler = new ProductViewModelHandler(this, this._productViewModel);

@@ -67,7 +67,7 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
     this._filter = new CustomerFilter(this);
     this._adapter = new CustomerAdapter(this);
     // Use activity store owner because this fragment is used by bottom navigation.
-    // Which to prevents view model recreation.
+    // Which to prevents view model re-instantiation.
     this._customerViewModel =
         new ViewModelProvider(this.requireActivity()).get(CustomerViewModel.class);
     this._viewModelHandler = new CustomerViewModelHandler(this, this._customerViewModel);

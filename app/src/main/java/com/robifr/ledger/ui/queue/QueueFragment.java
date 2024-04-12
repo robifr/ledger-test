@@ -68,7 +68,7 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
     this._filter = new QueueFilter(this);
     this._adapter = new QueueAdapter(this);
     // Use activity store owner because this fragment is used by bottom navigation.
-    // Which to prevents view model recreation.
+    // Which to prevents view model re-instantiation.
     this._queueViewModel = new ViewModelProvider(this.requireActivity()).get(QueueViewModel.class);
     this._viewModelHandler = new QueueViewModelHandler(this, this._queueViewModel);
 

@@ -190,6 +190,11 @@
     <item quantity="other"><![CDATA[Found <b>%d</b> products]]></item>
   </plurals>
 
+  <plurals name="args_from_x_customers">
+    <item quantity="one"><![CDATA[From <b>%d</b> customer]]></item>
+    <item quantity="other"><![CDATA[From <b>%d</b> customers]]></item>
+  </plurals>
+
   <string name="maindialog_manageexternalstorage_permission_description">
     <![CDATA[
       <p>

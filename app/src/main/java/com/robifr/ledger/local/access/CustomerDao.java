@@ -26,10 +26,13 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
+import com.robifr.ledger.data.model.CustomerBalanceInfo;
+import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.local.ColumnConverter.BigDecimalConverter;
 import com.robifr.ledger.local.ColumnConverter.FtsStringConverter;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -125,6 +128,31 @@ public abstract class CustomerDao implements QueryAccessible<CustomerModel> {
    * @noinspection NullableProblems
    */
   @NonNull
+  @Query("SELECT id, balance FROM customer WHERE balance > 0")
+  public abstract List<CustomerBalanceInfo> selectAllIdsWithBalance();
+
+  /**
+   * @noinspection NullableProblems
+   */
+  @NonNull
+  @Transaction
+  public List<CustomerDebtInfo> selectAllIdsWithDebt() {
+    final ArrayList<CustomerDebtInfo> debtInfo = new ArrayList<>();
+    final ArrayList<Long> ids = new ArrayList<>(this._selectAllIds());
+
+    for (long id : ids) {
+      final BigDecimal debt = this.totalDebtById(id);
+
+      if (debt.compareTo(BigDecimal.ZERO) < 0) debtInfo.add(new CustomerDebtInfo(id, debt));
+    }
+
+    return debtInfo;
+  }
+
+  /**
+   * @noinspection NullableProblems
+   */
+  @NonNull
   @Transaction
   public List<CustomerModel> search(@NonNull String query) {
     Objects.requireNonNull(query);
@@ -161,6 +189,13 @@ public abstract class CustomerDao implements QueryAccessible<CustomerModel> {
    */
   @Delete
   protected abstract int _delete(@NonNull CustomerModel customer);
+
+  /**
+   * @noinspection NullableProblems
+   */
+  @NonNull
+  @Query("SELECT id FROM customer")
+  protected abstract List<Long> _selectAllIds();
 
   /**
    * @noinspection NullableProblems

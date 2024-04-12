@@ -28,6 +28,7 @@
   <color name="darker_white">#DADEDF</color>
 
   <color name="light_red">#F58989</color>
+  <color name="light_red_15">#26F58989</color>
   <color name="red">#FF200C</color>
   <color name="dark_red">#4D0000</color>
 
@@ -35,6 +36,7 @@
   <color name="dark_yellow">#986A00</color>
 
   <color name="light_blue">#95CEFF</color>
+  <color name="light_blue_15">#2695CEFF</color>
   <color name="blue">#3696EE</color>
   <color name="blue_20">#333696EE</color>
   <color name="dark_blue">#284BA8</color>

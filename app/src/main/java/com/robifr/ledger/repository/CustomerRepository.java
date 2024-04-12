@@ -20,6 +20,8 @@ package com.robifr.ledger.repository;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.robifr.ledger.data.model.CustomerBalanceInfo;
+import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.local.LocalDatabase;
 import com.robifr.ledger.local.access.CustomerDao;
@@ -199,6 +201,16 @@ public final class CustomerRepository
 
     return CompletableFuture.supplyAsync(() -> this._localDao.search(query))
         .thenComposeAsync(this::_mapFields);
+  }
+
+  @NonNull
+  public CompletableFuture<List<CustomerBalanceInfo>> selectAllIdsWithBalance() {
+    return CompletableFuture.supplyAsync(this._localDao::selectAllIdsWithBalance);
+  }
+
+  @NonNull
+  public CompletableFuture<List<CustomerDebtInfo>> selectAllIdsWithDebt() {
+    return CompletableFuture.supplyAsync(this._localDao::selectAllIdsWithDebt);
   }
 
   /**

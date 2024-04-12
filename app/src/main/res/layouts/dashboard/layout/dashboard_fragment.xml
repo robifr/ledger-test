@@ -29,4 +29,32 @@
       app:layout_scrollFlags="scroll|enterAlways|snap"
       app:navigationIcon="@null"
       app:title="@string/app_name" />
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp">
+
+    <include
+        android:id="@+id/totalDeposits"
+        layout="@layout/dashboard_card_totalbalance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/screen_padding"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintEnd_toStartOf="@id/totalDebts"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/totalDebts"
+        layout="@layout/dashboard_card_totalbalance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="@dimen/screen_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/totalDeposits" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

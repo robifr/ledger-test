@@ -19,7 +19,7 @@ package com.robifr.ledger.ui.customer.viewmodel;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
+import androidx.annotation.Nullable;import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
@@ -77,7 +77,7 @@ public class CustomerViewModel extends ViewModel {
     selectAllCustomers.observeForever(
         new Observer<>() {
           @Override
-          public void onChanged(List<CustomerModel> customers) {
+          public void onChanged(@Nullable List<CustomerModel> customers) {
             if (customers != null) {
               CustomerViewModel.this._filterView.onFiltersChanged(
                   CustomerViewModel.this._filterView.inputtedFilters(), customers);

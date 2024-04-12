@@ -79,7 +79,7 @@ public class SelectCustomerViewModel extends ViewModel {
     selectAllCustomers.observeForever(
         new Observer<>() {
           @Override
-          public void onChanged(List<CustomerModel> customers) {
+          public void onChanged(@Nullable List<CustomerModel> customers) {
             if (customers != null) SelectCustomerViewModel.this.onCustomersChanged(customers);
             selectAllCustomers.removeObserver(this);
           }

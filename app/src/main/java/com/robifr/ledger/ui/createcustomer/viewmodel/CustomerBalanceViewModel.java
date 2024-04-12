@@ -30,7 +30,7 @@ public class CustomerBalanceViewModel {
   @NonNull private final CreateCustomerViewModel _createCustomerViewModel;
 
   @NonNull
-  private final MutableLiveData<String> _inputtedDepositAmountText = new MutableLiveData<>();
+  private final MutableLiveData<String> _inputtedBalanceAmountText = new MutableLiveData<>();
 
   @NonNull
   private final MutableLiveData<String> _inputtedWithdrawAmountText = new MutableLiveData<>();
@@ -43,8 +43,8 @@ public class CustomerBalanceViewModel {
   }
 
   @NonNull
-  public LiveData<String> inputtedDepositAmountText() {
-    return this._inputtedDepositAmountText;
+  public LiveData<String> inputtedBalanceAmountText() {
+    return this._inputtedBalanceAmountText;
   }
 
   @NonNull
@@ -62,17 +62,17 @@ public class CustomerBalanceViewModel {
   }
 
   /**
-   * Get current inputted deposit amount from any corresponding inputted live data. If any live data
+   * Get current inputted balance amount from any corresponding inputted live data. If any live data
    * is set using {@link MutableLiveData#postValue(Object)}, calling this method may not immediately
    * reflect the latest changes. For accurate results in asynchronous operations, consider calling
    * this method inside {@link Observer}.
    */
-  public long inputtedDepositAmount() {
+  public long inputtedBalanceAmount() {
     long inputtedAmount = 0L;
 
     try {
       final String text =
-          Objects.requireNonNullElse(this._inputtedDepositAmountText.getValue(), "");
+          Objects.requireNonNullElse(this._inputtedBalanceAmountText.getValue(), "");
       inputtedAmount = CurrencyFormat.parse(text, "id", "ID").longValue();
 
     } catch (ParseException ignore) {
@@ -101,27 +101,27 @@ public class CustomerBalanceViewModel {
     return inputtedAmount;
   }
 
-  public void onDepositAmountTextChanged(@NonNull String amount) {
+  public void onBalanceAmountTextChanged(@NonNull String amount) {
     Objects.requireNonNull(amount);
 
-    BigDecimal amountToDeposit = BigDecimal.ZERO;
+    BigDecimal amountToAdd = BigDecimal.ZERO;
 
     try {
-      amountToDeposit = CurrencyFormat.parse(amount, "id", "ID");
+      amountToAdd = CurrencyFormat.parse(amount, "id", "ID");
 
     } catch (ParseException ignore) {
     }
 
     final BigDecimal balanceAfter =
         BigDecimal.valueOf(this._createCustomerViewModel.inputtedCustomer().balance())
-            .add(amountToDeposit);
+            .add(amountToAdd);
 
-    // Revert back when trying to deposit larger than maximum allowed.
-    final String depositAmountText =
+    // Revert back when trying to add larger than maximum allowed.
+    final String balanceAmountText =
         balanceAfter.compareTo(BigDecimal.valueOf(Long.MAX_VALUE)) > 0
-            ? this._inputtedDepositAmountText.getValue()
+            ? this._inputtedBalanceAmountText.getValue()
             : amount;
-    this._inputtedDepositAmountText.setValue(depositAmountText);
+    this._inputtedBalanceAmountText.setValue(balanceAmountText);
   }
 
   public void onWithdrawAmountTextChanged(@NonNull String amount) {
@@ -152,9 +152,9 @@ public class CustomerBalanceViewModel {
     this._availableBalanceToWithdraw.setValue(availableBalance);
   }
 
-  public void onDepositSubmitted() {
+  public void onAddSubmitted() {
     final long balance =
-        this._createCustomerViewModel.inputtedCustomer().balance() + this.inputtedDepositAmount();
+        this._createCustomerViewModel.inputtedCustomer().balance() + this.inputtedBalanceAmount();
     this._createCustomerViewModel.onBalanceChanged(balance);
   }
 
@@ -165,7 +165,7 @@ public class CustomerBalanceViewModel {
   }
 
   public void onReset() {
-    this._inputtedDepositAmountText.setValue(null);
+    this._inputtedBalanceAmountText.setValue(null);
     this._inputtedWithdrawAmountText.setValue(null);
     this._availableBalanceToWithdraw.setValue(null);
   }

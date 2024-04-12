@@ -61,8 +61,8 @@ public class CreateCustomerViewModelHandler {
 
     this._viewModel
         .balanceView()
-        .inputtedDepositAmountText()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onInputtedDepositAmountText);
+        .inputtedBalanceAmountText()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onInputtedBalanceAmountText);
     this._viewModel
         .balanceView()
         .inputtedWithdrawAmountText()
@@ -116,8 +116,8 @@ public class CreateCustomerViewModelHandler {
     if (debt != null) this._fragment.inputDebt().setInputtedDebt(debt);
   }
 
-  private void _onInputtedDepositAmountText(@Nullable String amount) {
-    this._fragment.inputBalance().setInputtedDepositAmountText(amount);
+  private void _onInputtedBalanceAmountText(@Nullable String amount) {
+    this._fragment.inputBalance().setInputtedBalanceAmountText(amount);
   }
 
   private void _onInputtedWithdrawAmountText(@Nullable String amount) {

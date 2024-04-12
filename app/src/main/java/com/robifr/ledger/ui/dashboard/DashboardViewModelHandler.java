@@ -76,12 +76,12 @@ public class DashboardViewModelHandler {
 
     this._fragment
         .fragmentBinding()
-        .totalDeposits
+        .totalBalances
         .totalCustomers
         .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
     this._fragment
         .fragmentBinding()
-        .totalDeposits
+        .totalBalances
         .amount
         .setText(CurrencyFormat.format(BigDecimal.valueOf(amount), "id", "ID"));
   }

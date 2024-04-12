@@ -29,7 +29,7 @@
       android:id="@+id/title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_deposit_balance"
+      android:text="@string/text_add_balance"
       android:textStyle="bold" />
 
   <com.google.android.material.textfield.TextInputLayout

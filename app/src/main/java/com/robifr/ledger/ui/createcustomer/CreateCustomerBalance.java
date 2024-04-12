@@ -43,9 +43,9 @@ public class CreateCustomerBalance
   @NonNull private final AlertDialog _withdrawDialog;
   @NonNull private final BalanceTextWatcher _withdrawTextWatcher;
 
-  @NonNull private final CreateCustomerDialogTransactionBinding _depositDialogBinding;
-  @NonNull private final AlertDialog _depositDialog;
-  @NonNull private final BalanceTextWatcher _depositTextWatcher;
+  @NonNull private final CreateCustomerDialogTransactionBinding _addBalanceDialogBinding;
+  @NonNull private final AlertDialog _addBalanceDialog;
+  @NonNull private final BalanceTextWatcher _addBalanceTextWatcher;
 
   public CreateCustomerBalance(@NonNull CreateCustomerFragment fragment) {
     this._fragment = Objects.requireNonNull(fragment);
@@ -61,16 +61,16 @@ public class CreateCustomerBalance
     this._withdrawTextWatcher =
         new BalanceTextWatcher(this._withdrawDialogBinding.amount, "id", "ID");
 
-    this._depositDialogBinding =
+    this._addBalanceDialogBinding =
         CreateCustomerDialogTransactionBinding.inflate(this._fragment.getLayoutInflater());
-    this._depositDialog =
+    this._addBalanceDialog =
         new MaterialAlertDialogBuilder(this._fragment.requireContext())
-            .setView(this._depositDialogBinding.getRoot())
+            .setView(this._addBalanceDialogBinding.getRoot())
             .setNegativeButton(this._fragment.getString(R.string.text_cancel), this)
-            .setPositiveButton(this._fragment.getString(R.string.text_deposit), this)
+            .setPositiveButton(this._fragment.getString(R.string.text_add), this)
             .create();
-    this._depositTextWatcher =
-        new BalanceTextWatcher(this._depositDialogBinding.amount, "id", "ID");
+    this._addBalanceTextWatcher =
+        new BalanceTextWatcher(this._addBalanceDialogBinding.amount, "id", "ID");
 
     this._fragment.fragmentBinding().withdrawButton.setOnClickListener(this);
     this._withdrawDialog.setOnDismissListener(this);
@@ -78,11 +78,11 @@ public class CreateCustomerBalance
         this._fragment.getString(R.string.text_withdraw_balance));
     this._withdrawDialogBinding.amount.addTextChangedListener(this._withdrawTextWatcher);
 
-    this._fragment.fragmentBinding().depositButton.setOnClickListener(this);
-    this._depositDialog.setOnDismissListener(this);
-    this._depositDialogBinding.title.setText(
-        this._fragment.getString(R.string.text_deposit_balance));
-    this._depositDialogBinding.amount.addTextChangedListener(this._depositTextWatcher);
+    this._fragment.fragmentBinding().addBalanceButton.setOnClickListener(this);
+    this._addBalanceDialog.setOnDismissListener(this);
+    this._addBalanceDialogBinding.title.setText(
+        this._fragment.getString(R.string.text_add_balance));
+    this._addBalanceDialogBinding.amount.addTextChangedListener(this._addBalanceTextWatcher);
   }
 
   @Override
@@ -99,7 +99,7 @@ public class CreateCustomerBalance
         this._withdrawDialog.show();
       }
 
-      case R.id.depositButton -> this._depositDialog.show();
+      case R.id.addBalanceButton -> this._addBalanceDialog.show();
     }
   }
 
@@ -112,8 +112,8 @@ public class CreateCustomerBalance
         if (dialog.equals(this._withdrawDialog)) {
           this._fragment.createCustomerViewModel().balanceView().onWithdrawSubmitted();
 
-        } else if (dialog.equals(this._depositDialog)) {
-          this._fragment.createCustomerViewModel().balanceView().onDepositSubmitted();
+        } else if (dialog.equals(this._addBalanceDialog)) {
+          this._fragment.createCustomerViewModel().balanceView().onAddSubmitted();
         }
 
         dialog.dismiss();
@@ -132,8 +132,9 @@ public class CreateCustomerBalance
     if (this._withdrawDialog.getCurrentFocus() != null) {
       this._withdrawDialog.getCurrentFocus().clearFocus();
     }
-    if (this._depositDialog.getCurrentFocus() != null) {
-      this._depositDialog.getCurrentFocus().clearFocus();
+
+    if (this._addBalanceDialog.getCurrentFocus() != null) {
+      this._addBalanceDialog.getCurrentFocus().clearFocus();
     }
   }
 
@@ -145,26 +146,26 @@ public class CreateCustomerBalance
     final boolean isBalanceAboveZero = BigDecimal.valueOf(balance).compareTo(BigDecimal.ZERO) > 0;
     this._fragment.fragmentBinding().withdrawButton.setEnabled(isBalanceAboveZero);
 
-    // Disable deposit button when above or equals maximum limit.
+    // Disable button to add balance when the balance is above or equals maximum limit.
     final boolean isBalanceBelowLimit =
         BigDecimal.valueOf(balance).compareTo(BigDecimal.valueOf(Long.MAX_VALUE)) < 0;
-    this._fragment.fragmentBinding().depositButton.setEnabled(isBalanceBelowLimit);
+    this._fragment.fragmentBinding().addBalanceButton.setEnabled(isBalanceBelowLimit);
   }
 
   /**
-   * @param amount Formatted text of deposit amount.
+   * @param amount Formatted text of balance amount.
    */
-  public void setInputtedDepositAmountText(@Nullable String amount) {
-    final String currentText = this._depositDialogBinding.amount.getText().toString();
+  public void setInputtedBalanceAmountText(@Nullable String amount) {
+    final String currentText = this._addBalanceDialogBinding.amount.getText().toString();
     if (currentText.equals(amount)) return;
 
     final int cursorPosition = amount != null ? amount.length() : 0;
 
     // Remove listener to prevent any sort of formatting.
-    this._depositDialogBinding.amount.removeTextChangedListener(this._depositTextWatcher);
-    this._depositDialogBinding.amount.setText(amount);
-    this._depositDialogBinding.amount.setSelection(cursorPosition);
-    this._depositDialogBinding.amount.addTextChangedListener(this._depositTextWatcher);
+    this._addBalanceDialogBinding.amount.removeTextChangedListener(this._addBalanceTextWatcher);
+    this._addBalanceDialogBinding.amount.setText(amount);
+    this._addBalanceDialogBinding.amount.setSelection(cursorPosition);
+    this._addBalanceDialogBinding.amount.addTextChangedListener(this._addBalanceTextWatcher);
   }
 
   /**
@@ -203,8 +204,8 @@ public class CreateCustomerBalance
       final CustomerBalanceViewModel balanceViewModel =
           CreateCustomerBalance.this._fragment.createCustomerViewModel().balanceView();
 
-      if (this._view == CreateCustomerBalance.this._depositDialogBinding.amount) {
-        balanceViewModel.onDepositAmountTextChanged(this.newText());
+      if (this._view == CreateCustomerBalance.this._addBalanceDialogBinding.amount) {
+        balanceViewModel.onBalanceAmountTextChanged(this.newText());
 
       } else if (this._view == CreateCustomerBalance.this._withdrawDialogBinding.amount) {
         balanceViewModel.onWithdrawAmountTextChanged(this.newText());

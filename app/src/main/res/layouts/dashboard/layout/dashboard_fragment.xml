@@ -36,7 +36,7 @@
       android:layout_marginTop="10dp">
 
     <include
-        android:id="@+id/totalDeposits"
+        android:id="@+id/totalBalances"
         layout="@layout/dashboard_card_totalbalance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -55,6 +55,6 @@
         android:layout_marginStart="5dp"
         android:layout_marginEnd="@dimen/screen_padding"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/totalDeposits" />
+        app:layout_constraintStart_toEndOf="@id/totalBalances" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

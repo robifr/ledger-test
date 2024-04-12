@@ -21,6 +21,7 @@
 
   <string name="text_account_balance">Account balance</string>
   <string name="text_add">Add</string>
+  <string name="text_add_balance">Add balance</string>
   <string name="text_add_product_order">Add product order</string>
   <string name="text_all_customers">All customers</string>
   <string name="text_all_products">All products</string>
@@ -48,8 +49,6 @@
   <string name="text_debt">Debt</string>
   <string name="text_delete">Delete</string>
   <string name="text_deny_and_quit">Deny and quit</string>
-  <string name="text_deposit">Deposit</string>
-  <string name="text_deposit_balance">Deposit balance</string>
   <string name="text_discard">Discard</string>
   <string name="text_discard_this_unsaved_task">Discard this unsaved task?</string>
   <string name="text_discount">Discount</string>
@@ -120,8 +119,8 @@
   <string name="text_this_week">This week</string>
   <string name="text_today">Today</string>
   <string name="text_total">Total</string>
+  <string name="text_total_balances">Total balances</string>
   <string name="text_total_debts">Total debts</string>
-  <string name="text_total_deposits">Total deposits</string>
   <string name="text_total_discount">Total discount</string>
   <string name="text_total_price">Total price</string>
   <string name="text_unpaid">Unpaid</string>

@@ -66,6 +66,7 @@ allprojects {
 
     kotlinGradle {
       target("*.gradle.kts")
+      targetExclude("$layout.buildDirectory/**/*.gradle.kts")
       ktfmt()
     }
   }

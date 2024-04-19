@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2024 Robi
+ * Copyright (c) $YEAR Robi
  *
  * Ledger is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,20 +15,3 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-pluginManagement.repositories {
-  gradlePluginPortal()
-  google()
-  mavenCentral()
-}
-
-dependencyResolutionManagement {
-  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-  repositories {
-    google()
-    mavenCentral()
-  }
-}
-
-rootProject.name = "Ledger"
-
-include(":app")

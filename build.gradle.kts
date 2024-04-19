@@ -1,3 +1,20 @@
+/**
+ * Copyright (c) 2024 Robi
+ *
+ * Ledger is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Ledger is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -22,29 +39,6 @@ plugins {
 allprojects {
   apply(plugin = "com.diffplug.spotless")
   configure<SpotlessExtension> {
-    val license: String =
-        """
-        /**
-         * Copyright (c) ${"$"}YEAR Robi
-         *
-         * Ledger is free software: you can redistribute it and/or modify
-         * it under the terms of the GNU General Public License as published by
-         * the Free Software Foundation, either version 3 of the License, or
-         * (at your option) any later version.
-         *
-         * Ledger is distributed in the hope that it will be useful,
-         * but WITHOUT ANY WARRANTY; without even the implied warranty of
-         * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-         * GNU General Public License for more details.
-         *
-         * You should have received a copy of the GNU General Public License
-         * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
-         */
-
-
-          """
-            .trimIndent()
-
     java {
       target("**/*.java")
       targetExclude("$layout.buildDirectory/**/*.java")
@@ -52,7 +46,7 @@ allprojects {
       toggleOffOn()
       trimTrailingWhitespace()
       removeUnusedImports()
-      licenseHeader(license)
+      licenseHeaderFile(file("${project.rootDir}/gradle/spotless/license_header.txt"))
     }
 
     kotlin {
@@ -61,13 +55,33 @@ allprojects {
       ktfmt()
       toggleOffOn()
       trimTrailingWhitespace()
-      licenseHeader(license)
+      licenseHeaderFile(file("${project.rootDir}/gradle/spotless/license_header.txt"))
     }
 
     kotlinGradle {
       target("*.gradle.kts")
       targetExclude("$layout.buildDirectory/**/*.gradle.kts")
       ktfmt()
+      licenseHeaderFile(file("${project.rootDir}/gradle/spotless/license_header.txt"), "^\\w+")
+    }
+
+    javascript {
+      target("**/src/main/assets/**/*.js")
+      targetExclude("**/src/main/assets/libs/**/*.js")
+      prettier().config(mapOf("tabWidth" to 2, "useTabs" to false, "printWidth" to 100))
+      licenseHeaderFile(
+          file("${project.rootDir}/gradle/spotless/license_header.txt"), "\"use strict\"|^\\w+")
+    }
+
+    format("xml") {
+      target("**/src/**/*.xml")
+      targetExclude("$layout.buildDirectory/**/*.xml")
+
+      // Set delimiter to match either xml tag or comment, to prevent comment being removed when
+      // placed below xml header tag.
+      // <xml .../><!-- Any comment here shouldn't be replaced with header license -->
+      licenseHeaderFile(
+          file("${project.rootDir}/gradle/spotless/license_header_xml.txt"), "^(<\\w+|<!--)")
     }
   }
 

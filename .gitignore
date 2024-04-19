@@ -21,7 +21,6 @@ output.json
 *.iml
 .idea/*
 !.idea/codeStyles
-!.idea/copyright
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml

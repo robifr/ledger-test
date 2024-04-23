@@ -83,6 +83,13 @@ allprojects {
       licenseHeaderFile(
           file("${project.rootDir}/gradle/spotless/license_header_xml.txt"), "^(<\\w+|<!--)")
     }
+
+    format("html") {
+      target("**/src/main/assets/**/*.html")
+      prettier()
+      licenseHeaderFile(
+          file("${project.rootDir}/gradle/spotless/license_header_html.txt"), "<!DOCTYPE")
+    }
   }
 
   gradle.projectsEvaluated() {

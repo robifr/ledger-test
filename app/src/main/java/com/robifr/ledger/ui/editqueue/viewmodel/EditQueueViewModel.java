@@ -133,11 +133,27 @@ public class EditQueueViewModel extends CreateQueueViewModel {
         this._allowedPaymentMethods.getValue() != null
             ? new HashSet<>(this._allowedPaymentMethods.getValue())
             : new HashSet<>(Set.of(QueueModel.PaymentMethod.CASH));
+    final boolean isBalanceSufficient =
+        this._initialQueueToEdit != null
+            && inputtedQueue.status() == QueueModel.Status.COMPLETED
+            && inputtedQueue.customer() != null
+            && inputtedQueue
+                .customer()
+                .isBalanceSufficient(this._initialQueueToEdit, inputtedQueue);
+    final boolean isTemporalBalancePositive =
+        inputtedQueue.customer() != null
+            // Compare with the account balance payment option
+            // as if the user does it before they actually do.
+            && inputtedQueue
+                    .customer()
+                    .balanceOnUpdatedPayment(
+                        this._initialQueueToEdit,
+                        QueueModel.toBuilder(inputtedQueue)
+                            .setPaymentMethod(QueueModel.PaymentMethod.ACCOUNT_BALANCE)
+                            .build())
+                >= 0L;
 
-    if (this._initialQueueToEdit != null
-        && inputtedQueue.status() == QueueModel.Status.COMPLETED
-        && inputtedQueue.customer() != null
-        && inputtedQueue.customer().isBalanceSufficient(this._initialQueueToEdit, inputtedQueue)) {
+    if (isBalanceSufficient && isTemporalBalancePositive) {
       allowedPaymentMethods.add(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
     } else {
       allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);

@@ -135,7 +135,7 @@ tasks.register<Exec>("downloadD3Js") {
   val version: String = "7.9.0"
   val url: String = "https://cdn.jsdelivr.net/npm/d3@$version/dist/d3.js"
   val dir: File = file("src/main/assets/libs/").apply { mkdirs() }
-  val file: File = File(file("src/main/assets/libs/"), "d3.js")
+  val file: File = File(dir, "d3.js")
 
   // Prevent re-downloading when rebuilding the project.
   onlyIf { !file.exists() || !file.readText().contains(version) }

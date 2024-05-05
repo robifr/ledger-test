@@ -25,15 +25,15 @@ buildscript {
     mavenCentral()
   }
 
-  dependencies { classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0") }
+  dependencies { classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23") }
 }
 
 plugins {
-  id("com.android.application") version "8.2.0" apply false
-  id("com.android.library") version "8.2.0" apply false
+  id("com.android.application") version "8.4.0" apply false
+  id("com.android.library") version "8.4.0" apply false
   id("com.diffplug.spotless") version "6.25.0" apply false
   id("com.google.dagger.hilt.android") version "2.51.1" apply false
-  kotlin("jvm") version "1.9.10"
+  kotlin("jvm") version "1.9.23"
 }
 
 allprojects {

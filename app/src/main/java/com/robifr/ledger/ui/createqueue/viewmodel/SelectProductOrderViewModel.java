@@ -24,11 +24,9 @@ import com.robifr.ledger.data.model.ProductOrderModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 public class SelectProductOrderViewModel {
   @NonNull private final CreateQueueViewModel _viewModel;
@@ -89,11 +87,13 @@ public class SelectProductOrderViewModel {
         this._viewModel.inputtedProductOrders().getValue() != null
             ? new ArrayList<>(this._viewModel.inputtedProductOrders().getValue())
             : new ArrayList<>();
-    final List<ProductOrderModel> productOrders =
-        selectedIndexes.stream().map(inputtedProductOrders::get).collect(Collectors.toList());
+
+    for (int i = inputtedProductOrders.size(); i-- > 0; ) {
+      if (selectedIndexes.contains(i)) inputtedProductOrders.remove(i);
+    }
 
     this.reset();
-    this._viewModel.onProductOrdersChanged(productOrders);
+    this._viewModel.onProductOrdersChanged(inputtedProductOrders);
   }
 
   public void reset() {

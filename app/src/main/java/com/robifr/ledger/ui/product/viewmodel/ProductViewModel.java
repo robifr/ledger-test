@@ -128,7 +128,7 @@ public class ProductViewModel extends ViewModel {
 
     this._productRepository
         .selectAll()
-        .thenAccept(
+        .thenAcceptAsync(
             products -> {
               if (products == null) {
                 this._snackbarMessage.postValue(

@@ -151,7 +151,7 @@ public class QueueViewModel extends ViewModel {
 
     this._queueRepository
         .selectAll()
-        .thenAccept(
+        .thenAcceptAsync(
             queues -> {
               if (queues == null) {
                 this._snackbarMessage.postValue(

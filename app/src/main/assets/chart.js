@@ -74,7 +74,9 @@ class ChartAxis {
    * @param {number} position
    */
   constructor(scale, axis, position) {
-    if (this.constructor === ChartAxis) throw new Error("Can't instantiate abstract class");
+    if (this.constructor === ChartAxis) {
+      throw new Error(`Can't instantiate abstract class ${this.constructor.name}`);
+    }
 
     /** @type {function(): *} */
     this.scale = scale;
@@ -187,29 +189,34 @@ class ChartLinearAxis extends ChartAxis {}
 
 class ChartBandAxis extends ChartAxis {}
 
-class BarChart {
-  /** @type {ChartLayout} */
-  #_layout;
-  /** @type {ChartBandAxis} */
-  #_xAxis;
-  /** @type {ChartLinearAxis} */
-  #_yAxis;
-  /** @type {SVGElement} */
-  #_svg;
-
+/** @abstract */
+class Chart {
   /**
    * @param {ChartLayout} layout
-   * @param {ChartBandAxis} xAxis
-   * @param {ChartLinearAxis} yAxis
+   * @param {ChartAxis} xAxis
+   * @param {ChartAxis} yAxis
    */
   constructor(layout, xAxis, yAxis) {
-    this.#_layout = layout;
-    this.#_xAxis = xAxis;
-    this.#_yAxis = yAxis;
-    this.#_svg = d3
+    if (this.constructor === Chart) {
+      throw new Error(`Can't instantiate abstract class ${this.constructor.name}`);
+    }
+    if (this.method === Chart.prototype.render) {
+      throw new Error(
+        `Abstract method '${this.constructor.prototype.render.name}()' have to be overridden`
+      );
+    }
+
+    /** @type {ChartLayout} */
+    this._layout = layout;
+    /** @type {ChartAxis} */
+    this._xAxis = xAxis;
+    /** @type {ChartAxis} */
+    this._yAxis = yAxis;
+    /** @type {SVGElement} */
+    this._svg = d3
       .create("svg")
-      .attr("width", this.#_layout.width)
-      .attr("height", this.#_layout.height);
+      .attr("width", this._layout.width)
+      .attr("height", this._layout.height);
 
     Object.seal(this);
   }
@@ -219,37 +226,50 @@ class BarChart {
    * @param {string} data[].key
    * @param {number} data[].value
    */
+  render(data) {}
+}
+
+class BarChart extends Chart {
+  /**
+   * @param {ChartLayout} layout
+   * @param {ChartBandAxis} xAxis
+   * @param {ChartLinearAxis} yAxis
+   */
+  constructor(layout, xAxis, yAxis) {
+    super(layout, xAxis, yAxis);
+  }
+
   render(data) {
     // Draw x-axis.
-    this.#_svg
+    this._svg
       .append("g")
-      .attr("transform", `translate(0, ${this.#_layout.height - this.#_layout.marginBottom})`)
-      .style("font-size", `${this.#_layout.fontSize}`)
-      .call(this.#_xAxis.axis);
+      .attr("transform", `translate(0, ${this._layout.height - this._layout.marginBottom})`)
+      .style("font-size", `${this._layout.fontSize}`)
+      .call(this._xAxis.axis);
 
     // Draw y-axis.
-    this.#_svg
+    this._svg
       .append("g")
-      .attr("transform", `translate(${this.#_layout.marginLeft}, 0)`)
-      .style("font-size", `${this.#_layout.fontSize}`)
-      .call(this.#_yAxis.axis);
+      .attr("transform", `translate(${this._layout.marginLeft}, 0)`)
+      .style("font-size", `${this._layout.fontSize}`)
+      .call(this._yAxis.axis);
 
     // Draw bar.
-    this.#_svg
+    this._svg
       .selectAll()
       .data(data)
       .enter()
       .append("rect")
       .style("fill", Android.colorHex("colorPrimary"))
-      .attr("x", (d) => this.#_xAxis.scale(d.key))
-      .attr("y", (d) => this.#_yAxis.scale(d.value))
-      .attr("width", this.#_xAxis.scale.bandwidth())
+      .attr("x", (d) => this._xAxis.scale(d.key))
+      .attr("y", (d) => this._yAxis.scale(d.value))
+      .attr("width", this._xAxis.scale.bandwidth())
       .attr(
         "height",
-        (d) => this.#_layout.height - this.#_layout.marginBottom - this.#_yAxis.scale(d.value)
+        (d) => this._layout.height - this._layout.marginBottom - this._yAxis.scale(d.value)
       );
 
-    container.append(this.#_svg.node());
-    d3.select("body").style("background-color", this.#_layout.backgroundColor);
+    container.append(this._svg.node());
+    d3.select("body").style("background-color", this._layout.backgroundColor);
   }
 }

@@ -148,7 +148,10 @@ class ChartAxis {
       .tickSizeOuter(0)
       .tickFormat((d) => {
         if (Math.floor(d) !== d) return; // Hide label for decimal numbers.
-        return d >= 1000 ? d3.format("d")(d) / 1000 + "k" : d3.format("d")(d);
+        if (d >= 1e9) return d3.format("d")(d) / 1e9 + "b";
+        if (d >= 1e6) return d3.format("d")(d) / 1e6 + "m";
+        if (d >= 1000) return d3.format("d")(d) / 1000 + "k";
+        return d3.format("d")(d);
       });
 
     return new ChartLinearAxis(scale, axis);

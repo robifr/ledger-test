@@ -52,7 +52,7 @@ import javax.inject.Inject;
 public class QueueViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
-  @NonNull private final QueuesUpdater _queuesUpdater;
+  @NonNull private final QueueUpdater _queueUpdater;
   @NonNull private final CustomerUpdater _customerUpdater = new CustomerUpdater();
   @NonNull private final QueueFilterViewModel _filterView;
   @NonNull private final QueueSorter _sorter = new QueueSorter();
@@ -75,7 +75,7 @@ public class QueueViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._queuesUpdater = new QueuesUpdater(this._queues);
+    this._queueUpdater = new QueueUpdater(this._queues);
 
     final QueueFilterer filterer = new QueueFilterer();
     filterer.setFilters(
@@ -88,7 +88,7 @@ public class QueueViewModel extends ViewModel {
 
     this._filterView = new QueueFilterViewModel(this, filterer);
 
-    this._queueRepository.addModelChangedListener(this._queuesUpdater);
+    this._queueRepository.addModelChangedListener(this._queueUpdater);
     this._customerRepository.addModelChangedListener(this._customerUpdater);
 
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
@@ -114,7 +114,7 @@ public class QueueViewModel extends ViewModel {
 
   @Override
   public void onCleared() {
-    this._queueRepository.removeModelChangedListener(this._queuesUpdater);
+    this._queueRepository.removeModelChangedListener(this._queueUpdater);
     this._customerRepository.removeModelChangedListener(this._customerUpdater);
   }
 
@@ -256,8 +256,8 @@ public class QueueViewModel extends ViewModel {
     this._expandedQueueIndex.setValue(index);
   }
 
-  private class QueuesUpdater extends LiveDataModelUpdater<QueueModel> {
-    public QueuesUpdater(@NonNull MutableLiveData<List<QueueModel>> queues) {
+  private class QueueUpdater extends LiveDataModelUpdater<QueueModel> {
+    public QueueUpdater(@NonNull MutableLiveData<List<QueueModel>> queues) {
       super(queues);
     }
 

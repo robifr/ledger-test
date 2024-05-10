@@ -43,7 +43,7 @@ import javax.inject.Inject;
 @HiltViewModel
 public class CustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
-  @NonNull private final CustomersUpdater _customersUpdater;
+  @NonNull private final CustomerUpdater _customerUpdater;
   @NonNull private final CustomerFilterViewModel _filterView;
   @NonNull private final CustomerSorter _sorter = new CustomerSorter();
 
@@ -63,10 +63,10 @@ public class CustomerViewModel extends ViewModel {
   @Inject
   public CustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._customersUpdater = new CustomersUpdater(this._customers);
+    this._customerUpdater = new CustomerUpdater(this._customers);
     this._filterView = new CustomerFilterViewModel(this, new CustomerFilterer());
 
-    this._customerRepository.addModelChangedListener(this._customersUpdater);
+    this._customerRepository.addModelChangedListener(this._customerUpdater);
 
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
@@ -91,7 +91,7 @@ public class CustomerViewModel extends ViewModel {
 
   @Override
   public void onCleared() {
-    this._customerRepository.removeModelChangedListener(this._customersUpdater);
+    this._customerRepository.removeModelChangedListener(this._customerUpdater);
   }
 
   @NonNull
@@ -213,8 +213,8 @@ public class CustomerViewModel extends ViewModel {
     this._expandedCustomerIndex.setValue(index);
   }
 
-  private class CustomersUpdater extends LiveDataModelUpdater<CustomerModel> {
-    public CustomersUpdater(@NonNull MutableLiveData<List<CustomerModel>> customers) {
+  private class CustomerUpdater extends LiveDataModelUpdater<CustomerModel> {
+    public CustomerUpdater(@NonNull MutableLiveData<List<CustomerModel>> customers) {
       super(customers);
     }
 

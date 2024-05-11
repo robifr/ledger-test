@@ -44,15 +44,15 @@ class ChartLayout {
     /** @type {number} */
     this.height = height - fontSize;
 
-    // Extra margin for the label.
+    // Extra margin for the ticks.
     /** @type {number} */
-    this.marginTop = marginTop + 10;
+    this.marginTop = marginTop + 6;
     /** @type {number} */
-    this.marginBottom = marginBottom + fontSize + 10;
+    this.marginBottom = marginBottom + 6;
     /** @type {number} */
-    this.marginLeft = marginLeft + fontSize + 20;
+    this.marginLeft = marginLeft + 6;
     /** @type {number} */
-    this.marginRight = marginRight + 10;
+    this.marginRight = marginRight + 6;
     /** @type {number} */
     this.fontSize = fontSize;
     /** @type {colorHex} */

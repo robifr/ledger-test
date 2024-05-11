@@ -35,13 +35,8 @@ public class BarChartBinding {
    *     int, int, int, int)}.
    * @param xAxisBinding Instance script from {@link ChartAxisBinding#withBandScale(String,
    *     ChartAxisBinding.Position, List, boolean)}.
-   * @param yAxisBinding Instance script from either:
-   *     <ul>
-   *       <li>{@link ChartAxisBinding#withLinearScale(String, ChartAxisBinding.Position, Pair)},
-   *       <li>{@link ChartAxisBinding#withBandScale(String, ChartAxisBinding.Position, List,
-   *           boolean)}.
-   *     </ul>
-   *
+   * @param yAxisBinding Instance script from {@link ChartAxisBinding#withLinearScale(String,
+   *     ChartAxisBinding.Position, Pair, boolean)}.
    * @return A valid JavaScript code for this method.
    */
   @NonNull

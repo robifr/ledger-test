@@ -46,13 +46,15 @@ public class ChartAxisBinding {
    *     int, int, int, int)}.
    * @param axisPosition Position for the axis.
    * @param domain Pair of min (first) and max (second) number for the label.
+   * @param isEvenLabelIndexVisible Whether label with even-index visible or not.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
   public static String withLinearScale(
       @NonNull String layoutBinding,
       @NonNull Position axisPosition,
-      @NonNull Pair<Integer, Integer> domain) {
+      @NonNull Pair<Integer, Integer> domain,
+      boolean isEvenLabelIndexVisible) {
     Objects.requireNonNull(layoutBinding);
     Objects.requireNonNull(axisPosition);
     Objects.requireNonNull(domain);
@@ -63,6 +65,8 @@ public class ChartAxisBinding {
         + axisPosition.value()
         + ", "
         + new JSONArray(List.of(domain.first, domain.second))
+        + ", "
+        + isEvenLabelIndexVisible
         + ")";
   }
 
@@ -71,7 +75,7 @@ public class ChartAxisBinding {
    *     int, int, int, int)}.
    * @param axisPosition Position for the axis.
    * @param domain List of string for the label.
-   * @param isEvenLabelIndexVisible Whether label for data with even-index visible.
+   * @param isEvenLabelIndexVisible Whether label with even-index visible or not.
    * @return A valid JavaScript code for this method.
    */
   @NonNull

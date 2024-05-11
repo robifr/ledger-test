@@ -126,7 +126,7 @@ class ChartAxis {
    * @param {number[]} domain
    * @returns {ChartLinearAxis}
    */
-  static withLinearScale(layout, axisPosition, domain) {
+  static withLinearScale(layout, axisPosition, domain, isEvenLabelIndexVisible = true) {
     // Just a hack to prevent label on the edge of axis.
     const minDomain = domain[0] !== 0 ? domain[0] - 0.5 : domain[0];
     const maxDomain = domain[1] + 0.5;
@@ -146,7 +146,8 @@ class ChartAxis {
       }
     })()
       .tickSizeOuter(0)
-      .tickFormat((d) => {
+      .tickFormat((d, i) => {
+        if (i % 2 !== 0 && !isEvenLabelIndexVisible) return; // Hide label for even-index.
         if (Math.floor(d) !== d) return; // Hide label for decimal numbers.
         if (d >= 1e9) return d3.format("d")(d) / 1e9 + "b";
         if (d >= 1e6) return d3.format("d")(d) / 1e6 + "m";
@@ -181,7 +182,7 @@ class ChartAxis {
       }
     })()
       .tickSizeOuter(0)
-      // If parameter provided, hide label with even-index to give more visibility.
+      // Hide label for even-index.
       .tickFormat((d, i) => (i % 2 !== 0 && !isEvenLabelIndexVisible ? null : d));
 
     return new ChartBandAxis(scale, axis);

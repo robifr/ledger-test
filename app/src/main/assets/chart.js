@@ -277,3 +277,56 @@ class BarChart extends Chart {
     d3.select("body").style("background-color", this._layout.backgroundColor);
   }
 }
+
+class HorizontalBarChart extends Chart {
+  /**
+   * @param {ChartLayout} layout
+   * @param {ChartLinearAxis} xAxis
+   * @param {ChartBandAxis} yAxis
+   */
+  constructor(layout, xAxis, yAxis) {
+    super(layout, xAxis, yAxis);
+  }
+
+  render(data) {
+    // Draw x-axis.
+    this._svg
+      .append("g")
+      .attr("transform", `translate(0, ${this._layout.height - this._layout.marginBottom})`)
+      .style("font-size", `${this._layout.fontSize}`)
+      .call(this._xAxis.axis);
+
+    // Draw y-axis.
+    this._yAxis.scale.paddingInner(0.55);
+    this._svg
+      .append("g")
+      .attr("transform", `translate(${this._layout.marginLeft}, 0)`)
+      .call(this._yAxis.axis.tickValues([]));
+    // Create new label above the bar.
+    this._svg
+      .selectAll(".y-label")
+      .data(data)
+      .enter()
+      .append("text")
+      .attr("class", "y-label")
+      .attr("x", this._layout.marginLeft + 5)
+      .attr("y", (d) => this._yAxis.scale(d.key) - 5)
+      .style("font-size", `${this._layout.fontSize}`)
+      .text((d) => d.key);
+
+    // Draw bar.
+    this._svg
+      .selectAll("rect")
+      .data(data)
+      .enter()
+      .append("rect")
+      .style("fill", Android.colorHex("colorPrimary"))
+      .attr("x", this._layout.marginLeft)
+      .attr("y", (d) => this._yAxis.scale(d.key))
+      .attr("width", (d) => this._xAxis.scale(d.value) - this._layout.marginLeft)
+      .attr("height", this._yAxis.scale.bandwidth());
+
+    container.append(this._svg.node());
+    d3.select("body").style("background-color", this._layout.backgroundColor);
+  }
+}

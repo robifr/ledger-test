@@ -76,7 +76,10 @@ android {
     }
   }
 
-  buildFeatures { viewBinding = true }
+  buildFeatures {
+    viewBinding = true
+    buildConfig = true
+  }
 
   packaging { resources.excludes.add("META-INF/LICENSE") }
 

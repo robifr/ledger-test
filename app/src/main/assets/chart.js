@@ -124,6 +124,7 @@ class ChartAxis {
    * @param {ChartLayout} layout
    * @param {number} axisPosition
    * @param {number[]} domain
+   * @param {boolean} [isEvenLabelIndexVisible=true]
    * @returns {ChartLinearAxis}
    */
   static withLinearScale(layout, axisPosition, domain, isEvenLabelIndexVisible = true) {
@@ -162,7 +163,7 @@ class ChartAxis {
    * @param {ChartLayout} layout
    * @param {number} axisPosition
    * @param {string[]} domain
-   * @param {boolean} isEvenLabelIndexVisible
+   * @param {boolean} [isEvenLabelIndexVisible=true]
    * @returns {ChartBandAxis}
    */
   static withBandScale(layout, axisPosition, domain, isEvenLabelIndexVisible = true) {

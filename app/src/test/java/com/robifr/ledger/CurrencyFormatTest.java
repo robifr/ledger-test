@@ -47,7 +47,43 @@ public class CurrencyFormatTest {
         () -> assertEquals("10\u202F000,5\u00A0€", CurrencyFormat.format(this._amount, this._france.first, this._france.second), "Wrong format for France currency"),
         () -> assertEquals("10.000,5\u00A0€", CurrencyFormat.format(this._amount, this._german.first, this._german.second), "Wrong format for German currency"),
         () -> assertEquals("Rp10.000,5", CurrencyFormat.format(this._amount, this._indonesia.first, this._indonesia.second), "Wrong format for Indonesia currency"),
-        () -> assertEquals("￥10,000.5", CurrencyFormat.format(this._amount, this._japan.first, this._japan.second), "Wrong format for Japan currency")
+        () -> assertEquals("￥10,000.5", CurrencyFormat.format(this._amount, this._japan.first, this._japan.second), "Wrong format for Japan currency"),
+
+        // Dozen and hundred.
+        () -> assertEquals("$0", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(0), this._us.first, this._us.second), "Wrong formatted unit for zero"),
+        () -> assertEquals("-$100", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(-100), this._us.first, this._us.second), "Wrong formatted unit for negative hundreds"),
+        () -> assertEquals("$100", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(100), this._us.first, this._us.second), "Wrong formatted unit for hundreds"),
+
+        // Thousands.
+        () -> assertEquals("-$1K", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(-1000), this._us.first, this._us.second), "Wrong formatted unit for negative thousands"),
+        () -> assertEquals("$1K", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1000), this._us.first, this._us.second), "Wrong formatted unit for thousands"),
+        () -> assertEquals("$1.5K", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1500), this._us.first, this._us.second), "Wrong formatted unit for thousands"),
+        () -> assertEquals("$1.5K", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1555), this._us.first, this._us.second), "Wrong formatted unit for thousands"),
+
+        // Millions.
+        () -> assertEquals("-$1M", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(-1_000_000), this._us.first, this._us.second), "Wrong formatted unit for negative millions"),
+        () -> assertEquals("$1M", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_000_000), this._us.first, this._us.second), "Wrong formatted unit for millions"),
+        () -> assertEquals("$1.5M", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_000), this._us.first, this._us.second), "Wrong formatted unit for millions"),
+        () -> assertEquals("$1.5M", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_555), this._us.first, this._us.second), "Wrong formatted unit for millions"),
+
+        // Billions.
+        () -> assertEquals("-$1B", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(-1_000_000_000), this._us.first, this._us.second), "Wrong formatted unit for negative billions"),
+        () -> assertEquals("$1B", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_000_000_000), this._us.first, this._us.second), "Wrong formatted unit for billions"),
+        () -> assertEquals("$1.5B", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_000_000), this._us.first, this._us.second), "Wrong formatted unit for billions"),
+        () -> assertEquals("$1.5B", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_555_000), this._us.first, this._us.second), "Wrong formatted unit for billions"),
+
+        // Trillions.
+        () -> assertEquals("-$1T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(-1_000_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for negative trillions"),
+        () -> assertEquals("$1T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_000_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions"),
+        () -> assertEquals("$1.5T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions"),
+        () -> assertEquals("$1.5T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_555_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions"),
+        () -> assertEquals("$1,000T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_000_000_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions"),
+        () -> assertEquals("$1,555T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_000_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions"),
+        () -> assertEquals("$1,555.5T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_555_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions"),
+        () -> assertEquals("$1,000,000T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_000_000_000_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions"),
+        () -> assertEquals("$1,555,000T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_000_000_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions"),
+        () -> assertEquals("$1,555,555T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_555_000_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions"),
+        () -> assertEquals("$1,555,555.5T", CurrencyFormat.formatWithUnit(BigDecimal.valueOf(1_555_555_555_000_000_000L), this._us.first, this._us.second), "Wrong formatted unit for trillions")
     ); // spotless:on
   }
 

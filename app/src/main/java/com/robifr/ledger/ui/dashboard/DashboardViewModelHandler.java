@@ -45,10 +45,13 @@ public class DashboardViewModelHandler {
     this._viewModel
         .snackbarMessage()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+
     this._viewModel
+        .balanceView()
         .customersWithBalance()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithBalance);
     this._viewModel
+        .balanceView()
         .customersWithDebt()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithDebt);
   }
@@ -76,13 +79,13 @@ public class DashboardViewModelHandler {
 
     this._fragment
         .fragmentBinding()
-        .totalBalances
-        .totalCustomers
+        .balance
+        .totalCustomersWithBalanceTitle
         .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
     this._fragment
         .fragmentBinding()
-        .totalBalances
-        .amount
+        .balance
+        .totalBalance
         .setText(CurrencyFormat.format(BigDecimal.valueOf(amount), "id", "ID"));
   }
 
@@ -105,14 +108,14 @@ public class DashboardViewModelHandler {
 
     this._fragment
         .fragmentBinding()
-        .totalDebts
-        .totalCustomers
+        .balance
+        .totalCustomersWithDebtTitle
         .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
     this._fragment
         .fragmentBinding()
-        .totalDebts
-        .amount
+        .balance
+        .totalDebt
         .setText(CurrencyFormat.format(amount, "id", "ID"));
-    this._fragment.fragmentBinding().totalDebts.amount.setTextColor(amountTextColor);
+    this._fragment.fragmentBinding().balance.totalDebt.setTextColor(amountTextColor);
   }
 }

@@ -65,6 +65,67 @@ public class CurrencyFormat {
     return format.format(amount);
   }
 
+  /** {@link CurrencyFormat#formatWithUnit(BigDecimal, String, String, String)} */
+  @NonNull
+  public static String formatWithUnit(
+      @NonNull BigDecimal amount, @NonNull String language, @NonNull String country) {
+    return CurrencyFormat.formatWithUnit(
+        amount, language, country, CurrencyFormat.symbol(language, country));
+  }
+
+  /**
+   * @return Formatted amount into local specific currency with an appropriate suffix (such as K for
+   *     thousands or M for millions) appended at the end of the string.
+   */
+  @NonNull
+  public static String formatWithUnit(
+      @NonNull BigDecimal amount,
+      @NonNull String language,
+      @NonNull String country,
+      @NonNull String symbol) {
+    Objects.requireNonNull(amount);
+    Objects.requireNonNull(language);
+    Objects.requireNonNull(country);
+    Objects.requireNonNull(symbol);
+
+    final BigDecimal thousand = BigDecimal.valueOf(1000);
+    final BigDecimal million = BigDecimal.valueOf(1_000_000);
+    final BigDecimal billion = BigDecimal.valueOf(1_000_000_000);
+    final BigDecimal trillion = BigDecimal.valueOf(1_000_000_000_000L);
+
+    // Convert negative amount to positive to handle where negative amounts
+    // can't be formatted due to division.
+    final String negativePrefix = amount.compareTo(BigDecimal.ZERO) < 0 ? "-" : "";
+    final BigDecimal positiveAmount = amount.abs();
+
+    if (positiveAmount.compareTo(thousand) < 0) {
+      return negativePrefix + CurrencyFormat.format(positiveAmount, language, country, symbol);
+
+    } else if (positiveAmount.compareTo(million) < 0) {
+      return negativePrefix
+          + CurrencyFormat.format(
+              positiveAmount.divide(thousand, 1, RoundingMode.DOWN), language, country, symbol)
+          + "K";
+
+    } else if (positiveAmount.compareTo(billion) < 0) {
+      return negativePrefix
+          + CurrencyFormat.format(
+              positiveAmount.divide(million, 1, RoundingMode.DOWN), language, country, symbol)
+          + "M";
+
+    } else if (positiveAmount.compareTo(trillion) < 0) {
+      return negativePrefix
+          + CurrencyFormat.format(
+              positiveAmount.divide(billion, 1, RoundingMode.DOWN), language, country, symbol)
+          + "B";
+    }
+
+    return negativePrefix
+        + CurrencyFormat.format(
+            positiveAmount.divide(trillion, 1, RoundingMode.DOWN), language, country, symbol)
+        + "T";
+  }
+
   /**
    * @return Parsed amount from local specific currency.
    */

@@ -81,6 +81,9 @@
     <!-- Snackbar. -->
     <item name="snackbarTextViewStyle">@style/Snackbar.TextView</item>
 
+    <!-- Divider line. -->
+    <item name="materialDividerStyle">@style/Divider</item>
+
     <!-- Disable annoying material things. The one that make every color looks weird. -->
     <item name="elevationOverlayEnabled">false</item>
 

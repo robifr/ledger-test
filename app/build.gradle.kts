@@ -15,6 +15,8 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+
 plugins {
   kotlin("android")
   id("com.android.application")
@@ -74,7 +76,10 @@ android {
     }
   }
 
-  buildFeatures { viewBinding = true }
+  buildFeatures {
+    viewBinding = true
+    buildConfig = true
+  }
 
   packaging { resources.excludes.add("META-INF/LICENSE") }
 
@@ -99,6 +104,7 @@ android {
 dependencies {
   implementation("androidx.appcompat:appcompat:1.6.1")
   implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+  implementation("androidx.webkit:webkit:1.10.0")
 
   implementation("androidx.room:room-runtime:2.6.1")
   annotationProcessor("androidx.room:room-compiler:2.6.1")
@@ -124,3 +130,17 @@ dependencies {
 
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
+
+tasks.register<Exec>("downloadD3Js") {
+  val version: String = "7.9.0"
+  val url: String = "https://cdn.jsdelivr.net/npm/d3@$version/dist/d3.js"
+  val dir: File = file("src/main/assets/libs/").apply { mkdirs() }
+  val file: File = File(file("src/main/assets/libs/"), "d3.js")
+
+  // Prevent re-downloading when rebuilding the project.
+  onlyIf { !file.exists() || !file.readText().contains(version) }
+
+  commandLine("curl", url, "-o", file.absolutePath)
+}
+
+tasks.named("preBuild").dependsOn("downloadD3Js")

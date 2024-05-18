@@ -18,7 +18,14 @@
 package com.robifr.ledger;
 
 import android.app.Application;
+import android.webkit.WebView;
 import dagger.hilt.android.HiltAndroidApp;
 
 @HiltAndroidApp
-public class App extends Application {}
+public class App extends Application {
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
+  }
+}

@@ -27,34 +27,27 @@
       android:layout_height="wrap_content"
       android:background="?android:colorBackground"
       app:layout_scrollFlags="scroll|enterAlways|snap"
+      app:menu="@menu/reusable_toolbar_main"
       app:navigationIcon="@null"
       app:title="@string/app_name" />
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="10dp">
+      android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/totalBalances"
-        layout="@layout/dashboard_card_totalbalance"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/screen_padding"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintEnd_toStartOf="@id/totalDebts"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical">
 
-    <include
-        android:id="@+id/totalDebts"
-        layout="@layout/dashboard_card_totalbalance"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="@dimen/screen_padding"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/totalBalances" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+      <include
+          android:id="@+id/balance"
+          layout="@layout/dashboard_card_balance"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="25dp"
+          android:layout_marginStart="@dimen/screen_padding"
+          android:layout_marginEnd="@dimen/screen_padding" />
+    </LinearLayout>
+  </androidx.core.widget.NestedScrollView>
 </LinearLayout>

@@ -60,14 +60,18 @@ public class DashboardFragment extends Fragment {
         new ViewModelProvider(this.requireActivity()).get(DashboardViewModel.class);
     this._viewModelHandler = new DashboardViewModelHandler(this, this._dashboardViewModel);
 
-    this._fragmentBinding.totalBalances.title.setText(this.getString(R.string.text_total_balances));
-    this._fragmentBinding.totalDebts.title.setText(this.getString(R.string.text_total_debts));
-    this._fragmentBinding.totalDebts.cardView.setCardBackgroundColor(
-        this.requireContext().getColor(R.color.light_red_15));
+    this._fragmentBinding.balance.totalBalanceTitle.setText(
+        this.getString(R.string.text_total_balances));
+    this._fragmentBinding.balance.totalDebtTitle.setText(this.getString(R.string.text_total_debts));
   }
 
   @NonNull
   public DashboardFragmentBinding fragmentBinding() {
     return Objects.requireNonNull(this._fragmentBinding);
+  }
+
+  @NonNull
+  public DashboardViewModel dashboardViewModel() {
+    return Objects.requireNonNull(this._dashboardViewModel);
   }
 }

@@ -80,6 +80,10 @@
     <item name="android:textColor">?android:textColor</item>
   </style>
 
+  <style name="Divider" parent="Widget.Material3.MaterialDivider">
+    <item name="dividerThickness">@dimen/stroke_width</item>
+  </style>
+
   <style name="MaterialOverlay.TextInputEditText.FilledBox" parent="">
     <item name="editTextStyle">@style/TextInputEditText.FilledBox</item>
   </style>

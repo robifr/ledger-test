@@ -119,8 +119,8 @@
   <string name="text_this_week">This week</string>
   <string name="text_today">Today</string>
   <string name="text_total">Total</string>
-  <string name="text_total_balances">Total balances</string>
-  <string name="text_total_debts">Total debts</string>
+  <string name="text_total_balance">Total balance</string>
+  <string name="text_total_debt">Total debt</string>
   <string name="text_total_discount">Total discount</string>
   <string name="text_total_price">Total price</string>
   <string name="text_unpaid">Unpaid</string>

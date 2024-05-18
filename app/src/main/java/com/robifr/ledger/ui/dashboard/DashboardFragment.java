@@ -61,8 +61,8 @@ public class DashboardFragment extends Fragment {
     this._viewModelHandler = new DashboardViewModelHandler(this, this._dashboardViewModel);
 
     this._fragmentBinding.balance.totalBalanceTitle.setText(
-        this.getString(R.string.text_total_balances));
-    this._fragmentBinding.balance.totalDebtTitle.setText(this.getString(R.string.text_total_debts));
+        this.getString(R.string.text_total_balance));
+    this._fragmentBinding.balance.totalDebtTitle.setText(this.getString(R.string.text_total_debt));
   }
 
   @NonNull

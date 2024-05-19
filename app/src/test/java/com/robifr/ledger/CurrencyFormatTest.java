@@ -116,7 +116,7 @@ public class CurrencyFormatTest {
         () -> assertTrue(CurrencyFormat.isSymbolAtStart(this._us.first, this._us.second), "US dollar symbol is at the start of the string"),
         () -> assertTrue(CurrencyFormat.isSymbolAtStart(this._uk.first, this._uk.second), "UK pound symbol is at the start of the string"),
         () -> assertFalse(CurrencyFormat.isSymbolAtStart(this._france.first, this._france.second), "France euro symbol is at the end of the string"),
-        () -> assertFalse(CurrencyFormat.isSymbolAtStart(this._german.first, this._german.second), "German euro symbol is at the start of the string"),
+        () -> assertFalse(CurrencyFormat.isSymbolAtStart(this._german.first, this._german.second), "German euro symbol is at the end of the string"),
         () -> assertTrue(CurrencyFormat.isSymbolAtStart(this._indonesia.first, this._indonesia.second), "Indonesia rupiah symbol is at the start of the string"),
         () -> assertTrue(CurrencyFormat.isSymbolAtStart(this._japan.first, this._japan.second), "Japan yen symbol is at the start of the string")
     ); // spotless:on

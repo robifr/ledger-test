@@ -93,15 +93,15 @@ public class CustomerModelTest {
     assertAll( // spotless:off
         // Before payment is made. Ensure the actual shown balance — the one
         // visible by user — is sufficient.
-        () -> assertTrue(this._customer.isBalanceSufficient(this._queue, this._queue)),
-        () -> assertTrue(this._customer.isBalanceSufficient(null, this._queue)),
-        () -> assertFalse(secondCustomer.isBalanceSufficient(null, this._queue), "Customer should equals to the one in the new queue"),
+        () -> assertTrue(this._customer.isBalanceSufficient(this._queue, this._queue), "Sufficient balance when both customer equals"),
+        () -> assertTrue(this._customer.isBalanceSufficient(null, this._queue), "Sufficient balance when old queue customer is null"),
+        () -> assertFalse(secondCustomer.isBalanceSufficient(null, this._queue), "Insufficient balance when both customer differs"),
 
         // After payment is made. Ensure the balance — from
         // both current and deducted balance — is sufficient.
-        () -> assertTrue(noBalanceCustomer.isBalanceSufficient(queue_noBalance_totalPriceEqualsOriginalBalance, queue_noBalance_totalPriceLessThanOriginalBalance)),
-        () -> assertTrue(noBalanceCustomer.isBalanceSufficient(queue_noBalance_totalPriceEqualsOriginalBalance, queue_noBalance_totalPriceEqualsOriginalBalance)),
-        () -> assertFalse(noBalanceCustomer.isBalanceSufficient(queue_noBalance_totalPriceEqualsOriginalBalance, queue_noBalance_totalPriceMoreThanOriginalBalance))
+        () -> assertTrue(noBalanceCustomer.isBalanceSufficient(queue_noBalance_totalPriceEqualsOriginalBalance, queue_noBalance_totalPriceLessThanOriginalBalance), "Sufficient balance for customer with no balance when new queue has less total price"),
+        () -> assertTrue(noBalanceCustomer.isBalanceSufficient(queue_noBalance_totalPriceEqualsOriginalBalance, queue_noBalance_totalPriceEqualsOriginalBalance), "Sufficient balance for customer with no balance when new queue has equals total price"),
+        () -> assertFalse(noBalanceCustomer.isBalanceSufficient(queue_noBalance_totalPriceEqualsOriginalBalance, queue_noBalance_totalPriceMoreThanOriginalBalance), "Insufficient balance for customer with no balance when new queue has more total price")
     ); // spotless:on
   }
 
@@ -180,7 +180,7 @@ public class CustomerModelTest {
         () -> assertEquals(10_000L, this._customer.balanceOnUpdatedPayment(completedQueue_cash, completedQueue_cash), "Keep balance when queue unchanged"),
         () -> assertEquals(10_000L, this._customer.balanceOnUpdatedPayment(completedQueue_cash, uncompletedQueue_accountBalance), "Keep balance when old queue with cash changed to uncompleted"),
         () -> assertEquals(10_000L, this._customer.balanceOnUpdatedPayment(completedQueue_cash, uncompletedQueue_cash), "Keep balance when old queue with cash changed to uncompleted"),
-        () -> assertEquals(10_000L, secondCustomer.balanceOnUpdatedPayment(completedQueue_cash, completedQueue_accountBalance), "Keep balance when the customer differs with the one in the new queue"),
+        () -> assertEquals(10_000L, secondCustomer.balanceOnUpdatedPayment(completedQueue_cash, completedQueue_accountBalance), "Keep balance when both customer differs"),
 
         () -> assertEquals(9000L, this._customer.balanceOnUpdatedPayment(uncompletedQueue_accountBalance, completedQueue_accountBalance), "Deduct balance when queue changed to completed with account balance"),
         () -> assertEquals(10_000L, this._customer.balanceOnUpdatedPayment(uncompletedQueue_accountBalance, completedQueue_cash), "Keep balance when queue changed to completed with cash"),
@@ -269,7 +269,7 @@ public class CustomerModelTest {
         () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(completedQueue, uncompletedQueue), "Add debt when queue changed to uncompleted"),
         () -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnUpdatedPayment(uncompletedQueue, completedQueue), "Revert debt when queue changed to completed"),
         () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue), "Keep debt when queue unchanged"),
-        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(completedQueue, uncompletedQueue), "Keep debt when the customer differs with the one in the new queue"),
+        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(completedQueue, uncompletedQueue), "Keep debt when both customer differs"),
 
         // When the old queue doesn't have customer beforehand.
         () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(uncompletedQueue_noCustomer, completedQueue), "Keep debt when queue stays completed"),

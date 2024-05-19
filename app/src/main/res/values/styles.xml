@@ -82,6 +82,7 @@
 
   <style name="Divider" parent="Widget.Material3.MaterialDivider">
     <item name="dividerThickness">@dimen/stroke_width</item>
+    <item name="dividerColor">@color/stroke</item>
   </style>
 
   <style name="MaterialOverlay.TextInputEditText.FilledBox" parent="">

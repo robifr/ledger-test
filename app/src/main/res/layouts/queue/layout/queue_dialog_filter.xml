@@ -31,11 +31,10 @@
       android:layout_height="wrap_content"
       android:text="@string/text_filters" />
 
-  <View
+  <com.google.android.material.divider.MaterialDivider
       android:layout_width="match_parent"
-      android:layout_height="@dimen/stroke_width"
-      android:layout_marginBottom="5dp"
-      android:background="@color/stroke" />
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="5dp" />
 
   <androidx.core.widget.NestedScrollView
       android:layout_width="wrap_content"
@@ -61,12 +60,11 @@
           android:id="@+id/filterDate"
           layout="@layout/queue_dialog_filter_date" />
 
-      <View
+      <com.google.android.material.divider.MaterialDivider
           android:layout_width="match_parent"
-          android:layout_height="@dimen/stroke_width"
+          android:layout_height="wrap_content"
           android:layout_marginStart="@dimen/bottomdialog_padding"
-          android:layout_marginEnd="@dimen/bottomdialog_padding"
-          android:background="@color/stroke" />
+          android:layout_marginEnd="@dimen/bottomdialog_padding" />
 
       <include
           android:id="@+id/filterStatus"

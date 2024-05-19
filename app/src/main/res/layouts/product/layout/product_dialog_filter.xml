@@ -31,11 +31,10 @@
       android:layout_height="wrap_content"
       android:text="@string/text_filters" />
 
-  <View
+  <com.google.android.material.divider.MaterialDivider
       android:layout_width="match_parent"
-      android:layout_height="@dimen/stroke_width"
-      android:layout_marginBottom="5dp"
-      android:background="@color/stroke" />
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="5dp" />
 
   <include
       android:id="@+id/filterPrice"

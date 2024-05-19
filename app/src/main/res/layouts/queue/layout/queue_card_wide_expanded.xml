@@ -77,14 +77,13 @@
       app:layout_constraintTop_toTopOf="parent"
       app:rippleColor="?android:colorControlHighlight" />
 
-  <View
-      android:id="@+id/dividerLineForCustomer"
-      android:layout_width="0dp"
-      android:layout_height="@dimen/stroke_width"
+  <com.google.android.material.divider.MaterialDivider
+      android:id="@+id/dividerForCustomer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/cardlist_padding"
       android:layout_marginTop="15dp"
       android:layout_marginEnd="@dimen/cardlist_padding"
-      android:background="@color/stroke"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/coloredSideline"
       app:layout_constraintTop_toBottomOf="@id/customerName" />
@@ -99,7 +98,7 @@
       android:text="@string/text_queue_id"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintStart_toEndOf="@id/coloredSideline"
-      app:layout_constraintTop_toBottomOf="@id/dividerLineForCustomer"
+      app:layout_constraintTop_toBottomOf="@id/dividerForCustomer"
       app:layout_constraintWidth_percent="0.25" />
 
   <TextView

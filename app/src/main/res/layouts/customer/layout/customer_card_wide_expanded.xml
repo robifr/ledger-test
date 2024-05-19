@@ -80,14 +80,13 @@
       app:layout_constraintStart_toStartOf="@id/menuButton"
       app:layout_constraintTop_toTopOf="@id/menuButton" />
 
-  <View
-      android:id="@+id/dividerLineForName"
-      android:layout_width="0dp"
-      android:layout_height="@dimen/stroke_width"
+  <com.google.android.material.divider.MaterialDivider
+      android:id="@+id/dividerForName"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/cardlist_padding"
       android:layout_marginTop="15dp"
       android:layout_marginEnd="@dimen/cardlist_padding"
-      android:background="@color/stroke"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/name" />
@@ -102,7 +101,7 @@
       android:text="@string/text_customer_id"
       android:textSize="@dimen/text_smallmedium"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/dividerLineForName"
+      app:layout_constraintTop_toBottomOf="@id/dividerForName"
       app:layout_constraintWidth_percent="0.25" />
 
   <TextView

@@ -60,7 +60,6 @@ public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     }
   }
 
-  @NonNull protected final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
   @Nullable protected CreateCustomerFragmentBinding _fragmentBinding;
   @Nullable protected CreateCustomerName _inputName;
   @Nullable protected CreateCustomerBalance _inputBalance;
@@ -68,6 +67,8 @@ public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuIt
 
   @Nullable protected CreateCustomerViewModel _createCustomerViewModel;
   @Nullable protected CreateCustomerViewModelHandler _viewModelHandler;
+
+  @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
 
   @Override
   public View onCreateView(

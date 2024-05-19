@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class CustomerUpdater implements ModelChangedListener<CustomerModel> {
+class CustomerUpdater implements ModelChangedListener<CustomerModel> {
   @NonNull private final DashboardViewModel _viewModel;
 
   public CustomerUpdater(@NonNull DashboardViewModel viewModel) {

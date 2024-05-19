@@ -60,13 +60,14 @@ public class CreateProductFragment extends Fragment implements Toolbar.OnMenuIte
     }
   }
 
-  @NonNull protected final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
   @Nullable protected CreateProductFragmentBinding _fragmentBinding;
   @Nullable protected CreateProductName _inputName;
   @Nullable protected CreateProductPrice _inputPrice;
 
   @Nullable protected CreateProductViewModel _createProductViewModel;
   @Nullable protected CreateProductViewModelHandler _viewModelHandler;
+
+  @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
 
   @Override
   public View onCreateView(

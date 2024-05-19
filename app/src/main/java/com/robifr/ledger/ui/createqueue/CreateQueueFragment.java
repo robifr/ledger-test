@@ -59,7 +59,6 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
     }
   }
 
-  @NonNull protected final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
   @Nullable protected CreateQueueFragmentBinding _fragmentBinding;
   @Nullable protected CreateQueueCustomer _inputCustomer;
   @Nullable protected CreateQueueDate _inputDate;
@@ -70,6 +69,8 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
 
   @Nullable protected CreateQueueViewModel _createQueueViewModel;
   @Nullable protected CreateQueueViewModelHandler _viewModelHandler;
+
+  @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
 
   @Override
   public View onCreateView(

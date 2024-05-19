@@ -17,12 +17,9 @@
 
 package com.robifr.ledger.ui.queue.viewmodel;
 
-import android.os.Handler;
-import android.os.Looper;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -32,10 +29,8 @@ import com.robifr.ledger.data.QueueFilterer;
 import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.data.QueueSortMethod;
 import com.robifr.ledger.data.QueueSorter;
-import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.CustomerRepository;
-import com.robifr.ledger.repository.ModelChangedListener;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.LiveDataModelUpdater;
@@ -53,7 +48,7 @@ public class QueueViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final QueueUpdater _queueUpdater;
-  @NonNull private final CustomerUpdater _customerUpdater = new CustomerUpdater();
+  @NonNull private final CustomerUpdater _customerUpdater = new CustomerUpdater(this);
   @NonNull private final QueueFilterViewModel _filterView;
   @NonNull private final QueueSorter _sorter = new QueueSorter();
 
@@ -266,81 +261,6 @@ public class QueueViewModel extends ViewModel {
     public void onUpdateLiveData(@NonNull List<QueueModel> queues) {
       QueueViewModel.this._filterView.onFiltersChanged(
           QueueViewModel.this._filterView.inputtedFilters(), queues);
-    }
-  }
-
-  private class CustomerUpdater implements ModelChangedListener<CustomerModel> {
-    @Override
-    @WorkerThread
-    public void onModelAdded(@NonNull List<CustomerModel> customers) {}
-
-    @Override
-    @WorkerThread
-    public void onModelUpdated(@NonNull List<CustomerModel> customers) {
-      new Handler(Looper.getMainLooper())
-          .post(
-              () -> {
-                final ArrayList<QueueModel> queues =
-                    QueueViewModel.this._queues.getValue() != null
-                        ? new ArrayList<>(QueueViewModel.this._queues.getValue())
-                        : new ArrayList<>();
-
-                for (CustomerModel customer : customers) {
-                  for (int i = 0; i < queues.size(); i++) {
-                    final QueueModel queue = queues.get(i);
-
-                    // When customer updated, apply those changes into the queue model.
-                    if (queue.customerId() != null && queue.customerId().equals(customer.id())) {
-                      final QueueModel updatedQueue =
-                          QueueModel.toBuilder(queue)
-                              .setCustomerId(customer.id())
-                              .setCustomer(customer)
-                              .build();
-                      queues.set(i, updatedQueue);
-                    }
-                  }
-                }
-
-                QueueViewModel.this._filterView.onFiltersChanged(
-                    QueueViewModel.this._filterView.inputtedFilters(), queues);
-              });
-    }
-
-    @Override
-    @WorkerThread
-    public void onModelDeleted(@NonNull List<CustomerModel> customers) {
-      new Handler(Looper.getMainLooper())
-          .post(
-              () -> {
-                final ArrayList<QueueModel> queues =
-                    QueueViewModel.this._queues.getValue() != null
-                        ? new ArrayList<>(QueueViewModel.this._queues.getValue())
-                        : new ArrayList<>();
-
-                for (CustomerModel customer : customers) {
-                  for (int i = 0; i < queues.size(); i++) {
-                    final QueueModel queue = queues.get(i);
-
-                    // When customer deleted, remove them from the queue model.
-                    if (queue.customerId() != null && queue.customerId().equals(customer.id())) {
-                      final QueueModel updatedQueue =
-                          QueueModel.toBuilder(queue).setCustomerId(null).setCustomer(null).build();
-                      queues.set(i, updatedQueue);
-                    }
-                  }
-                }
-
-                QueueViewModel.this._filterView.onFiltersChanged(
-                    QueueViewModel.this._filterView.inputtedFilters(), queues);
-              });
-    }
-
-    @Override
-    @WorkerThread
-    public void onModelUpserted(@NonNull List<CustomerModel> customers) {
-      // Only when customer updated, apply those changes into the queue model
-      // and ignore for any inserted customer.
-      this.onModelUpdated(customers);
     }
   }
 }

@@ -44,23 +44,11 @@ import java.util.Objects;
 public class SearchFragment extends Fragment
     implements View.OnClickListener, SearchView.OnQueryTextListener {
   public enum Request implements FragmentResultKey {
-    SELECT_CUSTOMER;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    SELECT_CUSTOMER
   }
 
   public enum Result implements FragmentResultKey {
-    SELECTED_CUSTOMER_ID;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    SELECTED_CUSTOMER_ID
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();

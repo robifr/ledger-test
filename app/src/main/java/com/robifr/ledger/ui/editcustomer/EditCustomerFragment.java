@@ -32,33 +32,15 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class EditCustomerFragment extends CreateCustomerFragment {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_CUSTOMER_ID_TO_EDIT;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    INITIAL_CUSTOMER_ID_TO_EDIT
   }
 
   public enum Request implements FragmentResultKey {
-    EDIT_CUSTOMER;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    EDIT_CUSTOMER
   }
 
   public enum Result implements FragmentResultKey {
-    EDITED_CUSTOMER_ID;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    EDITED_CUSTOMER_ID
   }
 
   @Override

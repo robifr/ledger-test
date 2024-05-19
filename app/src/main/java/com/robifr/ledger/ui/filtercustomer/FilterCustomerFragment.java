@@ -41,33 +41,15 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_FILTERED_CUSTOMER_IDS;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    INITIAL_FILTERED_CUSTOMER_IDS
   }
 
   public enum Request implements FragmentResultKey {
-    FILTER_CUSTOMER;
-
-    @NonNull
-    @Override
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    FILTER_CUSTOMER
   }
 
   public enum Result implements FragmentResultKey {
-    FILTERED_CUSTOMER_IDS;
-
-    @NonNull
-    @Override
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    FILTERED_CUSTOMER_IDS
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();

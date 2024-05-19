@@ -40,23 +40,11 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Request implements FragmentResultKey {
-    CREATE_QUEUE;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    CREATE_QUEUE
   }
 
   public enum Result implements FragmentResultKey {
-    CREATED_QUEUE_ID;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    CREATED_QUEUE_ID
   }
 
   @Nullable protected CreateQueueFragmentBinding _fragmentBinding;

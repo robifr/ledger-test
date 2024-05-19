@@ -42,33 +42,15 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class SearchCustomerFragment extends Fragment implements SearchView.OnQueryTextListener {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_QUERY;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    INITIAL_QUERY
   }
 
   public enum Request implements FragmentResultKey {
-    SELECT_CUSTOMER;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    SELECT_CUSTOMER
   }
 
   public enum Result implements FragmentResultKey {
-    SELECTED_CUSTOMER_ID;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    SELECTED_CUSTOMER_ID
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();

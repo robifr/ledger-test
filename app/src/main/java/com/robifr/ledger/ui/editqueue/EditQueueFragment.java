@@ -32,33 +32,15 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class EditQueueFragment extends CreateQueueFragment {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_QUEUE_ID_TO_EDIT;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    INITIAL_QUEUE_ID_TO_EDIT
   }
 
   public enum Request implements FragmentResultKey {
-    EDIT_QUEUE;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    EDIT_QUEUE
   }
 
   public enum Result implements FragmentResultKey {
-    EDITED_QUEUE_ID;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    EDITED_QUEUE_ID
   }
 
   @Override

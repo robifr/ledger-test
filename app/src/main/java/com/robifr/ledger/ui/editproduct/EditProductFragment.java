@@ -32,33 +32,15 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class EditProductFragment extends CreateProductFragment {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_PRODUCT_ID_TO_EDIT;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    INITIAL_PRODUCT_ID_TO_EDIT
   }
 
   public enum Request implements FragmentResultKey {
-    EDIT_PRODUCT;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    EDIT_PRODUCT
   }
 
   public enum Result implements FragmentResultKey {
-    EDITED_PRODUCT_ID;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    EDITED_PRODUCT_ID
   }
 
   @Override

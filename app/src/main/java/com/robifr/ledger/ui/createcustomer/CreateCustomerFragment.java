@@ -41,23 +41,11 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Request implements FragmentResultKey {
-    CREATE_CUSTOMER;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    CREATE_CUSTOMER
   }
 
   public enum Result implements FragmentResultKey {
-    CREATED_CUSTOMER_ID;
-
-    @Override
-    @NonNull
-    public String key() {
-      return FragmentResultKey.generateKey(this);
-    }
+    CREATED_CUSTOMER_ID
   }
 
   @Nullable protected CreateCustomerFragmentBinding _fragmentBinding;

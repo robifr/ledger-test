@@ -20,12 +20,12 @@ package com.robifr.ledger.ui;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
-import java.util.Objects;
+import com.robifr.ledger.util.Tag;
 
 /**
  * This interface is useful when transferring data between fragments. By using enum package path,
- * which is unique, to generate either request — required by {@link FragmentManager} — or result key
- * — required by {@link Bundle}.
+ * which is unique, to generate either request (required by {@link FragmentManager}) or result key
+ * (required by {@link Bundle}).
  *
  * <pre>
  * DataReceiverFragment.java
@@ -55,23 +55,11 @@ import java.util.Objects;
  * {@code
  *  public DataSenderFragment extends Fragment {
  *    public enum Request implements FragmentResultKey {
- *      REQUEST_ID;
- *
- *      @Override
- *      @NonNull
- *      public String key() {
- *        return FragmentResultKey.generateKey(this);
- *      }
+ *      REQUEST_ID
  *    }
  *
  *    public enum Result implements FragmentResultKey {
- *      RESULTED_ID;
- *
- *      @Override
- *      @NonNull
- *      public String key() {
- *        return FragmentResultKey.generateKey(this);
- *      }
+ *      RESULTED_ID
  *    }
  *  }
  * }
@@ -85,19 +73,11 @@ import java.util.Objects;
  *  this.getParentFragmentManager().setFragmentResult(Request.RESULTED_ID.key(), bundle);
  * }
  * </pre>
- *
- * @apiNote Should only be used/implemented exclusively with enum.
  */
 public interface FragmentResultKey {
-  /** Key from {@link FragmentResultKey#generateKey(Enum)} to transfer data between fragments. */
+  /** Generated key from {@link Tag#fullName(Class)} to transfer data between fragments. */
   @NonNull
-  public String key();
-
-  @NonNull
-  public static <E extends Enum<E> & FragmentResultKey> String generateKey(@NonNull E constant) {
-    Objects.requireNonNull(constant);
-
-    final String enumPath = constant.getDeclaringClass().getName();
-    return enumPath + "." + constant.name();
+  public default String key() {
+    return this instanceof Enum e ? Tag.fullName(e) : Tag.fullName(this.getClass());
   }
 }

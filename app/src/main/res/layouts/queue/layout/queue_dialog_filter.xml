@@ -82,5 +82,4 @@
           layout="@layout/queue_dialog_filter_totalprice" />
     </LinearLayout>
   </androidx.core.widget.NestedScrollView>
-  >
 </LinearLayout>

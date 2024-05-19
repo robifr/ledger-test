@@ -43,7 +43,6 @@
     <item name="iconTint">?android:textColor</item>
     <item name="cornerSize">0dp</item>
   </style>
-  a
 
   <style name="BottomSheetDialog.Style" parent="Widget.Material3.BottomSheet.Modal">
     <item name="android:paddingBottom">@dimen/bottomdialog_button_minheight</item>

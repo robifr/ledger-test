@@ -43,6 +43,7 @@ import kotlinx.parcelize.Parcelize
  * @param totalPrice Product order total price. Use [ProductOrderModel.calculateTotalPrice] to do
  *   the calculation.
  */
+@JvmRecord
 @Parcelize
 @Entity(
     tableName = "product_order",
@@ -62,14 +63,13 @@ import kotlinx.parcelize.Parcelize
                 onDelete = ForeignKey.SET_NULL)],
     indices = [Index(value = ["queue_id"]), Index(value = ["product_id"])])
 data class ProductOrderModel(
-    @get:JvmName("id") @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long?,
-    @get:JvmName("queueId") @ColumnInfo(name = "queue_id") val queueId: Long?,
-    @get:JvmName("productId") @ColumnInfo(name = "product_id") val productId: Long?,
-    @get:JvmName("productName") @ColumnInfo(name = "product_name") val productName: String?,
-    @get:JvmName("productPrice") @ColumnInfo(name = "product_price") val productPrice: Long?,
-    @get:JvmName("quantity") @ColumnInfo(name = "quantity") val quantity: Double,
-    @get:JvmName("discount") @ColumnInfo(name = "discount") val discount: Long,
-    @get:JvmName("totalPrice")
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long?,
+    @ColumnInfo(name = "queue_id") val queueId: Long?,
+    @ColumnInfo(name = "product_id") val productId: Long?,
+    @ColumnInfo(name = "product_name") val productName: String?,
+    @ColumnInfo(name = "product_price") val productPrice: Long?,
+    @ColumnInfo(name = "quantity") val quantity: Double,
+    @ColumnInfo(name = "discount") val discount: Long,
     @field:TypeConverters(BigDecimalConverter::class)
     @ColumnInfo(name = "total_price")
     val totalPrice: BigDecimal

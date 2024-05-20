@@ -31,12 +31,13 @@ import kotlinx.parcelize.Parcelize
  * @param name Product name.
  * @param price Product price.
  */
+@JvmRecord
 @Parcelize
 @Entity(tableName = "product")
 data class ProductModel(
-    @get:JvmName("id") @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long?,
-    @get:JvmName("name") @ColumnInfo(name = "name") val name: String,
-    @get:JvmName("price") @ColumnInfo(name = "price") val price: Long
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long?,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "price") val price: Long
 ) : Model, Parcelable {
   companion object {
     @JvmStatic fun toBuilder(): NameBuild = NewBuilder()

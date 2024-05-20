@@ -36,13 +36,14 @@ import kotlinx.parcelize.Parcelize
  *   [ProductOrderModel.totalPrice] from queues whose status is other than
  *   [QueueModel.Status.COMPLETED]. Use [CustomerDao.totalDebtById] to count current total debt.
  */
+@JvmRecord
 @Parcelize
 @Entity(tableName = "customer")
 data class CustomerModel(
-    @get:JvmName("id") @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long?,
-    @get:JvmName("name") @ColumnInfo(name = "name") val name: String,
-    @get:JvmName("balance") @ColumnInfo(name = "balance") val balance: Long,
-    @get:JvmName("debt") @Ignore val debt: BigDecimal
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long?,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "balance") val balance: Long,
+    @Ignore val debt: BigDecimal
 ) : Model, Parcelable {
   /** Reserved constructor to be used by Room upon querying. */
   constructor(id: Long, name: String, balance: Long) : this(id, name, balance, 0.toBigDecimal())

@@ -44,6 +44,7 @@ import kotlinx.parcelize.Parcelize
  * @param customer Referenced customer instance if [customerId] available.
  * @param productOrders List of referenced ordered products.
  */
+@JvmRecord
 @Parcelize
 @Entity(
     tableName = "queue",
@@ -57,41 +58,29 @@ import kotlinx.parcelize.Parcelize
                 onDelete = ForeignKey.SET_NULL)],
     indices = [Index(value = ["customer_id"])])
 data class QueueModel(
-    @get:JvmName("id") @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long?,
-    @get:JvmName("customerId") @ColumnInfo(name = "customer_id") val customerId: Long?,
-    @get:JvmName("status") @ColumnInfo(name = "status") val status: Status,
-    @get:JvmName("date")
-    @field:TypeConverters(InstantConverter::class)
-    @ColumnInfo(name = "date")
-    val date: Instant,
-    @get:JvmName("paymentMethod")
-    @ColumnInfo(name = "payment_method")
-    val paymentMethod: PaymentMethod,
-    @get:JvmName("customer") @Ignore val customer: CustomerModel?,
-    @get:JvmName("productOrders") @Ignore val productOrders: List<ProductOrderModel>
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long?,
+    @ColumnInfo(name = "customer_id") val customerId: Long?,
+    @ColumnInfo(name = "status") val status: Status,
+    @field:TypeConverters(InstantConverter::class) @ColumnInfo(name = "date") val date: Instant,
+    @ColumnInfo(name = "payment_method") val paymentMethod: PaymentMethod,
+    @Ignore val customer: CustomerModel?,
+    @Ignore val productOrders: List<ProductOrderModel>
 ) : Model, Parcelable {
+
   enum class Status(
-      @StringRes private val _resourceString: Int,
-      @ColorRes private val _resourceBackgroundColor: Int,
-      @ColorRes private val _resourceTextColor: Int
+      @get:JvmName("resourceString") @StringRes val resourceString: Int,
+      @get:JvmName("resourceBackgroundColor") @ColorRes val resourceBackgroundColor: Int,
+      @get:JvmName("resourceTextColor") @ColorRes val resourceTextColor: Int
   ) {
     IN_QUEUE(R.string.text_in_queue, R.color.light_yellow, R.color.dark_yellow),
     IN_PROCESS(R.string.text_in_process, R.color.light_blue, R.color.dark_blue),
     UNPAID(R.string.text_unpaid, R.color.light_red, R.color.dark_red),
-    COMPLETED(R.string.text_completed, R.color.light_gray, R.color.darker_gray);
-
-    @StringRes fun resourceString(): Int = this._resourceString
-
-    @ColorRes fun resourceBackgroundColor(): Int = this._resourceBackgroundColor
-
-    @ColorRes fun resourceTextColor(): Int = this._resourceTextColor
+    COMPLETED(R.string.text_completed, R.color.light_gray, R.color.darker_gray)
   }
 
-  enum class PaymentMethod(@StringRes private val _resourceString: Int) {
+  enum class PaymentMethod(@get:JvmName("resourceString") @StringRes val resourceString: Int) {
     CASH(R.string.text_cash),
-    ACCOUNT_BALANCE(R.string.text_account_balance);
-
-    @StringRes fun resourceString(): Int = this._resourceString
+    ACCOUNT_BALANCE(R.string.text_account_balance)
   }
 
   /** Reserved constructor to be used by Room upon querying. */

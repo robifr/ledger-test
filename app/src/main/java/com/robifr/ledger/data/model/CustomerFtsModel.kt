@@ -15,33 +15,17 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.data.model;
+package com.robifr.ledger.data.model
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Fts4;
-import androidx.room.PrimaryKey;
-import java.util.Objects;
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Fts4
+import androidx.room.PrimaryKey
 
-/**
- * @implNote Room library isn't yet support Java record.
- * @noinspection ClassCanBeRecord
- */
+@JvmRecord
 @Fts4
 @Entity(tableName = "customer_fts")
-public class CustomerFtsModel {
-  @PrimaryKey
-  @ColumnInfo(name = "rowid")
-  public final long rowId;
-
-  @NonNull
-  @ColumnInfo(name = "name")
-  public final String name;
-
-  /** Reserved constructor to be used by Room upon querying. */
-  public CustomerFtsModel(long rowId, @NonNull String name) {
-    this.rowId = rowId;
-    this.name = Objects.requireNonNull(name);
-  }
-}
+data class CustomerFtsModel(
+    @field:ColumnInfo(name = "rowid") @field:PrimaryKey val rowId: Long,
+    @ColumnInfo(name = "name") val name: String
+)

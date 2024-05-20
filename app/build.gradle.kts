@@ -63,13 +63,13 @@ android {
   }
 
   buildTypes {
-    getByName("release") {
+    release {
       isMinifyEnabled = true
       manifestPlaceholders["app_name"] = "@string/app_name"
       proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
     }
 
-    getByName("debug") {
+    debug {
       applicationIdSuffix = ".debug"
       isDebuggable = true
       manifestPlaceholders["app_name"] = "@string/app_name_debug"
@@ -129,6 +129,8 @@ dependencies {
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
 
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+  debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }
 
 tasks.register<Exec>("downloadD3Js") {

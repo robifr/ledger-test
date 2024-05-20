@@ -28,10 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-class CustomerUpdater implements ModelChangedListener<CustomerModel> {
+class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
   @NonNull private final QueueViewModel _viewModel;
 
-  public CustomerUpdater(@NonNull QueueViewModel viewModel) {
+  public CustomerChangedListener(@NonNull QueueViewModel viewModel) {
     this._viewModel = Objects.requireNonNull(viewModel);
   }
 

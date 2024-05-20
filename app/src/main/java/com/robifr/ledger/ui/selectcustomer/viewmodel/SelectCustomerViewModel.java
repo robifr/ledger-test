@@ -31,7 +31,7 @@ import com.robifr.ledger.data.CustomerSorter;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
-import com.robifr.ledger.ui.LiveDataModelUpdater;
+import com.robifr.ledger.ui.LiveDataModelChangedListener;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -43,7 +43,7 @@ import javax.inject.Inject;
 @HiltViewModel
 public class SelectCustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
-  @NonNull private final CustomersUpdater _customersUpdater;
+  @NonNull private final CustomerChangedListener _customerChangedListener;
   @NonNull private final CustomerSorter _sorter = new CustomerSorter();
 
   @Nullable private final CustomerModel _initialSelectedCustomer;
@@ -64,12 +64,12 @@ public class SelectCustomerViewModel extends ViewModel {
     Objects.requireNonNull(savedStateHandle);
 
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._customersUpdater = new CustomersUpdater(this._customers);
+    this._customerChangedListener = new CustomerChangedListener(this._customers);
     this._initialSelectedCustomer =
         savedStateHandle.get(SelectCustomerFragment.Arguments.INITIAL_SELECTED_CUSTOMER.key());
 
     this._sorter.setSortMethod(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
-    this._customerRepository.addModelChangedListener(this._customersUpdater);
+    this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
@@ -88,7 +88,7 @@ public class SelectCustomerViewModel extends ViewModel {
 
   @Override
   public void onCleared() {
-    this._customerRepository.removeModelChangedListener(this._customersUpdater);
+    this._customerRepository.removeModelChangedListener(this._customerChangedListener);
   }
 
   @Nullable
@@ -142,8 +142,8 @@ public class SelectCustomerViewModel extends ViewModel {
     return result;
   }
 
-  private class CustomersUpdater extends LiveDataModelUpdater<CustomerModel> {
-    public CustomersUpdater(@NonNull MutableLiveData<List<CustomerModel>> customers) {
+  private class CustomerChangedListener extends LiveDataModelChangedListener<CustomerModel> {
+    public CustomerChangedListener(@NonNull MutableLiveData<List<CustomerModel>> customers) {
       super(customers);
     }
 

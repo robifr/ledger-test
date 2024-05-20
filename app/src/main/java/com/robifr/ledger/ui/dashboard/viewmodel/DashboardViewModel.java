@@ -36,7 +36,10 @@ import javax.inject.Inject;
 public class DashboardViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final BalanceViewModel _balanceView;
-  @NonNull private final CustomerUpdater _customerUpdater = new CustomerUpdater(this);
+
+  @NonNull
+  private final CustomerChangedListener _customerChangedListener =
+      new CustomerChangedListener(this);
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
@@ -47,12 +50,12 @@ public class DashboardViewModel extends ViewModel {
     this._customerRepository = Objects.requireNonNull(customerRepository);
     this._balanceView = new BalanceViewModel(this);
 
-    this._customerRepository.addModelChangedListener(this._customerUpdater);
+    this._customerRepository.addModelChangedListener(this._customerChangedListener);
   }
 
   @Override
   public void onCleared() {
-    this._customerRepository.removeModelChangedListener(this._customerUpdater);
+    this._customerRepository.removeModelChangedListener(this._customerChangedListener);
   }
 
   @NonNull

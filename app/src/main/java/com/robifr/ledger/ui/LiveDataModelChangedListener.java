@@ -29,10 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class LiveDataModelUpdater<M extends Model> implements ModelChangedListener<M> {
+public abstract class LiveDataModelChangedListener<M extends Model>
+    implements ModelChangedListener<M> {
   @NonNull protected final MutableLiveData<List<M>> _liveData;
 
-  public LiveDataModelUpdater(@NonNull MutableLiveData<List<M>> liveData) {
+  public LiveDataModelChangedListener(@NonNull MutableLiveData<List<M>> liveData) {
     this._liveData = Objects.requireNonNull(liveData);
   }
 

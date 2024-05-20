@@ -31,7 +31,7 @@ import com.robifr.ledger.data.ProductSorter;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
-import com.robifr.ledger.ui.LiveDataModelUpdater;
+import com.robifr.ledger.ui.LiveDataModelChangedListener;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -43,7 +43,7 @@ import javax.inject.Inject;
 @HiltViewModel
 public class SelectProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
-  @NonNull private final ProductsUpdater _productsUpdater;
+  @NonNull private final ProductChangedListener _productChangedListener;
   @NonNull private final ProductSorter _sorter = new ProductSorter();
 
   @Nullable private final ProductModel _initialSelectedProduct;
@@ -64,12 +64,12 @@ public class SelectProductViewModel extends ViewModel {
     Objects.requireNonNull(savedStateHandle);
 
     this._productRepository = Objects.requireNonNull(productRepository);
-    this._productsUpdater = new ProductsUpdater(this._products);
+    this._productChangedListener = new ProductChangedListener(this._products);
     this._initialSelectedProduct =
         savedStateHandle.get(SelectProductFragment.Arguments.INITIAL_SELECTED_PRODUCT.key());
 
     this._sorter.setSortMethod(new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
-    this._productRepository.addModelChangedListener(this._productsUpdater);
+    this._productRepository.addModelChangedListener(this._productChangedListener);
 
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
@@ -88,7 +88,7 @@ public class SelectProductViewModel extends ViewModel {
 
   @Override
   public void onCleared() {
-    this._productRepository.removeModelChangedListener(this._productsUpdater);
+    this._productRepository.removeModelChangedListener(this._productChangedListener);
   }
 
   @Nullable
@@ -142,8 +142,8 @@ public class SelectProductViewModel extends ViewModel {
     return result;
   }
 
-  private class ProductsUpdater extends LiveDataModelUpdater<ProductModel> {
-    public ProductsUpdater(@NonNull MutableLiveData<List<ProductModel>> products) {
+  private class ProductChangedListener extends LiveDataModelChangedListener<ProductModel> {
+    public ProductChangedListener(@NonNull MutableLiveData<List<ProductModel>> products) {
       super(products);
     }
 

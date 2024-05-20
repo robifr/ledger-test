@@ -33,7 +33,7 @@ import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
-import com.robifr.ledger.ui.LiveDataModelUpdater;
+import com.robifr.ledger.ui.LiveDataModelChangedListener;
 import com.robifr.ledger.ui.StringResources;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
@@ -47,8 +47,12 @@ import javax.inject.Inject;
 public class QueueViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
-  @NonNull private final QueueUpdater _queueUpdater;
-  @NonNull private final CustomerUpdater _customerUpdater = new CustomerUpdater(this);
+  @NonNull private final QueueChangedListener _queueChangedListener;
+
+  @NonNull
+  private final CustomerChangedListener _customerChangedListener =
+      new CustomerChangedListener(this);
+
   @NonNull private final QueueFilterViewModel _filterView;
   @NonNull private final QueueSorter _sorter = new QueueSorter();
 
@@ -70,7 +74,7 @@ public class QueueViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._queueUpdater = new QueueUpdater(this._queues);
+    this._queueChangedListener = new QueueChangedListener(this._queues);
 
     final QueueFilterer filterer = new QueueFilterer();
     filterer.setFilters(
@@ -83,8 +87,8 @@ public class QueueViewModel extends ViewModel {
 
     this._filterView = new QueueFilterViewModel(this, filterer);
 
-    this._queueRepository.addModelChangedListener(this._queueUpdater);
-    this._customerRepository.addModelChangedListener(this._customerUpdater);
+    this._queueRepository.addModelChangedListener(this._queueChangedListener);
+    this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
@@ -109,8 +113,8 @@ public class QueueViewModel extends ViewModel {
 
   @Override
   public void onCleared() {
-    this._queueRepository.removeModelChangedListener(this._queueUpdater);
-    this._customerRepository.removeModelChangedListener(this._customerUpdater);
+    this._queueRepository.removeModelChangedListener(this._queueChangedListener);
+    this._customerRepository.removeModelChangedListener(this._customerChangedListener);
   }
 
   @NonNull
@@ -251,8 +255,8 @@ public class QueueViewModel extends ViewModel {
     this._expandedQueueIndex.setValue(index);
   }
 
-  private class QueueUpdater extends LiveDataModelUpdater<QueueModel> {
-    public QueueUpdater(@NonNull MutableLiveData<List<QueueModel>> queues) {
+  private class QueueChangedListener extends LiveDataModelChangedListener<QueueModel> {
+    public QueueChangedListener(@NonNull MutableLiveData<List<QueueModel>> queues) {
       super(queues);
     }
 

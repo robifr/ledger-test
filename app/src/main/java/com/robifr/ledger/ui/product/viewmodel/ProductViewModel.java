@@ -31,7 +31,7 @@ import com.robifr.ledger.data.ProductSorter;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
-import com.robifr.ledger.ui.LiveDataModelUpdater;
+import com.robifr.ledger.ui.LiveDataModelChangedListener;
 import com.robifr.ledger.ui.StringResources;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
@@ -43,9 +43,8 @@ import javax.inject.Inject;
 @HiltViewModel
 public class ProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
-  @NonNull private final ProductUpdater _productUpdater;
+  @NonNull private final ProductChangedListener _productChangedListener;
   @NonNull private final ProductFilterViewModel _filterView;
-
   @NonNull private final ProductSorter _sorter = new ProductSorter();
 
   @NonNull
@@ -64,10 +63,10 @@ public class ProductViewModel extends ViewModel {
   @Inject
   public ProductViewModel(@NonNull ProductRepository productRepository) {
     this._productRepository = Objects.requireNonNull(productRepository);
-    this._productUpdater = new ProductUpdater(this._products);
+    this._productChangedListener = new ProductChangedListener(this._products);
     this._filterView = new ProductFilterViewModel(this, new ProductFilterer());
 
-    this._productRepository.addModelChangedListener(this._productUpdater);
+    this._productRepository.addModelChangedListener(this._productChangedListener);
 
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
@@ -92,7 +91,7 @@ public class ProductViewModel extends ViewModel {
 
   @Override
   public void onCleared() {
-    this._productRepository.removeModelChangedListener(this._productUpdater);
+    this._productRepository.removeModelChangedListener(this._productChangedListener);
   }
 
   @NonNull
@@ -213,8 +212,8 @@ public class ProductViewModel extends ViewModel {
     this._expandedProductIndex.setValue(index);
   }
 
-  private class ProductUpdater extends LiveDataModelUpdater<ProductModel> {
-    public ProductUpdater(@NonNull MutableLiveData<List<ProductModel>> products) {
+  private class ProductChangedListener extends LiveDataModelChangedListener<ProductModel> {
+    public ProductChangedListener(@NonNull MutableLiveData<List<ProductModel>> products) {
       super(products);
     }
 

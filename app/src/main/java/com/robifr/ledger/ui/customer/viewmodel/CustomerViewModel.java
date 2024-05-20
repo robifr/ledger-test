@@ -31,7 +31,7 @@ import com.robifr.ledger.data.CustomerSorter;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
-import com.robifr.ledger.ui.LiveDataModelUpdater;
+import com.robifr.ledger.ui.LiveDataModelChangedListener;
 import com.robifr.ledger.ui.StringResources;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import javax.inject.Inject;
 @HiltViewModel
 public class CustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
-  @NonNull private final CustomerUpdater _customerUpdater;
+  @NonNull private final CustomerChangedListener _customerChangedListener;
   @NonNull private final CustomerFilterViewModel _filterView;
   @NonNull private final CustomerSorter _sorter = new CustomerSorter();
 
@@ -63,10 +63,10 @@ public class CustomerViewModel extends ViewModel {
   @Inject
   public CustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._customerUpdater = new CustomerUpdater(this._customers);
+    this._customerChangedListener = new CustomerChangedListener(this._customers);
     this._filterView = new CustomerFilterViewModel(this, new CustomerFilterer());
 
-    this._customerRepository.addModelChangedListener(this._customerUpdater);
+    this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
@@ -91,7 +91,7 @@ public class CustomerViewModel extends ViewModel {
 
   @Override
   public void onCleared() {
-    this._customerRepository.removeModelChangedListener(this._customerUpdater);
+    this._customerRepository.removeModelChangedListener(this._customerChangedListener);
   }
 
   @NonNull
@@ -213,8 +213,8 @@ public class CustomerViewModel extends ViewModel {
     this._expandedCustomerIndex.setValue(index);
   }
 
-  private class CustomerUpdater extends LiveDataModelUpdater<CustomerModel> {
-    public CustomerUpdater(@NonNull MutableLiveData<List<CustomerModel>> customers) {
+  private class CustomerChangedListener extends LiveDataModelChangedListener<CustomerModel> {
+    public CustomerChangedListener(@NonNull MutableLiveData<List<CustomerModel>> customers) {
       super(customers);
     }
 

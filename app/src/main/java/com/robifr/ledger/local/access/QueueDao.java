@@ -79,6 +79,7 @@ public abstract class QueueDao implements QueryAccessible<QueueModel> {
   }
 
   @Override
+  @Nullable
   @Query("SELECT * FROM queue WHERE rowid = :rowId")
   public abstract QueueModel selectByRowId(long rowId);
 

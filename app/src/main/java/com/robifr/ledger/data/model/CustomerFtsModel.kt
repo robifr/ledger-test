@@ -26,6 +26,6 @@ import androidx.room.PrimaryKey
 @Fts4
 @Entity(tableName = "customer_fts")
 data class CustomerFtsModel(
-    @field:ColumnInfo(name = "rowid") @field:PrimaryKey val rowId: Long,
+    @PrimaryKey @ColumnInfo(name = "rowid") val rowId: Long,
     @ColumnInfo(name = "name") val name: String
 )

@@ -160,6 +160,39 @@ class ChartAxis {
   }
 
   /**
+   * Same as a linear scale but with support for larger numbers by using percentages.
+   * Each domain (0-100) will be replaced with the provided domain strings.
+   * @param {ChartLayout} layout
+   * @param {number} axisPosition
+   * @param {string[]} domain
+   * @returns {ChartLinearAxis}
+   */
+  static withPercentageLinearScale(layout, axisPosition, domain) {
+    if (domain.length !== 101) throw new Error("Domain size should contain 101 items");
+
+    const scale = d3.scaleLinear().domain([0, 100]).range(this.#_withRange(layout, axisPosition));
+    const axis = (() => {
+      switch (axisPosition) {
+        case this.BOTTOM_POSITION:
+          return d3.axisBottom(scale);
+
+        case this.LEFT_POSITION:
+        default:
+          return d3.axisLeft(scale);
+      }
+    })()
+      .ticks(5)
+      .tickSizeOuter(0)
+      .tickSize(-layout.width + layout.marginRight + layout.marginLeft)
+      .tickFormat((d, i) => {
+        if (Math.floor(d) !== d) return; // Hide label for decimal numbers.
+        return domain[i * 2 * (scale.ticks().length - 1)];
+      });
+
+    return new ChartLinearAxis(scale, axis);
+  }
+
+  /**
    * @param {ChartLayout} layout
    * @param {number} axisPosition
    * @param {string[]} domain

@@ -245,19 +245,22 @@ class BarChart extends Chart {
   }
 
   render(data) {
+    // Draw y-axis.
+    this._svg
+      .append("g")
+      .attr("transform", `translate(${this._layout.marginLeft}, 0)`)
+      .style("font-size", `${this._layout.fontSize}`)
+      .call(this._yAxis.axis)
+      .call((g) => g.select(".domain").remove()) // Remove y-axis line.
+      .selectAll("line")
+      .style("stroke", Android.colorHex("stroke"));
+
     // Draw x-axis.
     this._svg
       .append("g")
       .attr("transform", `translate(0, ${this._layout.height - this._layout.marginBottom})`)
       .style("font-size", `${this._layout.fontSize}`)
       .call(this._xAxis.axis);
-
-    // Draw y-axis.
-    this._svg
-      .append("g")
-      .attr("transform", `translate(${this._layout.marginLeft}, 0)`)
-      .style("font-size", `${this._layout.fontSize}`)
-      .call(this._yAxis.axis);
 
     // Draw bar.
     this._svg

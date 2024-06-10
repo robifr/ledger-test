@@ -18,19 +18,66 @@
 package com.robifr.ledger.assetbinding.chart;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Function;
+import androidx.core.util.Pair;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ChartUtil {
   private ChartUtil() {}
+
+  @NonNull
+  public static Map<String, BigDecimal> toDateTimeData(
+      @NonNull Map<ZonedDateTime, BigDecimal> data,
+      @NonNull Pair<ZonedDateTime, ZonedDateTime> dateStartEnd) {
+    Objects.requireNonNull(data);
+    Objects.requireNonNull(dateStartEnd);
+
+    final Map<String, BigDecimal> result = new LinkedHashMap<>();
+    final Function<ChronoUnit, Long> totalDate =
+        (unit) -> unit.between(dateStartEnd.first, dateStartEnd.second) + 1; // +1 for inclusivity.
+    final BiFunction<ChronoUnit, ZonedDateTime, String> key =
+        (unit, date) ->
+            switch (unit) {
+              case DAYS -> Integer.toString(date.getDayOfMonth());
+              case MONTHS ->
+                  date.getMonth().name().substring(0, 1).toUpperCase()
+                      + date.getMonth().name().substring(1, 3).toLowerCase();
+              default -> Integer.toString(date.getYear());
+            };
+    ChronoUnit groupBy;
+
+    // Determine how the data will be grouped based on the date range.
+    if (totalDate.apply(ChronoUnit.YEARS) > 1) groupBy = ChronoUnit.YEARS;
+    else if (totalDate.apply(ChronoUnit.MONTHS) > 1) groupBy = ChronoUnit.MONTHS;
+    else groupBy = ChronoUnit.DAYS;
+
+    for (int i = 0; i < totalDate.apply(groupBy); i++) {
+      final ZonedDateTime date = dateStartEnd.first.plus(i, groupBy);
+      final String formattedKey = key.apply(groupBy, date);
+
+      result.put(
+          formattedKey,
+          data.entrySet().stream()
+              .filter(entry -> key.apply(groupBy, entry.getKey()).equals(formattedKey))
+              .map(Map.Entry::getValue)
+              .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+
+    return result;
+  }
 
   /**
    * @param data Map of data to convert.

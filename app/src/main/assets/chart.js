@@ -46,13 +46,13 @@ class ChartLayout {
 
     // Extra margin for the ticks.
     /** @type {number} */
-    this.marginTop = marginTop + 6;
+    this.marginTop = marginTop + 10;
     /** @type {number} */
-    this.marginBottom = marginBottom + 6;
+    this.marginBottom = marginBottom + 10;
     /** @type {number} */
-    this.marginLeft = marginLeft + 6;
+    this.marginLeft = marginLeft + 10;
     /** @type {number} */
-    this.marginRight = marginRight + 6;
+    this.marginRight = marginRight + 10;
     /** @type {number} */
     this.fontSize = fontSize;
     /** @type {colorHex} */

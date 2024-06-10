@@ -25,23 +25,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ChartUtil {
   private ChartUtil() {}
 
+  /**
+   * @param data Map of data to convert.
+   * @param mapType Type of map to be used to determine its sorting behavior.
+   */
   @NonNull
-  public static Map<String, Double> toPercentageData(@NonNull Map<String, BigDecimal> data) {
+  public static Map<String, Double> toPercentageData(
+      @NonNull Map<String, BigDecimal> data, @NonNull Supplier<Map<String, Double>> mapType) {
     Objects.requireNonNull(data);
+    Objects.requireNonNull(mapType);
 
     final Map<String, Double> result =
-        new TreeMap<>(
-            (a, b) -> {
-              // To sort string of numbers.
-              if (a.length() != b.length()) return a.length() < b.length() ? -1 : 1;
-              return a.compareTo(b);
-            });
+        mapType.get() instanceof TreeMap
+            ? new TreeMap<>(
+                (a, b) -> {
+                  // Special case where string of numbers sorted wrongly.
+                  if (a.length() != b.length()) return a.length() < b.length() ? -1 : 1;
+                  return a.compareTo(b);
+                })
+            : mapType.get();
     final BigDecimal actualMaxValue =
         data.values().stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
     final BigDecimal paddedMaxValue =

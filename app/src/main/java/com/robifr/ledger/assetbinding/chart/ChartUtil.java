@@ -145,6 +145,10 @@ public class ChartUtil {
     // to the nearest ceiling multiple of 10 (e.g. 10, 1K, 10K).
     final int magnitude = amount.precision() - amount.scale();
     final BigDecimal rounding = BigDecimal.TEN.pow(magnitude - 1);
-    return amount.divide(rounding, 0, RoundingMode.CEILING).multiply(rounding);
+
+    return amount
+        .divide(rounding, 0, RoundingMode.CEILING)
+        .multiply(rounding)
+        .max(BigDecimal.valueOf(100)); // Set the minimum value to 100.
   }
 }

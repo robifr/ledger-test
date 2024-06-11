@@ -101,9 +101,11 @@ public class ChartUtil {
     final BigDecimal actualMaxValue =
         data.values().stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
     final BigDecimal paddedMaxValue =
-        ChartUtil._ceilToNearestTen(
-            actualMaxValue.add(
-                actualMaxValue.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
+        actualMaxValue.compareTo(BigDecimal.ZERO) == 0
+            ? BigDecimal.ONE // Prevent zero division.
+            : ChartUtil._ceilToNearestTen(
+                actualMaxValue.add(
+                    actualMaxValue.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
 
     for (Map.Entry<String, BigDecimal> d : data.entrySet()) {
       result.put(

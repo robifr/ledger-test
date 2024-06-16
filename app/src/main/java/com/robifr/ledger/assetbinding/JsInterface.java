@@ -26,6 +26,8 @@ import com.robifr.ledger.R;
 import java.util.Objects;
 
 public class JsInterface {
+  @NonNull public static final String NAME = "Android";
+
   @NonNull private final Context _context;
 
   public JsInterface(@NonNull Context context) {

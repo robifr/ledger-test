@@ -21,12 +21,15 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
+import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class DashboardViewModelHandler {
@@ -41,6 +44,7 @@ public class DashboardViewModelHandler {
     this._viewModel
         .snackbarMessage()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+    this._viewModel.date().observe(this._fragment.getViewLifecycleOwner(), this::_onDate);
 
     this._viewModel
         .balanceView()
@@ -60,6 +64,23 @@ public class DashboardViewModelHandler {
             StringResources.stringOf(this._fragment.requireContext(), stringRes),
             Snackbar.LENGTH_LONG)
         .show();
+  }
+
+  private void _onDate(@Nullable QueueFilters.DateRange date) {
+    if (date == null) return;
+
+    final DateTimeFormatter format =
+        DateTimeFormatter.ofPattern("d MMM yyyy", new Locale("id", "ID"));
+    final String text =
+        date == QueueFilters.DateRange.CUSTOM
+            ? this._fragment.getString(
+                date.resourceString(),
+                this._viewModel.dateStartEnd().first.format(format),
+                this._viewModel.dateStartEnd().second.format(format))
+            : this._fragment.getString(date.resourceString());
+
+    this._fragment.fragmentBinding().dateChip.setText(text);
+    this._fragment.incomeOverview().loadChart();
   }
 
   private void _onCustomersWithBalance(@Nullable List<CustomerBalanceInfo> balanceInfo) {

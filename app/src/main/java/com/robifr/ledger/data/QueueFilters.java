@@ -18,7 +18,9 @@
 package com.robifr.ledger.data;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.core.util.Pair;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.QueueModel;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -59,12 +61,23 @@ public record QueueFilters(
     @NonNull DateRange filteredDate,
     @NonNull Pair<ZonedDateTime, ZonedDateTime> filteredDateStartEnd) {
   public enum DateRange {
-    ALL_TIME,
-    TODAY,
-    YESTERDAY,
-    THIS_WEEK,
-    THIS_MONTH,
-    CUSTOM;
+    ALL_TIME(R.string.text_all_time),
+    TODAY(R.string.text_today),
+    YESTERDAY(R.string.text_yesterday),
+    THIS_WEEK(R.string.text_this_week),
+    THIS_MONTH(R.string.text_this_month),
+    CUSTOM(R.string.queuefilter_date_selecteddate_chip);
+
+    @StringRes private final int _resourceString;
+
+    private DateRange(@StringRes int resourceString) {
+      this._resourceString = resourceString;
+    }
+
+    @StringRes
+    public int resourceString() {
+      return this._resourceString;
+    }
 
     /**
      * @return Pair of start (first) and end (second) date.

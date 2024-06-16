@@ -33,7 +33,9 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class DashboardFragment extends Fragment {
   @Nullable private DashboardFragmentBinding _fragmentBinding;
+  @Nullable private DashboardDate _date;
   @Nullable private DashboardBalance _balanceOverview;
+  @Nullable private DashboardIncome _incomeOverview;
 
   @Nullable private DashboardViewModel _dashboardViewModel;
   @Nullable private DashboardViewModelHandler _viewModelHandler;
@@ -54,13 +56,17 @@ public class DashboardFragment extends Fragment {
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
 
+    this._date = new DashboardDate(this);
     this._balanceOverview = new DashboardBalance(this);
+    this._incomeOverview = new DashboardIncome(this);
 
     // Use activity store owner because this fragment is used by bottom navigation.
     // Which to prevents view model re-instantiation.
     this._dashboardViewModel =
         new ViewModelProvider(this.requireActivity()).get(DashboardViewModel.class);
     this._viewModelHandler = new DashboardViewModelHandler(this, this._dashboardViewModel);
+
+    this._fragmentBinding.dateChip.setOnClickListener(chip -> this._date.openDialog());
   }
 
   @NonNull
@@ -71,6 +77,11 @@ public class DashboardFragment extends Fragment {
   @NonNull
   public DashboardBalance balanceOverview() {
     return Objects.requireNonNull(this._balanceOverview);
+  }
+
+  @NonNull
+  public DashboardIncome incomeOverview() {
+    return Objects.requireNonNull(this._incomeOverview);
   }
 
   @NonNull

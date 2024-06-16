@@ -24,8 +24,12 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.TypeConverters;
 import androidx.room.Update;
 import com.robifr.ledger.data.model.QueueModel;
+import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
+import com.robifr.ledger.local.ColumnConverter.InstantConverter;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -94,4 +98,18 @@ public abstract class QueueDao implements QueryAccessible<QueueModel> {
   @Override
   @Query("SELECT EXISTS(SELECT id FROM queue WHERE id = :queueId)")
   public abstract boolean isExistsById(@Nullable Long queueId);
+
+  /**
+   * @noinspection NullableProblems
+   */
+  @NonNull
+  @Query(
+      """
+      SELECT id AS id, date AS date FROM queue
+      WHERE date >= :startDate AND date <= :endDate
+      """)
+  @Transaction
+  @TypeConverters(InstantConverter.class)
+  public abstract List<QueueWithProductOrdersInfo> selectAllWithProductOrdersInRange(
+      @NonNull Instant startDate, @NonNull Instant endDate);
 }

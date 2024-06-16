@@ -43,28 +43,28 @@
 
     <!-- Radio buttons tag are based on `QueueModel.Status` enum. -->
     <RadioButton
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="IN_QUEUE"
         android:text="@string/text_in_queue" />
 
     <RadioButton
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="IN_PROCESS"
         android:text="@string/text_in_process" />
 
     <RadioButton
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="UNPAID"
         android:text="@string/text_unpaid" />
 
     <RadioButton
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="COMPLETED"

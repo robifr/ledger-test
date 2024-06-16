@@ -45,7 +45,7 @@
     <!-- Radio buttons tag are based on `QueueSortMethod.SortBy` enum. -->
     <RadioButton
         android:id="@+id/customerNameRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="CUSTOMER_NAME"
@@ -53,7 +53,7 @@
 
     <RadioButton
         android:id="@+id/dateRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="DATE"
@@ -61,7 +61,7 @@
 
     <RadioButton
         android:id="@+id/totalPriceRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="TOTAL_PRICE"

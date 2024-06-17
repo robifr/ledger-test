@@ -45,13 +45,10 @@ public class DashboardViewModelHandler {
         .snackbarMessage()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.date().observe(this._fragment.getViewLifecycleOwner(), this::_onDate);
-
     this._viewModel
-        .balanceView()
         .customersWithBalance()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithBalance);
     this._viewModel
-        .balanceView()
         .customersWithDebt()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithDebt);
   }

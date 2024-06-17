@@ -32,6 +32,7 @@ import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
@@ -40,7 +41,6 @@ import javax.inject.Inject;
 public class DashboardViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
-  @NonNull private final BalanceViewModel _balanceView;
 
   @NonNull
   private final CustomerChangedListener _customerChangedListener =
@@ -51,6 +51,8 @@ public class DashboardViewModel extends ViewModel {
       new MutableLiveData<>();
 
   @NonNull private final MutableLiveData<QueueDate> _date = new MutableLiveData<>();
+  @NonNull private final MutableLiveData<List<CustomerBalanceInfo>> _customersWithBalance;
+  @NonNull private final MutableLiveData<List<CustomerDebtInfo>> _customersWithDebt;
 
   @NonNull
   private final MutableLiveData<List<QueueWithProductOrdersInfo>> _queueWithProductOrders =
@@ -61,20 +63,22 @@ public class DashboardViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._balanceView = new BalanceViewModel(this);
+
+    this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
     this._date.setValue(QueueDate.withRange(QueueDate.Range.ALL_TIME));
-    this._customerRepository.addModelChangedListener(this._customerChangedListener);
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    this._customersWithBalance =
+        (MutableLiveData<List<CustomerBalanceInfo>>) this.selectAllIdsWithBalance();
+    this._customersWithDebt = (MutableLiveData<List<CustomerDebtInfo>>) this.selectAllIdsWithDebt();
   }
 
   @Override
   public void onCleared() {
     this._customerRepository.removeModelChangedListener(this._customerChangedListener);
-  }
-
-  @NonNull
-  public BalanceViewModel balanceView() {
-    return this._balanceView;
   }
 
   @NonNull
@@ -85,6 +89,16 @@ public class DashboardViewModel extends ViewModel {
   @NonNull
   public LiveData<QueueDate> date() {
     return this._date;
+  }
+
+  @NonNull
+  public LiveData<List<CustomerBalanceInfo>> customersWithBalance() {
+    return this._customersWithBalance;
+  }
+
+  @NonNull
+  public LiveData<List<CustomerDebtInfo>> customersWithDebt() {
+    return this._customersWithDebt;
   }
 
   @NonNull
@@ -155,5 +169,17 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(date);
 
     this._date.setValue(date);
+  }
+
+  public void onCustomersWithBalanceChanged(@NonNull List<CustomerBalanceInfo> balanceInfo) {
+    Objects.requireNonNull(balanceInfo);
+
+    this._customersWithBalance.setValue(Collections.unmodifiableList(balanceInfo));
+  }
+
+  public void onCustomersWithDebtChanged(@NonNull List<CustomerDebtInfo> debtInfo) {
+    Objects.requireNonNull(debtInfo);
+
+    this._customersWithDebt.setValue(Collections.unmodifiableList(debtInfo));
   }
 }

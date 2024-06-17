@@ -47,12 +47,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              this._viewModel
-                  .balanceView()
-                  .onCustomersWithBalanceChanged(this._onUpdateBalanceInfo(customers));
-              this._viewModel
-                  .balanceView()
-                  .onCustomersWithDebtChanged(this._onUpdateDebtInfo(customers));
+              this._viewModel.onCustomersWithBalanceChanged(this._onUpdateBalanceInfo(customers));
+              this._viewModel.onCustomersWithDebtChanged(this._onUpdateDebtInfo(customers));
             });
   }
 
@@ -64,12 +60,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              this._viewModel
-                  .balanceView()
-                  .onCustomersWithBalanceChanged(this._onAddBalanceInfo(customers));
-              this._viewModel
-                  .balanceView()
-                  .onCustomersWithDebtChanged(this._onAddDebtInfo(customers));
+              this._viewModel.onCustomersWithBalanceChanged(this._onAddBalanceInfo(customers));
+              this._viewModel.onCustomersWithDebtChanged(this._onAddDebtInfo(customers));
             });
   }
 
@@ -81,12 +73,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              this._viewModel
-                  .balanceView()
-                  .onCustomersWithBalanceChanged(this._onRemoveBalanceInfo(customers));
-              this._viewModel
-                  .balanceView()
-                  .onCustomersWithDebtChanged(this._onRemoveDebtInfo(customers));
+              this._viewModel.onCustomersWithBalanceChanged(this._onRemoveBalanceInfo(customers));
+              this._viewModel.onCustomersWithDebtChanged(this._onRemoveDebtInfo(customers));
             });
   }
 
@@ -99,8 +87,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(customers);
 
     final ArrayList<CustomerBalanceInfo> currentInfo =
-        this._viewModel.balanceView().customersWithBalance().getValue() != null
-            ? new ArrayList<>(this._viewModel.balanceView().customersWithBalance().getValue())
+        this._viewModel.customersWithBalance().getValue() != null
+            ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
             : new ArrayList<>();
     final List<CustomerBalanceInfo> customerInfo =
         customers.stream()
@@ -119,8 +107,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(customers);
 
     final ArrayList<CustomerBalanceInfo> currentInfo =
-        this._viewModel.balanceView().customersWithBalance().getValue() != null
-            ? new ArrayList<>(this._viewModel.balanceView().customersWithBalance().getValue())
+        this._viewModel.customersWithBalance().getValue() != null
+            ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
             : new ArrayList<>();
     final List<CustomerBalanceInfo> customerInfo =
         customers.stream()
@@ -136,8 +124,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(customers);
 
     final ArrayList<CustomerBalanceInfo> currentInfo =
-        this._viewModel.balanceView().customersWithBalance().getValue() != null
-            ? new ArrayList<>(this._viewModel.balanceView().customersWithBalance().getValue())
+        this._viewModel.customersWithBalance().getValue() != null
+            ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
             : new ArrayList<>();
 
     for (CustomerModel customer : customers) {
@@ -157,8 +145,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(customers);
 
     final ArrayList<CustomerDebtInfo> currentInfo =
-        this._viewModel.balanceView().customersWithDebt().getValue() != null
-            ? new ArrayList<>(this._viewModel.balanceView().customersWithDebt().getValue())
+        this._viewModel.customersWithDebt().getValue() != null
+            ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
             : new ArrayList<>();
     final List<CustomerDebtInfo> customerInfo =
         customers.stream()
@@ -177,8 +165,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(customers);
 
     final ArrayList<CustomerDebtInfo> currentInfo =
-        this._viewModel.balanceView().customersWithDebt().getValue() != null
-            ? new ArrayList<>(this._viewModel.balanceView().customersWithDebt().getValue())
+        this._viewModel.customersWithDebt().getValue() != null
+            ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
             : new ArrayList<>();
     final List<CustomerDebtInfo> customerInfo =
         customers.stream()
@@ -194,8 +182,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(customers);
 
     final ArrayList<CustomerDebtInfo> currentInfo =
-        this._viewModel.balanceView().customersWithDebt().getValue() != null
-            ? new ArrayList<>(this._viewModel.balanceView().customersWithDebt().getValue())
+        this._viewModel.customersWithDebt().getValue() != null
+            ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
             : new ArrayList<>();
 
     for (CustomerModel customer : customers) {

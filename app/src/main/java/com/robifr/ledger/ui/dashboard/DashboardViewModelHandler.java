@@ -24,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.QueueDate;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
+import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
@@ -51,6 +52,9 @@ public class DashboardViewModelHandler {
     this._viewModel
         .customersWithDebt()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithDebt);
+    this._viewModel
+        .queuesWithProductOrders()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onQueuesWithProductOrders);
   }
 
   private void _onSnackbarMessage(@Nullable StringResources stringRes) {
@@ -77,7 +81,6 @@ public class DashboardViewModelHandler {
             : this._fragment.getString(date.range().resourceString());
 
     this._fragment.fragmentBinding().dateChip.setText(text);
-    this._fragment.incomeOverview().loadChart();
   }
 
   private void _onCustomersWithBalance(@Nullable List<CustomerBalanceInfo> balanceInfo) {
@@ -88,5 +91,12 @@ public class DashboardViewModelHandler {
 
   private void _onCustomersWithDebt(@Nullable List<CustomerDebtInfo> debtInfo) {
     this._fragment.balanceOverview().setTotalDebt(Objects.requireNonNullElse(debtInfo, List.of()));
+  }
+
+  private void _onQueuesWithProductOrders(@Nullable List<QueueWithProductOrdersInfo> queueInfo) {
+    if (queueInfo == null) return;
+
+    this._fragment.incomeOverview().loadChart();
+    this._fragment.incomeOverview().setTotalIncome(queueInfo);
   }
 }

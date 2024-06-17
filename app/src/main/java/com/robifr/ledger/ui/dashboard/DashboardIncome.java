@@ -76,7 +76,7 @@ public class DashboardIncome {
         .loadUrl("https://appassets.androidplatform.net/assets/chart.html");
   }
 
-  private void _setTotalIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+  public void setTotalIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
     final String totalText =
@@ -219,19 +219,9 @@ public class DashboardIncome {
       Objects.requireNonNull(view);
       Objects.requireNonNull(url);
 
-      final QueueDate date = DashboardIncome.this._fragment.dashboardViewModel().date().getValue();
-      if (date == null) return;
-
-      DashboardIncome.this
-          ._fragment
-          .dashboardViewModel()
-          .selectAllWithProductOrdersInRange(date.dateStart(), date.dateEnd())
-          .observe(
-              DashboardIncome.this._fragment.getViewLifecycleOwner(),
-              queueInfo -> {
-                DashboardIncome.this._displayChart(queueInfo);
-                DashboardIncome.this._setTotalIncome(queueInfo);
-              });
+      final List<QueueWithProductOrdersInfo> queueInfo =
+          DashboardIncome.this._fragment.dashboardViewModel().queuesWithProductOrders().getValue();
+      if (queueInfo != null) DashboardIncome.this._displayChart(queueInfo);
     }
   }
 }

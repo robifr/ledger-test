@@ -20,6 +20,7 @@ package com.robifr.ledger.ui.dashboard.viewmodel;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.QueueDate;
@@ -55,7 +56,7 @@ public class DashboardViewModel extends ViewModel {
   @NonNull private final MutableLiveData<List<CustomerDebtInfo>> _customersWithDebt;
 
   @NonNull
-  private final MutableLiveData<List<QueueWithProductOrdersInfo>> _queueWithProductOrders =
+  private final MutableLiveData<List<QueueWithProductOrdersInfo>> _queuesWithProductOrders =
       new MutableLiveData<>();
 
   @Inject
@@ -66,11 +67,11 @@ public class DashboardViewModel extends ViewModel {
 
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
-    this._date.setValue(QueueDate.withRange(QueueDate.Range.ALL_TIME));
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
+    this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
     this._customersWithBalance =
         (MutableLiveData<List<CustomerBalanceInfo>>) this.selectAllIdsWithBalance();
     this._customersWithDebt = (MutableLiveData<List<CustomerDebtInfo>>) this.selectAllIdsWithDebt();
@@ -99,6 +100,11 @@ public class DashboardViewModel extends ViewModel {
   @NonNull
   public LiveData<List<CustomerDebtInfo>> customersWithDebt() {
     return this._customersWithDebt;
+  }
+
+  @NonNull
+  public LiveData<List<QueueWithProductOrdersInfo>> queuesWithProductOrders() {
+    return this._queuesWithProductOrders;
   }
 
   @NonNull
@@ -142,7 +148,7 @@ public class DashboardViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<QueueWithProductOrdersInfo>> selectAllWithProductOrdersInRange(
+  public LiveData<List<QueueWithProductOrdersInfo>> selectAllQueuesWithProductOrdersInRange(
       @NonNull ZonedDateTime startDate, @NonNull ZonedDateTime endDate) {
     Objects.requireNonNull(startDate);
     Objects.requireNonNull(endDate);
@@ -169,6 +175,18 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(date);
 
     this._date.setValue(date);
+
+    final LiveData<List<QueueWithProductOrdersInfo>> selectAllQueueInfo =
+        this.selectAllQueuesWithProductOrdersInRange(date.dateStart(), date.dateEnd());
+    selectAllQueueInfo.observeForever(
+        new Observer<>() {
+          @Override
+          public void onChanged(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+            if (queueInfo != null)
+              DashboardViewModel.this._queuesWithProductOrders.setValue(queueInfo);
+            selectAllQueueInfo.removeObserver(this);
+          }
+        });
   }
 
   public void onCustomersWithBalanceChanged(@NonNull List<CustomerBalanceInfo> balanceInfo) {

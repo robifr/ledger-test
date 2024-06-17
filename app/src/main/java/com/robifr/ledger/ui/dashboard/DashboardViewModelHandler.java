@@ -21,7 +21,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
-import com.robifr.ledger.data.QueueFilters;
+import com.robifr.ledger.data.QueueDate;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
@@ -66,18 +66,18 @@ public class DashboardViewModelHandler {
         .show();
   }
 
-  private void _onDate(@Nullable QueueFilters.DateRange date) {
+  private void _onDate(@Nullable QueueDate date) {
     if (date == null) return;
 
     final DateTimeFormatter format =
         DateTimeFormatter.ofPattern("d MMM yyyy", new Locale("id", "ID"));
     final String text =
-        date == QueueFilters.DateRange.CUSTOM
+        date.range() == QueueDate.Range.CUSTOM
             ? this._fragment.getString(
-                date.resourceString(),
-                this._viewModel.dateStartEnd().first.format(format),
-                this._viewModel.dateStartEnd().second.format(format))
-            : this._fragment.getString(date.resourceString());
+                date.range().resourceString(),
+                date.dateStart().format(format),
+                date.dateEnd().format(format))
+            : this._fragment.getString(date.range().resourceString());
 
     this._fragment.fragmentBinding().dateChip.setText(text);
     this._fragment.incomeOverview().loadChart();

@@ -69,9 +69,9 @@ public class QueueFilterer {
     Objects.requireNonNull(queue);
 
     final LocalDate date =
-        queue.date().atZone(this._filters.filteredDateStartEnd().first.getZone()).toLocalDate();
-    final LocalDate startDate = this._filters.filteredDateStartEnd().first.toLocalDate();
-    final LocalDate endDate = this._filters.filteredDateStartEnd().second.toLocalDate();
+        queue.date().atZone(this._filters.filteredDate().dateStart().getZone()).toLocalDate();
+    final LocalDate startDate = this._filters.filteredDate().dateStart().toLocalDate();
+    final LocalDate endDate = this._filters.filteredDate().dateEnd().toLocalDate();
 
     return date.isBefore(startDate) || date.isAfter(endDate);
   }

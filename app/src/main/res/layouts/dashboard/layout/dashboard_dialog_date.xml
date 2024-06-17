@@ -42,7 +42,7 @@
       android:layout_height="wrap_content"
       android:paddingEnd="@dimen/bottomdialog_padding">
 
-    <!-- Radio buttons tag are based on `QueueFilters.DateRange` enum. -->
+    <!-- Radio buttons tag are based on `QueueDate.Range` enum. -->
     <RadioButton
         android:id="@+id/allTimeRadioButton"
         style="@style/BottomSheetDialog.Button.RoundedRight"

@@ -20,16 +20,14 @@ package com.robifr.ledger.ui.queue;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
-import com.robifr.ledger.data.QueueFilters;
+import com.robifr.ledger.data.QueueDate;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.queue.recycler.QueueListHolder;
 import com.robifr.ledger.ui.queue.viewmodel.QueueViewModel;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -116,11 +114,8 @@ public class QueueViewModelHandler {
     if (status != null) this._fragment.filter().filterStatus().setFilteredStatus(status);
   }
 
-  private void _onFilteredDate(@Nullable QueueFilters.DateRange date) {
-    final Pair<ZonedDateTime, ZonedDateTime> dateStartEnd =
-        this._viewModel.filterView().inputtedFilters().filteredDateStartEnd();
-
-    if (date != null) this._fragment.filter().filterDate().setFilteredDate(date, dateStartEnd);
+  private void _onFilteredDate(@Nullable QueueDate date) {
+    if (date != null) this._fragment.filter().filterDate().setFilteredDate(date);
   }
 
   private void _onFilteredMinTotalPriceText(@Nullable String minTotalPrice) {

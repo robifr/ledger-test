@@ -23,7 +23,7 @@ import androidx.core.util.Pair;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.QueueFilters;
+import com.robifr.ledger.data.QueueDate;
 import com.robifr.ledger.databinding.DashboardDialogDateBinding;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -47,24 +47,22 @@ public class DashboardDate implements RadioGroup.OnCheckedChangeListener {
   public void onCheckedChanged(@NonNull RadioGroup group, int radioId) {
     Objects.requireNonNull(group);
 
-    final QueueFilters.DateRange date = this._fragment.dashboardViewModel().date().getValue();
+    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
     if (date == null) return;
 
     switch (group.getId()) {
       case R.id.radioGroup -> {
-        final QueueFilters.DateRange selectedDate =
-            QueueFilters.DateRange.valueOf(group.findViewById(radioId).getTag().toString());
+        final QueueDate.Range selectedDate =
+            QueueDate.Range.valueOf(group.findViewById(radioId).getTag().toString());
 
-        this._fragment
-            .dashboardViewModel()
-            .onDateChanged(selectedDate, selectedDate.dateStartEnd());
+        this._fragment.dashboardViewModel().onDateChanged(QueueDate.withRange(selectedDate));
         this._dialog.dismiss();
       }
     }
   }
 
   public void openDialog() {
-    final QueueFilters.DateRange date = this._fragment.dashboardViewModel().date().getValue();
+    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
     if (date == null) return;
 
     // Remove listener to prevent callback being called during `clearCheck()`.
@@ -74,9 +72,9 @@ public class DashboardDate implements RadioGroup.OnCheckedChangeListener {
     this._dialogBinding.customButton.setOnClickListener(view -> this._openDialogPicker());
 
     // Custom range uses classic button. They aren't supposed to get selected.
-    if (date != QueueFilters.DateRange.CUSTOM) {
+    if (date.range() != QueueDate.Range.CUSTOM) {
       this._dialogBinding.radioGroup.check(
-          this._dialogBinding.radioGroup.findViewWithTag(date.toString()).getId());
+          this._dialogBinding.radioGroup.findViewWithTag(date.range().toString()).getId());
     }
 
     this._dialog.show();
@@ -97,8 +95,7 @@ public class DashboardDate implements RadioGroup.OnCheckedChangeListener {
           this._fragment
               .dashboardViewModel()
               .onDateChanged(
-                  QueueFilters.DateRange.CUSTOM,
-                  new Pair<>(
+                  QueueDate.withCustomRange(
                       Instant.ofEpochMilli(date.first).atZone(ZoneId.systemDefault()),
                       Instant.ofEpochMilli(date.second).atZone(ZoneId.systemDefault())));
           this._dialog.dismiss();

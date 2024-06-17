@@ -18,12 +18,11 @@
 package com.robifr.ledger.ui.dashboard.viewmodel;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.QueueFilters;
+import com.robifr.ledger.data.QueueDate;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
@@ -51,11 +50,7 @@ public class DashboardViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull private final MutableLiveData<QueueFilters.DateRange> _date = new MutableLiveData<>();
-
-  @NonNull
-  private Pair<ZonedDateTime, ZonedDateTime> _dateStartEnd =
-      QueueFilters.DateRange.ALL_TIME.dateStartEnd();
+  @NonNull private final MutableLiveData<QueueDate> _date = new MutableLiveData<>();
 
   @NonNull
   private final MutableLiveData<List<QueueWithProductOrdersInfo>> _queueWithProductOrders =
@@ -68,7 +63,7 @@ public class DashboardViewModel extends ViewModel {
     this._customerRepository = Objects.requireNonNull(customerRepository);
     this._balanceView = new BalanceViewModel(this);
 
-    this._date.setValue(QueueFilters.DateRange.ALL_TIME);
+    this._date.setValue(QueueDate.withRange(QueueDate.Range.ALL_TIME));
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
   }
 
@@ -88,13 +83,8 @@ public class DashboardViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<QueueFilters.DateRange> date() {
+  public LiveData<QueueDate> date() {
     return this._date;
-  }
-
-  @NonNull
-  public Pair<ZonedDateTime, ZonedDateTime> dateStartEnd() {
-    return this._dateStartEnd;
   }
 
   @NonNull
@@ -161,17 +151,9 @@ public class DashboardViewModel extends ViewModel {
     return result;
   }
 
-  public void onDateChanged(
-      @NonNull QueueFilters.DateRange date,
-      @NonNull Pair<ZonedDateTime, ZonedDateTime> dateStartEnd) {
+  public void onDateChanged(@NonNull QueueDate date) {
     Objects.requireNonNull(date);
-    Objects.requireNonNull(dateStartEnd);
-    Objects.requireNonNull(dateStartEnd.first);
-    Objects.requireNonNull(dateStartEnd.second);
 
-    // Set date start-end firstly so that when date get selected, the range already available.
-    // Especially when selecting `QueueFilters.DateRange#CUSTOM`.
-    this._dateStartEnd = dateStartEnd;
     this._date.setValue(date);
   }
 }

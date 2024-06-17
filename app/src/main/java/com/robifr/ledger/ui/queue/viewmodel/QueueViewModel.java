@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.QueueDate;
 import com.robifr.ledger.data.QueueFilterer;
 import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.data.QueueSortMethod;
@@ -80,8 +81,7 @@ public class QueueViewModel extends ViewModel {
     filterer.setFilters(
         QueueFilters.toBuilder()
             .setNullCustomerShown(true)
-            .setFilteredDate(QueueFilters.DateRange.ALL_TIME)
-            .setFilteredDateStartEnd(QueueFilters.DateRange.ALL_TIME.dateStartEnd())
+            .setFilteredDate(QueueDate.withRange(QueueDate.Range.ALL_TIME))
             .setFilteredStatus(Set.of(QueueModel.Status.values()))
             .build());
 

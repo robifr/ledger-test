@@ -33,7 +33,7 @@ import com.robifr.ledger.assetbinding.chart.BarChartBinding;
 import com.robifr.ledger.assetbinding.chart.ChartAxisBinding;
 import com.robifr.ledger.assetbinding.chart.ChartLayoutBinding;
 import com.robifr.ledger.assetbinding.chart.ChartUtil;
-import com.robifr.ledger.data.QueueFilters;
+import com.robifr.ledger.data.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.ui.LocalWebChrome;
@@ -101,6 +101,9 @@ public class DashboardIncome {
   private void _displayChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
+    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
+    if (date == null) return;
+
     final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
 
     for (QueueWithProductOrdersInfo queue : queueInfo) {
@@ -113,20 +116,17 @@ public class DashboardIncome {
     }
 
     final ZonedDateTime startDate =
-        this._fragment.dashboardViewModel().date().getValue() != null
-                && this._fragment.dashboardViewModel().date().getValue()
-                    == QueueFilters.DateRange.ALL_TIME
+        date.range() == QueueDate.Range.ALL_TIME
             // Remove unnecessary dates.
             ? queueInfo.stream()
                 .map(QueueWithProductOrdersInfo::date)
                 .min(Instant::compareTo)
-                .orElse(this._fragment.dashboardViewModel().dateStartEnd().first.toInstant())
+                .orElse(date.dateStart().toInstant())
                 .atZone(ZoneId.systemDefault())
-            : this._fragment.dashboardViewModel().dateStartEnd().first;
+            : date.dateStart();
     final Map<String, BigDecimal> queueDateWithTotalPrice =
         ChartUtil.toDateTimeData(
-            unformattedQueueDateWithTotalPrice,
-            new Pair<>(startDate, this._fragment.dashboardViewModel().dateStartEnd().second));
+            unformattedQueueDateWithTotalPrice, new Pair<>(startDate, date.dateEnd()));
     final Map<String, Double> queueDateWithTotalPriceInPercent =
         ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new);
 
@@ -216,12 +216,13 @@ public class DashboardIncome {
       Objects.requireNonNull(view);
       Objects.requireNonNull(url);
 
+      final QueueDate date = DashboardIncome.this._fragment.dashboardViewModel().date().getValue();
+      if (date == null) return;
+
       DashboardIncome.this
           ._fragment
           .dashboardViewModel()
-          .selectAllWithProductOrdersInRange(
-              DashboardIncome.this._fragment.dashboardViewModel().dateStartEnd().first,
-              DashboardIncome.this._fragment.dashboardViewModel().dateStartEnd().second)
+          .selectAllWithProductOrdersInRange(date.dateStart(), date.dateEnd())
           .observe(
               DashboardIncome.this._fragment.getViewLifecycleOwner(),
               queueInfo -> {

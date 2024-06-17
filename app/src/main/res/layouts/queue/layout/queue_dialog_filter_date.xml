@@ -44,7 +44,7 @@
       app:selectionRequired="true"
       app:singleSelection="true">
 
-    <!-- Chips tag are based on `QueueFilters.DateRange` enum. -->
+    <!-- Chips tag are based on `QueueDate.Range` enum. -->
     <com.google.android.material.chip.Chip
         style="@style/Widget.Material3.Chip.Filter"
         android:layout_width="wrap_content"

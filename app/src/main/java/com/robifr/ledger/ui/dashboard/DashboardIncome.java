@@ -63,6 +63,9 @@ public class DashboardIncome {
         new JsInterface(this._fragment.requireContext()), JsInterface.NAME);
     chart.setWebViewClient(new LocalWebView());
     chart.setWebChromeClient(new LocalWebChrome());
+    chart.setBackgroundColor( // Background color can't be set from xml.
+        MaterialColors.getColor(
+            this._fragment.requireContext(), com.google.android.material.R.attr.colorSurface, 0));
   }
 
   public void loadChart() {

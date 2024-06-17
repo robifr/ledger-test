@@ -92,37 +92,6 @@ class ChartAxis {
   /**
    * @param {ChartLayout} layout
    * @param {number} axisPosition
-   * @returns {number[]}
-   */
-  static #_withRange(layout, axisPosition) {
-    const minRange = (() => {
-      switch (axisPosition) {
-        case this.BOTTOM_POSITION:
-          return layout.marginLeft;
-
-        case this.LEFT_POSITION:
-        default:
-          return layout.height - layout.marginBottom;
-      }
-    })();
-
-    const maxRange = (() => {
-      switch (axisPosition) {
-        case this.BOTTOM_POSITION:
-          return layout.width - layout.marginRight;
-
-        case this.LEFT_POSITION:
-        default:
-          return layout.marginTop;
-      }
-    })();
-
-    return [minRange, maxRange];
-  }
-
-  /**
-   * @param {ChartLayout} layout
-   * @param {number} axisPosition
    * @param {number[]} domain
    * @param {boolean} [isEvenLabelIndexVisible=true]
    * @returns {ChartLinearAxis}
@@ -220,6 +189,37 @@ class ChartAxis {
       .tickFormat((d, i) => (i % 2 !== 0 && !isEvenLabelIndexVisible ? null : d));
 
     return new ChartBandAxis(scale, axis);
+  }
+
+  /**
+   * @param {ChartLayout} layout
+   * @param {number} axisPosition
+   * @returns {number[]}
+   */
+  static #_withRange(layout, axisPosition) {
+    const minRange = (() => {
+      switch (axisPosition) {
+        case this.BOTTOM_POSITION:
+          return layout.marginLeft;
+
+        case this.LEFT_POSITION:
+        default:
+          return layout.height - layout.marginBottom;
+      }
+    })();
+
+    const maxRange = (() => {
+      switch (axisPosition) {
+        case this.BOTTOM_POSITION:
+          return layout.width - layout.marginRight;
+
+        case this.LEFT_POSITION:
+        default:
+          return layout.marginTop;
+      }
+    })();
+
+    return [minRange, maxRange];
   }
 }
 

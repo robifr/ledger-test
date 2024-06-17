@@ -22,6 +22,7 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import com.robifr.ledger.data.QueueDate;
 import com.robifr.ledger.data.QueueFilterer;
 import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.data.QueueSortMethod;
@@ -29,7 +30,6 @@ import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,12 +54,7 @@ public class QueueFilterViewModel {
   @NonNull
   private final MutableLiveData<String> _inputtedMaxTotalPriceText = new MutableLiveData<>();
 
-  @NonNull
-  private final MutableLiveData<QueueFilters.DateRange> _inputtedDate = new MutableLiveData<>();
-
-  @NonNull
-  private Pair<ZonedDateTime, ZonedDateTime> _inputtedDateStartEnd =
-      QueueFilters.toBuilder().build().filteredDateStartEnd();
+  @NonNull private final MutableLiveData<QueueDate> _inputtedDate = new MutableLiveData<>();
 
   public QueueFilterViewModel(@NonNull QueueViewModel viewModel, @NonNull QueueFilterer filterer) {
     this._viewModel = Objects.requireNonNull(viewModel);
@@ -92,7 +87,7 @@ public class QueueFilterViewModel {
   }
 
   @NonNull
-  public LiveData<QueueFilters.DateRange> inputtedDate() {
+  public LiveData<QueueDate> inputtedDate() {
     return this._inputtedDate;
   }
 
@@ -114,7 +109,7 @@ public class QueueFilterViewModel {
     final Set<QueueModel.Status> status =
         Objects.requireNonNullElse(
             this._inputtedStatus.getValue(), this._filterer.filters().filteredStatus());
-    final QueueFilters.DateRange date =
+    final QueueDate date =
         Objects.requireNonNullElse(
             this._inputtedDate.getValue(), this._filterer.filters().filteredDate());
 
@@ -147,7 +142,6 @@ public class QueueFilterViewModel {
         .setNullCustomerShown(isNullCustomerShown)
         .setFilteredStatus(status)
         .setFilteredDate(date)
-        .setFilteredDateStartEnd(this._inputtedDateStartEnd)
         .setFilteredTotalPrice(new Pair<>(minTotalPrice, maxTotalPrice))
         .build();
   }
@@ -180,17 +174,9 @@ public class QueueFilterViewModel {
     this._inputtedMaxTotalPriceText.setValue(maxTotalPrice);
   }
 
-  public void onDateChanged(
-      @NonNull QueueFilters.DateRange date,
-      @NonNull Pair<ZonedDateTime, ZonedDateTime> dateStartEnd) {
+  public void onDateChanged(@NonNull QueueDate date) {
     Objects.requireNonNull(date);
-    Objects.requireNonNull(dateStartEnd);
-    Objects.requireNonNull(dateStartEnd.first);
-    Objects.requireNonNull(dateStartEnd.second);
 
-    // Set date start-end firstly so that when date get selected, the range already available.
-    // Especially when selecting `QueueFilters.DateRange#CUSTOM`.
-    this._inputtedDateStartEnd = dateStartEnd;
     this._inputtedDate.setValue(date);
   }
 
@@ -216,7 +202,7 @@ public class QueueFilterViewModel {
     this.onCustomersIdsChanged(filters.filteredCustomerIds());
     this.onNullCustomerShownEnabled(filters.isNullCustomerShown());
     this.onStatusChanged(filters.filteredStatus());
-    this.onDateChanged(filters.filteredDate(), filters.filteredDateStartEnd());
+    this.onDateChanged(filters.filteredDate());
     this.onMinTotalPriceTextChanged(minTotalPrice);
     this.onMaxTotalPriceTextChanged(maxTotalPrice);
     this._filterer.setFilters(filters);

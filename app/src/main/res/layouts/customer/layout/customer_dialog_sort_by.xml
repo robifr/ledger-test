@@ -46,7 +46,7 @@
     <!-- Radio buttons tag are based on `CustomerSortMethod.SortBy` enum. -->
     <RadioButton
         android:id="@+id/nameRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="NAME"
@@ -54,7 +54,7 @@
 
     <RadioButton
         android:id="@+id/balanceRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="BALANCE"

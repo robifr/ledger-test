@@ -71,6 +71,33 @@ public class ChartAxisBinding {
   }
 
   /**
+   * Same as a {@link ChartAxisBinding#withLinearScale(String, Position, Pair, boolean)} but with
+   * support for larger numbers by using percentage. Each domain (0-100) will be presented with the
+   * provided domain strings.
+   *
+   * @param layoutBinding Instance script from {@link ChartLayoutBinding#init(int, int, int, int,
+   *     int, int, int, int)}.
+   * @param axisPosition Position for the axis.
+   * @param domain List of 101 strings representing the percentage values.
+   * @return A valid JavaScript code for this method.
+   */
+  @NonNull
+  public static String withPercentageLinearScale(
+      @NonNull String layoutBinding, @NonNull Position axisPosition, @NonNull List<String> domain) {
+    Objects.requireNonNull(layoutBinding);
+    Objects.requireNonNull(axisPosition);
+    Objects.requireNonNull(domain);
+
+    return "ChartAxis.withPercentageLinearScale("
+        + layoutBinding
+        + ", "
+        + axisPosition.value()
+        + ", "
+        + new JSONArray(domain)
+        + ")";
+  }
+
+  /**
    * @param layoutBinding Instance script from {@link ChartLayoutBinding#init(int, int, int, int,
    *     int, int, int, int)}.
    * @param axisPosition Position for the axis.

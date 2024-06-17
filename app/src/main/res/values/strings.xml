@@ -79,6 +79,7 @@
   <string name="text_grant">Grant</string>
   <string name="text_in_process">In process</string>
   <string name="text_in_queue">In queue</string>
+  <string name="text_income">Income</string>
   <string name="text_max">Max</string>
   <string name="text_min">Min</string>
   <string name="text_name">Name</string>
@@ -192,6 +193,10 @@
   <plurals name="args_from_x_customers">
     <item quantity="one"><![CDATA[From <b>%d</b> customer]]></item>
     <item quantity="other"><![CDATA[From <b>%d</b> customers]]></item>
+  </plurals>
+  <plurals name="args_from_x_queues">
+    <item quantity="one"><![CDATA[From <b>%d</b> queue]]></item>
+    <item quantity="other"><![CDATA[From <b>%d</b> queues]]></item>
   </plurals>
 
   <string name="maindialog_manageexternalstorage_permission_description">

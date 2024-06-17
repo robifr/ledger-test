@@ -23,8 +23,10 @@ import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
+import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.local.LocalDatabase;
 import com.robifr.ledger.local.access.QueueDao;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -329,6 +331,18 @@ public final class QueueRepository
                   });
               return delete;
             });
+  }
+
+  @NonNull
+  public CompletableFuture<List<QueueWithProductOrdersInfo>> selectAllWithProductOrdersInRange(
+      @NonNull ZonedDateTime startDate, @NonNull ZonedDateTime endDate) {
+    Objects.requireNonNull(startDate);
+    Objects.requireNonNull(endDate);
+
+    return CompletableFuture.supplyAsync(
+        () ->
+            this._localDao.selectAllWithProductOrdersInRange(
+                startDate.toInstant(), endDate.toInstant()));
   }
 
   /**

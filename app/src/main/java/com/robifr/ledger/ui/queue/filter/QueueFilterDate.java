@@ -25,12 +25,12 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.QueueDate;
 import com.robifr.ledger.data.QueueFilters;
 import com.robifr.ledger.databinding.QueueDialogFilterBinding;
 import com.robifr.ledger.ui.queue.QueueFragment;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -59,54 +59,44 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
     Objects.requireNonNull(checkedIds);
 
     for (Integer id : checkedIds) {
-      final QueueFilters.DateRange selectedDate =
-          QueueFilters.DateRange.valueOf(group.findViewById(id).getTag().toString());
+      final QueueDate.Range selectedDate =
+          QueueDate.Range.valueOf(group.findViewById(id).getTag().toString());
 
-      this._fragment
-          .queueViewModel()
-          .filterView()
-          .onDateChanged(selectedDate, selectedDate.dateStartEnd());
+      this._fragment.queueViewModel().filterView().onDateChanged(QueueDate.withRange(selectedDate));
       break; // Chip group should only be allowed to select single chip at time.
     }
   }
 
   /**
    * @param date {@link QueueFilters#filteredDate()}
-   * @param dateStartEnd {@link QueueFilters#filteredDateStartEnd()}
    */
-  public void setFilteredDate(
-      @NonNull QueueFilters.DateRange date,
-      @NonNull Pair<ZonedDateTime, ZonedDateTime> dateStartEnd) {
+  public void setFilteredDate(@NonNull QueueDate date) {
     Objects.requireNonNull(date);
-    Objects.requireNonNull(dateStartEnd);
-    Objects.requireNonNull(dateStartEnd.first);
-    Objects.requireNonNull(dateStartEnd.second);
 
     // Remove listener to prevent unintended updates to both view model and the chip itself
-    // when manually set the date, like `QueueFilters.DateRange#CUSTOM`.
+    // when manually set the date, like `QueueDate.Range#CUSTOM`.
     this._dialogBinding.filterDate.chipGroup.setOnCheckedStateChangeListener(null);
     this._dialogBinding
         .filterDate
         .chipGroup
-        .<Chip>findViewWithTag(date.toString())
+        .<Chip>findViewWithTag(date.range().toString())
         .setChecked(true);
     this._dialogBinding.filterDate.chipGroup.setOnCheckedStateChangeListener(this);
 
     final DateTimeFormatter format =
         DateTimeFormatter.ofPattern("d MMM yyyy", new Locale("id", "ID"));
     final Chip customRangeChip =
-        this._dialogBinding.filterDate.chipGroup.findViewWithTag(
-            QueueFilters.DateRange.CUSTOM.toString());
+        this._dialogBinding.filterDate.chipGroup.findViewWithTag(QueueDate.Range.CUSTOM.toString());
     final int customRangeVisibility =
-        date == QueueFilters.DateRange.CUSTOM ? View.VISIBLE : View.GONE;
+        date.range() == QueueDate.Range.CUSTOM ? View.VISIBLE : View.GONE;
 
     // Hide custom range chip when it's not being selected, and show otherwise.
     customRangeChip.setVisibility(customRangeVisibility);
     customRangeChip.setText(
         this._fragment.getString(
             R.string.queuefilter_date_selecteddate_chip,
-            dateStartEnd.first.format(format),
-            dateStartEnd.second.format(format)));
+            date.dateStart().format(format),
+            date.dateEnd().format(format)));
   }
 
   public void openDialog() {
@@ -125,8 +115,7 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
               .queueViewModel()
               .filterView()
               .onDateChanged(
-                  QueueFilters.DateRange.CUSTOM,
-                  new Pair<>(
+                  QueueDate.withCustomRange(
                       Instant.ofEpochMilli(date.first).atZone(ZoneId.systemDefault()),
                       Instant.ofEpochMilli(date.second).atZone(ZoneId.systemDefault())));
         });

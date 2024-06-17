@@ -46,13 +46,13 @@ class ChartLayout {
 
     // Extra margin for the ticks.
     /** @type {number} */
-    this.marginTop = marginTop + 6;
+    this.marginTop = marginTop + 10;
     /** @type {number} */
-    this.marginBottom = marginBottom + 6;
+    this.marginBottom = marginBottom + 10;
     /** @type {number} */
-    this.marginLeft = marginLeft + 6;
+    this.marginLeft = marginLeft + 10;
     /** @type {number} */
-    this.marginRight = marginRight + 6;
+    this.marginRight = marginRight + 10;
     /** @type {number} */
     this.fontSize = fontSize;
     /** @type {colorHex} */
@@ -160,6 +160,39 @@ class ChartAxis {
   }
 
   /**
+   * Same as a linear scale but with support for larger numbers by using percentages.
+   * Each domain (0-100) will be replaced with the provided domain strings.
+   * @param {ChartLayout} layout
+   * @param {number} axisPosition
+   * @param {string[]} domain
+   * @returns {ChartLinearAxis}
+   */
+  static withPercentageLinearScale(layout, axisPosition, domain) {
+    if (domain.length !== 101) throw new Error("Domain size should contain 101 items");
+
+    const scale = d3.scaleLinear().domain([0, 100]).range(this.#_withRange(layout, axisPosition));
+    const axis = (() => {
+      switch (axisPosition) {
+        case this.BOTTOM_POSITION:
+          return d3.axisBottom(scale);
+
+        case this.LEFT_POSITION:
+        default:
+          return d3.axisLeft(scale);
+      }
+    })()
+      .ticks(5)
+      .tickSizeOuter(0)
+      .tickSize(-layout.width + layout.marginRight + layout.marginLeft)
+      .tickFormat((d, i) => {
+        if (Math.floor(d) !== d) return; // Hide label for decimal numbers.
+        return domain[i * 2 * (scale.ticks().length - 1)];
+      });
+
+    return new ChartLinearAxis(scale, axis);
+  }
+
+  /**
    * @param {ChartLayout} layout
    * @param {number} axisPosition
    * @param {string[]} domain
@@ -245,19 +278,22 @@ class BarChart extends Chart {
   }
 
   render(data) {
+    // Draw y-axis.
+    this._svg
+      .append("g")
+      .attr("transform", `translate(${this._layout.marginLeft}, 0)`)
+      .style("font-size", `${this._layout.fontSize}`)
+      .call(this._yAxis.axis)
+      .call((g) => g.select(".domain").remove()) // Remove y-axis line.
+      .selectAll("line")
+      .style("stroke", Android.colorHex("stroke"));
+
     // Draw x-axis.
     this._svg
       .append("g")
       .attr("transform", `translate(0, ${this._layout.height - this._layout.marginBottom})`)
       .style("font-size", `${this._layout.fontSize}`)
       .call(this._xAxis.axis);
-
-    // Draw y-axis.
-    this._svg
-      .append("g")
-      .attr("transform", `translate(${this._layout.marginLeft}, 0)`)
-      .style("font-size", `${this._layout.fontSize}`)
-      .call(this._yAxis.axis);
 
     // Draw bar.
     this._svg
@@ -273,59 +309,6 @@ class BarChart extends Chart {
         "height",
         (d) => this._layout.height - this._layout.marginBottom - this._yAxis.scale(d.value)
       );
-
-    container.append(this._svg.node());
-    d3.select("body").style("background-color", this._layout.backgroundColor);
-  }
-}
-
-class HorizontalBarChart extends Chart {
-  /**
-   * @param {ChartLayout} layout
-   * @param {ChartLinearAxis} xAxis
-   * @param {ChartBandAxis} yAxis
-   */
-  constructor(layout, xAxis, yAxis) {
-    super(layout, xAxis, yAxis);
-  }
-
-  render(data) {
-    // Draw x-axis.
-    this._svg
-      .append("g")
-      .attr("transform", `translate(0, ${this._layout.height - this._layout.marginBottom})`)
-      .style("font-size", `${this._layout.fontSize}`)
-      .call(this._xAxis.axis);
-
-    // Draw y-axis.
-    this._yAxis.scale.paddingInner(0.55);
-    this._svg
-      .append("g")
-      .attr("transform", `translate(${this._layout.marginLeft}, 0)`)
-      .call(this._yAxis.axis.tickValues([]));
-    // Create new label above the bar.
-    this._svg
-      .selectAll(".y-label")
-      .data(data)
-      .enter()
-      .append("text")
-      .attr("class", "y-label")
-      .attr("x", this._layout.marginLeft + 5)
-      .attr("y", (d) => this._yAxis.scale(d.key) - 5)
-      .style("font-size", `${this._layout.fontSize}`)
-      .text((d) => d.key);
-
-    // Draw bar.
-    this._svg
-      .selectAll("rect")
-      .data(data)
-      .enter()
-      .append("rect")
-      .style("fill", Android.colorHex("colorPrimary"))
-      .attr("x", this._layout.marginLeft)
-      .attr("y", (d) => this._yAxis.scale(d.key))
-      .attr("width", (d) => this._xAxis.scale(d.value) - this._layout.marginLeft)
-      .attr("height", this._yAxis.scale.bandwidth());
 
     container.append(this._svg.node());
     d3.select("body").style("background-color", this._layout.backgroundColor);

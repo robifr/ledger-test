@@ -59,10 +59,11 @@
     <item name="android:gravity">center</item>
   </style>
 
-  <style name="BottomSheetDialog.RadioButton.RoundedRight" parent="Widget.Material3.CompoundButton.RadioButton">
+  <style name="BottomSheetDialog.Button.RoundedRight" parent="">
     <item name="android:minHeight">@dimen/bottomdialog_button_minheight</item>
     <item name="android:paddingStart">@dimen/bottomdialog_padding</item>
     <item name="android:button">@null</item>
+    <item name="android:textAlignment">textStart</item>
     <item name="android:textSize">@dimen/text_smallmedium</item>
     <item name="android:textColor">@color/text_selectable</item>
     <item name="android:background">@drawable/shape_radio_roundedright</item>

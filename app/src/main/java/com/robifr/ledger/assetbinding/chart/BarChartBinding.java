@@ -57,7 +57,7 @@ public class BarChartBinding {
    * @return A valid JavaScript code for this method.
    */
   @NonNull
-  public static String render(@NonNull String barChartBinding, @NonNull Map<String, Integer> data) {
+  public static String render(@NonNull String barChartBinding, @NonNull Map<String, Double> data) {
     Objects.requireNonNull(barChartBinding);
     Objects.requireNonNull(data);
 

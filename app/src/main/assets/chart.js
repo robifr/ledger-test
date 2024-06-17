@@ -117,7 +117,7 @@ class ChartAxis {
     })()
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
-        if (i % 2 !== 0 && !isEvenLabelIndexVisible) return; // Hide label for even-index.
+        if (!isEvenLabelIndexVisible && domain.length > 5 && i % 2 !== 0) return; // Hide label for even-index.
         if (Math.floor(d) !== d) return; // Hide label for decimal numbers.
         if (d >= 1e9) return d3.format("d")(d) / 1e9 + "b";
         if (d >= 1e6) return d3.format("d")(d) / 1e6 + "m";
@@ -186,7 +186,7 @@ class ChartAxis {
     })()
       .tickSizeOuter(0)
       // Hide label for even-index.
-      .tickFormat((d, i) => (i % 2 !== 0 && !isEvenLabelIndexVisible ? null : d));
+      .tickFormat((d, i) => (!isEvenLabelIndexVisible && domain.length > 5 && i % 2 !== 0 ? null : d));
 
     return new ChartBandAxis(scale, axis);
   }

@@ -93,10 +93,10 @@ class ChartAxis {
    * @param {ChartLayout} layout
    * @param {number} axisPosition
    * @param {number[]} domain
-   * @param {boolean} [isEvenLabelIndexVisible=true]
+   * @param {boolean} [isAllLabelVisible=true]
    * @returns {ChartLinearAxis}
    */
-  static withLinearScale(layout, axisPosition, domain, isEvenLabelIndexVisible = true) {
+  static withLinearScale(layout, axisPosition, domain, isAllLabelVisible = true) {
     // Just a hack to prevent label on the edge of axis.
     const minDomain = domain[0] !== 0 ? domain[0] - 0.5 : domain[0];
     const maxDomain = domain[1] + 0.5;
@@ -117,8 +117,11 @@ class ChartAxis {
     })()
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
-        if (!isEvenLabelIndexVisible && domain.length > 5 && i % 2 !== 0) return; // Hide label for even-index.
-        if (Math.floor(d) !== d) return; // Hide label for decimal numbers.
+        // Hide label for even-index.
+        if (!isAllLabelVisible && domain.length > 5 && i % 2 !== 0) return;
+        // Hide label for decimal numbers.
+        if (Math.floor(d) !== d) return;
+        // Format with unit.
         if (d >= 1e9) return d3.format("d")(d) / 1e9 + "b";
         if (d >= 1e6) return d3.format("d")(d) / 1e6 + "m";
         if (d >= 1000) return d3.format("d")(d) / 1000 + "k";
@@ -165,10 +168,10 @@ class ChartAxis {
    * @param {ChartLayout} layout
    * @param {number} axisPosition
    * @param {string[]} domain
-   * @param {boolean} [isEvenLabelIndexVisible=true]
+   * @param {boolean} [isAllLabelVisible=true]
    * @returns {ChartBandAxis}
    */
-  static withBandScale(layout, axisPosition, domain, isEvenLabelIndexVisible = true) {
+  static withBandScale(layout, axisPosition, domain, isAllLabelVisible = true) {
     const scale = d3
       .scaleBand()
       .domain(domain)
@@ -186,7 +189,7 @@ class ChartAxis {
     })()
       .tickSizeOuter(0)
       // Hide label for even-index.
-      .tickFormat((d, i) => (!isEvenLabelIndexVisible && domain.length > 5 && i % 2 !== 0 ? null : d));
+      .tickFormat((d, i) => (!isAllLabelVisible && domain.length > 5 && i % 2 !== 0 ? null : d));
 
     return new ChartBandAxis(scale, axis);
   }

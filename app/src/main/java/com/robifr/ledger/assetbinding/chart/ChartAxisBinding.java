@@ -46,7 +46,7 @@ public class ChartAxisBinding {
    *     int, int, int, int)}.
    * @param axisPosition Position for the axis.
    * @param domain Pair of min (first) and max (second) number for the label.
-   * @param isEvenLabelIndexVisible Whether label with even-index visible or not.
+   * @param isAllLabelVisible Whether label should be visible, even when the domain is large.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
@@ -54,7 +54,7 @@ public class ChartAxisBinding {
       @NonNull String layoutBinding,
       @NonNull Position axisPosition,
       @NonNull Pair<Integer, Integer> domain,
-      boolean isEvenLabelIndexVisible) {
+      boolean isAllLabelVisible) {
     Objects.requireNonNull(layoutBinding);
     Objects.requireNonNull(axisPosition);
     Objects.requireNonNull(domain);
@@ -66,7 +66,7 @@ public class ChartAxisBinding {
         + ", "
         + new JSONArray(List.of(domain.first, domain.second))
         + ", "
-        + isEvenLabelIndexVisible
+        + isAllLabelVisible
         + ")";
   }
 
@@ -102,7 +102,7 @@ public class ChartAxisBinding {
    *     int, int, int, int)}.
    * @param axisPosition Position for the axis.
    * @param domain List of string for the label.
-   * @param isEvenLabelIndexVisible Whether label with even-index visible or not.
+   * @param isAllLabelVisible Whether label should be visible, even when the domain is large.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
@@ -110,7 +110,7 @@ public class ChartAxisBinding {
       @NonNull String layoutBinding,
       @NonNull Position axisPosition,
       @NonNull List<String> domain,
-      boolean isEvenLabelIndexVisible) {
+      boolean isAllLabelVisible) {
     Objects.requireNonNull(layoutBinding);
     Objects.requireNonNull(axisPosition);
     Objects.requireNonNull(domain);
@@ -122,7 +122,7 @@ public class ChartAxisBinding {
         + ", "
         + new JSONArray(domain)
         + ", "
-        + isEvenLabelIndexVisible
+        + isAllLabelVisible
         + ")";
   }
 }

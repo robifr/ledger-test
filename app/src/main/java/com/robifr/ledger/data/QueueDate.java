@@ -40,8 +40,8 @@ public record QueueDate(
 
   /**
    * @apiNote Use {@link QueueDate#withCustomRange(ZonedDateTime, ZonedDateTime)} specifically for
-   *     {@link Range#CUSTOM} enum, otherwise initial epoch time for both {@link
-   *     QueueDate#dateStart} and {@link QueueDate#dateEnd} will be set.
+   *     {@link Range#CUSTOM} enum. Otherwise, the initial epoch time will be set for both {@link
+   *     QueueDate#dateStart} and {@link QueueDate#dateEnd}.
    */
   public static QueueDate withRange(@NonNull Range range) {
     Objects.requireNonNull(range);

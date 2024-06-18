@@ -73,8 +73,9 @@ public class DashboardViewModel extends ViewModel {
     // is recreated due to the fragment being navigated by bottom navigation.
     this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
     this._customersWithBalance =
-        (MutableLiveData<List<CustomerBalanceInfo>>) this.selectAllIdsWithBalance();
-    this._customersWithDebt = (MutableLiveData<List<CustomerDebtInfo>>) this.selectAllIdsWithDebt();
+        (MutableLiveData<List<CustomerBalanceInfo>>) this._selectAllIdsWithBalance();
+    this._customersWithDebt =
+        (MutableLiveData<List<CustomerDebtInfo>>) this._selectAllIdsWithDebt();
   }
 
   @Override
@@ -107,77 +108,13 @@ public class DashboardViewModel extends ViewModel {
     return this._queuesWithProductOrders;
   }
 
-  @NonNull
-  public LiveData<List<CustomerBalanceInfo>> selectAllIdsWithBalance() {
-    final MutableLiveData<List<CustomerBalanceInfo>> result = new MutableLiveData<>();
-
-    this._customerRepository
-        .selectAllIdsWithBalance()
-        .thenAcceptAsync(
-            customers -> {
-              if (customers == null) {
-                this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_customers)));
-              }
-
-              result.postValue(customers);
-            });
-    return result;
-  }
-
-  @NonNull
-  public LiveData<List<CustomerDebtInfo>> selectAllIdsWithDebt() {
-    final MutableLiveData<List<CustomerDebtInfo>> result = new MutableLiveData<>();
-
-    this._customerRepository
-        .selectAllIdsWithDebt()
-        .thenAcceptAsync(
-            customers -> {
-              if (customers == null) {
-                this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_customers)));
-              }
-
-              result.postValue(customers);
-            });
-    return result;
-  }
-
-  @NonNull
-  public LiveData<List<QueueWithProductOrdersInfo>> selectAllQueuesWithProductOrdersInRange(
-      @NonNull ZonedDateTime startDate, @NonNull ZonedDateTime endDate) {
-    Objects.requireNonNull(startDate);
-    Objects.requireNonNull(endDate);
-
-    final MutableLiveData<List<QueueWithProductOrdersInfo>> result = new MutableLiveData<>();
-
-    this._queueRepository
-        .selectAllWithProductOrdersInRange(startDate, endDate)
-        .thenAcceptAsync(
-            queues -> {
-              if (queues == null) {
-                this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_queues)));
-              }
-
-              result.postValue(queues);
-            });
-    return result;
-  }
-
   public void onDateChanged(@NonNull QueueDate date) {
     Objects.requireNonNull(date);
 
     this._date.setValue(date);
 
     final LiveData<List<QueueWithProductOrdersInfo>> selectAllQueueInfo =
-        this.selectAllQueuesWithProductOrdersInRange(date.dateStart(), date.dateEnd());
+        this._selectAllQueuesWithProductOrdersInRange(date.dateStart(), date.dateEnd());
     selectAllQueueInfo.observeForever(
         new Observer<>() {
           @Override
@@ -201,5 +138,69 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(debtInfo);
 
     this._customersWithDebt.setValue(Collections.unmodifiableList(debtInfo));
+  }
+
+  @NonNull
+  private LiveData<List<CustomerBalanceInfo>> _selectAllIdsWithBalance() {
+    final MutableLiveData<List<CustomerBalanceInfo>> result = new MutableLiveData<>();
+
+    this._customerRepository
+        .selectAllIdsWithBalance()
+        .thenAcceptAsync(
+            customers -> {
+              if (customers == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_customers)));
+              }
+
+              result.postValue(customers);
+            });
+    return result;
+  }
+
+  @NonNull
+  private LiveData<List<CustomerDebtInfo>> _selectAllIdsWithDebt() {
+    final MutableLiveData<List<CustomerDebtInfo>> result = new MutableLiveData<>();
+
+    this._customerRepository
+        .selectAllIdsWithDebt()
+        .thenAcceptAsync(
+            customers -> {
+              if (customers == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_customers)));
+              }
+
+              result.postValue(customers);
+            });
+    return result;
+  }
+
+  @NonNull
+  private LiveData<List<QueueWithProductOrdersInfo>> _selectAllQueuesWithProductOrdersInRange(
+      @NonNull ZonedDateTime startDate, @NonNull ZonedDateTime endDate) {
+    Objects.requireNonNull(startDate);
+    Objects.requireNonNull(endDate);
+
+    final MutableLiveData<List<QueueWithProductOrdersInfo>> result = new MutableLiveData<>();
+
+    this._queueRepository
+        .selectAllWithProductOrdersInRange(startDate, endDate)
+        .thenAcceptAsync(
+            queues -> {
+              if (queues == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_queues)));
+              }
+
+              result.postValue(queues);
+            });
+    return result;
   }
 }

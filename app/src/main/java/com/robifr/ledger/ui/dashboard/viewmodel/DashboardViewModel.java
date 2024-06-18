@@ -182,8 +182,10 @@ public class DashboardViewModel extends ViewModel {
         new Observer<>() {
           @Override
           public void onChanged(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-            if (queueInfo != null)
+            if (queueInfo != null) {
               DashboardViewModel.this._queuesWithProductOrders.setValue(queueInfo);
+            }
+
             selectAllQueueInfo.removeObserver(this);
           }
         });

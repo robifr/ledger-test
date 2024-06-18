@@ -18,15 +18,9 @@
 package com.robifr.ledger.data.model
 
 import androidx.room.Ignore
-import androidx.room.Relation
-import java.time.Instant
+import java.math.BigDecimal
 
 @JvmRecord
-data class QueueWithProductOrdersInfo(
-    val id: Long?,
-    val date: Instant,
-    @Relation(parentColumn = "id", entityColumn = "queue_id")
-    val productOrders: List<ProductOrderModel>
-) : Info {
+data class CustomerDebtInfo(val id: Long?, val debt: BigDecimal) : Info {
   @Ignore override fun modelId(): Long? = this.id
 }

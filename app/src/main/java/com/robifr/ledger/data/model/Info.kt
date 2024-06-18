@@ -15,8 +15,15 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.data.model;
+package com.robifr.ledger.data.model
 
-import androidx.annotation.Nullable;
-
-public record CustomerBalanceInfo(@Nullable Long id, long balance) {}
+sealed interface Info {
+  /**
+   * Model primary key.
+   *
+   * Note: The type is nullable instead of its primitive type even though both of them are valid.
+   * It's due to when updating a model with foreign-key set to zero — indicating the referenced row
+   * was deleted — instead of null, the query will silently fail.
+   */
+  fun modelId(): Long?
+}

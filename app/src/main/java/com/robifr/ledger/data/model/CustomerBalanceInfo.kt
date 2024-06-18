@@ -15,15 +15,11 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.data.model;
+package com.robifr.ledger.data.model
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import java.math.BigDecimal;
-import java.util.Objects;
+import androidx.room.Ignore
 
-public record CustomerDebtInfo(@Nullable Long id, @NonNull BigDecimal debt) {
-  public CustomerDebtInfo {
-    Objects.requireNonNull(debt);
-  }
+@JvmRecord
+data class CustomerBalanceInfo(val id: Long?, val balance: Long) : Info {
+  @Ignore override fun modelId(): Long? = this.id
 }

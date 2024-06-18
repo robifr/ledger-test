@@ -27,10 +27,8 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.ModelChangedListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
   @NonNull private final DashboardViewModel _viewModel;
@@ -47,8 +45,30 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              this._viewModel.onCustomersWithBalanceChanged(this._onUpdateBalanceInfo(customers));
-              this._viewModel.onCustomersWithDebtChanged(this._onUpdateDebtInfo(customers));
+              final ArrayList<CustomerBalanceInfo> currentBalanceInfo =
+                  this._viewModel.customersWithBalance().getValue() != null
+                      ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
+                      : new ArrayList<>();
+              final List<CustomerBalanceInfo> balanceInfo =
+                  DashboardInfoUpdater.onUpdateInfo(
+                      customers,
+                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()),
+                      () -> currentBalanceInfo);
+
+              final ArrayList<CustomerDebtInfo> currentDebtInfo =
+                  this._viewModel.customersWithBalance().getValue() != null
+                      ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
+                      : new ArrayList<>();
+              final List<CustomerDebtInfo> debtInfo =
+                  DashboardInfoUpdater.onUpdateInfo(
+                      customers,
+                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()),
+                      () -> currentDebtInfo);
+
+              balanceInfo.removeIf(info -> info.balance() == 0L);
+              debtInfo.removeIf(info -> info.debt().compareTo(BigDecimal.ZERO) == 0);
+              this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
+              this._viewModel.onCustomersWithDebtChanged(debtInfo);
             });
   }
 
@@ -60,8 +80,28 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              this._viewModel.onCustomersWithBalanceChanged(this._onAddBalanceInfo(customers));
-              this._viewModel.onCustomersWithDebtChanged(this._onAddDebtInfo(customers));
+              final ArrayList<CustomerBalanceInfo> currentBalanceInfo =
+                  this._viewModel.customersWithBalance().getValue() != null
+                      ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
+                      : new ArrayList<>();
+              final List<CustomerBalanceInfo> balanceInfo =
+                  DashboardInfoUpdater.onAddInfo(
+                      customers,
+                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()),
+                      () -> currentBalanceInfo);
+
+              final ArrayList<CustomerDebtInfo> currentDebtInfo =
+                  this._viewModel.customersWithBalance().getValue() != null
+                      ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
+                      : new ArrayList<>();
+              final List<CustomerDebtInfo> debtInfo =
+                  DashboardInfoUpdater.onAddInfo(
+                      customers,
+                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()),
+                      () -> currentDebtInfo);
+
+              this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
+              this._viewModel.onCustomersWithDebtChanged(debtInfo);
             });
   }
 
@@ -73,128 +113,32 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              this._viewModel.onCustomersWithBalanceChanged(this._onRemoveBalanceInfo(customers));
-              this._viewModel.onCustomersWithDebtChanged(this._onRemoveDebtInfo(customers));
+              final ArrayList<CustomerBalanceInfo> currentBalanceInfo =
+                  this._viewModel.customersWithBalance().getValue() != null
+                      ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
+                      : new ArrayList<>();
+              final List<CustomerBalanceInfo> balanceInfo =
+                  DashboardInfoUpdater.onRemoveInfo(
+                      customers,
+                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()),
+                      () -> currentBalanceInfo);
+
+              final ArrayList<CustomerDebtInfo> currentDebtInfo =
+                  this._viewModel.customersWithBalance().getValue() != null
+                      ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
+                      : new ArrayList<>();
+              final List<CustomerDebtInfo> debtInfo =
+                  DashboardInfoUpdater.onRemoveInfo(
+                      customers,
+                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()),
+                      () -> currentDebtInfo);
+
+              this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
+              this._viewModel.onCustomersWithDebtChanged(debtInfo);
             });
   }
 
   @Override
   @WorkerThread
   public void onModelUpserted(@NonNull List<CustomerModel> customers) {}
-
-  @NonNull
-  private List<CustomerBalanceInfo> _onUpdateBalanceInfo(@NonNull List<CustomerModel> customers) {
-    Objects.requireNonNull(customers);
-
-    final ArrayList<CustomerBalanceInfo> currentInfo =
-        this._viewModel.customersWithBalance().getValue() != null
-            ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
-            : new ArrayList<>();
-    final List<CustomerBalanceInfo> customerInfo =
-        customers.stream()
-            .map(customer -> new CustomerBalanceInfo(customer.id(), customer.balance()))
-            .collect(Collectors.toList());
-    final HashMap<Long, CustomerBalanceInfo> filteredInfo = new HashMap<>();
-
-    currentInfo.forEach(info -> filteredInfo.put(info.id(), info));
-    customerInfo.forEach(info -> filteredInfo.put(info.id(), info)); // Override duplicate ID.
-    filteredInfo.values().removeIf(info -> info.balance() == 0L);
-    return new ArrayList<>(filteredInfo.values());
-  }
-
-  @NonNull
-  private List<CustomerBalanceInfo> _onAddBalanceInfo(@NonNull List<CustomerModel> customers) {
-    Objects.requireNonNull(customers);
-
-    final ArrayList<CustomerBalanceInfo> currentInfo =
-        this._viewModel.customersWithBalance().getValue() != null
-            ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
-            : new ArrayList<>();
-    final List<CustomerBalanceInfo> customerInfo =
-        customers.stream()
-            .map(customer -> new CustomerBalanceInfo(customer.id(), customer.balance()))
-            .collect(Collectors.toList());
-
-    currentInfo.addAll(customerInfo);
-    return currentInfo;
-  }
-
-  @NonNull
-  private List<CustomerBalanceInfo> _onRemoveBalanceInfo(@NonNull List<CustomerModel> customers) {
-    Objects.requireNonNull(customers);
-
-    final ArrayList<CustomerBalanceInfo> currentInfo =
-        this._viewModel.customersWithBalance().getValue() != null
-            ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
-            : new ArrayList<>();
-
-    for (CustomerModel customer : customers) {
-      for (int i = currentInfo.size(); i-- > 0; ) {
-        if (currentInfo.get(i).id() != null && currentInfo.get(i).id().equals(customer.id())) {
-          currentInfo.remove(i);
-          break;
-        }
-      }
-    }
-
-    return currentInfo;
-  }
-
-  @NonNull
-  private List<CustomerDebtInfo> _onUpdateDebtInfo(@NonNull List<CustomerModel> customers) {
-    Objects.requireNonNull(customers);
-
-    final ArrayList<CustomerDebtInfo> currentInfo =
-        this._viewModel.customersWithDebt().getValue() != null
-            ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
-            : new ArrayList<>();
-    final List<CustomerDebtInfo> customerInfo =
-        customers.stream()
-            .map(customer -> new CustomerDebtInfo(customer.id(), customer.debt()))
-            .collect(Collectors.toList());
-    final HashMap<Long, CustomerDebtInfo> filteredInfo = new HashMap<>();
-
-    currentInfo.forEach(info -> filteredInfo.put(info.id(), info));
-    customerInfo.forEach(info -> filteredInfo.put(info.id(), info)); // Override duplicate ID.
-    filteredInfo.values().removeIf(info -> info.debt().compareTo(BigDecimal.ZERO) == 0);
-    return new ArrayList<>(filteredInfo.values());
-  }
-
-  @NonNull
-  private List<CustomerDebtInfo> _onAddDebtInfo(@NonNull List<CustomerModel> customers) {
-    Objects.requireNonNull(customers);
-
-    final ArrayList<CustomerDebtInfo> currentInfo =
-        this._viewModel.customersWithDebt().getValue() != null
-            ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
-            : new ArrayList<>();
-    final List<CustomerDebtInfo> customerInfo =
-        customers.stream()
-            .map(customer -> new CustomerDebtInfo(customer.id(), customer.debt()))
-            .collect(Collectors.toList());
-
-    currentInfo.addAll(customerInfo);
-    return currentInfo;
-  }
-
-  @NonNull
-  private List<CustomerDebtInfo> _onRemoveDebtInfo(@NonNull List<CustomerModel> customers) {
-    Objects.requireNonNull(customers);
-
-    final ArrayList<CustomerDebtInfo> currentInfo =
-        this._viewModel.customersWithDebt().getValue() != null
-            ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
-            : new ArrayList<>();
-
-    for (CustomerModel customer : customers) {
-      for (int i = currentInfo.size(); i-- > 0; ) {
-        if (currentInfo.get(i).id() != null && currentInfo.get(i).id().equals(customer.id())) {
-          currentInfo.remove(i);
-          break;
-        }
-      }
-    }
-
-    return currentInfo;
-  }
 }

@@ -44,6 +44,9 @@ public class DashboardViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
 
   @NonNull
+  private final QueueChangedListeners _queueChangedListener = new QueueChangedListeners(this);
+
+  @NonNull
   private final CustomerChangedListener _customerChangedListener =
       new CustomerChangedListener(this);
 
@@ -65,6 +68,7 @@ public class DashboardViewModel extends ViewModel {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
 
+    this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
@@ -80,6 +84,7 @@ public class DashboardViewModel extends ViewModel {
 
   @Override
   public void onCleared() {
+    this._queueRepository.removeModelChangedListener(this._queueChangedListener);
     this._customerRepository.removeModelChangedListener(this._customerChangedListener);
   }
 
@@ -138,6 +143,12 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(debtInfo);
 
     this._customersWithDebt.setValue(Collections.unmodifiableList(debtInfo));
+  }
+
+  public void onQueuesWithProductOrders(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+    Objects.requireNonNull(queueInfo);
+
+    this._queuesWithProductOrders.setValue(Collections.unmodifiableList(queueInfo));
   }
 
   @NonNull

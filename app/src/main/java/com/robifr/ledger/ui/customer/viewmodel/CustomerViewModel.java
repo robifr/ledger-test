@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.ui.customer.viewmodel;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -31,7 +30,6 @@ import com.robifr.ledger.data.CustomerSorter;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
-import com.robifr.ledger.ui.LiveDataModelChangedListener;
 import com.robifr.ledger.ui.StringResources;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
@@ -43,7 +41,11 @@ import javax.inject.Inject;
 @HiltViewModel
 public class CustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
-  @NonNull private final CustomerChangedListener _customerChangedListener;
+
+  @NonNull
+  private final CustomerChangedListener _customerChangedListener =
+      new CustomerChangedListener(this);
+
   @NonNull private final CustomerFilterViewModel _filterView;
   @NonNull private final CustomerSorter _sorter = new CustomerSorter();
 
@@ -63,7 +65,6 @@ public class CustomerViewModel extends ViewModel {
   @Inject
   public CustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._customerChangedListener = new CustomerChangedListener(this._customers);
     this._filterView = new CustomerFilterViewModel(this, new CustomerFilterer());
 
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
@@ -211,18 +212,5 @@ public class CustomerViewModel extends ViewModel {
 
   public void onExpandedCustomerIndexChanged(int index) {
     this._expandedCustomerIndex.setValue(index);
-  }
-
-  private class CustomerChangedListener extends LiveDataModelChangedListener<CustomerModel> {
-    public CustomerChangedListener(@NonNull MutableLiveData<List<CustomerModel>> customers) {
-      super(customers);
-    }
-
-    @Override
-    @MainThread
-    public void onUpdateLiveData(@NonNull List<CustomerModel> customers) {
-      CustomerViewModel.this._filterView.onFiltersChanged(
-          CustomerViewModel.this._filterView.inputtedFilters(), customers);
-    }
   }
 }

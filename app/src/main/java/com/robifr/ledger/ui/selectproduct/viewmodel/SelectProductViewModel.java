@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.ui.selectproduct.viewmodel;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -31,7 +30,6 @@ import com.robifr.ledger.data.ProductSorter;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
-import com.robifr.ledger.ui.LiveDataModelChangedListener;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -43,9 +41,11 @@ import javax.inject.Inject;
 @HiltViewModel
 public class SelectProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
-  @NonNull private final ProductChangedListener _productChangedListener;
-  @NonNull private final ProductSorter _sorter = new ProductSorter();
 
+  @NonNull
+  private final ProductChangedListener _productChangedListener = new ProductChangedListener(this);
+
+  @NonNull private final ProductSorter _sorter = new ProductSorter();
   @Nullable private final ProductModel _initialSelectedProduct;
 
   @NonNull
@@ -64,7 +64,6 @@ public class SelectProductViewModel extends ViewModel {
     Objects.requireNonNull(savedStateHandle);
 
     this._productRepository = Objects.requireNonNull(productRepository);
-    this._productChangedListener = new ProductChangedListener(this._products);
     this._initialSelectedProduct =
         savedStateHandle.get(SelectProductFragment.Arguments.INITIAL_SELECTED_PRODUCT.key());
 
@@ -140,17 +139,5 @@ public class SelectProductViewModel extends ViewModel {
               result.postValue(products);
             });
     return result;
-  }
-
-  private class ProductChangedListener extends LiveDataModelChangedListener<ProductModel> {
-    public ProductChangedListener(@NonNull MutableLiveData<List<ProductModel>> products) {
-      super(products);
-    }
-
-    @Override
-    @MainThread
-    public void onUpdateLiveData(@NonNull List<ProductModel> products) {
-      SelectProductViewModel.this.onProductsChanged(products);
-    }
   }
 }

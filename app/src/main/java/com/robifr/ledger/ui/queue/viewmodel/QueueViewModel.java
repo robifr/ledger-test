@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.ui.queue.viewmodel;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -34,7 +33,6 @@ import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
-import com.robifr.ledger.ui.LiveDataModelChangedListener;
 import com.robifr.ledger.ui.StringResources;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
@@ -48,7 +46,9 @@ import javax.inject.Inject;
 public class QueueViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
-  @NonNull private final QueueChangedListener _queueChangedListener;
+
+  @NonNull
+  private final QueueChangedListener _queueChangedListener = new QueueChangedListener(this);
 
   @NonNull
   private final CustomerChangedListener _customerChangedListener =
@@ -75,7 +75,6 @@ public class QueueViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._queueChangedListener = new QueueChangedListener(this._queues);
 
     final QueueFilterer filterer = new QueueFilterer();
     filterer.setFilters(
@@ -253,18 +252,5 @@ public class QueueViewModel extends ViewModel {
 
   public void onExpandedQueueIndexChanged(int index) {
     this._expandedQueueIndex.setValue(index);
-  }
-
-  private class QueueChangedListener extends LiveDataModelChangedListener<QueueModel> {
-    public QueueChangedListener(@NonNull MutableLiveData<List<QueueModel>> queues) {
-      super(queues);
-    }
-
-    @Override
-    @MainThread
-    public void onUpdateLiveData(@NonNull List<QueueModel> queues) {
-      QueueViewModel.this._filterView.onFiltersChanged(
-          QueueViewModel.this._filterView.inputtedFilters(), queues);
-    }
   }
 }

@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.ui.product.viewmodel;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -31,7 +30,6 @@ import com.robifr.ledger.data.ProductSorter;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
-import com.robifr.ledger.ui.LiveDataModelChangedListener;
 import com.robifr.ledger.ui.StringResources;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.ArrayList;
@@ -43,7 +41,10 @@ import javax.inject.Inject;
 @HiltViewModel
 public class ProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
-  @NonNull private final ProductChangedListener _productChangedListener;
+
+  @NonNull
+  private final ProductChangedListener _productChangedListener = new ProductChangedListener(this);
+
   @NonNull private final ProductFilterViewModel _filterView;
   @NonNull private final ProductSorter _sorter = new ProductSorter();
 
@@ -63,7 +64,6 @@ public class ProductViewModel extends ViewModel {
   @Inject
   public ProductViewModel(@NonNull ProductRepository productRepository) {
     this._productRepository = Objects.requireNonNull(productRepository);
-    this._productChangedListener = new ProductChangedListener(this._products);
     this._filterView = new ProductFilterViewModel(this, new ProductFilterer());
 
     this._productRepository.addModelChangedListener(this._productChangedListener);
@@ -210,18 +210,5 @@ public class ProductViewModel extends ViewModel {
 
   public void onExpandedProductIndexChanged(int index) {
     this._expandedProductIndex.setValue(index);
-  }
-
-  private class ProductChangedListener extends LiveDataModelChangedListener<ProductModel> {
-    public ProductChangedListener(@NonNull MutableLiveData<List<ProductModel>> products) {
-      super(products);
-    }
-
-    @Override
-    @MainThread
-    public void onUpdateLiveData(@NonNull List<ProductModel> products) {
-      ProductViewModel.this._filterView.onFiltersChanged(
-          ProductViewModel.this._filterView.inputtedFilters(), products);
-    }
   }
 }

@@ -17,8 +17,6 @@
 
 package com.robifr.ledger.data.model
 
-import androidx.room.Ignore
-
 @JvmRecord
 data class CustomerBalanceInfo(val id: Long?, val balance: Long) : Info {
   companion object {
@@ -27,5 +25,5 @@ data class CustomerBalanceInfo(val id: Long?, val balance: Long) : Info {
         CustomerBalanceInfo(customer.id, customer.balance)
   }
 
-  @Ignore override fun modelId(): Long? = this.id
+  override fun modelId(): Long? = this.id
 }

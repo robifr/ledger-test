@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.data.model
 
-import androidx.room.Ignore
 import androidx.room.Relation
 import java.time.Instant
 
@@ -34,5 +33,5 @@ data class QueueWithProductOrdersInfo(
         QueueWithProductOrdersInfo(queue.id, queue.date, queue.productOrders)
   }
 
-  @Ignore override fun modelId(): Long? = this.id
+  override fun modelId(): Long? = this.id
 }

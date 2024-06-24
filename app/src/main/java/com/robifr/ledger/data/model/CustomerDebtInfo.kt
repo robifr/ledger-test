@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.data.model
 
-import androidx.room.Ignore
 import java.math.BigDecimal
 
 @JvmRecord
@@ -28,5 +27,5 @@ data class CustomerDebtInfo(val id: Long?, val debt: BigDecimal) : Info {
         CustomerDebtInfo(customer.id, customer.debt)
   }
 
-  @Ignore override fun modelId(): Long? = this.id
+  override fun modelId(): Long? = this.id
 }

@@ -52,19 +52,14 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
                       : new ArrayList<>();
               final List<CustomerBalanceInfo> balanceInfo =
                   InfoUpdater.updateInfo(
-                      customers,
-                      currentBalanceInfo,
-                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()));
+                      customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
 
               final ArrayList<CustomerDebtInfo> currentDebtInfo =
                   this._viewModel.customersWithBalance().getValue() != null
                       ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
                       : new ArrayList<>();
               final List<CustomerDebtInfo> debtInfo =
-                  InfoUpdater.updateInfo(
-                      customers,
-                      currentDebtInfo,
-                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()));
+                  InfoUpdater.updateInfo(customers, currentDebtInfo, CustomerDebtInfo::withModel);
 
               balanceInfo.removeIf(info -> info.balance() == 0L);
               debtInfo.removeIf(info -> info.debt().compareTo(BigDecimal.ZERO) == 0);
@@ -87,19 +82,14 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
                       : new ArrayList<>();
               final List<CustomerBalanceInfo> balanceInfo =
                   InfoUpdater.addInfo(
-                      customers,
-                      currentBalanceInfo,
-                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()));
+                      customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
 
               final ArrayList<CustomerDebtInfo> currentDebtInfo =
                   this._viewModel.customersWithBalance().getValue() != null
                       ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
                       : new ArrayList<>();
               final List<CustomerDebtInfo> debtInfo =
-                  InfoUpdater.addInfo(
-                      customers,
-                      currentDebtInfo,
-                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()));
+                  InfoUpdater.addInfo(customers, currentDebtInfo, CustomerDebtInfo::withModel);
 
               this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
               this._viewModel.onCustomersWithDebtChanged(debtInfo);
@@ -120,19 +110,14 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
                       : new ArrayList<>();
               final List<CustomerBalanceInfo> balanceInfo =
                   InfoUpdater.removeInfo(
-                      customers,
-                      currentBalanceInfo,
-                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()));
+                      customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
 
               final ArrayList<CustomerDebtInfo> currentDebtInfo =
                   this._viewModel.customersWithBalance().getValue() != null
                       ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
                       : new ArrayList<>();
               final List<CustomerDebtInfo> debtInfo =
-                  InfoUpdater.removeInfo(
-                      customers,
-                      currentDebtInfo,
-                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()));
+                  InfoUpdater.removeInfo(customers, currentDebtInfo, CustomerDebtInfo::withModel);
 
               this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
               this._viewModel.onCustomersWithDebtChanged(debtInfo);

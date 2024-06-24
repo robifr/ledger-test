@@ -22,5 +22,11 @@ import java.math.BigDecimal
 
 @JvmRecord
 data class CustomerDebtInfo(val id: Long?, val debt: BigDecimal) : Info {
+  companion object {
+    @JvmStatic
+    fun withModel(customer: CustomerModel): CustomerDebtInfo =
+        CustomerDebtInfo(customer.id, customer.debt)
+  }
+
   @Ignore override fun modelId(): Long? = this.id
 }

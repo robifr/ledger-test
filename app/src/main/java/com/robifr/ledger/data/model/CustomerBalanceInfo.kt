@@ -21,5 +21,11 @@ import androidx.room.Ignore
 
 @JvmRecord
 data class CustomerBalanceInfo(val id: Long?, val balance: Long) : Info {
+  companion object {
+    @JvmStatic
+    fun withModel(customer: CustomerModel): CustomerBalanceInfo =
+        CustomerBalanceInfo(customer.id, customer.balance)
+  }
+
   @Ignore override fun modelId(): Long? = this.id
 }

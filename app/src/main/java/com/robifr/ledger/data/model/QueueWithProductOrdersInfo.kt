@@ -28,5 +28,11 @@ data class QueueWithProductOrdersInfo(
     @Relation(parentColumn = "id", entityColumn = "queue_id")
     val productOrders: List<ProductOrderModel>
 ) : Info {
+  companion object {
+    @JvmStatic
+    fun withModel(queue: QueueModel): QueueWithProductOrdersInfo =
+        QueueWithProductOrdersInfo(queue.id, queue.date, queue.productOrders)
+  }
+
   @Ignore override fun modelId(): Long? = this.id
 }

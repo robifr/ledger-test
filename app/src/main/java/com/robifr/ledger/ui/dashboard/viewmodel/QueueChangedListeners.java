@@ -50,11 +50,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
                       : new ArrayList<>();
               final List<QueueWithProductOrdersInfo> queueInfo =
                   InfoUpdater.updateInfo(
-                      queues,
-                      currentQueueInfo,
-                      (queue) ->
-                          new QueueWithProductOrdersInfo(
-                              queue.id(), queue.date(), queue.productOrders()));
+                      queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
 
               this._viewModel.onQueuesWithProductOrders(queueInfo);
             });
@@ -74,11 +70,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
                       : new ArrayList<>();
               final List<QueueWithProductOrdersInfo> queueInfo =
                   InfoUpdater.addInfo(
-                      queues,
-                      currentQueueInfo,
-                      (queue) ->
-                          new QueueWithProductOrdersInfo(
-                              queue.id(), queue.date(), queue.productOrders()));
+                      queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
 
               this._viewModel.onQueuesWithProductOrders(queueInfo);
             });
@@ -98,11 +90,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
                       : new ArrayList<>();
               final List<QueueWithProductOrdersInfo> queueInfo =
                   InfoUpdater.removeInfo(
-                      queues,
-                      currentQueueInfo,
-                      (queue) ->
-                          new QueueWithProductOrdersInfo(
-                              queue.id(), queue.date(), queue.productOrders()));
+                      queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
 
               this._viewModel.onQueuesWithProductOrders(queueInfo);
             });

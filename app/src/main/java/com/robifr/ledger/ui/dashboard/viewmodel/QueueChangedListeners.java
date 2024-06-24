@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
+import com.robifr.ledger.data.InfoUpdater;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.repository.ModelChangedListener;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class QueueChangedListeners implements ModelChangedListener<QueueModel> {
+class QueueChangedListeners implements ModelChangedListener<QueueModel> {
   @NonNull private final DashboardViewModel _viewModel;
 
   public QueueChangedListeners(@NonNull DashboardViewModel viewModel) {
@@ -48,12 +49,12 @@ public class QueueChangedListeners implements ModelChangedListener<QueueModel> {
                       ? new ArrayList<>(this._viewModel.queuesWithProductOrders().getValue())
                       : new ArrayList<>();
               final List<QueueWithProductOrdersInfo> queueInfo =
-                  DashboardInfoUpdater.onUpdateInfo(
+                  InfoUpdater.updateInfo(
                       queues,
+                      currentQueueInfo,
                       (queue) ->
                           new QueueWithProductOrdersInfo(
-                              queue.id(), queue.date(), queue.productOrders()),
-                      () -> currentQueueInfo);
+                              queue.id(), queue.date(), queue.productOrders()));
 
               this._viewModel.onQueuesWithProductOrders(queueInfo);
             });
@@ -72,12 +73,12 @@ public class QueueChangedListeners implements ModelChangedListener<QueueModel> {
                       ? new ArrayList<>(this._viewModel.queuesWithProductOrders().getValue())
                       : new ArrayList<>();
               final List<QueueWithProductOrdersInfo> queueInfo =
-                  DashboardInfoUpdater.onAddInfo(
+                  InfoUpdater.addInfo(
                       queues,
+                      currentQueueInfo,
                       (queue) ->
                           new QueueWithProductOrdersInfo(
-                              queue.id(), queue.date(), queue.productOrders()),
-                      () -> currentQueueInfo);
+                              queue.id(), queue.date(), queue.productOrders()));
 
               this._viewModel.onQueuesWithProductOrders(queueInfo);
             });
@@ -96,12 +97,12 @@ public class QueueChangedListeners implements ModelChangedListener<QueueModel> {
                       ? new ArrayList<>(this._viewModel.queuesWithProductOrders().getValue())
                       : new ArrayList<>();
               final List<QueueWithProductOrdersInfo> queueInfo =
-                  DashboardInfoUpdater.onRemoveInfo(
+                  InfoUpdater.removeInfo(
                       queues,
+                      currentQueueInfo,
                       (queue) ->
                           new QueueWithProductOrdersInfo(
-                              queue.id(), queue.date(), queue.productOrders()),
-                      () -> currentQueueInfo);
+                              queue.id(), queue.date(), queue.productOrders()));
 
               this._viewModel.onQueuesWithProductOrders(queueInfo);
             });

@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
+import com.robifr.ledger.data.InfoUpdater;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -50,20 +51,20 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
                       ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
                       : new ArrayList<>();
               final List<CustomerBalanceInfo> balanceInfo =
-                  DashboardInfoUpdater.onUpdateInfo(
+                  InfoUpdater.updateInfo(
                       customers,
-                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()),
-                      () -> currentBalanceInfo);
+                      currentBalanceInfo,
+                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()));
 
               final ArrayList<CustomerDebtInfo> currentDebtInfo =
                   this._viewModel.customersWithBalance().getValue() != null
                       ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
                       : new ArrayList<>();
               final List<CustomerDebtInfo> debtInfo =
-                  DashboardInfoUpdater.onUpdateInfo(
+                  InfoUpdater.updateInfo(
                       customers,
-                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()),
-                      () -> currentDebtInfo);
+                      currentDebtInfo,
+                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()));
 
               balanceInfo.removeIf(info -> info.balance() == 0L);
               debtInfo.removeIf(info -> info.debt().compareTo(BigDecimal.ZERO) == 0);
@@ -85,20 +86,20 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
                       ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
                       : new ArrayList<>();
               final List<CustomerBalanceInfo> balanceInfo =
-                  DashboardInfoUpdater.onAddInfo(
+                  InfoUpdater.addInfo(
                       customers,
-                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()),
-                      () -> currentBalanceInfo);
+                      currentBalanceInfo,
+                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()));
 
               final ArrayList<CustomerDebtInfo> currentDebtInfo =
                   this._viewModel.customersWithBalance().getValue() != null
                       ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
                       : new ArrayList<>();
               final List<CustomerDebtInfo> debtInfo =
-                  DashboardInfoUpdater.onAddInfo(
+                  InfoUpdater.addInfo(
                       customers,
-                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()),
-                      () -> currentDebtInfo);
+                      currentDebtInfo,
+                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()));
 
               this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
               this._viewModel.onCustomersWithDebtChanged(debtInfo);
@@ -118,20 +119,20 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
                       ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
                       : new ArrayList<>();
               final List<CustomerBalanceInfo> balanceInfo =
-                  DashboardInfoUpdater.onRemoveInfo(
+                  InfoUpdater.removeInfo(
                       customers,
-                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()),
-                      () -> currentBalanceInfo);
+                      currentBalanceInfo,
+                      (customer) -> new CustomerBalanceInfo(customer.id(), customer.balance()));
 
               final ArrayList<CustomerDebtInfo> currentDebtInfo =
                   this._viewModel.customersWithBalance().getValue() != null
                       ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
                       : new ArrayList<>();
               final List<CustomerDebtInfo> debtInfo =
-                  DashboardInfoUpdater.onRemoveInfo(
+                  InfoUpdater.removeInfo(
                       customers,
-                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()),
-                      () -> currentDebtInfo);
+                      currentDebtInfo,
+                      (customer) -> new CustomerDebtInfo(customer.id(), customer.debt()));
 
               this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
               this._viewModel.onCustomersWithDebtChanged(debtInfo);

@@ -15,7 +15,7 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.ui.dashboard.viewmodel;
+package com.robifr.ledger.data;
 
 import androidx.annotation.NonNull;
 import com.robifr.ledger.data.model.Info;
@@ -25,22 +25,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class DashboardInfoUpdater {
-  private DashboardInfoUpdater() {}
+public class InfoUpdater {
+  private InfoUpdater() {}
 
   @NonNull
-  public static <M extends Model, I extends Info> List<I> onUpdateInfo(
+  public static <M extends Model, I extends Info> List<I> addInfo(
       @NonNull List<M> models,
-      @NonNull Function<M, I> modelToInfoConverter,
-      @NonNull Supplier<List<I>> currentInfo) {
+      @NonNull List<I> oldInfo,
+      @NonNull Function<M, I> modelToInfoConverter) {
     Objects.requireNonNull(models);
     Objects.requireNonNull(modelToInfoConverter);
-    Objects.requireNonNull(currentInfo);
+    Objects.requireNonNull(oldInfo);
 
-    final ArrayList<I> info = new ArrayList<>(currentInfo.get());
+    final ArrayList<I> info = new ArrayList<>(oldInfo);
+    final List<I> newInfo = models.stream().map(modelToInfoConverter).collect(Collectors.toList());
+
+    info.addAll(newInfo);
+    return info;
+  }
+
+  @NonNull
+  public static <M extends Model, I extends Info> List<I> updateInfo(
+      @NonNull List<M> models,
+      @NonNull List<I> oldInfo,
+      @NonNull Function<M, I> modelToInfoConverter) {
+    Objects.requireNonNull(models);
+    Objects.requireNonNull(modelToInfoConverter);
+    Objects.requireNonNull(oldInfo);
+
+    final ArrayList<I> info = new ArrayList<>(oldInfo);
     final List<I> newInfo = models.stream().map(modelToInfoConverter).collect(Collectors.toList());
     final HashMap<Long, I> filteredInfo = new HashMap<>();
 
@@ -50,31 +65,15 @@ public class DashboardInfoUpdater {
   }
 
   @NonNull
-  public static <M extends Model, I extends Info> List<I> onAddInfo(
+  public static <M extends Model, I extends Info> List<I> removeInfo(
       @NonNull List<M> models,
-      @NonNull Function<M, I> modelToInfoConverter,
-      @NonNull Supplier<List<I>> currentInfo) {
+      @NonNull List<I> oldInfo,
+      @NonNull Function<M, I> modelToInfoConverter) {
     Objects.requireNonNull(models);
     Objects.requireNonNull(modelToInfoConverter);
-    Objects.requireNonNull(currentInfo);
+    Objects.requireNonNull(oldInfo);
 
-    final ArrayList<I> info = new ArrayList<>(currentInfo.get());
-    final List<I> newInfo = models.stream().map(modelToInfoConverter).collect(Collectors.toList());
-
-    info.addAll(newInfo);
-    return info;
-  }
-
-  @NonNull
-  public static <M extends Model, I extends Info> List<I> onRemoveInfo(
-      @NonNull List<M> models,
-      @NonNull Function<M, I> modelToInfoConverter,
-      @NonNull Supplier<List<I>> currentInfo) {
-    Objects.requireNonNull(models);
-    Objects.requireNonNull(modelToInfoConverter);
-    Objects.requireNonNull(currentInfo);
-
-    final ArrayList<I> info = new ArrayList<>(currentInfo.get());
+    final ArrayList<I> info = new ArrayList<>(oldInfo);
 
     for (M m : models) {
       for (int i = info.size(); i-- > 0; ) {

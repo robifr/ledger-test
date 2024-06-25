@@ -23,7 +23,6 @@ import com.robifr.ledger.data.model.QueueModel;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -76,8 +75,8 @@ public record QueueFilters(
 
   public static class Builder {
     @NonNull private List<Long> _filteredCustomerIds = new ArrayList<>();
-    private boolean _isNullCustomerShown = false;
-    @NonNull private Set<QueueModel.Status> _filteredStatus = new HashSet<>();
+    private boolean _isNullCustomerShown = true;
+    @NonNull private Set<QueueModel.Status> _filteredStatus = Set.of(QueueModel.Status.values());
     @NonNull private Pair<BigDecimal, BigDecimal> _filteredTotalPrice = new Pair<>(null, null);
     @NonNull private QueueDate _filteredDate = QueueDate.withRange(QueueDate.Range.ALL_TIME);
 

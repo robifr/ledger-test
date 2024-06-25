@@ -125,7 +125,7 @@ public class DashboardViewModel extends ViewModel {
           @Override
           public void onChanged(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
             if (queueInfo != null) {
-              DashboardViewModel.this._queuesWithProductOrders.setValue(queueInfo);
+              DashboardViewModel.this.onQueuesWithProductOrdersChanged(queueInfo);
             }
 
             selectAllQueueInfo.removeObserver(this);
@@ -145,7 +145,8 @@ public class DashboardViewModel extends ViewModel {
     this._customersWithDebt.setValue(Collections.unmodifiableList(debtInfo));
   }
 
-  public void onQueuesWithProductOrders(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+  public void onQueuesWithProductOrdersChanged(
+      @NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
     this._queuesWithProductOrders.setValue(Collections.unmodifiableList(queueInfo));

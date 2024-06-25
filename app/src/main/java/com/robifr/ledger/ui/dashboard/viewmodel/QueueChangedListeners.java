@@ -52,7 +52,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
                   InfoUpdater.updateInfo(
                       queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
 
-              this._viewModel.onQueuesWithProductOrders(queueInfo);
+              this._viewModel.onQueuesWithProductOrdersChanged(queueInfo);
             });
   }
 
@@ -72,7 +72,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
                   InfoUpdater.addInfo(
                       queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
 
-              this._viewModel.onQueuesWithProductOrders(queueInfo);
+              this._viewModel.onQueuesWithProductOrdersChanged(queueInfo);
             });
   }
 
@@ -92,7 +92,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
                   InfoUpdater.removeInfo(
                       queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
 
-              this._viewModel.onQueuesWithProductOrders(queueInfo);
+              this._viewModel.onQueuesWithProductOrdersChanged(queueInfo);
             });
   }
 

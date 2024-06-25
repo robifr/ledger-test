@@ -82,6 +82,14 @@
         android:layout_height="wrap_content"
         android:tag="THIS_MONTH"
         android:text="@string/text_this_month" />
+
+    <RadioButton
+        android:id="@+id/thisYearRadioButton"
+        style="@style/BottomSheetDialog.Button.RoundedRight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:tag="THIS_YEAR"
+        android:text="@string/text_this_year" />
   </RadioGroup>
 
   <com.google.android.material.button.MaterialButton

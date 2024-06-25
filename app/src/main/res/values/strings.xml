@@ -118,6 +118,7 @@
   <string name="text_storage_access_permission_required">Storage access permission required</string>
   <string name="text_this_month">This month</string>
   <string name="text_this_week">This week</string>
+  <string name="text_this_year">This year</string>
   <string name="text_today">Today</string>
   <string name="text_total">Total</string>
   <string name="text_total_balance">Total balance</string>

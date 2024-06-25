@@ -63,6 +63,7 @@ public record QueueDate(
     YESTERDAY(R.string.text_yesterday),
     THIS_WEEK(R.string.text_this_week),
     THIS_MONTH(R.string.text_this_month),
+    THIS_YEAR(R.string.text_this_year),
     CUSTOM(R.string.queuefilter_date_selecteddate_chip);
 
     @StringRes private final int _resourceString;
@@ -112,6 +113,16 @@ public record QueueDate(
                     .atStartOfDay(ZoneId.systemDefault()),
                 LocalDate.now()
                     .with(TemporalAdjusters.lastDayOfMonth())
+                    .atTime(LocalTime.MAX)
+                    .atZone(ZoneId.systemDefault()));
+
+        case THIS_YEAR ->
+            new Pair<>(
+                LocalDate.now()
+                    .with(TemporalAdjusters.firstDayOfYear())
+                    .atStartOfDay(ZoneId.systemDefault()),
+                LocalDate.now()
+                    .with(TemporalAdjusters.lastDayOfYear())
                     .atTime(LocalTime.MAX)
                     .atZone(ZoneId.systemDefault()));
 

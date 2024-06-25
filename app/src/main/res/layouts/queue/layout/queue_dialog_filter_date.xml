@@ -110,6 +110,18 @@
         style="@style/Widget.Material3.Chip.Filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:tag="THIS_YEAR"
+        android:text="@string/text_this_year"
+        android:textSize="@dimen/text_smallmedium"
+        app:checkedIconEnabled="false"
+        app:chipIcon="@null"
+        app:chipStrokeWidth="@dimen/stroke_width"
+        app:ensureMinTouchTargetSize="false" />
+
+    <com.google.android.material.chip.Chip
+        style="@style/Widget.Material3.Chip.Filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:tag="CUSTOM"
         android:text="@string/queuefilter_date_selecteddate_chip"
         android:textSize="@dimen/text_smallmedium"

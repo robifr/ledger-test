@@ -21,7 +21,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
-import com.robifr.ledger.data.QueueDate;
+import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;

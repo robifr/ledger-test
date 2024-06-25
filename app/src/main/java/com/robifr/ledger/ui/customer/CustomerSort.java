@@ -23,7 +23,7 @@ import android.widget.RadioButton;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.CustomerSortMethod;
+import com.robifr.ledger.data.display.CustomerSortMethod;
 import com.robifr.ledger.databinding.CustomerDialogSortByBinding;
 import java.util.Objects;
 

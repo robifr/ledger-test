@@ -23,7 +23,7 @@ import androidx.core.util.Pair;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.QueueDate;
+import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.databinding.DashboardDialogDateBinding;
 import java.time.Instant;
 import java.time.ZoneId;

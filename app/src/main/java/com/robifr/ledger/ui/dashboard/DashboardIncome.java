@@ -33,7 +33,7 @@ import com.robifr.ledger.assetbinding.chart.BarChartBinding;
 import com.robifr.ledger.assetbinding.chart.ChartAxisBinding;
 import com.robifr.ledger.assetbinding.chart.ChartLayoutBinding;
 import com.robifr.ledger.assetbinding.chart.ChartUtil;
-import com.robifr.ledger.data.QueueDate;
+import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.ui.LocalWebChrome;

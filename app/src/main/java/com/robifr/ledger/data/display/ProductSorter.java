@@ -15,7 +15,7 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.data;
+package com.robifr.ledger.data.display;
 
 import androidx.annotation.NonNull;
 import com.robifr.ledger.data.model.ProductModel;

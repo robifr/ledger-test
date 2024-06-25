@@ -15,13 +15,13 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.data;
+package com.robifr.ledger.data.display;
 
 import androidx.annotation.NonNull;
 
-public record ProductSortMethod(@NonNull SortBy sortBy, boolean isAscending) {
+public record CustomerSortMethod(@NonNull SortBy sortBy, boolean isAscending) {
   public enum SortBy {
     NAME,
-    PRICE
+    BALANCE
   }
 }

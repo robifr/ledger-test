@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.robifr.ledger.data.QueueFilters;
+import com.robifr.ledger.data.display.QueueFilters;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.QueueDialogFilterBinding;
 import com.robifr.ledger.ui.queue.QueueFragment;

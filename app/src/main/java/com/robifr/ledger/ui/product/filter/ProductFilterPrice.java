@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.ProductFilters;
+import com.robifr.ledger.data.display.ProductFilters;
 import com.robifr.ledger.databinding.ProductDialogFilterBinding;
 import com.robifr.ledger.ui.CurrencyTextWatcher;
 import com.robifr.ledger.ui.product.ProductFragment;

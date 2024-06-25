@@ -23,7 +23,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.QueueDate;
+import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;

@@ -24,7 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.QueueFilters;
+import com.robifr.ledger.data.display.QueueFilters;
 import com.robifr.ledger.databinding.QueueDialogFilterBinding;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import com.robifr.ledger.ui.queue.QueueFragment;

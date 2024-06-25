@@ -24,9 +24,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.display.QueueFilterer;
-import com.robifr.ledger.data.display.QueueFilters;
 import com.robifr.ledger.data.display.QueueSortMethod;
 import com.robifr.ledger.data.display.QueueSorter;
 import com.robifr.ledger.data.model.QueueModel;
@@ -39,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -75,16 +72,7 @@ public class QueueViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
-
-    final QueueFilterer filterer = new QueueFilterer();
-    filterer.setFilters(
-        QueueFilters.toBuilder()
-            .setNullCustomerShown(true)
-            .setFilteredDate(QueueDate.withRange(QueueDate.Range.ALL_TIME))
-            .setFilteredStatus(Set.of(QueueModel.Status.values()))
-            .build());
-
-    this._filterView = new QueueFilterViewModel(this, filterer);
+    this._filterView = new QueueFilterViewModel(this, new QueueFilterer());
 
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);

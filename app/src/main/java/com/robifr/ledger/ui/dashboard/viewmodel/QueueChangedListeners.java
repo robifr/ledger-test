@@ -22,6 +22,7 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 import com.robifr.ledger.data.InfoUpdater;
+import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.repository.ModelChangedListener;
@@ -73,12 +74,20 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
     Objects.requireNonNull(updater);
 
+    final QueueDate date =
+        Objects.requireNonNullElse(
+            this._viewModel.date().getValue(), QueueDate.withRange(QueueDate.Range.ALL_TIME));
     final ArrayList<QueueWithProductOrdersInfo> currentQueueInfo =
         this._viewModel.queuesWithProductOrders().getValue() != null
             ? new ArrayList<>(this._viewModel.queuesWithProductOrders().getValue())
             : new ArrayList<>();
+    final List<QueueWithProductOrdersInfo> queueInfo =
+        updater.apply(queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
 
-    this._viewModel.onQueuesWithProductOrdersChanged(
-        updater.apply(queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel));
+    queueInfo.removeIf(
+        info ->
+            info.date().isBefore(date.dateStart().toInstant())
+                || info.date().isAfter(date.dateEnd().toInstant()));
+    this._viewModel.onQueuesWithProductOrdersChanged(queueInfo);
   }
 }

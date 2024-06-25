@@ -42,18 +42,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
 
     new Handler(Looper.getMainLooper())
-        .post(
-            () -> {
-              final ArrayList<QueueWithProductOrdersInfo> currentQueueInfo =
-                  this._viewModel.queuesWithProductOrders().getValue() != null
-                      ? new ArrayList<>(this._viewModel.queuesWithProductOrders().getValue())
-                      : new ArrayList<>();
-              final List<QueueWithProductOrdersInfo> queueInfo =
-                  InfoUpdater.updateInfo(
-                      queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
-
-              this._viewModel.onQueuesWithProductOrdersChanged(queueInfo);
-            });
+        .post(() -> this._updateQueueInfo(queues, InfoUpdater::updateInfo));
   }
 
   @Override
@@ -62,18 +51,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
 
     new Handler(Looper.getMainLooper())
-        .post(
-            () -> {
-              final ArrayList<QueueWithProductOrdersInfo> currentQueueInfo =
-                  this._viewModel.queuesWithProductOrders().getValue() != null
-                      ? new ArrayList<>(this._viewModel.queuesWithProductOrders().getValue())
-                      : new ArrayList<>();
-              final List<QueueWithProductOrdersInfo> queueInfo =
-                  InfoUpdater.addInfo(
-                      queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
-
-              this._viewModel.onQueuesWithProductOrdersChanged(queueInfo);
-            });
+        .post(() -> this._updateQueueInfo(queues, InfoUpdater::addInfo));
   }
 
   @Override
@@ -82,21 +60,25 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
 
     new Handler(Looper.getMainLooper())
-        .post(
-            () -> {
-              final ArrayList<QueueWithProductOrdersInfo> currentQueueInfo =
-                  this._viewModel.queuesWithProductOrders().getValue() != null
-                      ? new ArrayList<>(this._viewModel.queuesWithProductOrders().getValue())
-                      : new ArrayList<>();
-              final List<QueueWithProductOrdersInfo> queueInfo =
-                  InfoUpdater.removeInfo(
-                      queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
-
-              this._viewModel.onQueuesWithProductOrdersChanged(queueInfo);
-            });
+        .post(() -> this._updateQueueInfo(queues, InfoUpdater::removeInfo));
   }
 
   @Override
   @WorkerThread
   public void onModelUpserted(@NonNull List<QueueModel> queues) {}
+
+  private void _updateQueueInfo(
+      @NonNull List<QueueModel> queues,
+      @NonNull InfoUpdaterFunction<QueueModel, QueueWithProductOrdersInfo> updater) {
+    Objects.requireNonNull(queues);
+    Objects.requireNonNull(updater);
+
+    final ArrayList<QueueWithProductOrdersInfo> currentQueueInfo =
+        this._viewModel.queuesWithProductOrders().getValue() != null
+            ? new ArrayList<>(this._viewModel.queuesWithProductOrders().getValue())
+            : new ArrayList<>();
+
+    this._viewModel.onQueuesWithProductOrdersChanged(
+        updater.apply(queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel));
+  }
 }

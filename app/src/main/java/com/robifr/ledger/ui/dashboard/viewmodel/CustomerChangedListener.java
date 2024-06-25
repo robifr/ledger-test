@@ -46,25 +46,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              final ArrayList<CustomerBalanceInfo> currentBalanceInfo =
-                  this._viewModel.customersWithBalance().getValue() != null
-                      ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
-                      : new ArrayList<>();
-              final List<CustomerBalanceInfo> balanceInfo =
-                  InfoUpdater.updateInfo(
-                      customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
-
-              final ArrayList<CustomerDebtInfo> currentDebtInfo =
-                  this._viewModel.customersWithBalance().getValue() != null
-                      ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
-                      : new ArrayList<>();
-              final List<CustomerDebtInfo> debtInfo =
-                  InfoUpdater.updateInfo(customers, currentDebtInfo, CustomerDebtInfo::withModel);
-
-              balanceInfo.removeIf(info -> info.balance() == 0L);
-              debtInfo.removeIf(info -> info.debt().compareTo(BigDecimal.ZERO) == 0);
-              this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
-              this._viewModel.onCustomersWithDebtChanged(debtInfo);
+              this._updateBalanceInfo(customers, InfoUpdater::updateInfo);
+              this._updateDebtInfo(customers, InfoUpdater::updateInfo);
             });
   }
 
@@ -76,23 +59,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              final ArrayList<CustomerBalanceInfo> currentBalanceInfo =
-                  this._viewModel.customersWithBalance().getValue() != null
-                      ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
-                      : new ArrayList<>();
-              final List<CustomerBalanceInfo> balanceInfo =
-                  InfoUpdater.addInfo(
-                      customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
-
-              final ArrayList<CustomerDebtInfo> currentDebtInfo =
-                  this._viewModel.customersWithBalance().getValue() != null
-                      ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
-                      : new ArrayList<>();
-              final List<CustomerDebtInfo> debtInfo =
-                  InfoUpdater.addInfo(customers, currentDebtInfo, CustomerDebtInfo::withModel);
-
-              this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
-              this._viewModel.onCustomersWithDebtChanged(debtInfo);
+              this._updateBalanceInfo(customers, InfoUpdater::addInfo);
+              this._updateDebtInfo(customers, InfoUpdater::addInfo);
             });
   }
 
@@ -104,27 +72,46 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              final ArrayList<CustomerBalanceInfo> currentBalanceInfo =
-                  this._viewModel.customersWithBalance().getValue() != null
-                      ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
-                      : new ArrayList<>();
-              final List<CustomerBalanceInfo> balanceInfo =
-                  InfoUpdater.removeInfo(
-                      customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
-
-              final ArrayList<CustomerDebtInfo> currentDebtInfo =
-                  this._viewModel.customersWithBalance().getValue() != null
-                      ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
-                      : new ArrayList<>();
-              final List<CustomerDebtInfo> debtInfo =
-                  InfoUpdater.removeInfo(customers, currentDebtInfo, CustomerDebtInfo::withModel);
-
-              this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
-              this._viewModel.onCustomersWithDebtChanged(debtInfo);
+              this._updateBalanceInfo(customers, InfoUpdater::removeInfo);
+              this._updateDebtInfo(customers, InfoUpdater::removeInfo);
             });
   }
 
   @Override
   @WorkerThread
   public void onModelUpserted(@NonNull List<CustomerModel> customers) {}
+
+  private void _updateBalanceInfo(
+      @NonNull List<CustomerModel> customers,
+      @NonNull InfoUpdaterFunction<CustomerModel, CustomerBalanceInfo> updater) {
+    Objects.requireNonNull(customers);
+    Objects.requireNonNull(updater);
+
+    final ArrayList<CustomerBalanceInfo> currentBalanceInfo =
+        this._viewModel.customersWithBalance().getValue() != null
+            ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
+            : new ArrayList<>();
+    final List<CustomerBalanceInfo> balanceInfo =
+        updater.apply(customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
+
+    balanceInfo.removeIf(info -> info.balance() == 0L);
+    this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
+  }
+
+  private void _updateDebtInfo(
+      @NonNull List<CustomerModel> customers,
+      @NonNull InfoUpdaterFunction<CustomerModel, CustomerDebtInfo> updater) {
+    Objects.requireNonNull(customers);
+    Objects.requireNonNull(updater);
+
+    final ArrayList<CustomerDebtInfo> currentDebtInfo =
+        this._viewModel.customersWithDebt().getValue() != null
+            ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
+            : new ArrayList<>();
+    final List<CustomerDebtInfo> debtInfo =
+        updater.apply(customers, currentDebtInfo, CustomerDebtInfo::withModel);
+
+    debtInfo.removeIf(info -> info.debt().compareTo(BigDecimal.ZERO) == 0);
+    this._viewModel.onCustomersWithDebtChanged(debtInfo);
+  }
 }

@@ -38,20 +38,20 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
 
   @Override
   @WorkerThread
-  public void onModelUpdated(@NonNull List<QueueModel> queues) {
-    Objects.requireNonNull(queues);
-
-    new Handler(Looper.getMainLooper())
-        .post(() -> this._updateQueueInfo(queues, InfoUpdater::updateInfo));
-  }
-
-  @Override
-  @WorkerThread
   public void onModelAdded(@NonNull List<QueueModel> queues) {
     Objects.requireNonNull(queues);
 
     new Handler(Looper.getMainLooper())
         .post(() -> this._updateQueueInfo(queues, InfoUpdater::addInfo));
+  }
+
+  @Override
+  @WorkerThread
+  public void onModelUpdated(@NonNull List<QueueModel> queues) {
+    Objects.requireNonNull(queues);
+
+    new Handler(Looper.getMainLooper())
+        .post(() -> this._updateQueueInfo(queues, InfoUpdater::updateInfo));
   }
 
   @Override

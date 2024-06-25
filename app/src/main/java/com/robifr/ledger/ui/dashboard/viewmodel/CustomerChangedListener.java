@@ -40,19 +40,6 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
 
   @Override
   @WorkerThread
-  public void onModelUpdated(@NonNull List<CustomerModel> customers) {
-    Objects.requireNonNull(customers);
-
-    new Handler(Looper.getMainLooper())
-        .post(
-            () -> {
-              this._updateBalanceInfo(customers, InfoUpdater::updateInfo);
-              this._updateDebtInfo(customers, InfoUpdater::updateInfo);
-            });
-  }
-
-  @Override
-  @WorkerThread
   public void onModelAdded(@NonNull List<CustomerModel> customers) {
     Objects.requireNonNull(customers);
 
@@ -61,6 +48,19 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
             () -> {
               this._updateBalanceInfo(customers, InfoUpdater::addInfo);
               this._updateDebtInfo(customers, InfoUpdater::addInfo);
+            });
+  }
+
+  @Override
+  @WorkerThread
+  public void onModelUpdated(@NonNull List<CustomerModel> customers) {
+    Objects.requireNonNull(customers);
+
+    new Handler(Looper.getMainLooper())
+        .post(
+            () -> {
+              this._updateBalanceInfo(customers, InfoUpdater::updateInfo);
+              this._updateDebtInfo(customers, InfoUpdater::updateInfo);
             });
   }
 

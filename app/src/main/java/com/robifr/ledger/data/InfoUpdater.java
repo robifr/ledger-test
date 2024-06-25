@@ -65,7 +65,7 @@ public class InfoUpdater {
   }
 
   @NonNull
-  public static <M extends Model, I extends Info> List<I> removeInfo(
+  public static <M extends Model, I extends Info> List<I> deleteInfo(
       @NonNull List<M> models,
       @NonNull List<I> oldInfo,
       @NonNull Function<M, I> modelToInfoConverter) {

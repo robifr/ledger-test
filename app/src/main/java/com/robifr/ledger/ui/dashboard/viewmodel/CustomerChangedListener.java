@@ -72,8 +72,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     new Handler(Looper.getMainLooper())
         .post(
             () -> {
-              this._updateBalanceInfo(customers, InfoUpdater::removeInfo);
-              this._updateDebtInfo(customers, InfoUpdater::removeInfo);
+              this._updateBalanceInfo(customers, InfoUpdater::deleteInfo);
+              this._updateDebtInfo(customers, InfoUpdater::deleteInfo);
             });
   }
 

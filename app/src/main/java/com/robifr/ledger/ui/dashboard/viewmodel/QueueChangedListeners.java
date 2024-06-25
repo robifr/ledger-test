@@ -60,7 +60,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
 
     new Handler(Looper.getMainLooper())
-        .post(() -> this._updateQueueInfo(queues, InfoUpdater::removeInfo));
+        .post(() -> this._updateQueueInfo(queues, InfoUpdater::deleteInfo));
   }
 
   @Override

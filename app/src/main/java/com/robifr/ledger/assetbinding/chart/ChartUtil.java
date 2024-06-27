@@ -18,7 +18,6 @@
 package com.robifr.ledger.assetbinding.chart;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Function;
 import androidx.core.util.Pair;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
@@ -46,9 +45,7 @@ public class ChartUtil {
     Objects.requireNonNull(dateStartEnd);
 
     final Map<String, BigDecimal> result = new LinkedHashMap<>();
-    final Function<ChronoUnit, Long> totalDate =
-        (unit) -> unit.between(dateStartEnd.first, dateStartEnd.second) + 1; // +1 for inclusivity.
-    final BiFunction<ChronoUnit, ZonedDateTime, String> key =
+    final BiFunction<ChronoUnit, ZonedDateTime, String> formatKey =
         (unit, date) ->
             switch (unit) {
               case DAYS -> Integer.toString(date.getDayOfMonth());
@@ -57,23 +54,39 @@ public class ChartUtil {
                       + date.getMonth().name().substring(1, 3).toLowerCase();
               default -> Integer.toString(date.getYear());
             };
+    final BiFunction<ChronoUnit, String, BigDecimal> sumValueForKey =
+        (unit, key) ->
+            data.entrySet().stream()
+                .filter(entry -> formatKey.apply(unit, entry.getKey()).equals(key))
+                .map(Map.Entry::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
     ChronoUnit groupBy;
-
     // Determine how the data will be grouped based on the date range.
-    if (totalDate.apply(ChronoUnit.YEARS) > 1) groupBy = ChronoUnit.YEARS;
-    else if (totalDate.apply(ChronoUnit.MONTHS) > 1) groupBy = ChronoUnit.MONTHS;
-    else groupBy = ChronoUnit.DAYS;
+    if (dateStartEnd.first.getYear() != dateStartEnd.second.getYear()) {
+      groupBy = ChronoUnit.YEARS;
+    } else if (dateStartEnd.first.getMonthValue() != dateStartEnd.second.getMonthValue()) {
+      groupBy = ChronoUnit.MONTHS;
+    } else {
+      groupBy = ChronoUnit.DAYS;
+    }
 
-    for (int i = 0; i < totalDate.apply(groupBy); i++) {
-      final ZonedDateTime date = dateStartEnd.first.plus(i, groupBy);
-      final String formattedKey = key.apply(groupBy, date);
+    // Fill the map with summed values for each key in the date range.
+    for (ZonedDateTime date = dateStartEnd.first;
+        !date.isAfter(dateStartEnd.second);
+        date = date.plus(1, groupBy)) {
+      final String formattedKey = formatKey.apply(groupBy, date);
 
-      result.put(
-          formattedKey,
-          data.entrySet().stream()
-              .filter(entry -> key.apply(groupBy, entry.getKey()).equals(formattedKey))
-              .map(Map.Entry::getValue)
-              .reduce(BigDecimal.ZERO, BigDecimal::add));
+      result.put(formattedKey, sumValueForKey.apply(groupBy, formattedKey));
+    }
+
+    // Ensure that the end date is included.
+    // There's a bug when the month total between the start date and end date is less than 12.
+    // For example, in the range 2023/7/1 - 2024/6/1, the map will not show the end date's year.
+    if (!result.containsKey(formatKey.apply(groupBy, dateStartEnd.second))) {
+      final String formattedKey = formatKey.apply(groupBy, dateStartEnd.second);
+
+      result.put(formattedKey, sumValueForKey.apply(groupBy, formattedKey));
     }
 
     return result;

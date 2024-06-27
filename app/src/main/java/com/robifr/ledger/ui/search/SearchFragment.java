@@ -32,7 +32,6 @@ import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.SearchableFragmentBinding;
 import com.robifr.ledger.databinding.SearchableListHorizontalBinding;
-import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.search.viewmodel.SearchViewModel;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
@@ -43,14 +42,6 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class SearchFragment extends Fragment
     implements View.OnClickListener, SearchView.OnQueryTextListener {
-  public enum Request implements FragmentResultKey {
-    SELECT_CUSTOMER
-  }
-
-  public enum Result implements FragmentResultKey {
-    SELECTED_CUSTOMER_ID
-  }
-
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
   @Nullable private SearchableFragmentBinding _fragmentBinding;
   @Nullable private SearchableListHorizontalBinding _customerListBinding;

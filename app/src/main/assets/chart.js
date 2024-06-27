@@ -298,13 +298,6 @@ class BarChart extends Chart {
       .selectAll("line")
       .style("stroke", Android.colorHex("stroke"));
 
-    // Draw x-axis.
-    this._svg
-      .append("g")
-      .attr("transform", `translate(0, ${this._layout.height - this._layout.marginBottom})`)
-      .style("font-size", `${this._layout.fontSize}`)
-      .call(this._xAxis.axis);
-
     // Draw bar with rounded corners.
     this._svg
       .selectAll(".bar-top")
@@ -342,6 +335,13 @@ class BarChart extends Chart {
           ? barCornerRadius
           : 0
       );
+
+    // Draw x-axis.
+    this._svg
+      .append("g")
+      .attr("transform", `translate(0, ${this._layout.height - this._layout.marginBottom})`)
+      .style("font-size", `${this._layout.fontSize}`)
+      .call(this._xAxis.axis);
 
     container.append(this._svg.node());
     d3.select("body").style("background-color", this._layout.backgroundColor);

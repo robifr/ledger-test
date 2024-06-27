@@ -76,9 +76,9 @@ public class SearchProductViewModelHandler {
     this._fragment.adapter().notifyDataSetChanged();
 
     final int noResultsVisibility =
-        products != null && products.size() == 0 ? View.VISIBLE : View.GONE;
+        products != null && products.isEmpty() ? View.VISIBLE : View.GONE;
     final int recyclerVisibility =
-        products != null && products.size() > 0 ? View.VISIBLE : View.GONE;
+        products != null && !products.isEmpty() ? View.VISIBLE : View.GONE;
 
     this._fragment.fragmentBinding().horizontalListContainer.setVisibility(noResultsVisibility);
     this._fragment.fragmentBinding().noResultsImage.getRoot().setVisibility(noResultsVisibility);

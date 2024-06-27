@@ -153,7 +153,10 @@ public class ChartUtil {
         .collect(Collectors.toList());
   }
 
+  @NonNull
   private static BigDecimal _ceilToNearestTen(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
+
     // Calculate the amount ensuring it's rounded
     // to the nearest ceiling multiple of 10 (e.g. 10, 1K, 10K).
     final int magnitude = amount.precision() - amount.scale();

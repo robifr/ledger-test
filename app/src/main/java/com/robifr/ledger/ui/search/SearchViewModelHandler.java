@@ -44,11 +44,10 @@ public class SearchViewModelHandler {
   }
 
   private void _onCustomers(@Nullable List<CustomerModel> customers) {
-    final int listVisibility =
-        customers == null || customers.size() == 0 ? View.GONE : View.VISIBLE;
+    final int listVisibility = customers == null || customers.isEmpty() ? View.GONE : View.VISIBLE;
     final int noResultsVisibility =
         customers != null
-                && customers.size() == 0
+                && customers.isEmpty()
                 // Show illustration when both customers and products are empty.
                 && (this._viewModel.products().getValue() == null
                     || this._viewModel.products().getValue().isEmpty())
@@ -77,10 +76,10 @@ public class SearchViewModelHandler {
   }
 
   private void _onProducts(@Nullable List<ProductModel> products) {
-    final int listVisibility = products == null || products.size() == 0 ? View.GONE : View.VISIBLE;
+    final int listVisibility = products == null || products.isEmpty() ? View.GONE : View.VISIBLE;
     final int noResultsVisibility =
         products != null
-                && products.size() == 0
+                && products.isEmpty()
                 // Show illustration when both customers and products are empty.
                 && (this._viewModel.customers().getValue() == null
                     || this._viewModel.customers().getValue().isEmpty())

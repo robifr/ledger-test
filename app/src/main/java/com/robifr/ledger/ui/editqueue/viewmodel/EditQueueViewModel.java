@@ -85,7 +85,7 @@ public class EditQueueViewModel extends CreateQueueViewModel {
   public void onSave() {
     final QueueModel inputtedQueue = this.inputtedQueue();
 
-    if (inputtedQueue.productOrders().size() == 0) {
+    if (inputtedQueue.productOrders().isEmpty()) {
       this._snackbarMessage.setValue(
           new LiveDataEvent<>(
               new StringResources.Strings(

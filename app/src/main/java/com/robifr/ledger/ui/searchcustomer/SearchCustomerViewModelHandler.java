@@ -76,9 +76,9 @@ public class SearchCustomerViewModelHandler {
     this._fragment.adapter().notifyDataSetChanged();
 
     final int noResultsVisibility =
-        customers != null && customers.size() == 0 ? View.VISIBLE : View.GONE;
+        customers != null && customers.isEmpty() ? View.VISIBLE : View.GONE;
     final int recyclerVisibility =
-        customers != null && customers.size() > 0 ? View.VISIBLE : View.GONE;
+        customers != null && !customers.isEmpty() ? View.VISIBLE : View.GONE;
 
     this._fragment.fragmentBinding().horizontalListContainer.setVisibility(noResultsVisibility);
     this._fragment.fragmentBinding().noResultsImage.getRoot().setVisibility(noResultsVisibility);

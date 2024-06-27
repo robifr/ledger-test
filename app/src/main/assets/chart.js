@@ -281,6 +281,13 @@ class BarChart extends Chart {
   }
 
   render(data) {
+    // Set the corner radius as 20% of the bar width.
+    const barCornerRadius = Math.min(
+      5,
+      ((this._layout.width - this._layout.marginLeft - this._layout.marginRight) / data.length) *
+        0.2
+    );
+
     // Draw y-axis.
     this._svg
       .append("g")
@@ -298,9 +305,9 @@ class BarChart extends Chart {
       .style("font-size", `${this._layout.fontSize}`)
       .call(this._xAxis.axis);
 
-    // Draw bar.
+    // Draw bar with rounded corners.
     this._svg
-      .selectAll()
+      .selectAll(".bar-top")
       .data(data)
       .enter()
       .append("rect")
@@ -311,6 +318,29 @@ class BarChart extends Chart {
       .attr(
         "height",
         (d) => this._layout.height - this._layout.marginBottom - this._yAxis.scale(d.value)
+      )
+      .attr("rx", barCornerRadius)
+      .attr("ry", barCornerRadius);
+    // Draw bottom bar to cover the bottom corners.
+    this._svg
+      .selectAll(".bar-bottom")
+      .data(data)
+      .enter()
+      .append("rect")
+      .style("fill", Android.colorHex("colorPrimary"))
+      .attr("x", (d) => this._xAxis.scale(d.key))
+      .attr(
+        "y",
+        (d) =>
+          this._yAxis.scale(d.value) +
+          (this._yAxis.scale(0) - this._yAxis.scale(d.value) - barCornerRadius)
+      )
+      .attr("width", this._xAxis.scale.bandwidth())
+      .attr("height", (d) =>
+        this._layout.height - this._layout.marginBottom - this._yAxis.scale(d.value) >
+        barCornerRadius
+          ? barCornerRadius
+          : 0
       );
 
     container.append(this._svg.node());

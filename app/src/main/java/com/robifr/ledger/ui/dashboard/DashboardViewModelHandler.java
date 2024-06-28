@@ -96,7 +96,7 @@ public class DashboardViewModelHandler {
   private void _onQueuesWithProductOrders(@Nullable List<QueueWithProductOrdersInfo> queueInfo) {
     if (queueInfo == null) return;
 
-    this._fragment.incomeOverview().loadChart();
-    this._fragment.incomeOverview().setTotalIncome(queueInfo);
+    this._fragment.performanceOverview().loadIncomeChart();
+    this._fragment.performanceOverview().setTotalIncome(queueInfo);
   }
 }

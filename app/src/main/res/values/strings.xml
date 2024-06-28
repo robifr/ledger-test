@@ -85,12 +85,14 @@
   <string name="text_name">Name</string>
   <string name="text_new">New</string>
   <string name="text_no_results_found">No results found</string>
+  <string name="text_ordered_products">Ordered products</string>
   <string name="text_originally_selected_customer_was_changed">Originally selected customer was changed</string>
   <string name="text_originally_selected_customer_was_deleted">Originally selected customer was deleted</string>
   <string name="text_originally_selected_product_was_changed">Originally selected product was changed</string>
   <string name="text_originally_selected_product_was_deleted">Originally selected product was deleted</string>
   <string name="text_payment_method">Payment method</string>
   <string name="text_payment_methods">Payment methods</string>
+  <string name="text_performance">Performance</string>
   <string name="text_please_to_include_at_least_one_product_order">Please to include at least one product order</string>
   <string name="text_price">Price</string>
   <string name="text_product">Product</string>

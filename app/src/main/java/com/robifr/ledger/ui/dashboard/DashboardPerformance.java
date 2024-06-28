@@ -36,6 +36,7 @@ import com.robifr.ledger.assetbinding.chart.ChartUtil;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
+import com.robifr.ledger.databinding.DashboardCardPerformanceBinding;
 import com.robifr.ledger.ui.LocalWebChrome;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
@@ -48,32 +49,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class DashboardIncome {
+public class DashboardPerformance {
   @NonNull private final DashboardFragment _fragment;
 
-  public DashboardIncome(@NonNull DashboardFragment fragment) {
+  public DashboardPerformance(@NonNull DashboardFragment fragment) {
     this._fragment = Objects.requireNonNull(fragment);
 
-    final WebView chart = this._fragment.fragmentBinding().income.chart;
-    chart.getSettings().setSupportZoom(false);
-    chart.getSettings().setBuiltInZoomControls(false);
-    chart.getSettings().setAllowFileAccess(false);
-    chart.getSettings().setJavaScriptEnabled(true);
-    chart.addJavascriptInterface(
+    final DashboardCardPerformanceBinding cardBinding =
+        this._fragment.fragmentBinding().performance;
+    cardBinding.chart.getSettings().setSupportZoom(false);
+    cardBinding.chart.getSettings().setBuiltInZoomControls(false);
+    cardBinding.chart.getSettings().setAllowFileAccess(false);
+    cardBinding.chart.getSettings().setJavaScriptEnabled(true);
+    cardBinding.chart.addJavascriptInterface(
         new JsInterface(this._fragment.requireContext()), JsInterface.NAME);
-    chart.setWebViewClient(new LocalWebView());
-    chart.setWebChromeClient(new LocalWebChrome());
-    chart.setBackgroundColor( // Background color can't be set from xml.
+    cardBinding.chart.setWebViewClient(new LocalWebView());
+    cardBinding.chart.setWebChromeClient(new LocalWebChrome());
+    cardBinding.chart.setBackgroundColor( // Background color can't be set from xml.
         MaterialColors.getColor(
             this._fragment.requireContext(), com.google.android.material.R.attr.colorSurface, 0));
+    cardBinding.income.icon.setImageResource(R.drawable.icon_dollar);
+    cardBinding.income.title.setText(R.string.text_income);
+    cardBinding.orderedProducts.icon.setImageResource(R.drawable.icon_sell);
+    cardBinding.orderedProducts.title.setText(R.string.text_ordered_products);
   }
 
-  public void loadChart() {
+  public void loadIncomeChart() {
     this._fragment
         .fragmentBinding()
-        .income
+        .performance
         .chart
         .loadUrl("https://appassets.androidplatform.net/assets/chart.html");
+    this._fragment.fragmentBinding().performance.income.cardView.setSelected(true);
+    this._fragment.fragmentBinding().performance.orderedProducts.cardView.setSelected(false);
   }
 
   public void setTotalIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
@@ -91,13 +99,14 @@ public class DashboardIncome {
 
     this._fragment
         .fragmentBinding()
-        .income
-        .totalQueuesWithTotalPrice
+        .performance
+        .totalQueue
         .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
     this._fragment
         .fragmentBinding()
+        .performance
         .income
-        .totalIncome
+        .amount
         .setText(CurrencyFormat.format(amount, "id", "ID"));
   }
 
@@ -138,7 +147,7 @@ public class DashboardIncome {
 
     final ViewGroup.MarginLayoutParams margin =
         (ViewGroup.MarginLayoutParams)
-            this._fragment.fragmentBinding().income.chart.getLayoutParams();
+            this._fragment.fragmentBinding().performance.chart.getLayoutParams();
     final int fontSize =
         JsInterface.dpToCssPx(
             this._fragment.requireContext(),
@@ -148,10 +157,10 @@ public class DashboardIncome {
         ChartLayoutBinding.init(
             JsInterface.dpToCssPx(
                 this._fragment.requireContext(),
-                this._fragment.fragmentBinding().income.chart.getWidth()),
+                this._fragment.fragmentBinding().performance.chart.getWidth()),
             JsInterface.dpToCssPx(
                 this._fragment.requireContext(),
-                this._fragment.fragmentBinding().income.chart.getHeight()),
+                this._fragment.fragmentBinding().performance.chart.getHeight()),
             JsInterface.dpToCssPx(this._fragment.requireContext(), margin.topMargin),
             JsInterface.dpToCssPx(this._fragment.requireContext(), margin.bottomMargin) + fontSize,
             JsInterface.dpToCssPx(this._fragment.requireContext(), margin.leftMargin + 80),
@@ -174,7 +183,7 @@ public class DashboardIncome {
 
     this._fragment
         .fragmentBinding()
-        .income
+        .performance
         .chart
         .evaluateJavascript(
             String.format(
@@ -201,7 +210,7 @@ public class DashboardIncome {
               .addPathHandler(
                   "/assets/",
                   new WebViewAssetLoader.AssetsPathHandler(
-                      DashboardIncome.this._fragment.requireContext()))
+                      DashboardPerformance.this._fragment.requireContext()))
               .build();
     }
 
@@ -220,8 +229,12 @@ public class DashboardIncome {
       Objects.requireNonNull(url);
 
       final List<QueueWithProductOrdersInfo> queueInfo =
-          DashboardIncome.this._fragment.dashboardViewModel().queuesWithProductOrders().getValue();
-      if (queueInfo != null) DashboardIncome.this._displayChart(queueInfo);
+          DashboardPerformance.this
+              ._fragment
+              .dashboardViewModel()
+              .queuesWithProductOrders()
+              .getValue();
+      if (queueInfo != null) DashboardPerformance.this._displayChart(queueInfo);
     }
   }
 }

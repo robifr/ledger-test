@@ -36,41 +36,49 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_income"
+        android:text="@string/text_performance"
         android:textSize="@dimen/text_mediumlarge"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/totalQueuesWithTotalPrice"
+        android:id="@+id/totalQueue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_small"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
-    <TextView
-        android:id="@+id/totalIncome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
-        android:textSize="@dimen/text_mediumlarge"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/totalQueuesWithTotalPrice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintStart_toEndOf="@id/totalQueuesWithTotalPrice"
-        app:layout_constraintTop_toTopOf="@id/title" />
-
     <WebView
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_marginTop="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/totalQueuesWithTotalPrice" />
+        app:layout_constraintTop_toBottomOf="@id/totalQueue" />
+
+    <include
+        android:id="@+id/income"
+        layout="@layout/dashboard_card_small"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="@dimen/cardlist_margin"
+        app:layout_constraintTop_toBottomOf="@id/chart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/orderedProducts"/>
+
+    <include
+        android:id="@+id/orderedProducts"
+        layout="@layout/dashboard_card_small"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="@dimen/cardlist_margin"
+        app:layout_constraintStart_toEndOf="@id/income"
+        app:layout_constraintTop_toBottomOf="@id/chart"
+        app:layout_constraintEnd_toEndOf="parent"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

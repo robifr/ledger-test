@@ -117,8 +117,8 @@ class ChartAxis {
     })()
       .tickSizeOuter(0)
       .tickFormat((d, i) => {
-        // Hide label for even-index.
-        if (!isAllLabelVisible && domain.length > 5 && i % 2 !== 0) return;
+        // Hide some label to improve readability.
+        if (!isAllLabelVisible && this.#_gapBetweenTicks(scale.ticks().length) !== 0) return;
         // Hide label for decimal numbers.
         if (Math.floor(d) !== d) return;
         // Format with unit.
@@ -188,8 +188,10 @@ class ChartAxis {
       }
     })()
       .tickSizeOuter(0)
-      // Hide label for even-index.
-      .tickFormat((d, i) => (!isAllLabelVisible && domain.length > 5 && i % 2 !== 0 ? null : d));
+      // Hide some label to improve readability.
+      .tickFormat((d, i) =>
+        !isAllLabelVisible && i % this.#_gapBetweenTicks(domain.length) !== 0 ? null : d
+      );
 
     return new ChartBandAxis(scale, axis);
   }
@@ -223,6 +225,13 @@ class ChartAxis {
     })();
 
     return [minRange, maxRange];
+  }
+
+  /**
+   * @param {number} totalTicks
+   */
+  static #_gapBetweenTicks(totalTicks) {
+    return Math.max(1, Math.ceil(totalTicks / 8));
   }
 }
 

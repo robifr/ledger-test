@@ -44,7 +44,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_queue"
-      app:icon="@drawable/icon_assignment_20" />
+      app:icon="@drawable/icon_assignment" />
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/createCustomerButton"
@@ -52,7 +52,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_customer"
-      app:icon="@drawable/icon_person_20" />
+      app:icon="@drawable/icon_person" />
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/createProductButton"
@@ -60,5 +60,5 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_product"
-      app:icon="@drawable/icon_sell_20" />
+      app:icon="@drawable/icon_sell" />
 </LinearLayout>

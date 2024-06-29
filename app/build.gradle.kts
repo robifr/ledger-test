@@ -47,21 +47,6 @@ android {
     }
   }
 
-  sourceSets {
-    named("main") {
-      res.srcDirs(
-          listOf(
-              file("src/main/res/layouts/").listFiles(),
-              "src/main/res/layouts",
-              file("src/main/res/drawables/icon/").listFiles(),
-              file("src/main/res/drawables/image/").listFiles(),
-              file("src/main/res/drawables/shape/").listFiles(),
-              file("src/main/res/drawables/").listFiles(),
-              "src/main/res/drawables",
-              "src/main/res"))
-    }
-  }
-
   buildTypes {
     release {
       isMinifyEnabled = true

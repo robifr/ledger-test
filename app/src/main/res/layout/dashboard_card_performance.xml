@@ -59,26 +59,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/totalQueue" />
 
-    <include
-        android:id="@+id/income"
-        layout="@layout/dashboard_card_small"
+    <!-- Button tags are based on `DashboardPerformance.Chart` enum. -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/incomeCardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/cardlist_margin"
-        app:layout_constraintTop_toBottomOf="@id/chart"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="INCOME"
+        app:cardForegroundColor="@color/card_foreground_selectable"
+        app:layout_constraintEnd_toStartOf="@id/orderedProductsCardView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/orderedProducts"/>
+        app:layout_constraintTop_toBottomOf="@id/chart"
+        app:strokeColor="@color/stroke_selectable"
+        app:strokeWidth="@dimen/stroke_width">
 
-    <include
-        android:id="@+id/orderedProducts"
-        layout="@layout/dashboard_card_small"
+      <include
+          android:id="@+id/incomeCard"
+          layout="@layout/dashboard_card_performance_selectable" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/orderedProductsCardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:layout_marginStart="@dimen/cardlist_margin"
-        app:layout_constraintStart_toEndOf="@id/income"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="ORDERED_PRODUCTS"
+        app:cardForegroundColor="@color/card_foreground_selectable"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/incomeCardView"
         app:layout_constraintTop_toBottomOf="@id/chart"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:strokeColor="@color/stroke_selectable"
+        app:strokeWidth="@dimen/stroke_width">
+
+      <include
+          android:id="@+id/orderedProductsCard"
+          layout="@layout/dashboard_card_performance_selectable" />
+    </com.google.android.material.card.MaterialCardView>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

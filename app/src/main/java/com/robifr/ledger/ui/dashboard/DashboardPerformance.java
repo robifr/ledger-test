@@ -17,6 +17,7 @@
 
 package com.robifr.ledger.ui.dashboard;
 
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -49,7 +50,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class DashboardPerformance {
+public class DashboardPerformance implements View.OnClickListener {
+  public enum OverviewType {
+    INCOME,
+    ORDERED_PRODUCTS
+  }
+
   @NonNull private final DashboardFragment _fragment;
 
   public DashboardPerformance(@NonNull DashboardFragment fragment) {
@@ -68,29 +74,69 @@ public class DashboardPerformance {
     cardBinding.chart.setBackgroundColor( // Background color can't be set from xml.
         MaterialColors.getColor(
             this._fragment.requireContext(), com.google.android.material.R.attr.colorSurface, 0));
-    cardBinding.income.icon.setImageResource(R.drawable.icon_paid);
-    cardBinding.income.title.setText(R.string.text_income);
-    cardBinding.orderedProducts.icon.setImageResource(R.drawable.icon_orders);
-    cardBinding.orderedProducts.title.setText(R.string.text_ordered_products);
+    cardBinding.incomeCardView.setOnClickListener(this);
+    cardBinding.incomeCard.icon.setImageResource(R.drawable.icon_paid);
+    cardBinding.incomeCard.title.setText(R.string.text_income);
+    cardBinding.orderedProductsCardView.setOnClickListener(this);
+    cardBinding.orderedProductsCard.icon.setImageResource(R.drawable.icon_orders);
+    cardBinding.orderedProductsCard.title.setText(R.string.text_ordered_products);
   }
 
-  public void loadIncomeChart() {
+  @Override
+  public void onClick(@NonNull View view) {
+    Objects.requireNonNull(view);
+
+    switch (view.getId()) {
+      case R.id.incomeCardView, R.id.orderedProductsCardView -> {
+        final OverviewType selectedOverview = OverviewType.valueOf(view.getTag().toString());
+
+        this._fragment.dashboardViewModel().onDisplayedPerformanceChartChanged(selectedOverview);
+        this.selectCard(selectedOverview);
+      }
+    }
+  }
+
+  public void selectCard(@NonNull OverviewType overviewType) {
+    Objects.requireNonNull(overviewType);
+
+    final DashboardCardPerformanceBinding cardBinding =
+        this._fragment.fragmentBinding().performance;
+    // There should be only one card getting selected.
+    cardBinding.incomeCardView.setSelected(false);
+    cardBinding.orderedProductsCardView.setSelected(false);
+
+    switch (overviewType) {
+      case INCOME -> cardBinding.incomeCardView.setSelected(true);
+      case ORDERED_PRODUCTS -> cardBinding.orderedProductsCardView.setSelected(true);
+    }
+  }
+
+  public void loadChart() {
     this._fragment
         .fragmentBinding()
         .performance
         .chart
         .loadUrl("https://appassets.androidplatform.net/assets/chart.html");
-    this._fragment.fragmentBinding().performance.income.cardView.setSelected(true);
-    this._fragment.fragmentBinding().performance.orderedProducts.cardView.setSelected(false);
   }
 
-  public void setTotalIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+  public void setTotalQueue(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
     final String totalText =
         this._fragment
             .getResources()
             .getQuantityString(R.plurals.args_from_x_queues, queueInfo.size(), queueInfo.size());
+
+    this._fragment
+        .fragmentBinding()
+        .performance
+        .totalQueue
+        .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
+  }
+
+  public void setTotalIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+    Objects.requireNonNull(queueInfo);
+
     final BigDecimal amount =
         queueInfo.stream()
             .flatMap(queue -> queue.productOrders().stream())
@@ -100,17 +146,25 @@ public class DashboardPerformance {
     this._fragment
         .fragmentBinding()
         .performance
-        .totalQueue
-        .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
-    this._fragment
-        .fragmentBinding()
-        .performance
-        .income
+        .incomeCard
         .amount
         .setText(CurrencyFormat.format(amount, "id", "ID"));
   }
 
-  private void _displayChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+  public void setTotalOrderedProducts(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+    Objects.requireNonNull(queueInfo);
+
+    final long amount = queueInfo.stream().mapToLong(queue -> queue.productOrders().size()).sum();
+
+    this._fragment
+        .fragmentBinding()
+        .performance
+        .orderedProductsCard
+        .amount
+        .setText(Long.toString(amount));
+  }
+
+  private void _displayIncomeChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
     final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
@@ -139,11 +193,63 @@ public class DashboardPerformance {
     final Map<String, BigDecimal> queueDateWithTotalPrice =
         ChartUtil.toDateTimeData(
             unformattedQueueDateWithTotalPrice, new Pair<>(startDate, date.dateEnd()));
-    final Map<String, Double> queueDateWithTotalPriceInPercent =
-        ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new);
 
     final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalPrice.keySet());
+    // Convert to percent because D3.js can't handle big decimal.
     final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
+
+    this._displayChart(
+        xAxisDomain,
+        yAxisDomain,
+        ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new));
+  }
+
+  private void _displayOrderedProductsChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+    Objects.requireNonNull(queueInfo);
+
+    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
+    if (date == null) return;
+
+    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalOrders =
+        new LinkedHashMap<>();
+
+    for (QueueWithProductOrdersInfo queue : queueInfo) {
+      unformattedQueueDateWithTotalOrders.merge(
+          queue.date().atZone(ZoneId.systemDefault()),
+          BigDecimal.valueOf(queue.productOrders().size()),
+          BigDecimal::add);
+    }
+
+    final ZonedDateTime startDate =
+        date.range() == QueueDate.Range.ALL_TIME
+            // Remove unnecessary dates.
+            ? queueInfo.stream()
+                .map(QueueWithProductOrdersInfo::date)
+                .min(Instant::compareTo)
+                .orElse(date.dateStart().toInstant())
+                .atZone(ZoneId.systemDefault())
+            : date.dateStart();
+    final Map<String, BigDecimal> queueDateWithTotalOrders =
+        ChartUtil.toDateTimeData(
+            unformattedQueueDateWithTotalOrders, new Pair<>(startDate, date.dateEnd()));
+
+    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalOrders.keySet());
+    // Convert to percent because D3.js can't handle big decimal.
+    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalOrders);
+
+    this._displayChart(
+        xAxisDomain,
+        yAxisDomain,
+        ChartUtil.toPercentageData(queueDateWithTotalOrders, LinkedHashMap::new));
+  }
+
+  private void _displayChart(
+      @NonNull List<String> xAxisDomain,
+      @NonNull List<String> yAxisDomain,
+      @NonNull Map<String, Double> data) {
+    Objects.requireNonNull(xAxisDomain);
+    Objects.requireNonNull(yAxisDomain);
+    Objects.requireNonNull(data);
 
     final ViewGroup.MarginLayoutParams margin =
         (ViewGroup.MarginLayoutParams)
@@ -178,8 +284,7 @@ public class DashboardPerformance {
             "layoutBinding", ChartAxisBinding.Position.LEFT, yAxisDomain);
     final String chartBinding =
         BarChartBinding.init("layoutBinding", "xAxisBinding", "yAxisBinding");
-    final String chartRender =
-        BarChartBinding.render("chartBinding", queueDateWithTotalPriceInPercent);
+    final String chartRender = BarChartBinding.render("chartBinding", data);
 
     this._fragment
         .fragmentBinding()
@@ -234,7 +339,18 @@ public class DashboardPerformance {
               .dashboardViewModel()
               .queuesWithProductOrders()
               .getValue();
-      if (queueInfo != null) DashboardPerformance.this._displayChart(queueInfo);
+      final DashboardPerformance.OverviewType displayedPerformanceChart =
+          DashboardPerformance.this
+              ._fragment
+              .dashboardViewModel()
+              .displayedPerformanceChart()
+              .getValue();
+      if (queueInfo == null || displayedPerformanceChart == null) return;
+
+      switch (displayedPerformanceChart) {
+        case INCOME -> DashboardPerformance.this._displayIncomeChart(queueInfo);
+        case ORDERED_PRODUCTS -> DashboardPerformance.this._displayOrderedProductsChart(queueInfo);
+      }
     }
   }
 }

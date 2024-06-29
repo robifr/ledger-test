@@ -31,6 +31,7 @@ import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.ui.dashboard.DashboardPerformance;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -62,6 +63,10 @@ public class DashboardViewModel extends ViewModel {
   private final MutableLiveData<List<QueueWithProductOrdersInfo>> _queuesWithProductOrders =
       new MutableLiveData<>();
 
+  @NonNull
+  private final MutableLiveData<DashboardPerformance.OverviewType> _displayedPerformanceChart =
+      new MutableLiveData<>();
+
   @Inject
   public DashboardViewModel(
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
@@ -76,6 +81,7 @@ public class DashboardViewModel extends ViewModel {
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
     this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
+    this.onDisplayedPerformanceChartChanged(DashboardPerformance.OverviewType.INCOME);
     this._customersWithBalance =
         (MutableLiveData<List<CustomerBalanceInfo>>) this._selectAllIdsWithBalance();
     this._customersWithDebt =
@@ -111,6 +117,11 @@ public class DashboardViewModel extends ViewModel {
   @NonNull
   public LiveData<List<QueueWithProductOrdersInfo>> queuesWithProductOrders() {
     return this._queuesWithProductOrders;
+  }
+
+  @NonNull
+  public LiveData<DashboardPerformance.OverviewType> displayedPerformanceChart() {
+    return this._displayedPerformanceChart;
   }
 
   public void onDateChanged(@NonNull QueueDate date) {
@@ -150,6 +161,13 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(queueInfo);
 
     this._queuesWithProductOrders.setValue(Collections.unmodifiableList(queueInfo));
+  }
+
+  public void onDisplayedPerformanceChartChanged(
+      @NonNull DashboardPerformance.OverviewType overviewType) {
+    Objects.requireNonNull(overviewType);
+
+    this._displayedPerformanceChart.setValue(overviewType);
   }
 
   @NonNull

@@ -23,6 +23,8 @@
   <dimen name="text_large">20sp</dimen>
   <dimen name="text_extralarge">24sp</dimen>
 
+  <dimen name="text_icon_padding">20dp</dimen>
+
   <dimen name="icon_extrasmall">16dp</dimen>
   <dimen name="icon_small">20dp</dimen>
   <dimen name="icon_smallmedium">24dp</dimen>
@@ -36,7 +38,6 @@
   <dimen name="stroke_width">1.5px</dimen>
 
   <dimen name="bottomdialog_padding">20dp</dimen>
-  <dimen name="bottomdialog_icon_padding">20dp</dimen>
   <dimen name="bottomdialog_button_minheight">45dp</dimen>
   <dimen name="bottomdialog_item_margin">15dp</dimen>
   <dimen name="bottomdialog_title_margin">18dp</dimen>

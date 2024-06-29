@@ -68,9 +68,9 @@ public class DashboardPerformance {
     cardBinding.chart.setBackgroundColor( // Background color can't be set from xml.
         MaterialColors.getColor(
             this._fragment.requireContext(), com.google.android.material.R.attr.colorSurface, 0));
-    cardBinding.income.icon.setImageResource(R.drawable.icon_dollar);
+    cardBinding.income.icon.setImageResource(R.drawable.icon_paid);
     cardBinding.income.title.setText(R.string.text_income);
-    cardBinding.orderedProducts.icon.setImageResource(R.drawable.icon_sell);
+    cardBinding.orderedProducts.icon.setImageResource(R.drawable.icon_orders);
     cardBinding.orderedProducts.title.setText(R.string.text_ordered_products);
   }
 

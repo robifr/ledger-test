@@ -96,7 +96,7 @@ public class CreateQueuePaymentMethod implements View.OnClickListener {
     button.setCompoundDrawablesWithIntrinsicBounds(
         button.getCompoundDrawables()[0], // Payment method icon.
         null,
-        this._fragment.requireContext().getDrawable(R.drawable.icon_check_20),
+        this._fragment.requireContext().getDrawable(R.drawable.icon_check),
         null);
     button.setChecked(true);
   }

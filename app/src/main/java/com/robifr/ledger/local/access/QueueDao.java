@@ -105,7 +105,7 @@ public abstract class QueueDao implements QueryAccessible<QueueModel> {
   @NonNull
   @Query(
       """
-      SELECT id AS id, date AS date FROM queue
+      SELECT id, status, date FROM queue
       WHERE date >= :startDate AND date <= :endDate
       """)
   @Transaction

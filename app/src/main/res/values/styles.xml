@@ -38,7 +38,7 @@
     <item name="android:background">?colorSurface</item>
     <item name="android:foreground">?selectableItemBackground</item>
     <item name="android:gravity">left|center_vertical</item>
-    <item name="iconPadding">@dimen/bottomdialog_icon_padding</item>
+    <item name="iconPadding">@dimen/text_icon_padding</item>
     <item name="iconSize">@dimen/icon_small</item>
     <item name="iconTint">?android:textColor</item>
     <item name="cornerSize">0dp</item>
@@ -68,7 +68,7 @@
     <item name="android:textColor">@color/text_selectable</item>
     <item name="android:background">@drawable/shape_radio_roundedright</item>
     <item name="android:drawableStart">@drawable/icon_radio_check_hideable</item>
-    <item name="android:drawablePadding">@dimen/bottomdialog_icon_padding</item>
+    <item name="android:drawablePadding">@dimen/text_icon_padding</item>
     <item name="android:drawableTint">@color/text_selectable</item>
   </style>
 

@@ -132,14 +132,17 @@
           android:layout_marginStart="@dimen/screen_padding"
           android:layout_marginEnd="@dimen/screen_padding"
           android:checkable="true"
-          android:drawableLeft="@drawable/icon_dollar_20"
+          android:drawableLeft="@drawable/icon_money"
           android:gravity="start|center_vertical"
-          android:padding="@dimen/button_padding"
+          android:paddingStart="20dp"
+          android:paddingTop="@dimen/button_padding"
+          android:paddingEnd="20dp"
+          android:paddingBottom="@dimen/button_padding"
           android:tag="CASH"
           android:text="@string/text_cash"
           android:textColor="?android:textColor"
           app:backgroundTint="?colorSurface"
-          app:iconPadding="15dp"
+          app:iconPadding="@dimen/text_icon_padding"
           app:rippleColor="?android:colorControlHighlight" />
 
       <com.google.android.material.button.MaterialButton
@@ -149,14 +152,17 @@
           android:layout_marginStart="@dimen/screen_padding"
           android:layout_marginEnd="@dimen/screen_padding"
           android:checkable="true"
-          android:drawableLeft="@drawable/icon_account_wallet_20"
+          android:drawableLeft="@drawable/icon_account_wallet"
           android:gravity="start|center_vertical"
-          android:padding="@dimen/button_padding"
+          android:paddingStart="20dp"
+          android:paddingTop="@dimen/button_padding"
+          android:paddingEnd="20dp"
+          android:paddingBottom="@dimen/button_padding"
           android:tag="ACCOUNT_BALANCE"
           android:text="@string/text_account_balance"
           android:textColor="?android:textColor"
           app:backgroundTint="?colorSurface"
-          app:iconPadding="15dp"
+          app:iconPadding="@dimen/text_icon_padding"
           app:rippleColor="?android:colorControlHighlight" />
 
       <include

@@ -30,6 +30,7 @@ import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.ui.dashboard.DashboardPerformance;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -41,6 +42,8 @@ import javax.inject.Inject;
 public class DashboardViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
+
+  @NonNull private final DashboardPerformanceViewModel _performanceView;
 
   @NonNull
   private final QueueChangedListeners _queueChangedListener = new QueueChangedListeners(this);
@@ -72,6 +75,7 @@ public class DashboardViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
+    this._performanceView = new DashboardPerformanceViewModel(this, this._queuesWithProductOrders);
 
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
@@ -81,6 +85,8 @@ public class DashboardViewModel extends ViewModel {
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
     this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
+    this._performanceView.onDisplayedChartChanged(
+        DashboardPerformance.OverviewType.RECEIVED_INCOME);
     LiveDataEvent.observeOnce(
         this._selectAllIdsWithBalance(), this::onCustomersWithBalanceChanged, Objects::nonNull);
     LiveDataEvent.observeOnce(
@@ -91,6 +97,11 @@ public class DashboardViewModel extends ViewModel {
   public void onCleared() {
     this._queueRepository.removeModelChangedListener(this._queueChangedListener);
     this._customerRepository.removeModelChangedListener(this._customerChangedListener);
+  }
+
+  @NonNull
+  public DashboardPerformanceViewModel performanceView() {
+    return this._performanceView;
   }
 
   @NonNull

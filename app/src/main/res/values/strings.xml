@@ -75,11 +75,12 @@
   <string name="text_filter_customers">Filter customers</string>
   <string name="text_filtered_customers">Filtered customers</string>
   <string name="text_filters">Filters</string>
+  <string name="text_from_any_queues">From any queues</string>
+  <string name="text_from_completed_queues">From completed queues</string>
   <string name="text_grand_total_price">Grand total price</string>
   <string name="text_grant">Grant</string>
   <string name="text_in_process">In process</string>
   <string name="text_in_queue">In queue</string>
-  <string name="text_income">Income</string>
   <string name="text_max">Max</string>
   <string name="text_min">Min</string>
   <string name="text_name">Name</string>
@@ -91,6 +92,7 @@
   <string name="text_originally_selected_product_was_deleted">Originally selected product was deleted</string>
   <string name="text_payment_method">Payment method</string>
   <string name="text_payment_methods">Payment methods</string>
+  <string name="text_performance">Performance</string>
   <string name="text_please_to_include_at_least_one_product_order">Please to include at least one product order</string>
   <string name="text_price">Price</string>
   <string name="text_product">Product</string>
@@ -98,9 +100,12 @@
   <string name="text_product_name_is_required">Product name is required</string>
   <string name="text_product_orders">Product orders</string>
   <string name="text_products">Products</string>
+  <string name="text_products_sold">Products sold</string>
+  <string name="text_projected_income">Projected income</string>
   <string name="text_quantity">Quantity</string>
   <string name="text_queue">Queue</string>
   <string name="text_queue_id">Queue ID</string>
+  <string name="text_received_income">Received income</string>
   <string name="text_save">Save</string>
   <string name="text_search_customers">Search customers</string>
   <string name="text_search_customers_and_products">Search customers &amp; products</string>
@@ -125,6 +130,7 @@
   <string name="text_total_debt">Total debt</string>
   <string name="text_total_discount">Total discount</string>
   <string name="text_total_price">Total price</string>
+  <string name="text_total_queue">Total queue</string>
   <string name="text_unpaid">Unpaid</string>
   <string name="text_withdraw">Withdraw</string>
   <string name="text_withdraw_balance">Withdraw balance</string>
@@ -194,10 +200,6 @@
   <plurals name="args_from_x_customers">
     <item quantity="one"><![CDATA[From <b>%d</b> customer]]></item>
     <item quantity="other"><![CDATA[From <b>%d</b> customers]]></item>
-  </plurals>
-  <plurals name="args_from_x_queues">
-    <item quantity="one"><![CDATA[From <b>%d</b> queue]]></item>
-    <item quantity="other"><![CDATA[From <b>%d</b> queues]]></item>
   </plurals>
 
   <string name="maindialog_manageexternalstorage_permission_description">

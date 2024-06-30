@@ -74,7 +74,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/screen_paddingbottom">
 
       <include
           android:id="@+id/balance"
@@ -86,8 +87,8 @@
           android:layout_marginEnd="@dimen/screen_padding" />
 
       <include
-          android:id="@+id/income"
-          layout="@layout/dashboard_card_income"
+          android:id="@+id/performance"
+          layout="@layout/dashboard_card_performance"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="@dimen/screen_padding"

@@ -194,20 +194,22 @@ public class DashboardPerformanceViewModel {
             ChartUtil.toPercentageData(queueDateWithTotalQueue, LinkedHashMap::new)));
   }
 
-  public void onDisplayOrderedProductsChart() {
+  public void onDisplayProductsSoldChart() {
     final QueueDate date = this._viewModel.date().getValue();
     final List<QueueWithProductOrdersInfo> queueInfo =
         this._viewModel.queuesWithProductOrders().getValue();
     if (date == null || queueInfo == null) return;
 
-    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalOrders =
+    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalProducts =
         new LinkedHashMap<>();
 
     for (QueueWithProductOrdersInfo queue : queueInfo) {
-      unformattedQueueDateWithTotalOrders.merge(
-          queue.date().atZone(ZoneId.systemDefault()),
-          BigDecimal.valueOf(queue.productOrders().size()),
-          BigDecimal::add);
+      for (ProductOrderModel productOrder : queue.productOrders()) {
+        unformattedQueueDateWithTotalProducts.merge(
+            queue.date().atZone(ZoneId.systemDefault()),
+            BigDecimal.valueOf(productOrder.quantity()),
+            BigDecimal::add);
+      }
     }
 
     final ZonedDateTime startDate =
@@ -219,18 +221,18 @@ public class DashboardPerformanceViewModel {
                 .orElse(date.dateStart().toInstant())
                 .atZone(ZoneId.systemDefault())
             : date.dateStart();
-    final Map<String, BigDecimal> queueDateWithTotalOrders =
+    final Map<String, BigDecimal> queueDateWithTotalProducts =
         ChartUtil.toDateTimeData(
-            unformattedQueueDateWithTotalOrders, new Pair<>(startDate, date.dateEnd()));
+            unformattedQueueDateWithTotalProducts, new Pair<>(startDate, date.dateEnd()));
 
-    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalOrders.keySet());
+    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalProducts.keySet());
     // Convert to percent because D3.js can't handle big decimal.
-    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalOrders);
+    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalProducts);
 
     this._chartModel.setValue(
         new DashboardPerformance.ChartModel(
             xAxisDomain,
             yAxisDomain,
-            ChartUtil.toPercentageData(queueDateWithTotalOrders, LinkedHashMap::new)));
+            ChartUtil.toPercentageData(queueDateWithTotalProducts, LinkedHashMap::new)));
   }
 }

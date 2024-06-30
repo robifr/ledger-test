@@ -86,7 +86,6 @@
   <string name="text_name">Name</string>
   <string name="text_new">New</string>
   <string name="text_no_results_found">No results found</string>
-  <string name="text_ordered_products">Ordered products</string>
   <string name="text_originally_selected_customer_was_changed">Originally selected customer was changed</string>
   <string name="text_originally_selected_customer_was_deleted">Originally selected customer was deleted</string>
   <string name="text_originally_selected_product_was_changed">Originally selected product was changed</string>
@@ -101,6 +100,7 @@
   <string name="text_product_name_is_required">Product name is required</string>
   <string name="text_product_orders">Product orders</string>
   <string name="text_products">Products</string>
+  <string name="text_products_sold">Products sold</string>
   <string name="text_projected_income">Projected income</string>
   <string name="text_quantity">Quantity</string>
   <string name="text_queue">Queue</string>

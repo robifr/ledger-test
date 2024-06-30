@@ -88,7 +88,7 @@
         android:focusable="true"
         android:tag="PROJECTED_INCOME"
         app:cardForegroundColor="@color/card_foreground_selectable"
-        app:layout_constraintBottom_toTopOf="@id/orderedProductsCardView"
+        app:layout_constraintBottom_toTopOf="@id/productsSoldCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/receivedIncomeCardView"
         app:layout_constraintTop_toBottomOf="@id/chart"
@@ -113,7 +113,7 @@
         android:tag="TOTAL_QUEUE"
         app:cardForegroundColor="@color/card_foreground_selectable"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/orderedProductsCardView"
+        app:layout_constraintEnd_toStartOf="@id/productsSoldCardView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/receivedIncomeCardView"
         app:strokeColor="@color/stroke_selectable"
@@ -125,14 +125,14 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/orderedProductsCardView"
+        android:id="@+id/productsSoldCardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/cardlist_margin"
         android:layout_marginTop="@dimen/cardlist_margin"
         android:clickable="true"
         android:focusable="true"
-        android:tag="ORDERED_PRODUCTS"
+        android:tag="PRODUCTS_SOLD"
         app:cardForegroundColor="@color/card_foreground_selectable"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -142,7 +142,7 @@
         app:strokeWidth="@dimen/stroke_width">
 
       <include
-          android:id="@+id/orderedProductsCard"
+          android:id="@+id/productsSoldCard"
           layout="@layout/dashboard_card_performance_selectable" />
     </com.google.android.material.card.MaterialCardView>
   </androidx.constraintlayout.widget.ConstraintLayout>

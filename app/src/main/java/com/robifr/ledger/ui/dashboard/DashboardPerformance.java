@@ -47,7 +47,7 @@ public class DashboardPerformance implements View.OnClickListener {
     PROJECTED_INCOME,
     RECEIVED_INCOME,
     TOTAL_QUEUE,
-    ORDERED_PRODUCTS
+    PRODUCTS_SOLD
   }
 
   @NonNull private final DashboardFragment _fragment;
@@ -80,10 +80,10 @@ public class DashboardPerformance implements View.OnClickListener {
     cardBinding.totalQueueCard.icon.setImageResource(R.drawable.icon_assignment);
     cardBinding.totalQueueCard.title.setText(R.string.text_total_queue);
     cardBinding.totalQueueCard.description.setVisibility(View.GONE);
-    cardBinding.orderedProductsCardView.setOnClickListener(this);
-    cardBinding.orderedProductsCard.icon.setImageResource(R.drawable.icon_orders);
-    cardBinding.orderedProductsCard.title.setText(R.string.text_ordered_products);
-    cardBinding.orderedProductsCard.description.setVisibility(View.GONE);
+    cardBinding.productsSoldCardView.setOnClickListener(this);
+    cardBinding.productsSoldCard.icon.setImageResource(R.drawable.icon_sell);
+    cardBinding.productsSoldCard.title.setText(R.string.text_products_sold);
+    cardBinding.productsSoldCard.description.setVisibility(View.GONE);
   }
 
   @Override
@@ -94,7 +94,7 @@ public class DashboardPerformance implements View.OnClickListener {
       case R.id.projectedIncomeCardView,
               R.id.receivedIncomeCardView,
               R.id.totalQueueCardView,
-              R.id.orderedProductsCardView ->
+              R.id.productsSoldCardView ->
           this._fragment
               .dashboardViewModel()
               .performanceView()
@@ -111,13 +111,13 @@ public class DashboardPerformance implements View.OnClickListener {
     cardBinding.projectedIncomeCardView.setSelected(false);
     cardBinding.receivedIncomeCardView.setSelected(false);
     cardBinding.totalQueueCardView.setSelected(false);
-    cardBinding.orderedProductsCardView.setSelected(false);
+    cardBinding.productsSoldCardView.setSelected(false);
 
     switch (overviewType) {
       case PROJECTED_INCOME -> cardBinding.projectedIncomeCardView.setSelected(true);
       case RECEIVED_INCOME -> cardBinding.receivedIncomeCardView.setSelected(true);
       case TOTAL_QUEUE -> cardBinding.totalQueueCardView.setSelected(true);
-      case ORDERED_PRODUCTS -> cardBinding.orderedProductsCardView.setSelected(true);
+      case PRODUCTS_SOLD -> cardBinding.productsSoldCardView.setSelected(true);
     }
   }
 
@@ -176,17 +176,21 @@ public class DashboardPerformance implements View.OnClickListener {
         .setText(CurrencyFormat.format(amount, "id", "ID"));
   }
 
-  public void setTotalOrderedProducts(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+  public void setTotalProductsSold(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
-    final long amount = queueInfo.stream().mapToLong(queue -> queue.productOrders().size()).sum();
+    final BigDecimal amount =
+        queueInfo.stream()
+            .flatMap(queue -> queue.productOrders().stream())
+            .map(productOrder -> BigDecimal.valueOf(productOrder.quantity()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     this._fragment
         .fragmentBinding()
         .performance
-        .orderedProductsCard
+        .productsSoldCard
         .amount
-        .setText(Long.toString(amount));
+        .setText(CurrencyFormat.format(amount, "id", "ID", "")); // Format the decimal point.
   }
 
   public void displayChart(@NonNull ChartModel model) {
@@ -313,12 +317,12 @@ public class DashboardPerformance implements View.OnClickListener {
                 .dashboardViewModel()
                 .performanceView()
                 .onDisplayTotalQueueChart();
-        case ORDERED_PRODUCTS ->
+        case PRODUCTS_SOLD ->
             DashboardPerformance.this
                 ._fragment
                 .dashboardViewModel()
                 .performanceView()
-                .onDisplayOrderedProductsChart();
+                .onDisplayProductsSoldChart();
       }
     }
   }

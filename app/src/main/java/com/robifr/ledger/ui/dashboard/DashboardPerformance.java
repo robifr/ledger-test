@@ -23,7 +23,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
 import com.google.android.material.color.MaterialColors;
@@ -32,8 +31,6 @@ import com.robifr.ledger.assetbinding.JsInterface;
 import com.robifr.ledger.assetbinding.chart.BarChartBinding;
 import com.robifr.ledger.assetbinding.chart.ChartAxisBinding;
 import com.robifr.ledger.assetbinding.chart.ChartLayoutBinding;
-import com.robifr.ledger.assetbinding.chart.ChartUtil;
-import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
@@ -41,11 +38,6 @@ import com.robifr.ledger.databinding.DashboardCardPerformanceBinding;
 import com.robifr.ledger.ui.LocalWebChrome;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -100,14 +92,13 @@ public class DashboardPerformance implements View.OnClickListener {
 
     switch (view.getId()) {
       case R.id.projectedIncomeCardView,
-          R.id.receivedIncomeCardView,
-          R.id.totalQueueCardView,
-          R.id.orderedProductsCardView -> {
-        final OverviewType selectedOverview = OverviewType.valueOf(view.getTag().toString());
-
-        this._fragment.dashboardViewModel().onDisplayedPerformanceChartChanged(selectedOverview);
-        this.selectCard(selectedOverview);
-      }
+              R.id.receivedIncomeCardView,
+              R.id.totalQueueCardView,
+              R.id.orderedProductsCardView ->
+          this._fragment
+              .dashboardViewModel()
+              .performanceView()
+              .onDisplayedChartChanged(OverviewType.valueOf(view.getTag().toString()));
     }
   }
 
@@ -171,6 +162,7 @@ public class DashboardPerformance implements View.OnClickListener {
 
     final BigDecimal amount =
         queueInfo.stream()
+            // Received income are from the completed queues.
             .filter(queue -> queue.status() == QueueModel.Status.COMPLETED)
             .flatMap(queue -> queue.productOrders().stream())
             .map(ProductOrderModel::totalPrice)
@@ -197,171 +189,8 @@ public class DashboardPerformance implements View.OnClickListener {
         .setText(Long.toString(amount));
   }
 
-  private void _displayTotalQueueChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-    Objects.requireNonNull(queueInfo);
-
-    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
-    if (date == null) return;
-
-    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalQueue = new LinkedHashMap<>();
-
-    for (QueueWithProductOrdersInfo queue : queueInfo) {
-      unformattedQueueDateWithTotalQueue.merge(
-          queue.date().atZone(ZoneId.systemDefault()), BigDecimal.ONE, BigDecimal::add);
-    }
-
-    final ZonedDateTime startDate =
-        date.range() == QueueDate.Range.ALL_TIME
-            // Remove unnecessary dates.
-            ? queueInfo.stream()
-                .map(QueueWithProductOrdersInfo::date)
-                .min(Instant::compareTo)
-                .orElse(date.dateStart().toInstant())
-                .atZone(ZoneId.systemDefault())
-            : date.dateStart();
-    final Map<String, BigDecimal> queueDateWithTotalQueue =
-        ChartUtil.toDateTimeData(
-            unformattedQueueDateWithTotalQueue, new Pair<>(startDate, date.dateEnd()));
-
-    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalQueue.keySet());
-    // Convert to percent because D3.js can't handle big decimal.
-    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalQueue);
-
-    this._displayChart(
-        xAxisDomain,
-        yAxisDomain,
-        ChartUtil.toPercentageData(queueDateWithTotalQueue, LinkedHashMap::new));
-  }
-
-  private void _displayProjectedIncomeChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-    Objects.requireNonNull(queueInfo);
-
-    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
-    if (date == null) return;
-
-    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
-
-    for (QueueWithProductOrdersInfo queue : queueInfo) {
-      for (ProductOrderModel productOrder : queue.productOrders()) {
-        unformattedQueueDateWithTotalPrice.merge(
-            queue.date().atZone(ZoneId.systemDefault()),
-            productOrder.totalPrice(),
-            BigDecimal::add);
-      }
-    }
-
-    final ZonedDateTime startDate =
-        date.range() == QueueDate.Range.ALL_TIME
-            // Remove unnecessary dates.
-            ? queueInfo.stream()
-                .map(QueueWithProductOrdersInfo::date)
-                .min(Instant::compareTo)
-                .orElse(date.dateStart().toInstant())
-                .atZone(ZoneId.systemDefault())
-            : date.dateStart();
-    final Map<String, BigDecimal> queueDateWithTotalPrice =
-        ChartUtil.toDateTimeData(
-            unformattedQueueDateWithTotalPrice, new Pair<>(startDate, date.dateEnd()));
-
-    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalPrice.keySet());
-    // Convert to percent because D3.js can't handle big decimal.
-    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
-
-    this._displayChart(
-        xAxisDomain,
-        yAxisDomain,
-        ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new));
-  }
-
-  private void _displayReceivedIncomeChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-    Objects.requireNonNull(queueInfo);
-
-    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
-    if (date == null) return;
-
-    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
-
-    for (QueueWithProductOrdersInfo queue : queueInfo) {
-      // Received income are from the completed queues.
-      if (queue.status() != QueueModel.Status.COMPLETED) continue;
-
-      for (ProductOrderModel productOrder : queue.productOrders()) {
-        unformattedQueueDateWithTotalPrice.merge(
-            queue.date().atZone(ZoneId.systemDefault()),
-            productOrder.totalPrice(),
-            BigDecimal::add);
-      }
-    }
-
-    final ZonedDateTime startDate =
-        date.range() == QueueDate.Range.ALL_TIME
-            // Remove unnecessary dates.
-            ? queueInfo.stream()
-                .map(QueueWithProductOrdersInfo::date)
-                .min(Instant::compareTo)
-                .orElse(date.dateStart().toInstant())
-                .atZone(ZoneId.systemDefault())
-            : date.dateStart();
-    final Map<String, BigDecimal> queueDateWithTotalPrice =
-        ChartUtil.toDateTimeData(
-            unformattedQueueDateWithTotalPrice, new Pair<>(startDate, date.dateEnd()));
-
-    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalPrice.keySet());
-    // Convert to percent because D3.js can't handle big decimal.
-    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
-
-    this._displayChart(
-        xAxisDomain,
-        yAxisDomain,
-        ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new));
-  }
-
-  private void _displayOrderedProductsChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-    Objects.requireNonNull(queueInfo);
-
-    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
-    if (date == null) return;
-
-    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalOrders =
-        new LinkedHashMap<>();
-
-    for (QueueWithProductOrdersInfo queue : queueInfo) {
-      unformattedQueueDateWithTotalOrders.merge(
-          queue.date().atZone(ZoneId.systemDefault()),
-          BigDecimal.valueOf(queue.productOrders().size()),
-          BigDecimal::add);
-    }
-
-    final ZonedDateTime startDate =
-        date.range() == QueueDate.Range.ALL_TIME
-            // Remove unnecessary dates.
-            ? queueInfo.stream()
-                .map(QueueWithProductOrdersInfo::date)
-                .min(Instant::compareTo)
-                .orElse(date.dateStart().toInstant())
-                .atZone(ZoneId.systemDefault())
-            : date.dateStart();
-    final Map<String, BigDecimal> queueDateWithTotalOrders =
-        ChartUtil.toDateTimeData(
-            unformattedQueueDateWithTotalOrders, new Pair<>(startDate, date.dateEnd()));
-
-    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalOrders.keySet());
-    // Convert to percent because D3.js can't handle big decimal.
-    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalOrders);
-
-    this._displayChart(
-        xAxisDomain,
-        yAxisDomain,
-        ChartUtil.toPercentageData(queueDateWithTotalOrders, LinkedHashMap::new));
-  }
-
-  private void _displayChart(
-      @NonNull List<String> xAxisDomain,
-      @NonNull List<String> yAxisDomain,
-      @NonNull Map<String, Double> data) {
-    Objects.requireNonNull(xAxisDomain);
-    Objects.requireNonNull(yAxisDomain);
-    Objects.requireNonNull(data);
+  public void displayChart(@NonNull ChartModel model) {
+    Objects.requireNonNull(model);
 
     final ViewGroup.MarginLayoutParams margin =
         (ViewGroup.MarginLayoutParams)
@@ -390,13 +219,13 @@ public class DashboardPerformance implements View.OnClickListener {
                 0));
     final String xAxisBinding =
         ChartAxisBinding.withBandScale(
-            "layoutBinding", ChartAxisBinding.Position.BOTTOM, xAxisDomain, false);
+            "layoutBinding", ChartAxisBinding.Position.BOTTOM, model.xAxisDomain(), false);
     final String yAxisBinding =
         ChartAxisBinding.withPercentageLinearScale(
-            "layoutBinding", ChartAxisBinding.Position.LEFT, yAxisDomain);
+            "layoutBinding", ChartAxisBinding.Position.LEFT, model.yAxisDomain());
     final String chartBinding =
         BarChartBinding.init("layoutBinding", "xAxisBinding", "yAxisBinding");
-    final String chartRender = BarChartBinding.render("chartBinding", data);
+    final String chartRender = BarChartBinding.render("chartBinding", model.data());
 
     this._fragment
         .fragmentBinding()
@@ -416,6 +245,17 @@ public class DashboardPerformance implements View.OnClickListener {
                   """,
                 layoutBinding, xAxisBinding, yAxisBinding, chartBinding, chartRender),
             null);
+  }
+
+  public record ChartModel(
+      @NonNull List<String> xAxisDomain,
+      @NonNull List<String> yAxisDomain,
+      @NonNull Map<String, Double> data) {
+    public ChartModel {
+      Objects.requireNonNull(xAxisDomain);
+      Objects.requireNonNull(yAxisDomain);
+      Objects.requireNonNull(data);
+    }
   }
 
   private class LocalWebView extends WebViewClientCompat {
@@ -445,25 +285,40 @@ public class DashboardPerformance implements View.OnClickListener {
       Objects.requireNonNull(view);
       Objects.requireNonNull(url);
 
-      final List<QueueWithProductOrdersInfo> queueInfo =
+      final DashboardPerformance.OverviewType displayedChart =
           DashboardPerformance.this
               ._fragment
               .dashboardViewModel()
-              .queuesWithProductOrders()
+              .performanceView()
+              .displayedChart()
               .getValue();
-      final DashboardPerformance.OverviewType displayedPerformanceChart =
-          DashboardPerformance.this
-              ._fragment
-              .dashboardViewModel()
-              .displayedPerformanceChart()
-              .getValue();
-      if (queueInfo == null || displayedPerformanceChart == null) return;
+      if (displayedChart == null) return;
 
-      switch (displayedPerformanceChart) {
-        case PROJECTED_INCOME -> DashboardPerformance.this._displayProjectedIncomeChart(queueInfo);
-        case RECEIVED_INCOME -> DashboardPerformance.this._displayReceivedIncomeChart(queueInfo);
-        case TOTAL_QUEUE -> DashboardPerformance.this._displayTotalQueueChart(queueInfo);
-        case ORDERED_PRODUCTS -> DashboardPerformance.this._displayOrderedProductsChart(queueInfo);
+      switch (displayedChart) {
+        case PROJECTED_INCOME ->
+            DashboardPerformance.this
+                ._fragment
+                .dashboardViewModel()
+                .performanceView()
+                .onDisplayProjectedIncomeChart();
+        case RECEIVED_INCOME ->
+            DashboardPerformance.this
+                ._fragment
+                .dashboardViewModel()
+                .performanceView()
+                .onDisplayReceivedIncomeChart();
+        case TOTAL_QUEUE ->
+            DashboardPerformance.this
+                ._fragment
+                .dashboardViewModel()
+                .performanceView()
+                .onDisplayTotalQueueChart();
+        case ORDERED_PRODUCTS ->
+            DashboardPerformance.this
+                ._fragment
+                .dashboardViewModel()
+                .performanceView()
+                .onDisplayOrderedProductsChart();
       }
     }
   }

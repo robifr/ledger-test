@@ -46,20 +46,24 @@ public class DashboardViewModelHandler {
         .snackbarMessage()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.date().observe(this._fragment.getViewLifecycleOwner(), this::_onDate);
-
     this._viewModel
         .customersWithBalance()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithBalance);
     this._viewModel
         .customersWithDebt()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithDebt);
-
     this._viewModel
         .queuesWithProductOrders()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onQueuesWithProductOrders);
+
     this._viewModel
-        .displayedPerformanceChart()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onDisplayedPerformanceChart);
+        .performanceView()
+        .displayedChart()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onPerformanceDisplayedChart);
+    this._viewModel
+        .performanceView()
+        .chartModel()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onPerformanceChartModel);
   }
 
   private void _onSnackbarMessage(@Nullable StringResources stringRes) {
@@ -101,18 +105,22 @@ public class DashboardViewModelHandler {
   private void _onQueuesWithProductOrders(@Nullable List<QueueWithProductOrdersInfo> queueInfo) {
     if (queueInfo == null) return;
 
-    this._fragment.performanceOverview().setTotalQueue(queueInfo);
-    this._fragment.performanceOverview().setTotalProjectedIncome(queueInfo);
     this._fragment.performanceOverview().setTotalReceivedIncome(queueInfo);
+    this._fragment.performanceOverview().setTotalProjectedIncome(queueInfo);
+    this._fragment.performanceOverview().setTotalQueue(queueInfo);
     this._fragment.performanceOverview().setTotalOrderedProducts(queueInfo);
     this._fragment.performanceOverview().loadChart();
   }
 
-  private void _onDisplayedPerformanceChart(
+  private void _onPerformanceDisplayedChart(
       @Nullable DashboardPerformance.OverviewType overviewType) {
     if (overviewType == null) return;
 
     this._fragment.performanceOverview().selectCard(overviewType);
     this._fragment.performanceOverview().loadChart();
+  }
+
+  private void _onPerformanceChartModel(@Nullable DashboardPerformance.ChartModel model) {
+    if (model != null) this._fragment.performanceOverview().displayChart(model);
   }
 }

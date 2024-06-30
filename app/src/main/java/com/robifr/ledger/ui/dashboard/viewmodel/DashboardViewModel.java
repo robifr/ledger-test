@@ -44,6 +44,8 @@ public class DashboardViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
 
+  @NonNull private final DashboardPerformanceViewModel _performanceView;
+
   @NonNull
   private final QueueChangedListeners _queueChangedListener = new QueueChangedListeners(this);
 
@@ -63,15 +65,12 @@ public class DashboardViewModel extends ViewModel {
   private final MutableLiveData<List<QueueWithProductOrdersInfo>> _queuesWithProductOrders =
       new MutableLiveData<>();
 
-  @NonNull
-  private final MutableLiveData<DashboardPerformance.OverviewType> _displayedPerformanceChart =
-      new MutableLiveData<>();
-
   @Inject
   public DashboardViewModel(
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
+    this._performanceView = new DashboardPerformanceViewModel(this, this._queuesWithProductOrders);
 
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
@@ -80,18 +79,24 @@ public class DashboardViewModel extends ViewModel {
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
-    this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
-    this.onDisplayedPerformanceChartChanged(DashboardPerformance.OverviewType.RECEIVED_INCOME);
     this._customersWithBalance =
         (MutableLiveData<List<CustomerBalanceInfo>>) this._selectAllIdsWithBalance();
     this._customersWithDebt =
         (MutableLiveData<List<CustomerDebtInfo>>) this._selectAllIdsWithDebt();
+    this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
+    this._performanceView.onDisplayedChartChanged(
+        DashboardPerformance.OverviewType.RECEIVED_INCOME);
   }
 
   @Override
   public void onCleared() {
     this._queueRepository.removeModelChangedListener(this._queueChangedListener);
     this._customerRepository.removeModelChangedListener(this._customerChangedListener);
+  }
+
+  @NonNull
+  public DashboardPerformanceViewModel performanceView() {
+    return this._performanceView;
   }
 
   @NonNull
@@ -117,11 +122,6 @@ public class DashboardViewModel extends ViewModel {
   @NonNull
   public LiveData<List<QueueWithProductOrdersInfo>> queuesWithProductOrders() {
     return this._queuesWithProductOrders;
-  }
-
-  @NonNull
-  public LiveData<DashboardPerformance.OverviewType> displayedPerformanceChart() {
-    return this._displayedPerformanceChart;
   }
 
   public void onDateChanged(@NonNull QueueDate date) {
@@ -161,13 +161,6 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(queueInfo);
 
     this._queuesWithProductOrders.setValue(Collections.unmodifiableList(queueInfo));
-  }
-
-  public void onDisplayedPerformanceChartChanged(
-      @NonNull DashboardPerformance.OverviewType overviewType) {
-    Objects.requireNonNull(overviewType);
-
-    this._displayedPerformanceChart.setValue(overviewType);
   }
 
   @NonNull

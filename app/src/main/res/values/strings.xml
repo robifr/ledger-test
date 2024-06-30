@@ -79,7 +79,6 @@
   <string name="text_grant">Grant</string>
   <string name="text_in_process">In process</string>
   <string name="text_in_queue">In queue</string>
-  <string name="text_income">Income</string>
   <string name="text_max">Max</string>
   <string name="text_min">Min</string>
   <string name="text_name">Name</string>
@@ -104,6 +103,7 @@
   <string name="text_quantity">Quantity</string>
   <string name="text_queue">Queue</string>
   <string name="text_queue_id">Queue ID</string>
+  <string name="text_received_income">Received income</string>
   <string name="text_save">Save</string>
   <string name="text_search_customers">Search customers</string>
   <string name="text_search_customers_and_products">Search customers &amp; products</string>

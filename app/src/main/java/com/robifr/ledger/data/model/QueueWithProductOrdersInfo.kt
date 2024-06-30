@@ -23,6 +23,7 @@ import java.time.Instant
 @JvmRecord
 data class QueueWithProductOrdersInfo(
     val id: Long?,
+    val status: QueueModel.Status,
     val date: Instant,
     @Relation(parentColumn = "id", entityColumn = "queue_id")
     val productOrders: List<ProductOrderModel>
@@ -30,7 +31,7 @@ data class QueueWithProductOrdersInfo(
   companion object {
     @JvmStatic
     fun withModel(queue: QueueModel): QueueWithProductOrdersInfo =
-        QueueWithProductOrdersInfo(queue.id, queue.date, queue.productOrders)
+        QueueWithProductOrdersInfo(queue.id, queue.status, queue.date, queue.productOrders)
   }
 
   override fun modelId(): Long? = this.id

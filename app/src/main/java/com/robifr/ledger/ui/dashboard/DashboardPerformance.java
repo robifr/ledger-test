@@ -36,6 +36,7 @@ import com.robifr.ledger.assetbinding.chart.ChartLayoutBinding;
 import com.robifr.ledger.assetbinding.chart.ChartUtil;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
+import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.databinding.DashboardCardPerformanceBinding;
 import com.robifr.ledger.ui.LocalWebChrome;
@@ -53,6 +54,7 @@ import java.util.Objects;
 public class DashboardPerformance implements View.OnClickListener {
   public enum OverviewType {
     PROJECTED_INCOME,
+    RECEIVED_INCOME,
     ORDERED_PRODUCTS
   }
 
@@ -77,6 +79,9 @@ public class DashboardPerformance implements View.OnClickListener {
     cardBinding.projectedIncomeCardView.setOnClickListener(this);
     cardBinding.projectedIncomeCard.icon.setImageResource(R.drawable.icon_trending_up);
     cardBinding.projectedIncomeCard.title.setText(R.string.text_projected_income);
+    cardBinding.receivedIncomeCardView.setOnClickListener(this);
+    cardBinding.receivedIncomeCard.icon.setImageResource(R.drawable.icon_paid);
+    cardBinding.receivedIncomeCard.title.setText(R.string.text_received_income);
     cardBinding.orderedProductsCardView.setOnClickListener(this);
     cardBinding.orderedProductsCard.icon.setImageResource(R.drawable.icon_orders);
     cardBinding.orderedProductsCard.title.setText(R.string.text_ordered_products);
@@ -87,7 +92,9 @@ public class DashboardPerformance implements View.OnClickListener {
     Objects.requireNonNull(view);
 
     switch (view.getId()) {
-      case R.id.projectedIncomeCardView, R.id.orderedProductsCardView -> {
+      case R.id.projectedIncomeCardView,
+          R.id.receivedIncomeCardView,
+          R.id.orderedProductsCardView -> {
         final OverviewType selectedOverview = OverviewType.valueOf(view.getTag().toString());
 
         this._fragment.dashboardViewModel().onDisplayedPerformanceChartChanged(selectedOverview);
@@ -103,10 +110,12 @@ public class DashboardPerformance implements View.OnClickListener {
         this._fragment.fragmentBinding().performance;
     // There should be only one card getting selected.
     cardBinding.projectedIncomeCardView.setSelected(false);
+    cardBinding.receivedIncomeCardView.setSelected(false);
     cardBinding.orderedProductsCardView.setSelected(false);
 
     switch (overviewType) {
       case PROJECTED_INCOME -> cardBinding.projectedIncomeCardView.setSelected(true);
+      case RECEIVED_INCOME -> cardBinding.receivedIncomeCardView.setSelected(true);
       case ORDERED_PRODUCTS -> cardBinding.orderedProductsCardView.setSelected(true);
     }
   }
@@ -151,6 +160,24 @@ public class DashboardPerformance implements View.OnClickListener {
         .setText(CurrencyFormat.format(amount, "id", "ID"));
   }
 
+  public void setTotalReceivedIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+    Objects.requireNonNull(queueInfo);
+
+    final BigDecimal amount =
+        queueInfo.stream()
+            .filter(queue -> queue.status() == QueueModel.Status.COMPLETED)
+            .flatMap(queue -> queue.productOrders().stream())
+            .map(ProductOrderModel::totalPrice)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    this._fragment
+        .fragmentBinding()
+        .performance
+        .receivedIncomeCard
+        .amount
+        .setText(CurrencyFormat.format(amount, "id", "ID"));
+  }
+
   public void setTotalOrderedProducts(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
@@ -173,6 +200,49 @@ public class DashboardPerformance implements View.OnClickListener {
     final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
 
     for (QueueWithProductOrdersInfo queue : queueInfo) {
+      for (ProductOrderModel productOrder : queue.productOrders()) {
+        unformattedQueueDateWithTotalPrice.merge(
+            queue.date().atZone(ZoneId.systemDefault()),
+            productOrder.totalPrice(),
+            BigDecimal::add);
+      }
+    }
+
+    final ZonedDateTime startDate =
+        date.range() == QueueDate.Range.ALL_TIME
+            // Remove unnecessary dates.
+            ? queueInfo.stream()
+                .map(QueueWithProductOrdersInfo::date)
+                .min(Instant::compareTo)
+                .orElse(date.dateStart().toInstant())
+                .atZone(ZoneId.systemDefault())
+            : date.dateStart();
+    final Map<String, BigDecimal> queueDateWithTotalPrice =
+        ChartUtil.toDateTimeData(
+            unformattedQueueDateWithTotalPrice, new Pair<>(startDate, date.dateEnd()));
+
+    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalPrice.keySet());
+    // Convert to percent because D3.js can't handle big decimal.
+    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
+
+    this._displayChart(
+        xAxisDomain,
+        yAxisDomain,
+        ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new));
+  }
+
+  private void _displayReceivedIncomeChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+    Objects.requireNonNull(queueInfo);
+
+    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
+    if (date == null) return;
+
+    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
+
+    for (QueueWithProductOrdersInfo queue : queueInfo) {
+      // Received income are from the completed queues.
+      if (queue.status() != QueueModel.Status.COMPLETED) continue;
+
       for (ProductOrderModel productOrder : queue.productOrders()) {
         unformattedQueueDateWithTotalPrice.merge(
             queue.date().atZone(ZoneId.systemDefault()),
@@ -349,6 +419,7 @@ public class DashboardPerformance implements View.OnClickListener {
 
       switch (displayedPerformanceChart) {
         case PROJECTED_INCOME -> DashboardPerformance.this._displayProjectedIncomeChart(queueInfo);
+        case RECEIVED_INCOME -> DashboardPerformance.this._displayReceivedIncomeChart(queueInfo);
         case ORDERED_PRODUCTS -> DashboardPerformance.this._displayOrderedProductsChart(queueInfo);
       }
     }

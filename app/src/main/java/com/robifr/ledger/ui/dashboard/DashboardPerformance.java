@@ -79,15 +79,19 @@ public class DashboardPerformance implements View.OnClickListener {
     cardBinding.projectedIncomeCardView.setOnClickListener(this);
     cardBinding.projectedIncomeCard.icon.setImageResource(R.drawable.icon_trending_up);
     cardBinding.projectedIncomeCard.title.setText(R.string.text_projected_income);
+    cardBinding.projectedIncomeCard.description.setText(R.string.text_from_any_queues);
     cardBinding.receivedIncomeCardView.setOnClickListener(this);
     cardBinding.receivedIncomeCard.icon.setImageResource(R.drawable.icon_paid);
     cardBinding.receivedIncomeCard.title.setText(R.string.text_received_income);
+    cardBinding.receivedIncomeCard.description.setText(R.string.text_from_completed_queues);
     cardBinding.totalQueueCardView.setOnClickListener(this);
     cardBinding.totalQueueCard.icon.setImageResource(R.drawable.icon_assignment);
     cardBinding.totalQueueCard.title.setText(R.string.text_total_queue);
+    cardBinding.totalQueueCard.description.setVisibility(View.GONE);
     cardBinding.orderedProductsCardView.setOnClickListener(this);
     cardBinding.orderedProductsCard.icon.setImageResource(R.drawable.icon_orders);
     cardBinding.orderedProductsCard.title.setText(R.string.text_ordered_products);
+    cardBinding.orderedProductsCard.description.setVisibility(View.GONE);
   }
 
   @Override

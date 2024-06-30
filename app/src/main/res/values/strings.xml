@@ -75,6 +75,8 @@
   <string name="text_filter_customers">Filter customers</string>
   <string name="text_filtered_customers">Filtered customers</string>
   <string name="text_filters">Filters</string>
+  <string name="text_from_any_queues">From any queues</string>
+  <string name="text_from_completed_queues">From completed queues</string>
   <string name="text_grand_total_price">Grand total price</string>
   <string name="text_grant">Grant</string>
   <string name="text_in_process">In process</string>
@@ -198,10 +200,6 @@
   <plurals name="args_from_x_customers">
     <item quantity="one"><![CDATA[From <b>%d</b> customer]]></item>
     <item quantity="other"><![CDATA[From <b>%d</b> customers]]></item>
-  </plurals>
-  <plurals name="args_from_x_queues">
-    <item quantity="one"><![CDATA[From <b>%d</b> queue]]></item>
-    <item quantity="other"><![CDATA[From <b>%d</b> queues]]></item>
   </plurals>
 
   <string name="maindialog_manageexternalstorage_permission_description">

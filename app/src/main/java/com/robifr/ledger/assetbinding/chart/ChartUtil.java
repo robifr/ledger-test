@@ -118,7 +118,7 @@ public class ChartUtil {
             ? BigDecimal.ONE // Prevent zero division.
             : ChartUtil._ceilToNearestTen(
                 actualMaxValue.add(
-                    actualMaxValue.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
+                    actualMaxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
 
     for (Map.Entry<String, BigDecimal> d : data.entrySet()) {
       result.put(
@@ -141,8 +141,8 @@ public class ChartUtil {
     final BigDecimal paddedMaxValue =
         ChartUtil._ceilToNearestTen(
             actualMaxValue.add(
-                actualMaxValue.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
-    final BigDecimal gap = paddedMaxValue.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
+                actualMaxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+    final BigDecimal gap = paddedMaxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
     return IntStream.rangeClosed(0, 100)
         .mapToObj(
@@ -159,12 +159,13 @@ public class ChartUtil {
 
     // Calculate the amount ensuring it's rounded
     // to the nearest ceiling multiple of 10 (e.g. 10, 1K, 10K).
+    amount = amount.max(BigDecimal.ONE);
     final int magnitude = amount.precision() - amount.scale();
     final BigDecimal rounding = BigDecimal.TEN.pow(magnitude - 1);
 
     return amount
         .divide(rounding, 0, RoundingMode.CEILING)
         .multiply(rounding)
-        .max(BigDecimal.valueOf(100)); // Set the minimum value to 100.
+        .max(BigDecimal.TEN); // Set the minimum value to 10.
   }
 }

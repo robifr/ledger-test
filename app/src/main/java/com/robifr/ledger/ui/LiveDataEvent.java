@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import java.util.Objects;
+import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -56,6 +57,26 @@ public class LiveDataEvent<T> {
 
   public LiveDataEvent(@Nullable T value) {
     this._value = value;
+  }
+
+  public static <T> void observeOnce(
+      @NonNull LiveData<T> liveData,
+      @NonNull androidx.lifecycle.Observer<T> observer,
+      @NonNull Predicate<T> filter) {
+    Objects.requireNonNull(liveData);
+    Objects.requireNonNull(observer);
+    Objects.requireNonNull(filter);
+
+    liveData.observeForever(
+        new androidx.lifecycle.Observer<>() {
+          @Override
+          public void onChanged(@Nullable T data) {
+            if (filter.test(data)) {
+              observer.onChanged(data);
+              liveData.removeObserver(this);
+            }
+          }
+        });
   }
 
   @Nullable

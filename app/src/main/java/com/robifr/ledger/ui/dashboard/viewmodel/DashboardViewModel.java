@@ -20,7 +20,6 @@ package com.robifr.ledger.ui.dashboard.viewmodel;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.display.QueueDate;
@@ -55,8 +54,14 @@ public class DashboardViewModel extends ViewModel {
       new MutableLiveData<>();
 
   @NonNull private final MutableLiveData<QueueDate> _date = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<List<CustomerBalanceInfo>> _customersWithBalance;
-  @NonNull private final MutableLiveData<List<CustomerDebtInfo>> _customersWithDebt;
+
+  @NonNull
+  private final MutableLiveData<List<CustomerBalanceInfo>> _customersWithBalance =
+      new MutableLiveData<>();
+
+  @NonNull
+  private final MutableLiveData<List<CustomerDebtInfo>> _customersWithDebt =
+      new MutableLiveData<>();
 
   @NonNull
   private final MutableLiveData<List<QueueWithProductOrdersInfo>> _queuesWithProductOrders =
@@ -76,10 +81,10 @@ public class DashboardViewModel extends ViewModel {
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
     this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
-    this._customersWithBalance =
-        (MutableLiveData<List<CustomerBalanceInfo>>) this._selectAllIdsWithBalance();
-    this._customersWithDebt =
-        (MutableLiveData<List<CustomerDebtInfo>>) this._selectAllIdsWithDebt();
+    LiveDataEvent.observeOnce(
+        this._selectAllIdsWithBalance(), this::onCustomersWithBalanceChanged, Objects::nonNull);
+    LiveDataEvent.observeOnce(
+        this._selectAllIdsWithDebt(), this::onCustomersWithDebtChanged, Objects::nonNull);
   }
 
   @Override
@@ -117,20 +122,10 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(date);
 
     this._date.setValue(date);
-
-    final LiveData<List<QueueWithProductOrdersInfo>> selectAllQueueInfo =
-        this._selectAllQueuesWithProductOrdersInRange(date.dateStart(), date.dateEnd());
-    selectAllQueueInfo.observeForever(
-        new Observer<>() {
-          @Override
-          public void onChanged(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-            if (queueInfo != null) {
-              DashboardViewModel.this.onQueuesWithProductOrdersChanged(queueInfo);
-            }
-
-            selectAllQueueInfo.removeObserver(this);
-          }
-        });
+    LiveDataEvent.observeOnce(
+        this._selectAllQueuesWithProductOrdersInRange(date.dateStart(), date.dateEnd()),
+        this::onQueuesWithProductOrdersChanged,
+        Objects::nonNull);
   }
 
   public void onCustomersWithBalanceChanged(@NonNull List<CustomerBalanceInfo> balanceInfo) {

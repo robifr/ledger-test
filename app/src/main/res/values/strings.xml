@@ -128,6 +128,7 @@
   <string name="text_total_debt">Total debt</string>
   <string name="text_total_discount">Total discount</string>
   <string name="text_total_price">Total price</string>
+  <string name="text_total_queue">Total queue</string>
   <string name="text_unpaid">Unpaid</string>
   <string name="text_withdraw">Withdraw</string>
   <string name="text_withdraw_balance">Withdraw balance</string>

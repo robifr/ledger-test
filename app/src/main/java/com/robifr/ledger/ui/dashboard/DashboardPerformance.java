@@ -23,7 +23,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import androidx.annotation.NonNull;
-import androidx.core.text.HtmlCompat;
 import androidx.core.util.Pair;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
@@ -55,6 +54,7 @@ public class DashboardPerformance implements View.OnClickListener {
   public enum OverviewType {
     PROJECTED_INCOME,
     RECEIVED_INCOME,
+    TOTAL_QUEUE,
     ORDERED_PRODUCTS
   }
 
@@ -82,6 +82,9 @@ public class DashboardPerformance implements View.OnClickListener {
     cardBinding.receivedIncomeCardView.setOnClickListener(this);
     cardBinding.receivedIncomeCard.icon.setImageResource(R.drawable.icon_paid);
     cardBinding.receivedIncomeCard.title.setText(R.string.text_received_income);
+    cardBinding.totalQueueCardView.setOnClickListener(this);
+    cardBinding.totalQueueCard.icon.setImageResource(R.drawable.icon_assignment);
+    cardBinding.totalQueueCard.title.setText(R.string.text_total_queue);
     cardBinding.orderedProductsCardView.setOnClickListener(this);
     cardBinding.orderedProductsCard.icon.setImageResource(R.drawable.icon_orders);
     cardBinding.orderedProductsCard.title.setText(R.string.text_ordered_products);
@@ -94,6 +97,7 @@ public class DashboardPerformance implements View.OnClickListener {
     switch (view.getId()) {
       case R.id.projectedIncomeCardView,
           R.id.receivedIncomeCardView,
+          R.id.totalQueueCardView,
           R.id.orderedProductsCardView -> {
         final OverviewType selectedOverview = OverviewType.valueOf(view.getTag().toString());
 
@@ -111,11 +115,13 @@ public class DashboardPerformance implements View.OnClickListener {
     // There should be only one card getting selected.
     cardBinding.projectedIncomeCardView.setSelected(false);
     cardBinding.receivedIncomeCardView.setSelected(false);
+    cardBinding.totalQueueCardView.setSelected(false);
     cardBinding.orderedProductsCardView.setSelected(false);
 
     switch (overviewType) {
       case PROJECTED_INCOME -> cardBinding.projectedIncomeCardView.setSelected(true);
       case RECEIVED_INCOME -> cardBinding.receivedIncomeCardView.setSelected(true);
+      case TOTAL_QUEUE -> cardBinding.totalQueueCardView.setSelected(true);
       case ORDERED_PRODUCTS -> cardBinding.orderedProductsCardView.setSelected(true);
     }
   }
@@ -131,16 +137,12 @@ public class DashboardPerformance implements View.OnClickListener {
   public void setTotalQueue(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
-    final String totalText =
-        this._fragment
-            .getResources()
-            .getQuantityString(R.plurals.args_from_x_queues, queueInfo.size(), queueInfo.size());
-
     this._fragment
         .fragmentBinding()
         .performance
-        .totalQueue
-        .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
+        .totalQueueCard
+        .amount
+        .setText(Integer.toString(queueInfo.size()));
   }
 
   public void setTotalProjectedIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
@@ -189,6 +191,42 @@ public class DashboardPerformance implements View.OnClickListener {
         .orderedProductsCard
         .amount
         .setText(Long.toString(amount));
+  }
+
+  private void _displayTotalQueueChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+    Objects.requireNonNull(queueInfo);
+
+    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
+    if (date == null) return;
+
+    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalQueue = new LinkedHashMap<>();
+
+    for (QueueWithProductOrdersInfo queue : queueInfo) {
+      unformattedQueueDateWithTotalQueue.merge(
+          queue.date().atZone(ZoneId.systemDefault()), BigDecimal.ONE, BigDecimal::add);
+    }
+
+    final ZonedDateTime startDate =
+        date.range() == QueueDate.Range.ALL_TIME
+            // Remove unnecessary dates.
+            ? queueInfo.stream()
+                .map(QueueWithProductOrdersInfo::date)
+                .min(Instant::compareTo)
+                .orElse(date.dateStart().toInstant())
+                .atZone(ZoneId.systemDefault())
+            : date.dateStart();
+    final Map<String, BigDecimal> queueDateWithTotalQueue =
+        ChartUtil.toDateTimeData(
+            unformattedQueueDateWithTotalQueue, new Pair<>(startDate, date.dateEnd()));
+
+    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalQueue.keySet());
+    // Convert to percent because D3.js can't handle big decimal.
+    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalQueue);
+
+    this._displayChart(
+        xAxisDomain,
+        yAxisDomain,
+        ChartUtil.toPercentageData(queueDateWithTotalQueue, LinkedHashMap::new));
   }
 
   private void _displayProjectedIncomeChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
@@ -420,6 +458,7 @@ public class DashboardPerformance implements View.OnClickListener {
       switch (displayedPerformanceChart) {
         case PROJECTED_INCOME -> DashboardPerformance.this._displayProjectedIncomeChart(queueInfo);
         case RECEIVED_INCOME -> DashboardPerformance.this._displayReceivedIncomeChart(queueInfo);
+        case TOTAL_QUEUE -> DashboardPerformance.this._displayTotalQueueChart(queueInfo);
         case ORDERED_PRODUCTS -> DashboardPerformance.this._displayOrderedProductsChart(queueInfo);
       }
     }

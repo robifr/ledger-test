@@ -81,7 +81,7 @@ public class DashboardViewModel extends ViewModel {
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
     this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
-    this.onDisplayedPerformanceChartChanged(DashboardPerformance.OverviewType.INCOME);
+    this.onDisplayedPerformanceChartChanged(DashboardPerformance.OverviewType.PROJECTED_INCOME);
     this._customersWithBalance =
         (MutableLiveData<List<CustomerBalanceInfo>>) this._selectAllIdsWithBalance();
     this._customersWithDebt =

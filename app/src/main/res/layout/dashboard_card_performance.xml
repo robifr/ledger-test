@@ -61,14 +61,14 @@
 
     <!-- Button tags are based on `DashboardPerformance.Chart` enum. -->
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/incomeCardView"
+        android:id="@+id/projectedIncomeCardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/cardlist_margin"
         android:clickable="true"
         android:focusable="true"
-        android:tag="INCOME"
+        android:tag="PROJECTED_INCOME"
         app:cardForegroundColor="@color/card_foreground_selectable"
         app:layout_constraintEnd_toStartOf="@id/orderedProductsCardView"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +77,7 @@
         app:strokeWidth="@dimen/stroke_width">
 
       <include
-          android:id="@+id/incomeCard"
+          android:id="@+id/projectedIncomeCard"
           layout="@layout/dashboard_card_performance_selectable" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -92,7 +92,7 @@
         android:tag="ORDERED_PRODUCTS"
         app:cardForegroundColor="@color/card_foreground_selectable"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/incomeCardView"
+        app:layout_constraintStart_toEndOf="@id/projectedIncomeCardView"
         app:layout_constraintTop_toBottomOf="@id/chart"
         app:strokeColor="@color/stroke_selectable"
         app:strokeWidth="@dimen/stroke_width">

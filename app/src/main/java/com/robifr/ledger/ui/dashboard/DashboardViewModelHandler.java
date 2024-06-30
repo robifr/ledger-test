@@ -102,7 +102,7 @@ public class DashboardViewModelHandler {
     if (queueInfo == null) return;
 
     this._fragment.performanceOverview().setTotalQueue(queueInfo);
-    this._fragment.performanceOverview().setTotalIncome(queueInfo);
+    this._fragment.performanceOverview().setTotalProjectedIncome(queueInfo);
     this._fragment.performanceOverview().setTotalOrderedProducts(queueInfo);
     this._fragment.performanceOverview().loadChart();
   }

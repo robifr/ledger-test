@@ -52,7 +52,7 @@ import java.util.Objects;
 
 public class DashboardPerformance implements View.OnClickListener {
   public enum OverviewType {
-    INCOME,
+    PROJECTED_INCOME,
     ORDERED_PRODUCTS
   }
 
@@ -74,9 +74,9 @@ public class DashboardPerformance implements View.OnClickListener {
     cardBinding.chart.setBackgroundColor( // Background color can't be set from xml.
         MaterialColors.getColor(
             this._fragment.requireContext(), com.google.android.material.R.attr.colorSurface, 0));
-    cardBinding.incomeCardView.setOnClickListener(this);
-    cardBinding.incomeCard.icon.setImageResource(R.drawable.icon_paid);
-    cardBinding.incomeCard.title.setText(R.string.text_income);
+    cardBinding.projectedIncomeCardView.setOnClickListener(this);
+    cardBinding.projectedIncomeCard.icon.setImageResource(R.drawable.icon_trending_up);
+    cardBinding.projectedIncomeCard.title.setText(R.string.text_projected_income);
     cardBinding.orderedProductsCardView.setOnClickListener(this);
     cardBinding.orderedProductsCard.icon.setImageResource(R.drawable.icon_orders);
     cardBinding.orderedProductsCard.title.setText(R.string.text_ordered_products);
@@ -87,7 +87,7 @@ public class DashboardPerformance implements View.OnClickListener {
     Objects.requireNonNull(view);
 
     switch (view.getId()) {
-      case R.id.incomeCardView, R.id.orderedProductsCardView -> {
+      case R.id.projectedIncomeCardView, R.id.orderedProductsCardView -> {
         final OverviewType selectedOverview = OverviewType.valueOf(view.getTag().toString());
 
         this._fragment.dashboardViewModel().onDisplayedPerformanceChartChanged(selectedOverview);
@@ -102,11 +102,11 @@ public class DashboardPerformance implements View.OnClickListener {
     final DashboardCardPerformanceBinding cardBinding =
         this._fragment.fragmentBinding().performance;
     // There should be only one card getting selected.
-    cardBinding.incomeCardView.setSelected(false);
+    cardBinding.projectedIncomeCardView.setSelected(false);
     cardBinding.orderedProductsCardView.setSelected(false);
 
     switch (overviewType) {
-      case INCOME -> cardBinding.incomeCardView.setSelected(true);
+      case PROJECTED_INCOME -> cardBinding.projectedIncomeCardView.setSelected(true);
       case ORDERED_PRODUCTS -> cardBinding.orderedProductsCardView.setSelected(true);
     }
   }
@@ -134,7 +134,7 @@ public class DashboardPerformance implements View.OnClickListener {
         .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }
 
-  public void setTotalIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+  public void setTotalProjectedIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
     final BigDecimal amount =
@@ -146,7 +146,7 @@ public class DashboardPerformance implements View.OnClickListener {
     this._fragment
         .fragmentBinding()
         .performance
-        .incomeCard
+        .projectedIncomeCard
         .amount
         .setText(CurrencyFormat.format(amount, "id", "ID"));
   }
@@ -164,7 +164,7 @@ public class DashboardPerformance implements View.OnClickListener {
         .setText(Long.toString(amount));
   }
 
-  private void _displayIncomeChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
+  private void _displayProjectedIncomeChart(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
     final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
@@ -348,7 +348,7 @@ public class DashboardPerformance implements View.OnClickListener {
       if (queueInfo == null || displayedPerformanceChart == null) return;
 
       switch (displayedPerformanceChart) {
-        case INCOME -> DashboardPerformance.this._displayIncomeChart(queueInfo);
+        case PROJECTED_INCOME -> DashboardPerformance.this._displayProjectedIncomeChart(queueInfo);
         case ORDERED_PRODUCTS -> DashboardPerformance.this._displayOrderedProductsChart(queueInfo);
       }
     }

@@ -53,7 +53,7 @@
 
     <!-- Button tags are based on `DashboardPerformance.Chart` enum. -->
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/projectedIncomeCardView"
+        android:id="@+id/receivedIncomeCardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
@@ -61,10 +61,10 @@
         android:layout_marginBottom="@dimen/cardlist_margin"
         android:clickable="true"
         android:focusable="true"
-        android:tag="PROJECTED_INCOME"
+        android:tag="RECEIVED_INCOME"
         app:cardForegroundColor="@color/card_foreground_selectable"
         app:layout_constraintBottom_toTopOf="@id/totalQueueCardView"
-        app:layout_constraintEnd_toStartOf="@id/receivedIncomeCardView"
+        app:layout_constraintEnd_toStartOf="@id/projectedIncomeCardView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/chart"
         app:layout_constraintVertical_bias="0"
@@ -73,12 +73,12 @@
         app:strokeWidth="@dimen/stroke_width">
 
       <include
-          android:id="@+id/projectedIncomeCard"
+          android:id="@+id/receivedIncomeCard"
           layout="@layout/dashboard_card_performance_selectable" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/receivedIncomeCardView"
+        android:id="@+id/projectedIncomeCardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/cardlist_margin"
@@ -86,11 +86,11 @@
         android:layout_marginBottom="@dimen/cardlist_margin"
         android:clickable="true"
         android:focusable="true"
-        android:tag="RECEIVED_INCOME"
+        android:tag="PROJECTED_INCOME"
         app:cardForegroundColor="@color/card_foreground_selectable"
         app:layout_constraintBottom_toTopOf="@id/orderedProductsCardView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/projectedIncomeCardView"
+        app:layout_constraintStart_toEndOf="@id/receivedIncomeCardView"
         app:layout_constraintTop_toBottomOf="@id/chart"
         app:layout_constraintVertical_bias="0"
         app:layout_constraintVertical_chainStyle="packed"
@@ -98,7 +98,7 @@
         app:strokeWidth="@dimen/stroke_width">
 
       <include
-          android:id="@+id/receivedIncomeCard"
+          android:id="@+id/projectedIncomeCard"
           layout="@layout/dashboard_card_performance_selectable" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -115,7 +115,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/orderedProductsCardView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/projectedIncomeCardView"
+        app:layout_constraintTop_toBottomOf="@id/receivedIncomeCardView"
         app:strokeColor="@color/stroke_selectable"
         app:strokeWidth="@dimen/stroke_width">
 
@@ -137,7 +137,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/totalQueueCardView"
-        app:layout_constraintTop_toBottomOf="@id/receivedIncomeCardView"
+        app:layout_constraintTop_toBottomOf="@id/projectedIncomeCardView"
         app:strokeColor="@color/stroke_selectable"
         app:strokeWidth="@dimen/stroke_width">
 

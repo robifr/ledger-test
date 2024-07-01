@@ -18,10 +18,8 @@
 package com.robifr.ledger.ui.queue.viewmodel;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.display.QueueFilterer;
@@ -82,20 +80,10 @@ public class QueueViewModel extends ViewModel {
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
     this.onSortMethodChanged(new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
-
-    final LiveData<List<QueueModel>> selectAllQueues = this.selectAllQueues();
-    selectAllQueues.observeForever(
-        new Observer<>() {
-          @Override
-          public void onChanged(@Nullable List<QueueModel> queues) {
-            if (queues != null) {
-              QueueViewModel.this._filterView.onFiltersChanged(
-                  QueueViewModel.this._filterView.inputtedFilters(), queues);
-            }
-
-            selectAllQueues.removeObserver(this);
-          }
-        });
+    LiveDataEvent.observeOnce(
+        this.selectAllQueues(),
+        queues -> this._filterView.onFiltersChanged(this._filterView.inputtedFilters(), queues),
+        Objects::nonNull);
   }
 
   @Override

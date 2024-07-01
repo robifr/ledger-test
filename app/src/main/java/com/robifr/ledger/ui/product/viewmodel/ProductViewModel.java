@@ -18,10 +18,8 @@
 package com.robifr.ledger.ui.product.viewmodel;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.display.ProductFilterer;
@@ -73,20 +71,10 @@ public class ProductViewModel extends ViewModel {
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
     this.onSortMethodChanged(new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
-
-    final LiveData<List<ProductModel>> selectAllProducts = this.selectAllProducts();
-    selectAllProducts.observeForever(
-        new Observer<>() {
-          @Override
-          public void onChanged(@Nullable List<ProductModel> products) {
-            if (products != null) {
-              ProductViewModel.this._filterView.onFiltersChanged(
-                  ProductViewModel.this._filterView.inputtedFilters(), products);
-            }
-
-            selectAllProducts.removeObserver(this);
-          }
-        });
+    LiveDataEvent.observeOnce(
+        this.selectAllProducts(),
+        products -> this._filterView.onFiltersChanged(this._filterView.inputtedFilters(), products),
+        Objects::nonNull);
   }
 
   @Override

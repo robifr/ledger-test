@@ -18,10 +18,8 @@
 package com.robifr.ledger.ui.customer.viewmodel;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.display.CustomerFilterer;
@@ -74,20 +72,11 @@ public class CustomerViewModel extends ViewModel {
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
     this.onSortMethodChanged(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
-
-    final LiveData<List<CustomerModel>> selectAllCustomers = this.selectAllCustomers();
-    selectAllCustomers.observeForever(
-        new Observer<>() {
-          @Override
-          public void onChanged(@Nullable List<CustomerModel> customers) {
-            if (customers != null) {
-              CustomerViewModel.this._filterView.onFiltersChanged(
-                  CustomerViewModel.this._filterView.inputtedFilters(), customers);
-            }
-
-            selectAllCustomers.removeObserver(this);
-          }
-        });
+    LiveDataEvent.observeOnce(
+        this.selectAllCustomers(),
+        customers ->
+            this._filterView.onFiltersChanged(this._filterView.inputtedFilters(), customers),
+        Objects::nonNull);
   }
 
   @Override

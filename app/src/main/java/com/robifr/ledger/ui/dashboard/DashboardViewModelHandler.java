@@ -24,7 +24,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
-import com.robifr.ledger.data.model.QueueModel;import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
+import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
@@ -53,9 +53,6 @@ public class DashboardViewModelHandler {
     this._viewModel
         .customersWithDebt()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithDebt);
-    this._viewModel
-        .queuesWithProductOrders()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onQueuesWithProductOrders);
 
     this._viewModel
         .revenueView()
@@ -96,7 +93,12 @@ public class DashboardViewModelHandler {
   private void _onQueues(@Nullable List<QueueModel> queues) {
     if (queues == null) return;
 
+    this._fragment.revenueOverview().setTotalReceivedIncome(queues);
+    this._fragment.revenueOverview().setTotalProjectedIncome(queues);
+    this._fragment.performanceOverview().setTotalQueue(queues);
     this._fragment.performanceOverview().setActiveCustomers(queues);
+    this._fragment.performanceOverview().setTotalProductsSold(queues);
+    this._fragment.revenueOverview().loadChart();
   }
 
   private void _onCustomersWithBalance(@Nullable List<CustomerBalanceInfo> balanceInfo) {
@@ -107,16 +109,6 @@ public class DashboardViewModelHandler {
 
   private void _onCustomersWithDebt(@Nullable List<CustomerDebtInfo> debtInfo) {
     this._fragment.balanceOverview().setTotalDebt(Objects.requireNonNullElse(debtInfo, List.of()));
-  }
-
-  private void _onQueuesWithProductOrders(@Nullable List<QueueWithProductOrdersInfo> queueInfo) {
-    if (queueInfo == null) return;
-
-    this._fragment.revenueOverview().setTotalReceivedIncome(queueInfo);
-    this._fragment.revenueOverview().setTotalProjectedIncome(queueInfo);
-    this._fragment.performanceOverview().setTotalQueue(queueInfo);
-    this._fragment.performanceOverview().setTotalProductsSold(queueInfo);
-    this._fragment.revenueOverview().loadChart();
   }
 
   private void _onRevenueDisplayedChart(@Nullable DashboardRevenue.OverviewType overviewType) {

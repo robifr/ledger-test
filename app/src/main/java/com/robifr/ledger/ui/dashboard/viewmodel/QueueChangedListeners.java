@@ -21,14 +21,14 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
-import com.robifr.ledger.data.InfoUpdater;
-import com.robifr.ledger.data.ModelUpdater;import com.robifr.ledger.data.display.QueueDate;
+import com.robifr.ledger.data.ModelUpdater;
+import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.repository.ModelChangedListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;import java.util.function.BiFunction;
+import java.util.Objects;
+import java.util.function.BiFunction;
 
 class QueueChangedListeners implements ModelChangedListener<QueueModel> {
   @NonNull private final DashboardViewModel _viewModel;
@@ -43,10 +43,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
 
     new Handler(Looper.getMainLooper())
-        .post(() -> {
-          this._updateQueues(queues, ModelUpdater::addModel);
-          this._updateQueueInfo(queues, InfoUpdater::addInfo);
-        });
+        .post(() -> this._updateQueues(queues, ModelUpdater::addModel));
   }
 
   @Override
@@ -55,10 +52,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
 
     new Handler(Looper.getMainLooper())
-        .post(() -> {
-          this._updateQueues(queues, ModelUpdater::updateModel);
-          this._updateQueueInfo(queues, InfoUpdater::updateInfo);
-        });
+        .post(() -> this._updateQueues(queues, ModelUpdater::updateModel));
   }
 
   @Override
@@ -67,15 +61,17 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
 
     new Handler(Looper.getMainLooper())
-        .post(() -> {
-          this._updateQueues(queues, ModelUpdater::deleteModel);
-          this._updateQueueInfo(queues, InfoUpdater::deleteInfo);
-        });
+        .post(() -> this._updateQueues(queues, ModelUpdater::deleteModel));
   }
 
   @Override
   @WorkerThread
-  public void onModelUpserted(@NonNull List<QueueModel> queues) {}
+  public void onModelUpserted(@NonNull List<QueueModel> queues) {
+    Objects.requireNonNull(queues);
+
+    new Handler(Looper.getMainLooper())
+        .post(() -> this._updateQueues(queues, ModelUpdater::upsertModel));
+  }
 
   private void _updateQueues(
       @NonNull List<QueueModel> queues,
@@ -90,37 +86,12 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
         this._viewModel.queues().getValue() != null
             ? new ArrayList<>(this._viewModel.queues().getValue())
             : new ArrayList<>();
-    final List<QueueModel> filteredQueues =
-        updater.apply(queues, currentQueues);
+    final List<QueueModel> filteredQueues = updater.apply(queues, currentQueues);
 
     filteredQueues.removeIf(
         info ->
             info.date().isBefore(date.dateStart().toInstant())
                 || info.date().isAfter(date.dateEnd().toInstant()));
-
     this._viewModel.onQueuesChanged(filteredQueues);
-  }
-
-  private void _updateQueueInfo(
-      @NonNull List<QueueModel> queues,
-      @NonNull InfoUpdaterFunction<QueueModel, QueueWithProductOrdersInfo> updater) {
-    Objects.requireNonNull(queues);
-    Objects.requireNonNull(updater);
-
-    final QueueDate date =
-        Objects.requireNonNullElse(
-            this._viewModel.date().getValue(), QueueDate.withRange(QueueDate.Range.ALL_TIME));
-    final ArrayList<QueueWithProductOrdersInfo> currentQueueInfo =
-        this._viewModel.queuesWithProductOrders().getValue() != null
-            ? new ArrayList<>(this._viewModel.queuesWithProductOrders().getValue())
-            : new ArrayList<>();
-    final List<QueueWithProductOrdersInfo> queueInfo =
-        updater.apply(queues, currentQueueInfo, QueueWithProductOrdersInfo::withModel);
-
-    queueInfo.removeIf(
-        info ->
-            info.date().isBefore(date.dateStart().toInstant())
-                || info.date().isAfter(date.dateEnd().toInstant()));
-    this._viewModel.onQueuesWithProductOrdersChanged(queueInfo);
   }
 }

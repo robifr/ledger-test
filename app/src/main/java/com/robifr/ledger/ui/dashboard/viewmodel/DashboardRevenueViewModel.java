@@ -25,7 +25,6 @@ import com.robifr.ledger.assetbinding.chart.ChartUtil;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.ui.dashboard.DashboardRevenue;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -47,11 +46,7 @@ public class DashboardRevenueViewModel {
   @NonNull
   private final MutableLiveData<DashboardRevenue.ChartModel> _chartModel = new MutableLiveData<>();
 
-  public DashboardRevenueViewModel(
-      @NonNull DashboardViewModel viewModel,
-      @NonNull LiveData<List<QueueWithProductOrdersInfo>> queuesWithProductOrders) {
-    Objects.requireNonNull(queuesWithProductOrders);
-
+  public DashboardRevenueViewModel(@NonNull DashboardViewModel viewModel) {
     this._viewModel = Objects.requireNonNull(viewModel);
   }
 
@@ -73,13 +68,12 @@ public class DashboardRevenueViewModel {
 
   public void onDisplayReceivedIncomeChart() {
     final QueueDate date = this._viewModel.date().getValue();
-    final List<QueueWithProductOrdersInfo> queueInfo =
-        this._viewModel.queuesWithProductOrders().getValue();
-    if (date == null || queueInfo == null) return;
+    final List<QueueModel> queues = this._viewModel.queues().getValue();
+    if (date == null || queues == null) return;
 
     final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
 
-    for (QueueWithProductOrdersInfo queue : queueInfo) {
+    for (QueueModel queue : queues) {
       // Received income are from the completed queues.
       if (queue.status() != QueueModel.Status.COMPLETED) continue;
 
@@ -94,8 +88,8 @@ public class DashboardRevenueViewModel {
     final ZonedDateTime startDate =
         date.range() == QueueDate.Range.ALL_TIME
             // Remove unnecessary dates.
-            ? queueInfo.stream()
-                .map(QueueWithProductOrdersInfo::date)
+            ? queues.stream()
+                .map(QueueModel::date)
                 .min(Instant::compareTo)
                 .orElse(date.dateStart().toInstant())
                 .atZone(ZoneId.systemDefault())
@@ -117,13 +111,12 @@ public class DashboardRevenueViewModel {
 
   public void onDisplayProjectedIncomeChart() {
     final QueueDate date = this._viewModel.date().getValue();
-    final List<QueueWithProductOrdersInfo> queueInfo =
-        this._viewModel.queuesWithProductOrders().getValue();
-    if (date == null || queueInfo == null) return;
+    final List<QueueModel> queues = this._viewModel.queues().getValue();
+    if (date == null || queues == null) return;
 
     final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
 
-    for (QueueWithProductOrdersInfo queue : queueInfo) {
+    for (QueueModel queue : queues) {
       for (ProductOrderModel productOrder : queue.productOrders()) {
         unformattedQueueDateWithTotalPrice.merge(
             queue.date().atZone(ZoneId.systemDefault()),
@@ -135,8 +128,8 @@ public class DashboardRevenueViewModel {
     final ZonedDateTime startDate =
         date.range() == QueueDate.Range.ALL_TIME
             // Remove unnecessary dates.
-            ? queueInfo.stream()
-                .map(QueueWithProductOrdersInfo::date)
+            ? queues.stream()
+                .map(QueueModel::date)
                 .min(Instant::compareTo)
                 .orElse(date.dateStart().toInstant())
                 .atZone(ZoneId.systemDefault())

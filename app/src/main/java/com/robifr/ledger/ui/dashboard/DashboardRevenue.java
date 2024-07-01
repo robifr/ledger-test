@@ -33,7 +33,6 @@ import com.robifr.ledger.assetbinding.chart.ChartAxisBinding;
 import com.robifr.ledger.assetbinding.chart.ChartLayoutBinding;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.databinding.DashboardCardRevenueBinding;
 import com.robifr.ledger.ui.LocalWebChrome;
 import com.robifr.ledger.util.CurrencyFormat;
@@ -110,11 +109,11 @@ public class DashboardRevenue implements View.OnClickListener {
         .loadUrl("https://appassets.androidplatform.net/assets/chart.html");
   }
 
-  public void setTotalProjectedIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-    Objects.requireNonNull(queueInfo);
+  public void setTotalProjectedIncome(@NonNull List<QueueModel> queues) {
+    Objects.requireNonNull(queues);
 
     final BigDecimal amount =
-        queueInfo.stream()
+        queues.stream()
             .flatMap(queue -> queue.productOrders().stream())
             .map(ProductOrderModel::totalPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -127,11 +126,11 @@ public class DashboardRevenue implements View.OnClickListener {
         .setText(CurrencyFormat.format(amount, "id", "ID"));
   }
 
-  public void setTotalReceivedIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-    Objects.requireNonNull(queueInfo);
+  public void setTotalReceivedIncome(@NonNull List<QueueModel> queues) {
+    Objects.requireNonNull(queues);
 
     final BigDecimal amount =
-        queueInfo.stream()
+        queues.stream()
             // Received income are from the completed queues.
             .filter(queue -> queue.status() == QueueModel.Status.COMPLETED)
             .flatMap(queue -> queue.productOrders().stream())

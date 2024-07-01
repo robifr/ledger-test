@@ -26,7 +26,6 @@ import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
@@ -68,16 +67,12 @@ public class DashboardViewModel extends ViewModel {
   private final MutableLiveData<List<CustomerDebtInfo>> _customersWithDebt =
       new MutableLiveData<>();
 
-  @NonNull
-  private final MutableLiveData<List<QueueWithProductOrdersInfo>> _queuesWithProductOrders =
-      new MutableLiveData<>();
-
   @Inject
   public DashboardViewModel(
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._revenueView = new DashboardRevenueViewModel(this, this._queuesWithProductOrders);
+    this._revenueView = new DashboardRevenueViewModel(this);
 
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
@@ -131,11 +126,6 @@ public class DashboardViewModel extends ViewModel {
     return this._customersWithDebt;
   }
 
-  @NonNull
-  public LiveData<List<QueueWithProductOrdersInfo>> queuesWithProductOrders() {
-    return this._queuesWithProductOrders;
-  }
-
   public void onDateChanged(@NonNull QueueDate date) {
     Objects.requireNonNull(date);
 
@@ -143,10 +133,6 @@ public class DashboardViewModel extends ViewModel {
     LiveDataEvent.observeOnce(
         this._selectAllQueuesInRange(date.dateStart(), date.dateEnd()),
         this::onQueuesChanged,
-        Objects::nonNull);
-    LiveDataEvent.observeOnce(
-        this._selectAllQueuesWithProductOrdersInRange(date.dateStart(), date.dateEnd()),
-        this::onQueuesWithProductOrdersChanged,
         Objects::nonNull);
   }
 
@@ -166,13 +152,6 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(debtInfo);
 
     this._customersWithDebt.setValue(Collections.unmodifiableList(debtInfo));
-  }
-
-  public void onQueuesWithProductOrdersChanged(
-      @NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-    Objects.requireNonNull(queueInfo);
-
-    this._queuesWithProductOrders.setValue(Collections.unmodifiableList(queueInfo));
   }
 
   @NonNull
@@ -225,30 +204,6 @@ public class DashboardViewModel extends ViewModel {
 
     this._queueRepository
         .selectAllInRange(startDate, endDate)
-        .thenAcceptAsync(
-            queues -> {
-              if (queues == null) {
-                this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_queues)));
-              }
-
-              result.postValue(queues);
-            });
-    return result;
-  }
-
-  @NonNull
-  private LiveData<List<QueueWithProductOrdersInfo>> _selectAllQueuesWithProductOrdersInRange(
-      @NonNull ZonedDateTime startDate, @NonNull ZonedDateTime endDate) {
-    Objects.requireNonNull(startDate);
-    Objects.requireNonNull(endDate);
-
-    final MutableLiveData<List<QueueWithProductOrdersInfo>> result = new MutableLiveData<>();
-
-    this._queueRepository
-        .selectAllWithProductOrdersInRange(startDate, endDate)
         .thenAcceptAsync(
             queues -> {
               if (queues == null) {

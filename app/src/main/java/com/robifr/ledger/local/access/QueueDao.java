@@ -27,7 +27,6 @@ import androidx.room.Transaction;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.local.ColumnConverter.InstantConverter;
 import java.time.Instant;
 import java.util.List;
@@ -107,19 +106,5 @@ public abstract class QueueDao implements QueryAccessible<QueueModel> {
   @Transaction
   @TypeConverters(InstantConverter.class)
   public abstract List<QueueModel> selectAllInRange(
-      @NonNull Instant startDate, @NonNull Instant endDate);
-
-  /**
-   * @noinspection NullableProblems
-   */
-  @NonNull
-  @Query(
-      """
-      SELECT id, status, date FROM queue
-      WHERE date >= :startDate AND date <= :endDate
-      """)
-  @Transaction
-  @TypeConverters(InstantConverter.class)
-  public abstract List<QueueWithProductOrdersInfo> selectAllWithProductOrdersInRange(
       @NonNull Instant startDate, @NonNull Instant endDate);
 }

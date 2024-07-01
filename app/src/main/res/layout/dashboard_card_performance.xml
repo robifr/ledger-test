@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ ~ Copyright (c) 2024 Robi
+ ~
+ ~ Ledger is free software: you can redistribute it and/or modify
+ ~ it under the terms of the GNU General Public License as published by
+ ~ the Free Software Foundation, either version 3 of the License, or
+ ~ (at your option) any later version.
+ ~
+ ~ Ledger is distributed in the hope that it will be useful,
+ ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ ~ GNU General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU General Public License
+ ~ along with Ledger. If not, see <https://www.gnu.org/licenses/>.
+ -->
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:strokeWidth="0dp">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:paddingStart="@dimen/cardlist_padding"
+      android:paddingTop="15dp"
+      android:paddingEnd="@dimen/cardlist_padding"
+      android:paddingBottom="15dp">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_performance"
+        android:textSize="@dimen/text_mediumlarge"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/totalQueueTitleIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_assignment"
+        app:layout_constraintBottom_toBottomOf="@id/totalQueueTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/totalQueueTitle" />
+
+    <TextView
+        android:id="@+id/totalQueueTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/text_icon_padding"
+        android:layout_marginTop="20dp"
+        android:text="@string/text_total_queue"
+        android:textSize="@dimen/text_smallmedium"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/totalQueueTitleIcon"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <TextView
+        android:id="@+id/totalQueue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="@dimen/text_mediumlarge"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/totalQueueTitle"
+        app:layout_constraintTop_toBottomOf="@id/totalQueueTitle" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/dividerForTotalQueue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/totalQueue" />
+
+    <ImageView
+        android:id="@+id/productsSoldTitleIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_sell"
+        app:layout_constraintBottom_toBottomOf="@id/productsSoldTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/productsSoldTitle" />
+
+    <TextView
+        android:id="@+id/productsSoldTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_icon_padding"
+        android:layout_marginTop="20dp"
+        android:text="@string/text_products_sold"
+        android:textSize="@dimen/text_smallmedium"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/productsSoldTitleIcon"
+        app:layout_constraintTop_toBottomOf="@id/dividerForTotalQueue" />
+
+    <TextView
+        android:id="@+id/productsSold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="@dimen/text_mediumlarge"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/productsSoldTitle"
+        app:layout_constraintTop_toBottomOf="@id/productsSoldTitle" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

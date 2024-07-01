@@ -107,8 +107,8 @@ public class DashboardViewModelHandler {
 
     this._fragment.revenueOverview().setTotalReceivedIncome(queueInfo);
     this._fragment.revenueOverview().setTotalProjectedIncome(queueInfo);
-    this._fragment.revenueOverview().setTotalQueue(queueInfo);
-    this._fragment.revenueOverview().setTotalProductsSold(queueInfo);
+    this._fragment.performanceOverview().setTotalQueue(queueInfo);
+    this._fragment.performanceOverview().setTotalProductsSold(queueInfo);
     this._fragment.revenueOverview().loadChart();
   }
 

@@ -46,8 +46,6 @@ public class DashboardRevenue implements View.OnClickListener {
   public enum OverviewType {
     PROJECTED_INCOME,
     RECEIVED_INCOME,
-    TOTAL_QUEUE,
-    PRODUCTS_SOLD
   }
 
   @NonNull private final DashboardFragment _fragment;
@@ -75,14 +73,6 @@ public class DashboardRevenue implements View.OnClickListener {
     cardBinding.receivedIncomeCard.icon.setImageResource(R.drawable.icon_paid);
     cardBinding.receivedIncomeCard.title.setText(R.string.text_received_income);
     cardBinding.receivedIncomeCard.description.setText(R.string.text_from_completed_queues);
-    cardBinding.totalQueueCardView.setOnClickListener(this);
-    cardBinding.totalQueueCard.icon.setImageResource(R.drawable.icon_assignment);
-    cardBinding.totalQueueCard.title.setText(R.string.text_total_queue);
-    cardBinding.totalQueueCard.description.setVisibility(View.GONE);
-    cardBinding.productsSoldCardView.setOnClickListener(this);
-    cardBinding.productsSoldCard.icon.setImageResource(R.drawable.icon_sell);
-    cardBinding.productsSoldCard.title.setText(R.string.text_products_sold);
-    cardBinding.productsSoldCard.description.setVisibility(View.GONE);
   }
 
   @Override
@@ -90,10 +80,7 @@ public class DashboardRevenue implements View.OnClickListener {
     Objects.requireNonNull(view);
 
     switch (view.getId()) {
-      case R.id.projectedIncomeCardView,
-              R.id.receivedIncomeCardView,
-              R.id.totalQueueCardView,
-              R.id.productsSoldCardView ->
+      case R.id.projectedIncomeCardView, R.id.receivedIncomeCardView ->
           this._fragment
               .dashboardViewModel()
               .revenueView()
@@ -108,14 +95,10 @@ public class DashboardRevenue implements View.OnClickListener {
     // There should be only one card getting selected.
     cardBinding.projectedIncomeCardView.setSelected(false);
     cardBinding.receivedIncomeCardView.setSelected(false);
-    cardBinding.totalQueueCardView.setSelected(false);
-    cardBinding.productsSoldCardView.setSelected(false);
 
     switch (overviewType) {
       case PROJECTED_INCOME -> cardBinding.projectedIncomeCardView.setSelected(true);
       case RECEIVED_INCOME -> cardBinding.receivedIncomeCardView.setSelected(true);
-      case TOTAL_QUEUE -> cardBinding.totalQueueCardView.setSelected(true);
-      case PRODUCTS_SOLD -> cardBinding.productsSoldCardView.setSelected(true);
     }
   }
 
@@ -125,17 +108,6 @@ public class DashboardRevenue implements View.OnClickListener {
         .revenue
         .chart
         .loadUrl("https://appassets.androidplatform.net/assets/chart.html");
-  }
-
-  public void setTotalQueue(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-    Objects.requireNonNull(queueInfo);
-
-    this._fragment
-        .fragmentBinding()
-        .revenue
-        .totalQueueCard
-        .amount
-        .setText(Integer.toString(queueInfo.size()));
   }
 
   public void setTotalProjectedIncome(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
@@ -172,23 +144,6 @@ public class DashboardRevenue implements View.OnClickListener {
         .receivedIncomeCard
         .amount
         .setText(CurrencyFormat.format(amount, "id", "ID"));
-  }
-
-  public void setTotalProductsSold(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
-    Objects.requireNonNull(queueInfo);
-
-    final BigDecimal amount =
-        queueInfo.stream()
-            .flatMap(queue -> queue.productOrders().stream())
-            .map(productOrder -> BigDecimal.valueOf(productOrder.quantity()))
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    this._fragment
-        .fragmentBinding()
-        .revenue
-        .productsSoldCard
-        .amount
-        .setText(CurrencyFormat.format(amount, "id", "ID", "")); // Format the decimal point.
   }
 
   public void displayChart(@NonNull ChartModel model) {
@@ -309,18 +264,6 @@ public class DashboardRevenue implements View.OnClickListener {
                 .dashboardViewModel()
                 .revenueView()
                 .onDisplayReceivedIncomeChart();
-        case TOTAL_QUEUE ->
-            DashboardRevenue.this
-                ._fragment
-                .dashboardViewModel()
-                .revenueView()
-                .onDisplayTotalQueueChart();
-        case PRODUCTS_SOLD ->
-            DashboardRevenue.this
-                ._fragment
-                .dashboardViewModel()
-                .revenueView()
-                .onDisplayProductsSoldChart();
       }
     }
   }

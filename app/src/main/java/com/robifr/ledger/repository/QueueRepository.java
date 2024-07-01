@@ -334,6 +334,16 @@ public final class QueueRepository
   }
 
   @NonNull
+  public CompletableFuture<List<QueueModel>> selectAllInRange(
+      @NonNull ZonedDateTime startDate, @NonNull ZonedDateTime endDate) {
+    Objects.requireNonNull(startDate);
+    Objects.requireNonNull(endDate);
+
+    return CompletableFuture.supplyAsync(
+        () -> this._localDao.selectAllInRange(startDate.toInstant(), endDate.toInstant()));
+  }
+
+  @NonNull
   public CompletableFuture<List<QueueWithProductOrdersInfo>> selectAllWithProductOrdersInRange(
       @NonNull ZonedDateTime startDate, @NonNull ZonedDateTime endDate) {
     Objects.requireNonNull(startDate);

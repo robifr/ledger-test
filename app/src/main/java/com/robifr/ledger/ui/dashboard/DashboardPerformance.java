@@ -18,6 +18,7 @@
 package com.robifr.ledger.ui.dashboard;
 
 import androidx.annotation.NonNull;
+import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
@@ -41,6 +42,15 @@ public class DashboardPerformance {
         .setText(Integer.toString(queueInfo.size()));
   }
 
+  public void setActiveCustomers(@NonNull List<QueueModel> queues) {
+    Objects.requireNonNull(queues);
+
+    final long amount =
+        queues.stream().map(QueueModel::customerId).filter(Objects::nonNull).count();
+
+    this._fragment.fragmentBinding().performance.activeCustomers.setText(Long.toString(amount));
+  }
+
   public void setTotalProductsSold(@NonNull List<QueueWithProductOrdersInfo> queueInfo) {
     Objects.requireNonNull(queueInfo);
 
@@ -54,6 +64,6 @@ public class DashboardPerformance {
         .fragmentBinding()
         .performance
         .productsSold
-        .setText(CurrencyFormat.format(amount, "id", "ID", ""));// Format the decimal point.
+        .setText(CurrencyFormat.format(amount, "id", "ID", "")); // Format the decimal point.
   }
 }

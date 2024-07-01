@@ -24,7 +24,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
-import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
+import com.robifr.ledger.data.model.QueueModel;import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
@@ -46,6 +46,7 @@ public class DashboardViewModelHandler {
         .snackbarMessage()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.date().observe(this._fragment.getViewLifecycleOwner(), this::_onDate);
+    this._viewModel.queues().observe(this._fragment.getViewLifecycleOwner(), this::_onQueues);
     this._viewModel
         .customersWithBalance()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithBalance);
@@ -90,6 +91,12 @@ public class DashboardViewModelHandler {
             : this._fragment.getString(date.range().resourceString());
 
     this._fragment.fragmentBinding().dateChip.setText(text);
+  }
+
+  private void _onQueues(@Nullable List<QueueModel> queues) {
+    if (queues == null) return;
+
+    this._fragment.performanceOverview().setActiveCustomers(queues);
   }
 
   private void _onCustomersWithBalance(@Nullable List<CustomerBalanceInfo> balanceInfo) {

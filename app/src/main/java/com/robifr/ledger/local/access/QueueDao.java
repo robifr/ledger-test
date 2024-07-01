@@ -103,6 +103,16 @@ public abstract class QueueDao implements QueryAccessible<QueueModel> {
    * @noinspection NullableProblems
    */
   @NonNull
+  @Query("SELECT * FROM queue WHERE date >= :startDate AND date <= :endDate")
+  @Transaction
+  @TypeConverters(InstantConverter.class)
+  public abstract List<QueueModel> selectAllInRange(
+      @NonNull Instant startDate, @NonNull Instant endDate);
+
+  /**
+   * @noinspection NullableProblems
+   */
+  @NonNull
   @Query(
       """
       SELECT id, status, date FROM queue

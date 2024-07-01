@@ -20,6 +20,7 @@
   <string name="app_name_debug">Ledger (Debug)</string>
 
   <string name="text_account_balance">Account balance</string>
+  <string name="text_active_customers">Active customers</string>
   <string name="text_add">Add</string>
   <string name="text_add_balance">Add balance</string>
   <string name="text_add_product_order">Add product order</string>

@@ -81,6 +81,45 @@
         app:layout_constraintTop_toBottomOf="@id/totalQueue" />
 
     <ImageView
+        android:id="@+id/activeCustomersTitleIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_person"
+        app:layout_constraintBottom_toBottomOf="@id/activeCustomersTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/activeCustomersTitle" />
+
+    <TextView
+        android:id="@+id/activeCustomersTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_icon_padding"
+        android:layout_marginTop="20dp"
+        android:text="@string/text_active_customers"
+        android:textSize="@dimen/text_smallmedium"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/activeCustomersTitleIcon"
+        app:layout_constraintTop_toBottomOf="@id/dividerForTotalQueue" />
+
+    <TextView
+        android:id="@+id/activeCustomers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="@dimen/text_mediumlarge"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/activeCustomersTitle"
+        app:layout_constraintTop_toBottomOf="@id/activeCustomersTitle" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/dividerForActiveCustomers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/activeCustomers" />
+
+    <ImageView
         android:id="@+id/productsSoldTitleIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -99,7 +138,7 @@
         android:textSize="@dimen/text_smallmedium"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/productsSoldTitleIcon"
-        app:layout_constraintTop_toBottomOf="@id/dividerForTotalQueue" />
+        app:layout_constraintTop_toBottomOf="@id/dividerForActiveCustomers" />
 
     <TextView
         android:id="@+id/productsSold"

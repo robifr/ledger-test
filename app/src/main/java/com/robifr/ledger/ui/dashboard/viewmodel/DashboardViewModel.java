@@ -25,6 +25,7 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
+import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
@@ -57,6 +58,7 @@ public class DashboardViewModel extends ViewModel {
       new MutableLiveData<>();
 
   @NonNull private final MutableLiveData<QueueDate> _date = new MutableLiveData<>();
+  @NonNull private final MutableLiveData<List<QueueModel>> _queues = new MutableLiveData<>();
 
   @NonNull
   private final MutableLiveData<List<CustomerBalanceInfo>> _customersWithBalance =
@@ -80,11 +82,12 @@ public class DashboardViewModel extends ViewModel {
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
+    final QueueDate date = QueueDate.withRange(QueueDate.Range.ALL_TIME);
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
-    this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
+    this.onDateChanged(date);
     this._revenueView.onDisplayedChartChanged(DashboardRevenue.OverviewType.RECEIVED_INCOME);
     LiveDataEvent.observeOnce(
         this._selectAllIdsWithBalance(), this::onCustomersWithBalanceChanged, Objects::nonNull);
@@ -114,6 +117,11 @@ public class DashboardViewModel extends ViewModel {
   }
 
   @NonNull
+  public LiveData<List<QueueModel>> queues() {
+    return this._queues;
+  }
+
+  @NonNull
   public LiveData<List<CustomerBalanceInfo>> customersWithBalance() {
     return this._customersWithBalance;
   }
@@ -133,9 +141,19 @@ public class DashboardViewModel extends ViewModel {
 
     this._date.setValue(date);
     LiveDataEvent.observeOnce(
+        this._selectAllQueuesInRange(date.dateStart(), date.dateEnd()),
+        this::onQueuesChanged,
+        Objects::nonNull);
+    LiveDataEvent.observeOnce(
         this._selectAllQueuesWithProductOrdersInRange(date.dateStart(), date.dateEnd()),
         this::onQueuesWithProductOrdersChanged,
         Objects::nonNull);
+  }
+
+  public void onQueuesChanged(@NonNull List<QueueModel> queues) {
+    Objects.requireNonNull(queues);
+
+    this._queues.setValue(Collections.unmodifiableList(queues));
   }
 
   public void onCustomersWithBalanceChanged(@NonNull List<CustomerBalanceInfo> balanceInfo) {
@@ -193,6 +211,30 @@ public class DashboardViewModel extends ViewModel {
               }
 
               result.postValue(customers);
+            });
+    return result;
+  }
+
+  @NonNull
+  private LiveData<List<QueueModel>> _selectAllQueuesInRange(
+      @NonNull ZonedDateTime startDate, @NonNull ZonedDateTime endDate) {
+    Objects.requireNonNull(startDate);
+    Objects.requireNonNull(endDate);
+
+    final MutableLiveData<List<QueueModel>> result = new MutableLiveData<>();
+
+    this._queueRepository
+        .selectAllInRange(startDate, endDate)
+        .thenAcceptAsync(
+            queues -> {
+              if (queues == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_unable_to_retrieve_all_queues)));
+              }
+
+              result.postValue(queues);
             });
     return result;
   }

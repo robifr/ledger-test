@@ -86,7 +86,7 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
         this._viewModel._queues().getValue() != null
             ? new ArrayList<>(this._viewModel._queues().getValue())
             : new ArrayList<>();
-    final List<QueueModel> filteredQueues = updater.apply(queues, currentQueues);
+    final List<QueueModel> filteredQueues = updater.apply(currentQueues, queues);
 
     filteredQueues.removeIf(
         info ->

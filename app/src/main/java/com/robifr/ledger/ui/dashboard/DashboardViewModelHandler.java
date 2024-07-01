@@ -45,7 +45,6 @@ public class DashboardViewModelHandler {
         .snackbarMessage()
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.date().observe(this._fragment.getViewLifecycleOwner(), this::_onDate);
-    this._viewModel.queues().observe(this._fragment.getViewLifecycleOwner(), this::_onQueues);
 
     this._viewModel
         .balanceView()
@@ -165,10 +164,16 @@ public class DashboardViewModelHandler {
   }
 
   private void _onRevenueReceivedIncome(@Nullable BigDecimal amount) {
-    if (amount != null) this._fragment.revenueOverview().setTotalReceivedIncome(amount);
+    if (amount == null) return;
+
+    this._fragment.revenueOverview().setTotalReceivedIncome(amount);
+    this._fragment.revenueOverview().loadChart();
   }
 
   private void _onRevenueProjectedIncome(@Nullable BigDecimal amount) {
-    if (amount != null) this._fragment.revenueOverview().setTotalProjectedIncome(amount);
+    if (amount == null) return;
+
+    this._fragment.revenueOverview().setTotalProjectedIncome(amount);
+    this._fragment.revenueOverview().loadChart();
   }
 }

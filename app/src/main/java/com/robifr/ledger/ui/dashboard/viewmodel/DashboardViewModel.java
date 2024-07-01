@@ -89,9 +89,11 @@ public class DashboardViewModel extends ViewModel {
     this.onDateChanged(date);
     this._revenueView.onDisplayedChartChanged(DashboardRevenue.OverviewType.RECEIVED_INCOME);
     LiveDataEvent.observeOnce(
-        this._selectAllCustomersWithBalance(), this::onCustomersWithBalanceChanged, Objects::nonNull);
+        this._selectAllCustomersWithBalance(),
+        this::_onCustomersWithBalanceChanged,
+        Objects::nonNull);
     LiveDataEvent.observeOnce(
-        this._selectAllCustomersWithDebt(), this::onCustomersWithDebtChanged, Objects::nonNull);
+        this._selectAllCustomersWithDebt(), this::_onCustomersWithDebtChanged, Objects::nonNull);
   }
 
   @Override
@@ -125,25 +127,14 @@ public class DashboardViewModel extends ViewModel {
     return this._date;
   }
 
-  @NonNull
-  public LiveData<List<QueueModel>> queues() {
-    return this._queues;
-  }
-
   public void onDateChanged(@NonNull QueueDate date) {
     Objects.requireNonNull(date);
 
     this._date.setValue(date);
     LiveDataEvent.observeOnce(
         this._selectAllQueuesInRange(date.dateStart(), date.dateEnd()),
-        this::onQueuesChanged,
+        this::_onQueuesChanged,
         Objects::nonNull);
-  }
-
-  public void onQueuesChanged(@NonNull List<QueueModel> queues) {
-    Objects.requireNonNull(queues);
-
-    this._queues.setValue(Collections.unmodifiableList(queues));
   }
 
   @NonNull
@@ -210,15 +201,34 @@ public class DashboardViewModel extends ViewModel {
     return result;
   }
 
-  void onCustomersWithBalanceChanged(@NonNull List<CustomerBalanceInfo> balanceInfo) {
+  LiveData<List<CustomerBalanceInfo>> _customersWithBalance() {
+    return this._customersWithBalance;
+  }
+
+  LiveData<List<CustomerDebtInfo>> _customersWithDebt() {
+    return this._customersWithDebt;
+  }
+
+  @NonNull
+  LiveData<List<QueueModel>> _queues() {
+    return this._queues;
+  }
+
+  void _onCustomersWithBalanceChanged(@NonNull List<CustomerBalanceInfo> balanceInfo) {
     Objects.requireNonNull(balanceInfo);
 
     this._customersWithBalance.setValue(Collections.unmodifiableList(balanceInfo));
   }
 
-  void onCustomersWithDebtChanged(@NonNull List<CustomerDebtInfo> debtInfo) {
+  void _onCustomersWithDebtChanged(@NonNull List<CustomerDebtInfo> debtInfo) {
     Objects.requireNonNull(debtInfo);
 
     this._customersWithDebt.setValue(Collections.unmodifiableList(debtInfo));
+  }
+
+  void _onQueuesChanged(@NonNull List<QueueModel> queues) {
+    Objects.requireNonNull(queues);
+
+    this._queues.setValue(Collections.unmodifiableList(queues));
   }
 }

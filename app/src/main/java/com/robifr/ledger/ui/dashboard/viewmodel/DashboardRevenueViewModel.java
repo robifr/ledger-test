@@ -110,7 +110,7 @@ public class DashboardRevenueViewModel {
 
   public void onDisplayReceivedIncomeChart() {
     final QueueDate date = this._viewModel.date().getValue();
-    final List<QueueModel> queues = this._viewModel.queues().getValue();
+    final List<QueueModel> queues = this._viewModel._queues().getValue();
     if (date == null || queues == null) return;
 
     final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
@@ -153,7 +153,7 @@ public class DashboardRevenueViewModel {
 
   public void onDisplayProjectedIncomeChart() {
     final QueueDate date = this._viewModel.date().getValue();
-    final List<QueueModel> queues = this._viewModel.queues().getValue();
+    final List<QueueModel> queues = this._viewModel._queues().getValue();
     if (date == null || queues == null) return;
 
     final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();

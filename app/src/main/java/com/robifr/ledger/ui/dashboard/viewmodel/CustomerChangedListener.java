@@ -95,7 +95,7 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
         updater.apply(customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
 
     balanceInfo.removeIf(info -> info.balance() == 0L);
-    this._viewModel.onCustomersWithBalanceChanged(balanceInfo);
+    this._viewModel._onCustomersWithBalanceChanged(balanceInfo);
   }
 
   private void _updateDebtInfo(
@@ -112,6 +112,6 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
         updater.apply(customers, currentDebtInfo, CustomerDebtInfo::withModel);
 
     debtInfo.removeIf(info -> info.debt().compareTo(BigDecimal.ZERO) == 0);
-    this._viewModel.onCustomersWithDebtChanged(debtInfo);
+    this._viewModel._onCustomersWithDebtChanged(debtInfo);
   }
 }

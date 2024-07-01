@@ -83,8 +83,8 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
         Objects.requireNonNullElse(
             this._viewModel.date().getValue(), QueueDate.withRange(QueueDate.Range.ALL_TIME));
     final ArrayList<QueueModel> currentQueues =
-        this._viewModel.queues().getValue() != null
-            ? new ArrayList<>(this._viewModel.queues().getValue())
+        this._viewModel._queues().getValue() != null
+            ? new ArrayList<>(this._viewModel._queues().getValue())
             : new ArrayList<>();
     final List<QueueModel> filteredQueues = updater.apply(queues, currentQueues);
 
@@ -92,6 +92,6 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
         info ->
             info.date().isBefore(date.dateStart().toInstant())
                 || info.date().isAfter(date.dateEnd().toInstant()));
-    this._viewModel.onQueuesChanged(filteredQueues);
+    this._viewModel._onQueuesChanged(filteredQueues);
   }
 }

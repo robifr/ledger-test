@@ -36,7 +36,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_performance"
+        android:text="@string/text_revenue"
         android:textSize="@dimen/text_mediumlarge"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
-    <!-- Button tags are based on `DashboardPerformance.Chart` enum. -->
+    <!-- Button tags are based on `DashboardRevenue.Chart` enum. -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/receivedIncomeCardView"
         android:layout_width="0dp"
@@ -74,7 +74,7 @@
 
       <include
           android:id="@+id/receivedIncomeCard"
-          layout="@layout/dashboard_card_performance_selectable" />
+          layout="@layout/dashboard_card_revenue_selectable" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -99,7 +99,7 @@
 
       <include
           android:id="@+id/projectedIncomeCard"
-          layout="@layout/dashboard_card_performance_selectable" />
+          layout="@layout/dashboard_card_revenue_selectable" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -121,7 +121,7 @@
 
       <include
           android:id="@+id/totalQueueCard"
-          layout="@layout/dashboard_card_performance_selectable" />
+          layout="@layout/dashboard_card_revenue_selectable" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -143,7 +143,7 @@
 
       <include
           android:id="@+id/productsSoldCard"
-          layout="@layout/dashboard_card_performance_selectable" />
+          layout="@layout/dashboard_card_revenue_selectable" />
     </com.google.android.material.card.MaterialCardView>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

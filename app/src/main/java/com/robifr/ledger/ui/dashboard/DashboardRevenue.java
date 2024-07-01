@@ -34,7 +34,7 @@ import com.robifr.ledger.assetbinding.chart.ChartLayoutBinding;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
-import com.robifr.ledger.databinding.DashboardCardPerformanceBinding;
+import com.robifr.ledger.databinding.DashboardCardRevenueBinding;
 import com.robifr.ledger.ui.LocalWebChrome;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class DashboardPerformance implements View.OnClickListener {
+public class DashboardRevenue implements View.OnClickListener {
   public enum OverviewType {
     PROJECTED_INCOME,
     RECEIVED_INCOME,
@@ -52,11 +52,10 @@ public class DashboardPerformance implements View.OnClickListener {
 
   @NonNull private final DashboardFragment _fragment;
 
-  public DashboardPerformance(@NonNull DashboardFragment fragment) {
+  public DashboardRevenue(@NonNull DashboardFragment fragment) {
     this._fragment = Objects.requireNonNull(fragment);
 
-    final DashboardCardPerformanceBinding cardBinding =
-        this._fragment.fragmentBinding().performance;
+    final DashboardCardRevenueBinding cardBinding = this._fragment.fragmentBinding().revenue;
     cardBinding.chart.getSettings().setSupportZoom(false);
     cardBinding.chart.getSettings().setBuiltInZoomControls(false);
     cardBinding.chart.getSettings().setAllowFileAccess(false);
@@ -97,7 +96,7 @@ public class DashboardPerformance implements View.OnClickListener {
               R.id.productsSoldCardView ->
           this._fragment
               .dashboardViewModel()
-              .performanceView()
+              .revenueView()
               .onDisplayedChartChanged(OverviewType.valueOf(view.getTag().toString()));
     }
   }
@@ -105,8 +104,7 @@ public class DashboardPerformance implements View.OnClickListener {
   public void selectCard(@NonNull OverviewType overviewType) {
     Objects.requireNonNull(overviewType);
 
-    final DashboardCardPerformanceBinding cardBinding =
-        this._fragment.fragmentBinding().performance;
+    final DashboardCardRevenueBinding cardBinding = this._fragment.fragmentBinding().revenue;
     // There should be only one card getting selected.
     cardBinding.projectedIncomeCardView.setSelected(false);
     cardBinding.receivedIncomeCardView.setSelected(false);
@@ -124,7 +122,7 @@ public class DashboardPerformance implements View.OnClickListener {
   public void loadChart() {
     this._fragment
         .fragmentBinding()
-        .performance
+        .revenue
         .chart
         .loadUrl("https://appassets.androidplatform.net/assets/chart.html");
   }
@@ -134,7 +132,7 @@ public class DashboardPerformance implements View.OnClickListener {
 
     this._fragment
         .fragmentBinding()
-        .performance
+        .revenue
         .totalQueueCard
         .amount
         .setText(Integer.toString(queueInfo.size()));
@@ -151,7 +149,7 @@ public class DashboardPerformance implements View.OnClickListener {
 
     this._fragment
         .fragmentBinding()
-        .performance
+        .revenue
         .projectedIncomeCard
         .amount
         .setText(CurrencyFormat.format(amount, "id", "ID"));
@@ -170,7 +168,7 @@ public class DashboardPerformance implements View.OnClickListener {
 
     this._fragment
         .fragmentBinding()
-        .performance
+        .revenue
         .receivedIncomeCard
         .amount
         .setText(CurrencyFormat.format(amount, "id", "ID"));
@@ -187,7 +185,7 @@ public class DashboardPerformance implements View.OnClickListener {
 
     this._fragment
         .fragmentBinding()
-        .performance
+        .revenue
         .productsSoldCard
         .amount
         .setText(CurrencyFormat.format(amount, "id", "ID", "")); // Format the decimal point.
@@ -198,7 +196,7 @@ public class DashboardPerformance implements View.OnClickListener {
 
     final ViewGroup.MarginLayoutParams margin =
         (ViewGroup.MarginLayoutParams)
-            this._fragment.fragmentBinding().performance.chart.getLayoutParams();
+            this._fragment.fragmentBinding().revenue.chart.getLayoutParams();
     final int fontSize =
         JsInterface.dpToCssPx(
             this._fragment.requireContext(),
@@ -208,10 +206,10 @@ public class DashboardPerformance implements View.OnClickListener {
         ChartLayoutBinding.init(
             JsInterface.dpToCssPx(
                 this._fragment.requireContext(),
-                this._fragment.fragmentBinding().performance.chart.getWidth()),
+                this._fragment.fragmentBinding().revenue.chart.getWidth()),
             JsInterface.dpToCssPx(
                 this._fragment.requireContext(),
-                this._fragment.fragmentBinding().performance.chart.getHeight()),
+                this._fragment.fragmentBinding().revenue.chart.getHeight()),
             JsInterface.dpToCssPx(this._fragment.requireContext(), margin.topMargin),
             JsInterface.dpToCssPx(this._fragment.requireContext(), margin.bottomMargin) + fontSize,
             JsInterface.dpToCssPx(this._fragment.requireContext(), margin.leftMargin + 80),
@@ -233,7 +231,7 @@ public class DashboardPerformance implements View.OnClickListener {
 
     this._fragment
         .fragmentBinding()
-        .performance
+        .revenue
         .chart
         .evaluateJavascript(
             String.format(
@@ -271,7 +269,7 @@ public class DashboardPerformance implements View.OnClickListener {
               .addPathHandler(
                   "/assets/",
                   new WebViewAssetLoader.AssetsPathHandler(
-                      DashboardPerformance.this._fragment.requireContext()))
+                      DashboardRevenue.this._fragment.requireContext()))
               .build();
     }
 
@@ -289,39 +287,39 @@ public class DashboardPerformance implements View.OnClickListener {
       Objects.requireNonNull(view);
       Objects.requireNonNull(url);
 
-      final DashboardPerformance.OverviewType displayedChart =
-          DashboardPerformance.this
+      final DashboardRevenue.OverviewType displayedChart =
+          DashboardRevenue.this
               ._fragment
               .dashboardViewModel()
-              .performanceView()
+              .revenueView()
               .displayedChart()
               .getValue();
       if (displayedChart == null) return;
 
       switch (displayedChart) {
         case PROJECTED_INCOME ->
-            DashboardPerformance.this
+            DashboardRevenue.this
                 ._fragment
                 .dashboardViewModel()
-                .performanceView()
+                .revenueView()
                 .onDisplayProjectedIncomeChart();
         case RECEIVED_INCOME ->
-            DashboardPerformance.this
+            DashboardRevenue.this
                 ._fragment
                 .dashboardViewModel()
-                .performanceView()
+                .revenueView()
                 .onDisplayReceivedIncomeChart();
         case TOTAL_QUEUE ->
-            DashboardPerformance.this
+            DashboardRevenue.this
                 ._fragment
                 .dashboardViewModel()
-                .performanceView()
+                .revenueView()
                 .onDisplayTotalQueueChart();
         case PRODUCTS_SOLD ->
-            DashboardPerformance.this
+            DashboardRevenue.this
                 ._fragment
                 .dashboardViewModel()
-                .performanceView()
+                .revenueView()
                 .onDisplayProductsSoldChart();
       }
     }

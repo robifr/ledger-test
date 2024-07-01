@@ -31,7 +31,7 @@ import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
-import com.robifr.ledger.ui.dashboard.DashboardPerformance;
+import com.robifr.ledger.ui.dashboard.DashboardRevenue;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -44,7 +44,7 @@ public class DashboardViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
 
-  @NonNull private final DashboardPerformanceViewModel _performanceView;
+  @NonNull private final DashboardRevenueViewModel _revenueView;
 
   @NonNull
   private final QueueChangedListeners _queueChangedListener = new QueueChangedListeners(this);
@@ -70,7 +70,7 @@ public class DashboardViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._performanceView = new DashboardPerformanceViewModel(this, this._queuesWithProductOrders);
+    this._revenueView = new DashboardRevenueViewModel(this, this._queuesWithProductOrders);
 
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
@@ -84,8 +84,7 @@ public class DashboardViewModel extends ViewModel {
     this._customersWithDebt =
         (MutableLiveData<List<CustomerDebtInfo>>) this._selectAllIdsWithDebt();
     this.onDateChanged(QueueDate.withRange(QueueDate.Range.ALL_TIME));
-    this._performanceView.onDisplayedChartChanged(
-        DashboardPerformance.OverviewType.RECEIVED_INCOME);
+    this._revenueView.onDisplayedChartChanged(DashboardRevenue.OverviewType.RECEIVED_INCOME);
   }
 
   @Override
@@ -95,8 +94,8 @@ public class DashboardViewModel extends ViewModel {
   }
 
   @NonNull
-  public DashboardPerformanceViewModel performanceView() {
-    return this._performanceView;
+  public DashboardRevenueViewModel revenueView() {
+    return this._revenueView;
   }
 
   @NonNull

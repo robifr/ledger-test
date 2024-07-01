@@ -106,6 +106,7 @@
   <string name="text_queue">Queue</string>
   <string name="text_queue_id">Queue ID</string>
   <string name="text_received_income">Received income</string>
+  <string name="text_revenue">Revenue</string>
   <string name="text_save">Save</string>
   <string name="text_search_customers">Search customers</string>
   <string name="text_search_customers_and_products">Search customers &amp; products</string>

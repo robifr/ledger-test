@@ -57,13 +57,13 @@ public class DashboardViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onQueuesWithProductOrders);
 
     this._viewModel
-        .performanceView()
+        .revenueView()
         .displayedChart()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onPerformanceDisplayedChart);
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onRevenueDisplayedChart);
     this._viewModel
-        .performanceView()
+        .revenueView()
         .chartModel()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onPerformanceChartModel);
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onRevenueChartModel);
   }
 
   private void _onSnackbarMessage(@Nullable StringResources stringRes) {
@@ -105,22 +105,21 @@ public class DashboardViewModelHandler {
   private void _onQueuesWithProductOrders(@Nullable List<QueueWithProductOrdersInfo> queueInfo) {
     if (queueInfo == null) return;
 
-    this._fragment.performanceOverview().setTotalReceivedIncome(queueInfo);
-    this._fragment.performanceOverview().setTotalProjectedIncome(queueInfo);
-    this._fragment.performanceOverview().setTotalQueue(queueInfo);
-    this._fragment.performanceOverview().setTotalProductsSold(queueInfo);
-    this._fragment.performanceOverview().loadChart();
+    this._fragment.revenueOverview().setTotalReceivedIncome(queueInfo);
+    this._fragment.revenueOverview().setTotalProjectedIncome(queueInfo);
+    this._fragment.revenueOverview().setTotalQueue(queueInfo);
+    this._fragment.revenueOverview().setTotalProductsSold(queueInfo);
+    this._fragment.revenueOverview().loadChart();
   }
 
-  private void _onPerformanceDisplayedChart(
-      @Nullable DashboardPerformance.OverviewType overviewType) {
+  private void _onRevenueDisplayedChart(@Nullable DashboardRevenue.OverviewType overviewType) {
     if (overviewType == null) return;
 
-    this._fragment.performanceOverview().selectCard(overviewType);
-    this._fragment.performanceOverview().loadChart();
+    this._fragment.revenueOverview().selectCard(overviewType);
+    this._fragment.revenueOverview().loadChart();
   }
 
-  private void _onPerformanceChartModel(@Nullable DashboardPerformance.ChartModel model) {
-    if (model != null) this._fragment.performanceOverview().displayChart(model);
+  private void _onRevenueChartModel(@Nullable DashboardRevenue.ChartModel model) {
+    if (model != null) this._fragment.revenueOverview().displayChart(model);
   }
 }

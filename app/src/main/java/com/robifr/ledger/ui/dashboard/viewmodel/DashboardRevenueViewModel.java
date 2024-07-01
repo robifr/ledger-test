@@ -26,7 +26,7 @@ import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.data.model.QueueWithProductOrdersInfo;
-import com.robifr.ledger.ui.dashboard.DashboardPerformance;
+import com.robifr.ledger.ui.dashboard.DashboardRevenue;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -37,18 +37,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class DashboardPerformanceViewModel {
+public class DashboardRevenueViewModel {
   @NonNull private final DashboardViewModel _viewModel;
 
   @NonNull
-  private final MutableLiveData<DashboardPerformance.OverviewType> _displayedChart =
+  private final MutableLiveData<DashboardRevenue.OverviewType> _displayedChart =
       new MutableLiveData<>();
 
   @NonNull
-  private final MutableLiveData<DashboardPerformance.ChartModel> _chartModel =
-      new MutableLiveData<>();
+  private final MutableLiveData<DashboardRevenue.ChartModel> _chartModel = new MutableLiveData<>();
 
-  public DashboardPerformanceViewModel(
+  public DashboardRevenueViewModel(
       @NonNull DashboardViewModel viewModel,
       @NonNull LiveData<List<QueueWithProductOrdersInfo>> queuesWithProductOrders) {
     Objects.requireNonNull(queuesWithProductOrders);
@@ -57,16 +56,16 @@ public class DashboardPerformanceViewModel {
   }
 
   @NonNull
-  public LiveData<DashboardPerformance.OverviewType> displayedChart() {
+  public LiveData<DashboardRevenue.OverviewType> displayedChart() {
     return this._displayedChart;
   }
 
   @NonNull
-  public LiveData<DashboardPerformance.ChartModel> chartModel() {
+  public LiveData<DashboardRevenue.ChartModel> chartModel() {
     return this._chartModel;
   }
 
-  public void onDisplayedChartChanged(@NonNull DashboardPerformance.OverviewType overviewType) {
+  public void onDisplayedChartChanged(@NonNull DashboardRevenue.OverviewType overviewType) {
     Objects.requireNonNull(overviewType);
 
     this._displayedChart.setValue(overviewType);
@@ -110,7 +109,7 @@ public class DashboardPerformanceViewModel {
     final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
 
     this._chartModel.setValue(
-        new DashboardPerformance.ChartModel(
+        new DashboardRevenue.ChartModel(
             xAxisDomain,
             yAxisDomain,
             ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new)));
@@ -151,7 +150,7 @@ public class DashboardPerformanceViewModel {
     final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
 
     this._chartModel.setValue(
-        new DashboardPerformance.ChartModel(
+        new DashboardRevenue.ChartModel(
             xAxisDomain,
             yAxisDomain,
             ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new)));
@@ -188,7 +187,7 @@ public class DashboardPerformanceViewModel {
     final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalQueue);
 
     this._chartModel.setValue(
-        new DashboardPerformance.ChartModel(
+        new DashboardRevenue.ChartModel(
             xAxisDomain,
             yAxisDomain,
             ChartUtil.toPercentageData(queueDateWithTotalQueue, LinkedHashMap::new)));
@@ -230,7 +229,7 @@ public class DashboardPerformanceViewModel {
     final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalProducts);
 
     this._chartModel.setValue(
-        new DashboardPerformance.ChartModel(
+        new DashboardRevenue.ChartModel(
             xAxisDomain,
             yAxisDomain,
             ChartUtil.toPercentageData(queueDateWithTotalProducts, LinkedHashMap::new)));

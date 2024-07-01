@@ -87,8 +87,8 @@
           android:layout_marginEnd="@dimen/screen_padding" />
 
       <include
-          android:id="@+id/performance"
-          layout="@layout/dashboard_card_performance"
+          android:id="@+id/revenue"
+          layout="@layout/dashboard_card_revenue"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="@dimen/screen_padding"

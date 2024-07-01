@@ -129,14 +129,14 @@ public abstract class CustomerDao implements QueryAccessible<CustomerModel> {
    */
   @NonNull
   @Query("SELECT id, balance FROM customer WHERE balance > 0")
-  public abstract List<CustomerBalanceInfo> selectAllIdsWithBalance();
+  public abstract List<CustomerBalanceInfo> selectAllInfoWithBalance();
 
   /**
    * @noinspection NullableProblems
    */
   @NonNull
   @Transaction
-  public List<CustomerDebtInfo> selectAllIdsWithDebt() {
+  public List<CustomerDebtInfo> selectAllInfoWithDebt() {
     final ArrayList<CustomerDebtInfo> debtInfo = new ArrayList<>();
     final ArrayList<Long> ids = new ArrayList<>(this._selectAllIds());
 

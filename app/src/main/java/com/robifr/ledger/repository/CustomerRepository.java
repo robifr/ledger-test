@@ -204,13 +204,13 @@ public final class CustomerRepository
   }
 
   @NonNull
-  public CompletableFuture<List<CustomerBalanceInfo>> selectAllIdsWithBalance() {
-    return CompletableFuture.supplyAsync(this._localDao::selectAllIdsWithBalance);
+  public CompletableFuture<List<CustomerBalanceInfo>> selectAllInfoWithBalance() {
+    return CompletableFuture.supplyAsync(this._localDao::selectAllInfoWithBalance);
   }
 
   @NonNull
-  public CompletableFuture<List<CustomerDebtInfo>> selectAllIdsWithDebt() {
-    return CompletableFuture.supplyAsync(this._localDao::selectAllIdsWithDebt);
+  public CompletableFuture<List<CustomerDebtInfo>> selectAllInfoWithDebt() {
+    return CompletableFuture.supplyAsync(this._localDao::selectAllInfoWithDebt);
   }
 
   /**

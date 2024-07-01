@@ -89,9 +89,9 @@ public class DashboardViewModel extends ViewModel {
     this.onDateChanged(date);
     this._revenueView.onDisplayedChartChanged(DashboardRevenue.OverviewType.RECEIVED_INCOME);
     LiveDataEvent.observeOnce(
-        this._selectAllIdsWithBalance(), this::onCustomersWithBalanceChanged, Objects::nonNull);
+        this._selectAllCustomersWithBalance(), this::onCustomersWithBalanceChanged, Objects::nonNull);
     LiveDataEvent.observeOnce(
-        this._selectAllIdsWithDebt(), this::onCustomersWithDebtChanged, Objects::nonNull);
+        this._selectAllCustomersWithDebt(), this::onCustomersWithDebtChanged, Objects::nonNull);
   }
 
   @Override
@@ -147,11 +147,11 @@ public class DashboardViewModel extends ViewModel {
   }
 
   @NonNull
-  private LiveData<List<CustomerBalanceInfo>> _selectAllIdsWithBalance() {
+  private LiveData<List<CustomerBalanceInfo>> _selectAllCustomersWithBalance() {
     final MutableLiveData<List<CustomerBalanceInfo>> result = new MutableLiveData<>();
 
     this._customerRepository
-        .selectAllIdsWithBalance()
+        .selectAllInfoWithBalance()
         .thenAcceptAsync(
             customers -> {
               if (customers == null) {
@@ -167,11 +167,11 @@ public class DashboardViewModel extends ViewModel {
   }
 
   @NonNull
-  private LiveData<List<CustomerDebtInfo>> _selectAllIdsWithDebt() {
+  private LiveData<List<CustomerDebtInfo>> _selectAllCustomersWithDebt() {
     final MutableLiveData<List<CustomerDebtInfo>> result = new MutableLiveData<>();
 
     this._customerRepository
-        .selectAllIdsWithDebt()
+        .selectAllInfoWithDebt()
         .thenAcceptAsync(
             customers -> {
               if (customers == null) {

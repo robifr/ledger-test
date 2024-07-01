@@ -42,7 +42,7 @@ import javax.inject.Inject;
 public class DashboardViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
-
+  @NonNull private final DashboardPerformanceViewModel _performanceView;
   @NonNull private final DashboardRevenueViewModel _revenueView;
 
   @NonNull
@@ -72,6 +72,7 @@ public class DashboardViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
+    this._performanceView = new DashboardPerformanceViewModel(this._queues);
     this._revenueView = new DashboardRevenueViewModel(this, this._queues);
 
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
@@ -94,6 +95,11 @@ public class DashboardViewModel extends ViewModel {
   public void onCleared() {
     this._queueRepository.removeModelChangedListener(this._queueChangedListener);
     this._customerRepository.removeModelChangedListener(this._customerChangedListener);
+  }
+
+  @NonNull
+  public DashboardPerformanceViewModel performanceView() {
+    return this._performanceView;
   }
 
   @NonNull

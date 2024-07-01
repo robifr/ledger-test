@@ -56,6 +56,19 @@ public class DashboardViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithDebt);
 
     this._viewModel
+        .performanceView()
+        .totalQueue()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalQueue);
+    this._viewModel
+        .performanceView()
+        .totalActiveCustomers()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalActiveCustomers);
+    this._viewModel
+        .performanceView()
+        .totalProductsSold()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalProductsSold);
+
+    this._viewModel
         .revenueView()
         .displayedChart()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onRevenueDisplayedChart);
@@ -100,12 +113,7 @@ public class DashboardViewModelHandler {
   }
 
   private void _onQueues(@Nullable List<QueueModel> queues) {
-    if (queues == null) return;
-
-    this._fragment.performanceOverview().setTotalQueue(queues);
-    this._fragment.performanceOverview().setActiveCustomers(queues);
-    this._fragment.performanceOverview().setTotalProductsSold(queues);
-    this._fragment.revenueOverview().loadChart();
+    if (queues != null) this._fragment.revenueOverview().loadChart();
   }
 
   private void _onCustomersWithBalance(@Nullable List<CustomerBalanceInfo> balanceInfo) {
@@ -116,6 +124,18 @@ public class DashboardViewModelHandler {
 
   private void _onCustomersWithDebt(@Nullable List<CustomerDebtInfo> debtInfo) {
     this._fragment.balanceOverview().setTotalDebt(Objects.requireNonNullElse(debtInfo, List.of()));
+  }
+
+  private void _onTotalQueue(@Nullable Integer amount) {
+    if (amount != null) this._fragment.performanceOverview().setTotalQueue(amount);
+  }
+
+  private void _onTotalActiveCustomers(@Nullable Integer amount) {
+    if (amount != null) this._fragment.performanceOverview().setTotalActiveCustomers(amount);
+  }
+
+  private void _onTotalProductsSold(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.performanceOverview().setTotalProductsSold(amount);
   }
 
   private void _onRevenueDisplayedChart(@Nullable DashboardRevenue.OverviewType overviewType) {

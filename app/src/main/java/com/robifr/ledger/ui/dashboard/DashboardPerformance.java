@@ -18,10 +18,8 @@
 package com.robifr.ledger.ui.dashboard;
 
 import androidx.annotation.NonNull;
-import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 public class DashboardPerformance {
@@ -31,33 +29,16 @@ public class DashboardPerformance {
     this._fragment = Objects.requireNonNull(fragment);
   }
 
-  public void setTotalQueue(@NonNull List<QueueModel> queues) {
-    Objects.requireNonNull(queues);
-
-    this._fragment
-        .fragmentBinding()
-        .performance
-        .totalQueue
-        .setText(Integer.toString(queues.size()));
+  public void setTotalQueue(int amount) {
+    this._fragment.fragmentBinding().performance.totalQueue.setText(Integer.toString(amount));
   }
 
-  public void setActiveCustomers(@NonNull List<QueueModel> queues) {
-    Objects.requireNonNull(queues);
-
-    final long amount =
-        queues.stream().map(QueueModel::customerId).filter(Objects::nonNull).count();
-
-    this._fragment.fragmentBinding().performance.activeCustomers.setText(Long.toString(amount));
+  public void setTotalActiveCustomers(int amount) {
+    this._fragment.fragmentBinding().performance.activeCustomers.setText(Integer.toString(amount));
   }
 
-  public void setTotalProductsSold(@NonNull List<QueueModel> queues) {
-    Objects.requireNonNull(queues);
-
-    final BigDecimal amount =
-        queues.stream()
-            .flatMap(queue -> queue.productOrders().stream())
-            .map(productOrder -> BigDecimal.valueOf(productOrder.quantity()))
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+  public void setTotalProductsSold(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
 
     this._fragment
         .fragmentBinding()

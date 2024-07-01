@@ -22,8 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
-import com.robifr.ledger.data.model.CustomerBalanceInfo;
-import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
@@ -48,12 +46,23 @@ public class DashboardViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
     this._viewModel.date().observe(this._fragment.getViewLifecycleOwner(), this::_onDate);
     this._viewModel.queues().observe(this._fragment.getViewLifecycleOwner(), this::_onQueues);
+
     this._viewModel
-        .customersWithBalance()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithBalance);
+        .balanceView()
+        .totalBalance()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onBalanceTotalBalance);
     this._viewModel
-        .customersWithDebt()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onCustomersWithDebt);
+        .balanceView()
+        .totalCustomersWithBalance()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onBalanceCustomersWithBalance);
+    this._viewModel
+        .balanceView()
+        .totalDebt()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onBalanceTotalDebt);
+    this._viewModel
+        .balanceView()
+        .totalCustomersWithDebt()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onBalanceCustomersWithDebt);
 
     this._viewModel
         .performanceView()
@@ -116,14 +125,20 @@ public class DashboardViewModelHandler {
     if (queues != null) this._fragment.revenueOverview().loadChart();
   }
 
-  private void _onCustomersWithBalance(@Nullable List<CustomerBalanceInfo> balanceInfo) {
-    this._fragment
-        .balanceOverview()
-        .setTotalBalance(Objects.requireNonNullElse(balanceInfo, List.of()));
+  private void _onBalanceTotalBalance(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.balanceOverview().setTotalBalance(amount);
   }
 
-  private void _onCustomersWithDebt(@Nullable List<CustomerDebtInfo> debtInfo) {
-    this._fragment.balanceOverview().setTotalDebt(Objects.requireNonNullElse(debtInfo, List.of()));
+  private void _onBalanceCustomersWithBalance(@Nullable Integer amount) {
+    if (amount != null) this._fragment.balanceOverview().setTotalCustomersWithBalance(amount);
+  }
+
+  private void _onBalanceTotalDebt(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.balanceOverview().setTotalDebt(amount);
+  }
+
+  private void _onBalanceCustomersWithDebt(@Nullable Integer amount) {
+    if (amount != null) this._fragment.balanceOverview().setTotalCustomersWithDebt(amount);
   }
 
   private void _onTotalQueue(@Nullable Integer amount) {

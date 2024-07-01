@@ -20,11 +20,8 @@ package com.robifr.ledger.ui.dashboard;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.CustomerBalanceInfo;
-import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 public class DashboardBalance {
@@ -34,38 +31,32 @@ public class DashboardBalance {
     this._fragment = Objects.requireNonNull(fragment);
   }
 
-  public void setTotalBalance(@NonNull List<CustomerBalanceInfo> balanceInfo) {
-    Objects.requireNonNull(balanceInfo);
+  public void setTotalBalance(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
 
+    this._fragment
+        .fragmentBinding()
+        .balance
+        .totalBalance
+        .setText(CurrencyFormat.format(amount, "id", "ID"));
+  }
+
+  public void setTotalCustomersWithBalance(int amount) {
     final String totalText =
         this._fragment
             .getResources()
-            .getQuantityString(
-                R.plurals.args_from_x_customers, balanceInfo.size(), balanceInfo.size());
-    final long amount = balanceInfo.stream().mapToLong(CustomerBalanceInfo::balance).sum();
+            .getQuantityString(R.plurals.args_from_x_customers, amount, amount);
 
     this._fragment
         .fragmentBinding()
         .balance
         .totalCustomersWithBalanceTitle
         .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
-    this._fragment
-        .fragmentBinding()
-        .balance
-        .totalBalance
-        .setText(CurrencyFormat.format(BigDecimal.valueOf(amount), "id", "ID"));
   }
 
-  public void setTotalDebt(@NonNull List<CustomerDebtInfo> debtInfo) {
-    Objects.requireNonNull(debtInfo);
+  public void setTotalDebt(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
 
-    final String totalText =
-        this._fragment
-            .getResources()
-            .getQuantityString(R.plurals.args_from_x_customers, debtInfo.size(), debtInfo.size());
-
-    final BigDecimal amount =
-        debtInfo.stream().map(CustomerDebtInfo::debt).reduce(BigDecimal.ZERO, BigDecimal::add);
     final int amountTextColor =
         amount.compareTo(BigDecimal.ZERO) < 0
             // Negative debt will be shown red.
@@ -75,13 +66,21 @@ public class DashboardBalance {
     this._fragment
         .fragmentBinding()
         .balance
-        .totalCustomersWithDebtTitle
-        .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
-    this._fragment
-        .fragmentBinding()
-        .balance
         .totalDebt
         .setText(CurrencyFormat.format(amount, "id", "ID"));
     this._fragment.fragmentBinding().balance.totalDebt.setTextColor(amountTextColor);
+  }
+
+  public void setTotalCustomersWithDebt(int amount) {
+    final String totalText =
+        this._fragment
+            .getResources()
+            .getQuantityString(R.plurals.args_from_x_customers, amount, amount);
+
+    this._fragment
+        .fragmentBinding()
+        .balance
+        .totalCustomersWithDebtTitle
+        .setText(HtmlCompat.fromHtml(totalText, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }
 }

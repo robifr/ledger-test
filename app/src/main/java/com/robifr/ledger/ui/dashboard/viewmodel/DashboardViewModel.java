@@ -42,6 +42,7 @@ import javax.inject.Inject;
 public class DashboardViewModel extends ViewModel {
   @NonNull private final QueueRepository _queueRepository;
   @NonNull private final CustomerRepository _customerRepository;
+  @NonNull private final DashboardBalanceViewModel _balanceView;
   @NonNull private final DashboardPerformanceViewModel _performanceView;
   @NonNull private final DashboardRevenueViewModel _revenueView;
 
@@ -72,6 +73,8 @@ public class DashboardViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
+    this._balanceView =
+        new DashboardBalanceViewModel(this._customersWithBalance, this._customersWithDebt);
     this._performanceView = new DashboardPerformanceViewModel(this._queues);
     this._revenueView = new DashboardRevenueViewModel(this, this._queues);
 
@@ -95,6 +98,11 @@ public class DashboardViewModel extends ViewModel {
   public void onCleared() {
     this._queueRepository.removeModelChangedListener(this._queueChangedListener);
     this._customerRepository.removeModelChangedListener(this._customerChangedListener);
+  }
+
+  @NonNull
+  public DashboardBalanceViewModel balanceView() {
+    return this._balanceView;
   }
 
   @NonNull
@@ -122,16 +130,6 @@ public class DashboardViewModel extends ViewModel {
     return this._queues;
   }
 
-  @NonNull
-  public LiveData<List<CustomerBalanceInfo>> customersWithBalance() {
-    return this._customersWithBalance;
-  }
-
-  @NonNull
-  public LiveData<List<CustomerDebtInfo>> customersWithDebt() {
-    return this._customersWithDebt;
-  }
-
   public void onDateChanged(@NonNull QueueDate date) {
     Objects.requireNonNull(date);
 
@@ -146,18 +144,6 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(queues);
 
     this._queues.setValue(Collections.unmodifiableList(queues));
-  }
-
-  public void onCustomersWithBalanceChanged(@NonNull List<CustomerBalanceInfo> balanceInfo) {
-    Objects.requireNonNull(balanceInfo);
-
-    this._customersWithBalance.setValue(Collections.unmodifiableList(balanceInfo));
-  }
-
-  public void onCustomersWithDebtChanged(@NonNull List<CustomerDebtInfo> debtInfo) {
-    Objects.requireNonNull(debtInfo);
-
-    this._customersWithDebt.setValue(Collections.unmodifiableList(debtInfo));
   }
 
   @NonNull
@@ -222,5 +208,17 @@ public class DashboardViewModel extends ViewModel {
               result.postValue(queues);
             });
     return result;
+  }
+
+  void onCustomersWithBalanceChanged(@NonNull List<CustomerBalanceInfo> balanceInfo) {
+    Objects.requireNonNull(balanceInfo);
+
+    this._customersWithBalance.setValue(Collections.unmodifiableList(balanceInfo));
+  }
+
+  void onCustomersWithDebtChanged(@NonNull List<CustomerDebtInfo> debtInfo) {
+    Objects.requireNonNull(debtInfo);
+
+    this._customersWithDebt.setValue(Collections.unmodifiableList(debtInfo));
   }
 }

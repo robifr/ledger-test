@@ -88,8 +88,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(updater);
 
     final ArrayList<CustomerBalanceInfo> currentBalanceInfo =
-        this._viewModel.customersWithBalance().getValue() != null
-            ? new ArrayList<>(this._viewModel.customersWithBalance().getValue())
+        this._viewModel._customersWithBalance().getValue() != null
+            ? new ArrayList<>(this._viewModel._customersWithBalance().getValue())
             : new ArrayList<>();
     final List<CustomerBalanceInfo> balanceInfo =
         updater.apply(customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
@@ -105,8 +105,8 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(updater);
 
     final ArrayList<CustomerDebtInfo> currentDebtInfo =
-        this._viewModel.customersWithDebt().getValue() != null
-            ? new ArrayList<>(this._viewModel.customersWithDebt().getValue())
+        this._viewModel._customersWithDebt().getValue() != null
+            ? new ArrayList<>(this._viewModel._customersWithDebt().getValue())
             : new ArrayList<>();
     final List<CustomerDebtInfo> debtInfo =
         updater.apply(customers, currentDebtInfo, CustomerDebtInfo::withModel);

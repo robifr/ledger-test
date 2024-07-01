@@ -28,6 +28,7 @@ import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -62,6 +63,14 @@ public class DashboardViewModelHandler {
         .revenueView()
         .chartModel()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onRevenueChartModel);
+    this._viewModel
+        .revenueView()
+        .receivedIncome()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onRevenueReceivedIncome);
+    this._viewModel
+        .revenueView()
+        .projectedIncome()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onRevenueProjectedIncome);
   }
 
   private void _onSnackbarMessage(@Nullable StringResources stringRes) {
@@ -93,8 +102,6 @@ public class DashboardViewModelHandler {
   private void _onQueues(@Nullable List<QueueModel> queues) {
     if (queues == null) return;
 
-    this._fragment.revenueOverview().setTotalReceivedIncome(queues);
-    this._fragment.revenueOverview().setTotalProjectedIncome(queues);
     this._fragment.performanceOverview().setTotalQueue(queues);
     this._fragment.performanceOverview().setActiveCustomers(queues);
     this._fragment.performanceOverview().setTotalProductsSold(queues);
@@ -120,5 +127,13 @@ public class DashboardViewModelHandler {
 
   private void _onRevenueChartModel(@Nullable DashboardRevenue.ChartModel model) {
     if (model != null) this._fragment.revenueOverview().displayChart(model);
+  }
+
+  private void _onRevenueReceivedIncome(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.revenueOverview().setTotalReceivedIncome(amount);
+  }
+
+  private void _onRevenueProjectedIncome(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.revenueOverview().setTotalProjectedIncome(amount);
   }
 }

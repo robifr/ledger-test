@@ -20,6 +20,7 @@ package com.robifr.ledger.ui.dashboard.viewmodel;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.robifr.ledger.assetbinding.chart.ChartUtil;
 import com.robifr.ledger.data.display.QueueDate;
@@ -46,8 +47,39 @@ public class DashboardRevenueViewModel {
   @NonNull
   private final MutableLiveData<DashboardRevenue.ChartModel> _chartModel = new MutableLiveData<>();
 
-  public DashboardRevenueViewModel(@NonNull DashboardViewModel viewModel) {
+  @NonNull private final MediatorLiveData<BigDecimal> _receivedIncome = new MediatorLiveData<>();
+  @NonNull private final MediatorLiveData<BigDecimal> _projectedIncome = new MediatorLiveData<>();
+
+  public DashboardRevenueViewModel(
+      @NonNull DashboardViewModel viewModel, @NonNull LiveData<List<QueueModel>> queuesLiveData) {
+    Objects.requireNonNull(queuesLiveData);
+
     this._viewModel = Objects.requireNonNull(viewModel);
+
+    this._receivedIncome.addSource(
+        queuesLiveData,
+        queues -> {
+          if (queues != null) {
+            this._receivedIncome.setValue(
+                queues.stream()
+                    // Received income are from the completed queues.
+                    .filter(queue -> queue.status() == QueueModel.Status.COMPLETED)
+                    .flatMap(queue -> queue.productOrders().stream())
+                    .map(ProductOrderModel::totalPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add));
+          }
+        });
+    this._projectedIncome.addSource(
+        queuesLiveData,
+        queues -> {
+          if (queues != null) {
+            this._projectedIncome.setValue(
+                queues.stream()
+                    .flatMap(queue -> queue.productOrders().stream())
+                    .map(ProductOrderModel::totalPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add));
+          }
+        });
   }
 
   @NonNull
@@ -58,6 +90,16 @@ public class DashboardRevenueViewModel {
   @NonNull
   public LiveData<DashboardRevenue.ChartModel> chartModel() {
     return this._chartModel;
+  }
+
+  @NonNull
+  public LiveData<BigDecimal> receivedIncome() {
+    return this._receivedIncome;
+  }
+
+  @NonNull
+  public LiveData<BigDecimal> projectedIncome() {
+    return this._projectedIncome;
   }
 
   public void onDisplayedChartChanged(@NonNull DashboardRevenue.OverviewType overviewType) {

@@ -23,7 +23,7 @@
   <dimen name="text_large">20sp</dimen>
   <dimen name="text_extralarge">24sp</dimen>
 
-  <dimen name="text_icon_padding">20dp</dimen>
+  <dimen name="text_icon_padding">18dp</dimen>
 
   <dimen name="icon_extrasmall">16dp</dimen>
   <dimen name="icon_small">20dp</dimen>

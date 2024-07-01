@@ -45,8 +45,8 @@
         android:id="@+id/totalQueueTitleIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_assignment"
-        app:layout_constraintBottom_toBottomOf="@id/totalQueueTitle"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/icon_assignment_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/totalQueueTitle" />
 
@@ -84,8 +84,8 @@
         android:id="@+id/activeCustomersTitleIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_person"
-        app:layout_constraintBottom_toBottomOf="@id/activeCustomersTitle"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/icon_person_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/activeCustomersTitle" />
 
@@ -94,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_icon_padding"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:text="@string/text_active_customers"
         android:textSize="@dimen/text_smallmedium"
         android:textStyle="bold"
@@ -123,8 +123,8 @@
         android:id="@+id/productsSoldTitleIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_sell"
-        app:layout_constraintBottom_toBottomOf="@id/productsSoldTitle"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/icon_sell_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/productsSoldTitle" />
 
@@ -133,7 +133,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_icon_padding"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:text="@string/text_products_sold"
         android:textSize="@dimen/text_smallmedium"
         android:textStyle="bold"
@@ -147,6 +147,7 @@
         android:layout_marginTop="5dp"
         android:textSize="@dimen/text_mediumlarge"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/productsSoldTitle"
         app:layout_constraintTop_toBottomOf="@id/productsSoldTitle" />
   </androidx.constraintlayout.widget.ConstraintLayout>

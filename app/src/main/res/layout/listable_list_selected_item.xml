@@ -26,7 +26,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/list_title_margintop"
       android:text="@string/text_selected_customer"
-      android:textSize="@dimen/text_smallmedium"
+      android:textSize="@dimen/text_small"
       android:textStyle="bold"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -46,7 +46,7 @@
       android:layout_height="wrap_content"
       android:paddingTop="5dp"
       android:text="@string/text_originally_selected_customer_was_changed"
-      android:textSize="@dimen/text_smallmedium"
+      android:textSize="@dimen/text_small"
       android:textStyle="italic"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/selectedItemContainer" />
@@ -57,7 +57,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/list_title_margintop"
       android:text="@string/text_all_customers"
-      android:textSize="@dimen/text_smallmedium"
+      android:textSize="@dimen/text_small"
       android:textStyle="bold"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintTop_toBottomOf="@id/selectedItemDescription" />
@@ -70,7 +70,7 @@
       android:layout_marginBottom="@dimen/cardlist_margin_reverse"
       android:minHeight="0dp"
       android:text="@string/text_new"
-      android:textSize="@dimen/text_smallmedium"
+      android:textSize="@dimen/text_small"
       android:textStyle="bold"
       app:icon="@drawable/icon_add_20"
       app:layout_constraintBottom_toBottomOf="@id/allListTitle"

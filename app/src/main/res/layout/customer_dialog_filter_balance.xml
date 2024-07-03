@@ -29,7 +29,7 @@
       android:paddingTop="@dimen/bottomdialog_title_margin"
       android:paddingBottom="@dimen/bottomdialog_title_margin"
       android:text="@string/text_balance"
-      android:textSize="@dimen/text_smallmedium"
+      android:textSize="@dimen/text_small"
       android:textStyle="bold"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -56,7 +56,7 @@
         android:inputType="number"
         android:maxLines="1"
         android:singleLine="true"
-        android:textSize="@dimen/text_smallmedium"
+        android:textSize="@dimen/text_small"
         app:backgroundTint="@android:color/transparent" />
   </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,7 +64,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/symbol_mdash"
-      android:textSize="@dimen/text_smallmedium"
+      android:textSize="@dimen/text_small"
       app:layout_constraintBottom_toBottomOf="@id/minimumBalanceLayout"
       app:layout_constraintEnd_toStartOf="@id/maximumBalanceLayout"
       app:layout_constraintStart_toEndOf="@id/minimumBalanceLayout"
@@ -90,7 +90,7 @@
         android:inputType="number"
         android:maxLines="1"
         android:singleLine="true"
-        android:textSize="@dimen/text_smallmedium"
+        android:textSize="@dimen/text_small"
         app:backgroundTint="@android:color/transparent" />
   </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

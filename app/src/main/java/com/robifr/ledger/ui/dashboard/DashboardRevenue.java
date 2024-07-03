@@ -63,11 +63,11 @@ public class DashboardRevenue implements View.OnClickListener {
         MaterialColors.getColor(
             this._fragment.requireContext(), com.google.android.material.R.attr.colorSurface, 0));
     cardBinding.projectedIncomeCardView.setOnClickListener(this);
-    cardBinding.projectedIncomeCard.icon.setImageResource(R.drawable.icon_trending_up_20);
+    cardBinding.projectedIncomeCard.icon.setImageResource(R.drawable.icon_trending_up);
     cardBinding.projectedIncomeCard.title.setText(R.string.text_projected_income);
     cardBinding.projectedIncomeCard.description.setText(R.string.text_from_any_queues);
     cardBinding.receivedIncomeCardView.setOnClickListener(this);
-    cardBinding.receivedIncomeCard.icon.setImageResource(R.drawable.icon_paid_20);
+    cardBinding.receivedIncomeCard.icon.setImageResource(R.drawable.icon_paid);
     cardBinding.receivedIncomeCard.title.setText(R.string.text_received_income);
     cardBinding.receivedIncomeCard.description.setText(R.string.text_from_completed_queues);
   }

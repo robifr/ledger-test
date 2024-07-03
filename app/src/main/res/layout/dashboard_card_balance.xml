@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:src="@drawable/icon_account_wallet_20"
+        android:src="@drawable/icon_account_wallet"
         app:layout_constraintBottom_toBottomOf="@id/totalCustomersWithBalanceTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/totalBalanceTitle" />
@@ -58,7 +58,7 @@
         android:layout_marginLeft="@dimen/text_icon_padding"
         android:layout_marginTop="20dp"
         android:text="@string/text_total_balance"
-        android:textSize="@dimen/text_smallmedium"
+        android:textSize="@dimen/text_small"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/totalBalanceTitleIcon"
         app:layout_constraintTop_toBottomOf="@id/title" />
@@ -94,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:src="@drawable/icon_dollar_off_20"
+        android:src="@drawable/icon_dollar_off"
         app:layout_constraintBottom_toBottomOf="@id/totalCustomersWithDebtTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/totalDebtTitle" />
@@ -106,7 +106,7 @@
         android:layout_marginStart="@dimen/text_icon_padding"
         android:layout_marginTop="15dp"
         android:text="@string/text_total_debt"
-        android:textSize="@dimen/text_smallmedium"
+        android:textSize="@dimen/text_small"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/totalDebtTitleIcon"
         app:layout_constraintTop_toBottomOf="@id/dividerForTotalBalance" />

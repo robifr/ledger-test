@@ -31,14 +31,14 @@
         android:id="@+id/productName"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="@dimen/text_smallmedium" />
+        android:textSize="@dimen/text_small" />
 
     <TextView
         android:id="@+id/productPrice"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:enabled="false"
-        android:textSize="@dimen/text_smallmedium" />
+        android:textSize="@dimen/text_small" />
   </LinearLayout>
 
   <TextView
@@ -49,7 +49,7 @@
       android:gravity="center_horizontal"
       android:paddingStart="@dimen/table_column_padding"
       android:paddingEnd="@dimen/table_column_padding"
-      android:textSize="@dimen/text_smallmedium" />
+      android:textSize="@dimen/text_small" />
 
   <TextView
       android:id="@+id/totalPrice"
@@ -57,5 +57,5 @@
       android:layout_height="match_parent"
       android:layout_weight="0.35"
       android:gravity="end"
-      android:textSize="@dimen/text_smallmedium" />
+      android:textSize="@dimen/text_small" />
 </TableRow>

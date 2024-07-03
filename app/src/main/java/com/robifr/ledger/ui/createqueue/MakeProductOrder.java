@@ -126,7 +126,7 @@ public class MakeProductOrder
       // Set product price text smaller than its name.
       text.setSpan(
           new AbsoluteSizeSpan(
-              this._fragment.getResources().getDimensionPixelSize(R.dimen.text_smallmedium)),
+              this._fragment.getResources().getDimensionPixelSize(R.dimen.text_small)),
           productName.length(),
           productName.length() + productPrice.length(),
           Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

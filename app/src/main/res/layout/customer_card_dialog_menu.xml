@@ -27,7 +27,7 @@
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/editButton"
-      style="@style/BottomSheetDialog.MaterialButton"
+      style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_edit"
@@ -35,7 +35,7 @@
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/deleteButton"
-      style="@style/BottomSheetDialog.MaterialButton"
+      style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_delete"

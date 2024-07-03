@@ -29,7 +29,7 @@
     <item name="bottomSheetStyle">@style/BottomSheetDialog.Style</item>
   </style>
 
-  <style name="BottomSheetDialog.MaterialButton" parent="Widget.Material3.Button.TextButton">
+  <style name="BottomSheetDialog.Button" parent="Widget.Material3.Button.TextButton">
     <item name="android:layout_margin">0dp</item>
     <item name="android:minHeight">@dimen/bottomdialog_button_minheight</item>
     <item name="android:paddingStart">@dimen/bottomdialog_padding</item>
@@ -59,7 +59,7 @@
     <item name="android:gravity">center</item>
   </style>
 
-  <style name="BottomSheetDialog.Button.RoundedRight" parent="">
+  <style name="BottomSheetDialog.RadioButton.RoundedRight" parent="">
     <item name="android:minHeight">@dimen/bottomdialog_button_minheight</item>
     <item name="android:paddingStart">@dimen/bottomdialog_padding</item>
     <item name="android:button">@null</item>

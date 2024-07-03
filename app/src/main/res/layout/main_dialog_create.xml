@@ -40,7 +40,7 @@
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/createQueueButton"
-      style="@style/BottomSheetDialog.MaterialButton"
+      style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_queue"
@@ -48,7 +48,7 @@
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/createCustomerButton"
-      style="@style/BottomSheetDialog.MaterialButton"
+      style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_customer"
@@ -56,7 +56,7 @@
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/createProductButton"
-      style="@style/BottomSheetDialog.MaterialButton"
+      style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/text_product"

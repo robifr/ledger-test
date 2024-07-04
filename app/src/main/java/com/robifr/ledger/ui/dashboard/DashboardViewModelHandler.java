@@ -22,13 +22,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
-import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -130,10 +128,6 @@ public class DashboardViewModelHandler {
             : this._fragment.getString(date.range().resourceString());
 
     this._fragment.fragmentBinding().dateChip.setText(text);
-  }
-
-  private void _onQueues(@Nullable List<QueueModel> queues) {
-    if (queues != null) this._fragment.revenueOverview().loadChart();
   }
 
   private void _onBalanceTotalBalance(@Nullable BigDecimal amount) {

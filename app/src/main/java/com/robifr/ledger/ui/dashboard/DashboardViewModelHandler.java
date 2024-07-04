@@ -69,12 +69,24 @@ public class DashboardViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalQueue);
     this._viewModel
         .performanceView()
+        .totalQueueAverage()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalQueueAverage);
+    this._viewModel
+        .performanceView()
         .totalActiveCustomers()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalActiveCustomers);
     this._viewModel
         .performanceView()
+        .totalActiveCustomersAverage()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalActiveCustomersAverage);
+    this._viewModel
+        .performanceView()
         .totalProductsSold()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalProductsSold);
+    this._viewModel
+        .performanceView()
+        .totalProductsSoldAverage()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalProductsSoldAverage);
 
     this._viewModel
         .revenueView()
@@ -144,12 +156,24 @@ public class DashboardViewModelHandler {
     if (amount != null) this._fragment.performanceOverview().setTotalQueue(amount);
   }
 
+  private void _onTotalQueueAverage(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.performanceOverview().setTotalQueueAverage(amount);
+  }
+
   private void _onTotalActiveCustomers(@Nullable Integer amount) {
     if (amount != null) this._fragment.performanceOverview().setTotalActiveCustomers(amount);
   }
 
+  private void _onTotalActiveCustomersAverage(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.performanceOverview().setTotalActiveCustomersAverage(amount);
+  }
+
   private void _onTotalProductsSold(@Nullable BigDecimal amount) {
     if (amount != null) this._fragment.performanceOverview().setTotalProductsSold(amount);
+  }
+
+  private void _onTotalProductsSoldAverage(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.performanceOverview().setTotalProductsSoldAverage(amount);
   }
 
   private void _onRevenueDisplayedChart(@Nullable DashboardRevenue.OverviewType overviewType) {

@@ -22,7 +22,7 @@
     android:layout_height="wrap_content"
     app:strokeWidth="0dp">
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical"
@@ -37,118 +37,28 @@
         android:layout_height="wrap_content"
         android:text="@string/text_performance"
         android:textSize="@dimen/text_mediumlarge"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/totalQueueTitleIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:src="@drawable/icon_assignment"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/totalQueueTitle" />
-
-    <TextView
-        android:id="@+id/totalQueueTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/text_icon_padding"
-        android:layout_marginTop="20dp"
-        android:text="@string/text_total_queue"
-        android:textSize="@dimen/text_small"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/totalQueueTitleIcon"
-        app:layout_constraintTop_toBottomOf="@id/title" />
-
-    <TextView
+    <include
         android:id="@+id/totalQueue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:textSize="@dimen/text_mediumlarge"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/totalQueueTitle"
-        app:layout_constraintTop_toBottomOf="@id/totalQueueTitle" />
+        layout="@layout/dashboard_card_performance_overview" />
 
     <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/dividerForTotalQueue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/totalQueue" />
+        android:layout_marginTop="15dp" />
 
-    <ImageView
-        android:id="@+id/activeCustomersTitleIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:src="@drawable/icon_person"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/activeCustomersTitle" />
-
-    <TextView
-        android:id="@+id/activeCustomersTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/text_icon_padding"
-        android:layout_marginTop="15dp"
-        android:text="@string/text_active_customers"
-        android:textSize="@dimen/text_small"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/activeCustomersTitleIcon"
-        app:layout_constraintTop_toBottomOf="@id/dividerForTotalQueue" />
-
-    <TextView
+    <include
         android:id="@+id/activeCustomers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:textSize="@dimen/text_mediumlarge"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/activeCustomersTitle"
-        app:layout_constraintTop_toBottomOf="@id/activeCustomersTitle" />
+        layout="@layout/dashboard_card_performance_overview" />
 
     <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/dividerForActiveCustomers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/activeCustomers" />
+        android:layout_marginTop="15dp" />
 
-    <ImageView
-        android:id="@+id/productsSoldTitleIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:src="@drawable/icon_sell"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/productsSoldTitle" />
-
-    <TextView
-        android:id="@+id/productsSoldTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/text_icon_padding"
-        android:layout_marginTop="15dp"
-        android:text="@string/text_products_sold"
-        android:textSize="@dimen/text_small"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/productsSoldTitleIcon"
-        app:layout_constraintTop_toBottomOf="@id/dividerForActiveCustomers" />
-
-    <TextView
+    <include
         android:id="@+id/productsSold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:textSize="@dimen/text_mediumlarge"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/productsSoldTitle"
-        app:layout_constraintTop_toBottomOf="@id/productsSoldTitle" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+        layout="@layout/dashboard_card_performance_overview" />
+  </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

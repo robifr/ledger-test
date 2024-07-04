@@ -28,6 +28,7 @@
   <string name="text_all_products">All products</string>
   <string name="text_all_time">All time</string>
   <string name="text_amount">Amount</string>
+  <string name="text_average">Average</string>
   <string name="text_balance">Balance</string>
   <string name="text_cancel">Cancel</string>
   <string name="text_cant_find_any_matching_customers">Can\'t find any matching customers</string>
@@ -93,6 +94,7 @@
   <string name="text_originally_selected_product_was_deleted">Originally selected product was deleted</string>
   <string name="text_payment_method">Payment method</string>
   <string name="text_payment_methods">Payment methods</string>
+  <string name="text_per_day">per day</string>
   <string name="text_performance">Performance</string>
   <string name="text_please_to_include_at_least_one_product_order">Please to include at least one product order</string>
   <string name="text_price">Price</string>

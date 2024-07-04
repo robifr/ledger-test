@@ -22,13 +22,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
-import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -69,12 +67,24 @@ public class DashboardViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalQueue);
     this._viewModel
         .performanceView()
+        .totalQueueAverage()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalQueueAverage);
+    this._viewModel
+        .performanceView()
         .totalActiveCustomers()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalActiveCustomers);
     this._viewModel
         .performanceView()
+        .totalActiveCustomersAverage()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalActiveCustomersAverage);
+    this._viewModel
+        .performanceView()
         .totalProductsSold()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalProductsSold);
+    this._viewModel
+        .performanceView()
+        .totalProductsSoldAverage()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalProductsSoldAverage);
 
     this._viewModel
         .revenueView()
@@ -120,10 +130,6 @@ public class DashboardViewModelHandler {
     this._fragment.fragmentBinding().dateChip.setText(text);
   }
 
-  private void _onQueues(@Nullable List<QueueModel> queues) {
-    if (queues != null) this._fragment.revenueOverview().loadChart();
-  }
-
   private void _onBalanceTotalBalance(@Nullable BigDecimal amount) {
     if (amount != null) this._fragment.balanceOverview().setTotalBalance(amount);
   }
@@ -144,12 +150,24 @@ public class DashboardViewModelHandler {
     if (amount != null) this._fragment.performanceOverview().setTotalQueue(amount);
   }
 
+  private void _onTotalQueueAverage(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.performanceOverview().setTotalQueueAverage(amount);
+  }
+
   private void _onTotalActiveCustomers(@Nullable Integer amount) {
     if (amount != null) this._fragment.performanceOverview().setTotalActiveCustomers(amount);
   }
 
+  private void _onTotalActiveCustomersAverage(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.performanceOverview().setTotalActiveCustomersAverage(amount);
+  }
+
   private void _onTotalProductsSold(@Nullable BigDecimal amount) {
     if (amount != null) this._fragment.performanceOverview().setTotalProductsSold(amount);
+  }
+
+  private void _onTotalProductsSoldAverage(@Nullable BigDecimal amount) {
+    if (amount != null) this._fragment.performanceOverview().setTotalProductsSoldAverage(amount);
   }
 
   private void _onRevenueDisplayedChart(@Nullable DashboardRevenue.OverviewType overviewType) {

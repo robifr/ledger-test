@@ -87,9 +87,9 @@ android {
 }
 
 dependencies {
-  implementation("androidx.appcompat:appcompat:1.6.1")
+  implementation("androidx.appcompat:appcompat:1.7.0")
   implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-  implementation("androidx.webkit:webkit:1.10.0")
+  implementation("androidx.webkit:webkit:1.11.0")
 
   implementation("androidx.room:room-runtime:2.6.1")
   annotationProcessor("androidx.room:room-compiler:2.6.1")
@@ -106,11 +106,8 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.23")
   implementation("org.jetbrains.kotlin:kotlin-test")
 
-  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
-  testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
-  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-  testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
+  testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.3")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
 
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

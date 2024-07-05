@@ -217,6 +217,8 @@
     ]]>
   </string>
 
+  <string name="dashboardbalance_note">*\u0020\u0020 Date filters have no effect on this balance overview.</string>
+
   <string name="createcustomerdialog_balanceavailable_helper">%s available</string>
 
   <string name="queuefilter_date_selecteddate_chip">%s — %s</string>

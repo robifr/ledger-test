@@ -20,7 +20,6 @@ package com.robifr.ledger.ui.queue.filter;
 import android.text.Editable;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.robifr.ledger.R;
@@ -59,18 +58,18 @@ public class QueueFilterTotalPrice {
    * @param minTotalPrice Formatted text of min {@link QueueFilters#filteredTotalPrice() total
    *     price}.
    */
-  public void setFilteredMinTotalPriceText(@Nullable String minTotalPrice) {
+  public void setFilteredMinTotalPriceText(@NonNull String minTotalPrice) {
+    Objects.requireNonNull(minTotalPrice);
+
     final String currentText =
         this._dialogBinding.filterTotalPrice.minimumTotalPrice.getText().toString();
     if (currentText.equals(minTotalPrice)) return;
-
-    final int cursorPosition = minTotalPrice != null ? minTotalPrice.length() : 0;
 
     // Remove listener to prevent any sort of formatting.
     this._dialogBinding.filterTotalPrice.minimumTotalPrice.removeTextChangedListener(
         this._minPriceTextWatcher);
     this._dialogBinding.filterTotalPrice.minimumTotalPrice.setText(minTotalPrice);
-    this._dialogBinding.filterTotalPrice.minimumTotalPrice.setSelection(cursorPosition);
+    this._dialogBinding.filterTotalPrice.minimumTotalPrice.setSelection(minTotalPrice.length());
     this._dialogBinding.filterTotalPrice.minimumTotalPrice.addTextChangedListener(
         this._minPriceTextWatcher);
   }
@@ -79,18 +78,18 @@ public class QueueFilterTotalPrice {
    * @param maxTotalPrice Formatted text of max {@link QueueFilters#filteredTotalPrice() total
    *     price}.
    */
-  public void setFilteredMaxTotalPriceText(@Nullable String maxTotalPrice) {
+  public void setFilteredMaxTotalPriceText(@NonNull String maxTotalPrice) {
+    Objects.requireNonNull(maxTotalPrice);
+
     final String currentText =
         this._dialogBinding.filterTotalPrice.maximumTotalPrice.getText().toString();
     if (currentText.equals(maxTotalPrice)) return;
-
-    final int cursorPosition = maxTotalPrice != null ? maxTotalPrice.length() : 0;
 
     // Remove listener to prevent any sort of formatting.
     this._dialogBinding.filterTotalPrice.maximumTotalPrice.removeTextChangedListener(
         this._maxPriceTextWatcher);
     this._dialogBinding.filterTotalPrice.maximumTotalPrice.setText(maxTotalPrice);
-    this._dialogBinding.filterTotalPrice.maximumTotalPrice.setSelection(cursorPosition);
+    this._dialogBinding.filterTotalPrice.maximumTotalPrice.setSelection(maxTotalPrice.length());
     this._dialogBinding.filterTotalPrice.maximumTotalPrice.addTextChangedListener(
         this._maxPriceTextWatcher);
   }

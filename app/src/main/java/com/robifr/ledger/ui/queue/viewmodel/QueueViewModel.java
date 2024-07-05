@@ -30,8 +30,9 @@ import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -56,14 +57,20 @@ public class QueueViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull private final MutableLiveData<List<QueueModel>> _queues = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<QueueSortMethod> _sortMethod = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<List<QueueModel>> _queues =
+      new SafeMutableLiveData<>(List.of());
+
+  @NonNull
+  private final SafeMutableLiveData<QueueSortMethod> _sortMethod =
+      new SafeMutableLiveData<>(new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
 
   /**
-   * Currently expanded queue index from {@link QueueViewModel#_queues queues}. -1 or null to
-   * represent none being expanded.
+   * Currently expanded queue index from {@link QueueViewModel#_queues queues}. -1 to represent none
+   * being expanded.
    */
-  @NonNull private final MutableLiveData<Integer> _expandedQueueIndex = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<Integer> _expandedQueueIndex = new SafeMutableLiveData<>(-1);
 
   @Inject
   public QueueViewModel(
@@ -79,7 +86,6 @@ public class QueueViewModel extends ViewModel {
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
-    this.onSortMethodChanged(new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
     LiveDataEvent.observeOnce(
         this.selectAllQueues(),
         queues -> this._filterView.onFiltersChanged(this._filterView.inputtedFilters(), queues),
@@ -103,19 +109,19 @@ public class QueueViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<QueueModel>> queues() {
+  public SafeLiveData<List<QueueModel>> queues() {
     return this._queues;
   }
 
   @NonNull
-  public LiveData<QueueSortMethod> sortMethod() {
+  public SafeLiveData<QueueSortMethod> sortMethod() {
     return this._sortMethod;
   }
 
   /**
    * @see QueueViewModel#_expandedQueueIndex
    */
-  public LiveData<Integer> expandedQueueIndex() {
+  public SafeLiveData<Integer> expandedQueueIndex() {
     return this._expandedQueueIndex;
   }
 
@@ -162,9 +168,7 @@ public class QueueViewModel extends ViewModel {
     // from the new `queues` list. Do this before list being updated,
     // because the view will get re-binding while requiring the expanded queue index.
     final Long currentExpandedQueueId =
-        this._queues.getValue() != null
-                && this._expandedQueueIndex.getValue() != null
-                && this._expandedQueueIndex.getValue() != -1
+        this._expandedQueueIndex.getValue() != -1
             ? this._queues.getValue().get(this._expandedQueueIndex.getValue()).id()
             : null;
     int expandedQueueIndex = -1;
@@ -181,9 +185,7 @@ public class QueueViewModel extends ViewModel {
   }
 
   public void onSortMethodChanged(@NonNull QueueSortMethod sortMethod) {
-    final List<QueueModel> queues =
-        Objects.requireNonNullElse(this._queues.getValue(), new ArrayList<>());
-    this.onSortMethodChanged(sortMethod, queues);
+    this.onSortMethodChanged(sortMethod, this._queues.getValue());
   }
 
   public void onSortMethodChanged(
@@ -200,9 +202,7 @@ public class QueueViewModel extends ViewModel {
    * @see QueueViewModel#onSortMethodChanged(QueueSortMethod.SortBy, List)
    */
   public void onSortMethodChanged(@NonNull QueueSortMethod.SortBy sortBy) {
-    final List<QueueModel> queues =
-        Objects.requireNonNullElse(this._queues.getValue(), new ArrayList<>());
-    this.onSortMethodChanged(sortBy, queues);
+    this.onSortMethodChanged(sortBy, this._queues.getValue());
   }
 
   /**
@@ -216,12 +216,11 @@ public class QueueViewModel extends ViewModel {
     Objects.requireNonNull(sortBy);
     Objects.requireNonNull(queues);
 
-    final QueueSortMethod sortMethod = this._sortMethod.getValue();
-    if (sortMethod == null) return;
-
     // Reverse sort order when selecting same sort option.
     final boolean isAscending =
-        sortMethod.sortBy() == sortBy ? !sortMethod.isAscending() : sortMethod.isAscending();
+        this._sortMethod.getValue().sortBy() == sortBy
+            ? !this._sortMethod.getValue().isAscending()
+            : this._sortMethod.getValue().isAscending();
 
     this.onSortMethodChanged(new QueueSortMethod(sortBy, isAscending), queues);
   }

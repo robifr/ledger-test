@@ -18,77 +18,73 @@
 package com.robifr.ledger.ui.dashboard.viewmodel;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMediatorLiveData;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class DashboardBalanceViewModel {
   @NonNull private final DashboardViewModel _viewModel;
 
-  @NonNull private final MediatorLiveData<BigDecimal> _totalBalance = new MediatorLiveData<>();
+  @NonNull
+  private final SafeMediatorLiveData<BigDecimal> _totalBalance =
+      new SafeMediatorLiveData<>(BigDecimal.ZERO);
 
   @NonNull
-  private final MediatorLiveData<Integer> _totalCustomersWithBalance = new MediatorLiveData<>();
-
-  @NonNull private final MediatorLiveData<BigDecimal> _totalDebt = new MediatorLiveData<>();
+  private final SafeMediatorLiveData<Integer> _totalCustomersWithBalance =
+      new SafeMediatorLiveData<>(0);
 
   @NonNull
-  private final MediatorLiveData<Integer> _totalCustomersWithDebt = new MediatorLiveData<>();
+  private final SafeMediatorLiveData<BigDecimal> _totalDebt =
+      new SafeMediatorLiveData<>(BigDecimal.ZERO);
+
+  @NonNull
+  private final SafeMediatorLiveData<Integer> _totalCustomersWithDebt =
+      new SafeMediatorLiveData<>(0);
 
   public DashboardBalanceViewModel(@NonNull DashboardViewModel viewModel) {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._totalBalance.addSource(
-        this._viewModel._customersWithBalance(),
-        balanceInfo -> {
-          if (balanceInfo != null) {
+        this._viewModel._customersWithBalance().toLiveData(),
+        balanceInfo ->
             this._totalBalance.setValue(
                 balanceInfo.stream()
                     .map(customer -> BigDecimal.valueOf(customer.balance()))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add));
-          }
-        });
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)));
     this._totalCustomersWithBalance.addSource(
-        this._viewModel._customersWithBalance(),
-        balanceInfo -> {
-          if (balanceInfo != null) this._totalCustomersWithBalance.setValue(balanceInfo.size());
-        });
+        this._viewModel._customersWithBalance().toLiveData(),
+        balanceInfo -> this._totalCustomersWithBalance.setValue(balanceInfo.size()));
     this._totalDebt.addSource(
-        this._viewModel._customersWithDebt(),
-        debtInfo -> {
-          if (debtInfo != null) {
+        this._viewModel._customersWithDebt().toLiveData(),
+        debtInfo ->
             this._totalDebt.setValue(
                 debtInfo.stream()
                     .map(CustomerDebtInfo::debt)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add));
-          }
-        });
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)));
     this._totalCustomersWithDebt.addSource(
-        this._viewModel._customersWithDebt(),
-        debtInfo -> {
-          if (debtInfo != null) this._totalCustomersWithDebt.setValue(debtInfo.size());
-        });
+        this._viewModel._customersWithDebt().toLiveData(),
+        debtInfo -> this._totalCustomersWithDebt.setValue(debtInfo.size()));
   }
 
   @NonNull
-  public LiveData<BigDecimal> totalBalance() {
+  public SafeLiveData<BigDecimal> totalBalance() {
     return this._totalBalance;
   }
 
   @NonNull
-  public LiveData<Integer> totalCustomersWithBalance() {
+  public SafeLiveData<Integer> totalCustomersWithBalance() {
     return this._totalCustomersWithBalance;
   }
 
   @NonNull
-  public LiveData<BigDecimal> totalDebt() {
+  public SafeLiveData<BigDecimal> totalDebt() {
     return this._totalDebt;
   }
 
   @NonNull
-  public LiveData<Integer> totalCustomersWithDebt() {
+  public SafeLiveData<Integer> totalCustomersWithDebt() {
     return this._totalCustomersWithDebt;
   }
 }

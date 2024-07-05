@@ -27,6 +27,8 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -47,9 +49,15 @@ public class CreateCustomerViewModel extends ViewModel {
   protected final MutableLiveData<LiveDataEvent<StringResources>> _inputtedNameError =
       new MutableLiveData<>();
 
-  @NonNull protected final MutableLiveData<String> _inputtedNameText = new MutableLiveData<>();
-  @NonNull protected final MutableLiveData<Long> _inputtedBalance = new MutableLiveData<>();
-  @NonNull protected final MutableLiveData<BigDecimal> _inputtedDebt = new MutableLiveData<>();
+  @NonNull
+  protected final SafeMutableLiveData<String> _inputtedNameText = new SafeMutableLiveData<>("");
+
+  @NonNull
+  protected final SafeMutableLiveData<Long> _inputtedBalance = new SafeMutableLiveData<>(0L);
+
+  @NonNull
+  protected final SafeMutableLiveData<BigDecimal> _inputtedDebt =
+      new SafeMutableLiveData<>(BigDecimal.ZERO);
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<Long>> _resultCreatedCustomerId =
@@ -58,13 +66,6 @@ public class CreateCustomerViewModel extends ViewModel {
   @Inject
   public CreateCustomerViewModel(@NonNull CustomerRepository customerRepository) {
     this._customerRepository = Objects.requireNonNull(customerRepository);
-
-    // It's unusual indeed to call its own method in its constructor. Setting up initial values
-    // inside a fragment is painful. You have to consider whether the fragment recreated due to
-    // configuration changes, or if it's popped from the backstack, or when the view model itself
-    // is recreated due to the fragment being navigated by bottom navigation.
-    this.onBalanceChanged(0L);
-    this.onDebtChanged(BigDecimal.ZERO);
   }
 
   public CustomerBalanceViewModel balanceView() {
@@ -82,17 +83,17 @@ public class CreateCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<String> inputtedNameText() {
+  public SafeLiveData<String> inputtedNameText() {
     return this._inputtedNameText;
   }
 
   @NonNull
-  public LiveData<Long> inputtedBalance() {
+  public SafeLiveData<Long> inputtedBalance() {
     return this._inputtedBalance;
   }
 
   @NonNull
-  public LiveData<BigDecimal> inputtedDebt() {
+  public SafeLiveData<BigDecimal> inputtedDebt() {
     return this._inputtedDebt;
   }
 
@@ -109,16 +110,11 @@ public class CreateCustomerViewModel extends ViewModel {
    */
   @NonNull
   public CustomerModel inputtedCustomer() {
-    final CustomerModel defaultCustomer = CustomerModel.toBuilder().setName("").build();
-
-    final String name =
-        Objects.requireNonNullElse(this._inputtedNameText.getValue(), defaultCustomer.name());
-    final long balance =
-        Objects.requireNonNullElse(this._inputtedBalance.getValue(), defaultCustomer.balance());
-    final BigDecimal debt =
-        Objects.requireNonNullElse(this._inputtedDebt.getValue(), defaultCustomer.debt());
-
-    return CustomerModel.toBuilder().setName(name).setBalance(balance).setDebt(debt).build();
+    return CustomerModel.toBuilder()
+        .setName(this._inputtedNameText.getValue())
+        .setBalance(this._inputtedBalance.getValue())
+        .setDebt(this._inputtedDebt.getValue())
+        .build();
   }
 
   public void onNameTextChanged(@NonNull String name) {
@@ -141,7 +137,7 @@ public class CreateCustomerViewModel extends ViewModel {
   }
 
   public void onSave() {
-    if (this.inputtedCustomer().name().isBlank()) {
+    if (this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
           new LiveDataEvent<>(
               new StringResources.Strings(R.string.text_customer_name_is_required)));

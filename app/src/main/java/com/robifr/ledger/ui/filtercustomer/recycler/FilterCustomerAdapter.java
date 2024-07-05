@@ -21,13 +21,11 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -85,19 +83,16 @@ public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
       headerHolder.bind(Optional.empty());
 
     } else if (holder instanceof FilterCustomerListHolder listHolder) {
-      final List<CustomerModel> customers =
-          this._fragment.filterCustomerViewModel().customers().getValue();
-
       // -1 offset because header holder.
-      if (customers != null) listHolder.bind(customers.get(index - 1));
+      listHolder.bind(
+          this._fragment.filterCustomerViewModel().customers().getValue().get(index - 1));
     }
   }
 
   @Override
   public int getItemCount() {
-    final List<CustomerModel> customers =
-        this._fragment.filterCustomerViewModel().customers().getValue();
-    return customers != null ? customers.size() + 1 : 0; // +1 offset because header holder.
+    // +1 offset because header holder.
+    return this._fragment.filterCustomerViewModel().customers().getValue().size() + 1;
   }
 
   @Override

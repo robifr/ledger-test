@@ -18,11 +18,10 @@
 package com.robifr.ledger.ui.createqueue.viewmodel;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import com.robifr.ledger.data.model.ProductOrderModel;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -30,30 +29,32 @@ import java.util.TreeSet;
 
 public class SelectProductOrderViewModel {
   @NonNull private final CreateQueueViewModel _viewModel;
-  @NonNull private final MutableLiveData<Boolean> _isContextualModeActive = new MutableLiveData<>();
+
+  @NonNull
+  private final SafeMutableLiveData<Boolean> _isContextualModeActive =
+      new SafeMutableLiveData<>(false);
 
   /** Selected product order indexes from {@link CreateQueueViewModel#inputtedProductOrders()} */
-  @NonNull private final MutableLiveData<Set<Integer>> _selectedIndexes = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<Set<Integer>> _selectedIndexes =
+      new SafeMutableLiveData<>(Set.of());
 
   public SelectProductOrderViewModel(@NonNull CreateQueueViewModel viewModel) {
     this._viewModel = Objects.requireNonNull(viewModel);
   }
 
   @NonNull
-  public LiveData<Boolean> isContextualModeActive() {
+  public SafeLiveData<Boolean> isContextualModeActive() {
     return this._isContextualModeActive;
   }
 
   @NonNull
-  public LiveData<Set<Integer>> selectedIndexes() {
+  public SafeLiveData<Set<Integer>> selectedIndexes() {
     return this._selectedIndexes;
   }
 
   public void onProductOrderCheckedChanged(int productOrderIndex, boolean isChecked) {
-    final HashSet<Integer> selectedIndexes =
-        this._selectedIndexes.getValue() != null
-            ? new HashSet<>(this._selectedIndexes.getValue())
-            : new HashSet<>();
+    final HashSet<Integer> selectedIndexes = new HashSet<>(this._selectedIndexes.getValue());
 
     // Replace product image — its initial name — with checkbox
     // when being selected and vice versa.
@@ -62,14 +63,12 @@ public class SelectProductOrderViewModel {
 
     if (selectedIndexes.isEmpty()
         // Prevent re-invoking the live data.
-        && (this._isContextualModeActive.getValue() == null
-            || this._isContextualModeActive.getValue())) {
+        && this._isContextualModeActive.getValue()) {
       this._isContextualModeActive.setValue(false);
 
     } else if (!selectedIndexes.isEmpty()
         // Prevent re-invoking the live data.
-        && (this._isContextualModeActive.getValue() == null
-            || !this._isContextualModeActive.getValue())) {
+        && (!this._isContextualModeActive.getValue())) {
       this._isContextualModeActive.setValue(true);
     }
 
@@ -79,14 +78,9 @@ public class SelectProductOrderViewModel {
   }
 
   public void onDeleteSelectedProductOrder() {
-    final TreeSet<Integer> selectedIndexes =
-        this._selectedIndexes.getValue() != null
-            ? new TreeSet<>(this._selectedIndexes.getValue())
-            : new TreeSet<>();
+    final TreeSet<Integer> selectedIndexes = new TreeSet<>(this._selectedIndexes.getValue());
     final ArrayList<ProductOrderModel> inputtedProductOrders =
-        this._viewModel.inputtedProductOrders().getValue() != null
-            ? new ArrayList<>(this._viewModel.inputtedProductOrders().getValue())
-            : new ArrayList<>();
+        new ArrayList<>(this._viewModel.inputtedProductOrders().getValue());
 
     for (int i = inputtedProductOrders.size(); i-- > 0; ) {
       if (selectedIndexes.contains(i)) inputtedProductOrders.remove(i);
@@ -98,6 +92,6 @@ public class SelectProductOrderViewModel {
 
   public void reset() {
     this._isContextualModeActive.setValue(false);
-    this._selectedIndexes.setValue(Collections.unmodifiableSet(new HashSet<>()));
+    this._selectedIndexes.setValue(Set.of());
   }
 }

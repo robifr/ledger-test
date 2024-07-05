@@ -31,6 +31,8 @@ import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +53,9 @@ public class SelectProductViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<List<ProductModel>> _products =
+      new SafeMutableLiveData<>(List.of());
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedProductId =
@@ -92,7 +96,7 @@ public class SelectProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<ProductModel>> products() {
+  public SafeLiveData<List<ProductModel>> products() {
     return this._products;
   }
 

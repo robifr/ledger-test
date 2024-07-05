@@ -27,7 +27,6 @@ import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardNormalComponent;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -69,17 +68,12 @@ public class SelectProductHeaderHolder extends RecyclerViewHolder<Optional<Produ
       return;
     }
 
-    final List<ProductModel> products =
-        this._fragment.selectProductViewModel().products().getValue();
     final ProductModel selectedProductOnDb =
-        products != null && selectedProduct.isPresent()
-            ? products.stream()
-                .filter(
-                    product ->
-                        product.id() != null && product.id().equals(selectedProduct.get().id()))
-                .findFirst()
-                .orElse(null)
-            : null;
+        this._fragment.selectProductViewModel().products().getValue().stream()
+            .filter(
+                product -> product.id() != null && product.id().equals(selectedProduct.get().id()))
+            .findFirst()
+            .orElse(null);
 
     // The original product on database was deleted.
     if (selectedProductOnDb == null) {
@@ -88,7 +82,7 @@ public class SelectProductHeaderHolder extends RecyclerViewHolder<Optional<Produ
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
 
       // The original product on database was edited.
-    } else if (selectedProduct.isPresent() && !selectedProduct.get().equals(selectedProductOnDb)) {
+    } else if (!selectedProduct.get().equals(selectedProductOnDb)) {
       this._headerBinding.selectedItemDescription.setText(
           this._fragment.getString(R.string.text_originally_selected_product_was_changed));
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);

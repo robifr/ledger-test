@@ -20,7 +20,6 @@ package com.robifr.ledger.ui.createproduct;
 import android.text.Editable;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.robifr.ledger.ui.CurrencyTextWatcher;
 import java.util.Objects;
 
@@ -36,16 +35,16 @@ public class CreateProductPrice {
     this._fragment.fragmentBinding().price.addTextChangedListener(this._priceTextWatcher);
   }
 
-  public void setInputtedPriceText(@Nullable String price) {
+  public void setInputtedPriceText(@NonNull String price) {
+    Objects.requireNonNull(price);
+
     final String currentText = this._fragment.fragmentBinding().price.getText().toString();
     if (currentText.equals(price)) return;
-
-    final int cursorPosition = price != null ? price.length() : 0;
 
     // Remove listener to prevent any sort of formatting.
     this._fragment.fragmentBinding().price.removeTextChangedListener(this._priceTextWatcher);
     this._fragment.fragmentBinding().price.setText(price);
-    this._fragment.fragmentBinding().price.setSelection(cursorPosition);
+    this._fragment.fragmentBinding().price.setSelection(price.length());
     this._fragment.fragmentBinding().price.addTextChangedListener(this._priceTextWatcher);
   }
 

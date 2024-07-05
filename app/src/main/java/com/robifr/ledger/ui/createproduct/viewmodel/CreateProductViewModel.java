@@ -28,6 +28,8 @@ import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.util.CurrencyFormat;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.text.ParseException;
 import java.util.Objects;
@@ -45,8 +47,11 @@ public class CreateProductViewModel extends ViewModel {
   protected final MutableLiveData<LiveDataEvent<StringResources>> _inputtedNameError =
       new MutableLiveData<>();
 
-  @NonNull protected final MutableLiveData<String> _inputtedNameText = new MutableLiveData<>();
-  @NonNull protected final MutableLiveData<String> _inputtedPriceText = new MutableLiveData<>();
+  @NonNull
+  protected final SafeMutableLiveData<String> _inputtedNameText = new SafeMutableLiveData<>("");
+
+  @NonNull
+  protected final SafeMutableLiveData<String> _inputtedPriceText = new SafeMutableLiveData<>("");
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<Long>> _resultCreatedProductId =
@@ -68,12 +73,12 @@ public class CreateProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<String> inputtedNameText() {
+  public SafeLiveData<String> inputtedNameText() {
     return this._inputtedNameText;
   }
 
   @NonNull
-  public LiveData<String> inputtedPriceText() {
+  public SafeLiveData<String> inputtedPriceText() {
     return this._inputtedPriceText;
   }
 
@@ -90,17 +95,18 @@ public class CreateProductViewModel extends ViewModel {
    */
   @NonNull
   public ProductModel inputtedProduct() {
-    final String name = Objects.requireNonNullElse(this._inputtedNameText.getValue(), "");
     long price = 0L;
 
     try {
-      final String priceText = Objects.requireNonNullElse(this._inputtedPriceText.getValue(), "");
-      price = CurrencyFormat.parse(priceText, "id", "ID").longValue();
+      price = CurrencyFormat.parse(this._inputtedPriceText.getValue(), "id", "ID").longValue();
 
     } catch (ParseException ignore) {
     }
 
-    return ProductModel.toBuilder().setName(name).setPrice(price).build();
+    return ProductModel.toBuilder()
+        .setName(this._inputtedNameText.getValue())
+        .setPrice(price)
+        .build();
   }
 
   public void onNameTextChanged(@NonNull String name) {
@@ -119,7 +125,7 @@ public class CreateProductViewModel extends ViewModel {
   }
 
   public void onSave() {
-    if (this._inputtedNameText.getValue() == null || this._inputtedNameText.getValue().isBlank()) {
+    if (this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
           new LiveDataEvent<>(new StringResources.Strings(R.string.text_product_name_is_required)));
       return;

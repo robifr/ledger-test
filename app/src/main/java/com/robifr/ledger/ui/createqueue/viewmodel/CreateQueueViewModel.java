@@ -33,14 +33,16 @@ import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
@@ -60,31 +62,36 @@ public class CreateQueueViewModel extends ViewModel {
    * the actual transaction.
    */
   @NonNull
-  protected final MutableLiveData<CustomerModel> _temporalInputtedCustomer =
-      new MutableLiveData<>();
+  protected final SafeMutableLiveData<Optional<CustomerModel>> _temporalInputtedCustomer =
+      new SafeMutableLiveData<>(Optional.empty());
 
   @NonNull
-  protected final MutableLiveData<CustomerModel> _inputtedCustomer = new MutableLiveData<>();
-
-  @NonNull protected final MutableLiveData<ZonedDateTime> _inputtedDate = new MutableLiveData<>();
-
-  @NonNull
-  protected final MutableLiveData<QueueModel.Status> _inputtedStatus = new MutableLiveData<>();
+  protected final SafeMutableLiveData<Optional<CustomerModel>> _inputtedCustomer =
+      new SafeMutableLiveData<>(Optional.empty());
 
   @NonNull
-  protected final MutableLiveData<List<ProductOrderModel>> _inputtedProductOrders =
-      new MutableLiveData<>();
+  protected final SafeMutableLiveData<ZonedDateTime> _inputtedDate =
+      new SafeMutableLiveData<>(ZonedDateTime.now(ZoneId.systemDefault()));
 
   @NonNull
-  protected final MutableLiveData<QueueModel.PaymentMethod> _inputtedPaymentMethod =
-      new MutableLiveData<>();
+  protected final SafeMutableLiveData<QueueModel.Status> _inputtedStatus =
+      new SafeMutableLiveData<>(QueueModel.Status.IN_QUEUE);
 
   @NonNull
-  protected final MutableLiveData<Set<QueueModel.PaymentMethod>> _allowedPaymentMethods =
-      new MutableLiveData<>();
+  protected final SafeMutableLiveData<List<ProductOrderModel>> _inputtedProductOrders =
+      new SafeMutableLiveData<>(List.of());
 
   @NonNull
-  protected final MutableLiveData<Boolean> _isPaymentMethodsViewVisible = new MutableLiveData<>();
+  protected final SafeMutableLiveData<QueueModel.PaymentMethod> _inputtedPaymentMethod =
+      new SafeMutableLiveData<>(QueueModel.PaymentMethod.CASH);
+
+  @NonNull
+  protected final SafeMutableLiveData<Set<QueueModel.PaymentMethod>> _allowedPaymentMethods =
+      new SafeMutableLiveData<>(Set.of(QueueModel.PaymentMethod.CASH));
+
+  @NonNull
+  protected final SafeMutableLiveData<Boolean> _isPaymentMethodsViewVisible =
+      new SafeMutableLiveData<>(false);
 
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final ProductRepository _productRepository;
@@ -103,16 +110,6 @@ public class CreateQueueViewModel extends ViewModel {
     this._productRepository = Objects.requireNonNull(productRepository);
     this._makeProductOrderView = new MakeProductOrderViewModel(this);
     this._selectProductOrderView = new SelectProductOrderViewModel(this);
-
-    // It's unusual indeed to call its own method in its constructor. Setting up initial values
-    // inside a fragment is painful. You have to consider whether the fragment recreated due to
-    // configuration changes, or if it's popped from the backstack, or when the view model itself
-    // is recreated due to the fragment being navigated by bottom navigation.
-    this.onCustomerChanged(null);
-    this.onDateChanged(ZonedDateTime.now(ZoneId.systemDefault()));
-    this.onStatusChanged(QueueModel.Status.IN_QUEUE);
-    this.onPaymentMethodChanged(QueueModel.PaymentMethod.CASH);
-    this.setAllowedPaymentMethods(Set.of(QueueModel.PaymentMethod.CASH));
   }
 
   @NonNull
@@ -131,7 +128,7 @@ public class CreateQueueViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<CustomerModel> inputtedCustomer() {
+  public SafeLiveData<Optional<CustomerModel>> inputtedCustomer() {
     return this._inputtedCustomer;
   }
 
@@ -139,43 +136,37 @@ public class CreateQueueViewModel extends ViewModel {
    * @see CreateQueueViewModel#_temporalInputtedCustomer
    */
   @NonNull
-  public LiveData<CustomerModel> temporalInputtedCustomer() {
+  public SafeLiveData<Optional<CustomerModel>> temporalInputtedCustomer() {
     return this._temporalInputtedCustomer;
   }
 
   @NonNull
-  public LiveData<ZonedDateTime> inputtedDate() {
+  public SafeLiveData<ZonedDateTime> inputtedDate() {
     return this._inputtedDate;
   }
 
   @NonNull
-  public LiveData<QueueModel.Status> inputtedStatus() {
+  public SafeLiveData<QueueModel.Status> inputtedStatus() {
     return this._inputtedStatus;
   }
 
   @NonNull
-  public LiveData<List<ProductOrderModel>> inputtedProductOrders() {
+  public SafeLiveData<List<ProductOrderModel>> inputtedProductOrders() {
     return this._inputtedProductOrders;
   }
 
   @NonNull
-  public LiveData<QueueModel.PaymentMethod> inputtedPaymentMethod() {
+  public SafeLiveData<QueueModel.PaymentMethod> inputtedPaymentMethod() {
     return this._inputtedPaymentMethod;
   }
 
   @NonNull
-  public LiveData<Set<QueueModel.PaymentMethod>> allowedPaymentMethods() {
+  public SafeLiveData<Set<QueueModel.PaymentMethod>> allowedPaymentMethods() {
     return this._allowedPaymentMethods;
   }
 
-  public void setAllowedPaymentMethods(@NonNull Set<QueueModel.PaymentMethod> paymentMethods) {
-    Objects.requireNonNull(paymentMethods);
-
-    this._allowedPaymentMethods.setValue(Collections.unmodifiableSet(paymentMethods));
-  }
-
   @NonNull
-  public LiveData<Boolean> isPaymentMethodsViewVisible() {
+  public SafeLiveData<Boolean> isPaymentMethodsViewVisible() {
     return this._isPaymentMethodsViewVisible;
   }
 
@@ -192,41 +183,18 @@ public class CreateQueueViewModel extends ViewModel {
    */
   @NonNull
   public QueueModel inputtedQueue() {
-    final QueueModel defaultQueue =
-        QueueModel.toBuilder()
-            .setStatus(QueueModel.Status.IN_QUEUE)
-            .setDate(Instant.now())
-            .setPaymentMethod(QueueModel.PaymentMethod.CASH)
-            .build();
-
-    final QueueModel.Status status =
-        Objects.requireNonNullElse(this._inputtedStatus.getValue(), defaultQueue.status());
-    final ZonedDateTime date =
-        Objects.requireNonNullElse(
-            this._inputtedDate.getValue(), defaultQueue.date().atZone(ZoneId.systemDefault()));
-    final QueueModel.PaymentMethod paymentMethod =
-        Objects.requireNonNullElse(
-            this._inputtedPaymentMethod.getValue(), defaultQueue.paymentMethod());
-    final Long customerId =
-        this._inputtedCustomer.getValue() != null && this._inputtedCustomer.getValue().id() != null
-            ? this._inputtedCustomer.getValue().id()
-            : defaultQueue.customerId();
-    final List<ProductOrderModel> orders =
-        Objects.requireNonNullElse(
-            this._inputtedProductOrders.getValue(), defaultQueue.productOrders());
-
     return QueueModel.toBuilder()
-        .setStatus(status)
-        .setDate(date.toInstant())
-        .setPaymentMethod(paymentMethod)
-        .setCustomerId(customerId)
-        .setCustomer(this._inputtedCustomer.getValue())
-        .setProductOrders(orders)
+        .setStatus(this._inputtedStatus.getValue())
+        .setDate(this._inputtedDate.getValue().toInstant())
+        .setPaymentMethod(this._inputtedPaymentMethod.getValue())
+        .setCustomerId(this._inputtedCustomer.getValue().map(CustomerModel::id).orElse(null))
+        .setCustomer(this._inputtedCustomer.getValue().orElse(null))
+        .setProductOrders(this._inputtedProductOrders.getValue())
         .build();
   }
 
   public void onCustomerChanged(@Nullable CustomerModel customer) {
-    this._inputtedCustomer.setValue(customer);
+    this._inputtedCustomer.setValue(Optional.ofNullable(customer));
     this._onUpdateAllowedPaymentMethod();
     // Update after allowed payment methods updated, in case payment method changed.
     this._onUpdateTemporalInputtedCustomer();
@@ -268,9 +236,7 @@ public class CreateQueueViewModel extends ViewModel {
   }
 
   public void onSave() {
-    final QueueModel inputtedQueue = this.inputtedQueue();
-
-    if (inputtedQueue.productOrders().isEmpty()) {
+    if (this._inputtedProductOrders.getValue().isEmpty()) {
       this._snackbarMessage.setValue(
           new LiveDataEvent<>(
               new StringResources.Strings(
@@ -278,7 +244,7 @@ public class CreateQueueViewModel extends ViewModel {
       return;
     }
 
-    this._addQueue(inputtedQueue);
+    this._addQueue(this.inputtedQueue());
   }
 
   @Nullable
@@ -316,15 +282,15 @@ public class CreateQueueViewModel extends ViewModel {
   }
 
   protected void _onUpdateAllowedPaymentMethod() {
-    final QueueModel inputtedQueue = this.inputtedQueue();
     final HashSet<QueueModel.PaymentMethod> allowedPaymentMethods =
-        this._allowedPaymentMethods.getValue() != null
-            ? new HashSet<>(this._allowedPaymentMethods.getValue())
-            : new HashSet<>(Set.of(QueueModel.PaymentMethod.CASH));
+        new HashSet<>(this._allowedPaymentMethods.getValue());
+    final boolean isBalanceSufficient =
+        this._inputtedCustomer
+            .getValue()
+            .filter(customer -> customer.isBalanceSufficient(null, this.inputtedQueue()))
+            .isPresent();
 
-    if (inputtedQueue.status() == QueueModel.Status.COMPLETED
-        && inputtedQueue.customer() != null
-        && inputtedQueue.customer().isBalanceSufficient(null, inputtedQueue)) {
+    if (this._inputtedStatus.getValue() == QueueModel.Status.COMPLETED && isBalanceSufficient) {
       allowedPaymentMethods.add(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
     } else {
       allowedPaymentMethods.remove(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
@@ -333,22 +299,24 @@ public class CreateQueueViewModel extends ViewModel {
     this._allowedPaymentMethods.setValue(Collections.unmodifiableSet(allowedPaymentMethods));
 
     // Change payment method to cash when current selected one marked as not allowed.
-    if (!allowedPaymentMethods.contains(inputtedQueue.paymentMethod())) {
+    if (!allowedPaymentMethods.contains(this._inputtedPaymentMethod.getValue())) {
       this.onPaymentMethodChanged(QueueModel.PaymentMethod.CASH);
     }
   }
 
   protected void _onUpdateTemporalInputtedCustomer() {
-    final QueueModel inputtedQueue = this.inputtedQueue();
     final CustomerModel customer =
-        inputtedQueue.customer() != null
-            ? CustomerModel.toBuilder(inputtedQueue.customer())
-                .setBalance(inputtedQueue.customer().balanceOnMadePayment(inputtedQueue))
-                .setDebt(inputtedQueue.customer().debtOnMadePayment(inputtedQueue))
-                .build()
-            : null;
+        this._inputtedCustomer
+            .getValue()
+            .map(
+                model ->
+                    CustomerModel.toBuilder(model)
+                        .setBalance(model.balanceOnMadePayment(this.inputtedQueue()))
+                        .setDebt(model.debtOnMadePayment(this.inputtedQueue()))
+                        .build())
+            .orElse(null);
 
-    this._temporalInputtedCustomer.setValue(customer);
+    this._temporalInputtedCustomer.setValue(Optional.ofNullable(customer));
   }
 
   private void _addQueue(@NonNull QueueModel queue) {

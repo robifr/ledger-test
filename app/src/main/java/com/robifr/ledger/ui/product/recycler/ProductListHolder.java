@@ -68,12 +68,9 @@ public class ProductListHolder extends RecyclerViewHolder<ProductModel>
     // if current bound product is different with selected expanded card.
     final List<ProductModel> products = this._fragment.productViewModel().products().getValue();
     final int expandedProductIndex =
-        Objects.requireNonNullElse(
-            this._fragment.productViewModel().expandedProductIndex().getValue(), -1);
+        this._fragment.productViewModel().expandedProductIndex().getValue();
     final boolean shouldCardExpanded =
-        expandedProductIndex != -1
-            && products != null
-            && this._boundProduct.equals(products.get(expandedProductIndex));
+        expandedProductIndex != -1 && this._boundProduct.equals(products.get(expandedProductIndex));
 
     this.setCardExpanded(shouldCardExpanded);
   }
@@ -84,13 +81,14 @@ public class ProductListHolder extends RecyclerViewHolder<ProductModel>
 
     switch (view.getId()) {
       case R.id.cardView -> {
-        final List<ProductModel> products = this._fragment.productViewModel().products().getValue();
-        if (products == null) return;
-
         // Only expand when it shrank.
         final int expandedQueueIndex =
             this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
-                ? products.indexOf(this._boundProduct)
+                ? this._fragment
+                    .productViewModel()
+                    .products()
+                    .getValue()
+                    .indexOf(this._boundProduct)
                 : -1;
         this._fragment.productViewModel().onExpandedProductIndexChanged(expandedQueueIndex);
       }

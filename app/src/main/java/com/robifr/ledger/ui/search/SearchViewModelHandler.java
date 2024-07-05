@@ -19,7 +19,6 @@ package com.robifr.ledger.ui.search;
 
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.CustomerCardPackedBinding;
@@ -29,6 +28,7 @@ import com.robifr.ledger.ui.product.ProductCardPackedComponent;
 import com.robifr.ledger.ui.search.viewmodel.SearchViewModel;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SearchViewModelHandler {
   @NonNull private final SearchFragment _fragment;
@@ -43,67 +43,73 @@ public class SearchViewModelHandler {
     this._viewModel.products().observe(this._fragment.getViewLifecycleOwner(), this::_onProducts);
   }
 
-  private void _onCustomers(@Nullable List<CustomerModel> customers) {
-    final int listVisibility = customers == null || customers.isEmpty() ? View.GONE : View.VISIBLE;
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onCustomers(@NonNull Optional<List<CustomerModel>> customers) {
+    Objects.requireNonNull(customers);
+
+    final int listVisibility =
+        customers.isPresent() && !customers.get().isEmpty() ? View.VISIBLE : View.GONE;
     final int noResultsVisibility =
-        customers != null
-                && customers.isEmpty()
-                // Show illustration when both customers and products are empty.
-                && (this._viewModel.products().getValue() == null
-                    || this._viewModel.products().getValue().isEmpty())
+        // Only show illustration when both of customers and products are empty list.
+        customers.isPresent()
+                && customers.get().isEmpty()
+                && this._viewModel.products().getValue().isPresent()
+                && this._viewModel.products().getValue().get().isEmpty()
             ? View.VISIBLE
             : View.GONE;
 
-    this._fragment.customerListBinding().getRoot().setVisibility(listVisibility);
     this._fragment.fragmentBinding().noResultsImage.getRoot().setVisibility(noResultsVisibility);
+    this._fragment.customerListBinding().getRoot().setVisibility(listVisibility);
+    this._fragment.customerListBinding().listContainer.removeAllViews();
 
-    if (customers != null) {
-      this._fragment.customerListBinding().listContainer.removeAllViews();
+    for (CustomerModel customer : customers.orElse(List.of())) {
+      final CustomerCardPackedBinding cardBinding =
+          CustomerCardPackedBinding.inflate(
+              this._fragment.getLayoutInflater(),
+              this._fragment.customerListBinding().getRoot(),
+              false);
+      final CustomerCardPackedComponent cardComponent =
+          new CustomerCardPackedComponent(this._fragment.requireContext(), cardBinding);
 
-      for (CustomerModel customer : customers) {
-        final CustomerCardPackedBinding cardBinding =
-            CustomerCardPackedBinding.inflate(
-                this._fragment.getLayoutInflater(),
-                this._fragment.customerListBinding().getRoot(),
-                false);
-        final CustomerCardPackedComponent cardComponent =
-            new CustomerCardPackedComponent(this._fragment.requireContext(), cardBinding);
-
-        cardComponent.setCustomer(customer);
-        this._fragment.customerListBinding().listContainer.addView(cardBinding.getRoot());
-      }
+      cardComponent.setCustomer(customer);
+      this._fragment.customerListBinding().listContainer.addView(cardBinding.getRoot());
     }
   }
 
-  private void _onProducts(@Nullable List<ProductModel> products) {
-    final int listVisibility = products == null || products.isEmpty() ? View.GONE : View.VISIBLE;
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onProducts(@NonNull Optional<List<ProductModel>> products) {
+    Objects.requireNonNull(products);
+
+    final int listVisibility =
+        products.isPresent() && !products.get().isEmpty() ? View.VISIBLE : View.GONE;
     final int noResultsVisibility =
-        products != null
-                && products.isEmpty()
-                // Show illustration when both customers and products are empty.
-                && (this._viewModel.customers().getValue() == null
-                    || this._viewModel.customers().getValue().isEmpty())
+        // Only show illustration when both of customers and products are empty list.
+        products.isPresent()
+                && products.get().isEmpty()
+                && this._viewModel.customers().getValue().isPresent()
+                && this._viewModel.customers().getValue().get().isEmpty()
             ? View.VISIBLE
             : View.GONE;
 
-    this._fragment.productListBinding().getRoot().setVisibility(listVisibility);
     this._fragment.fragmentBinding().noResultsImage.getRoot().setVisibility(noResultsVisibility);
+    this._fragment.productListBinding().getRoot().setVisibility(listVisibility);
+    this._fragment.productListBinding().listContainer.removeAllViews();
 
-    if (products != null) {
-      this._fragment.productListBinding().listContainer.removeAllViews();
+    for (ProductModel product : products.orElse(List.of())) {
+      final ProductCardPackedBinding cardBinding =
+          ProductCardPackedBinding.inflate(
+              this._fragment.getLayoutInflater(),
+              this._fragment.customerListBinding().getRoot(),
+              false);
+      final ProductCardPackedComponent cardComponent =
+          new ProductCardPackedComponent(this._fragment.requireContext(), cardBinding);
 
-      for (ProductModel product : products) {
-        final ProductCardPackedBinding cardBinding =
-            ProductCardPackedBinding.inflate(
-                this._fragment.getLayoutInflater(),
-                this._fragment.customerListBinding().getRoot(),
-                false);
-        final ProductCardPackedComponent cardComponent =
-            new ProductCardPackedComponent(this._fragment.requireContext(), cardBinding);
-
-        cardComponent.setProduct(product);
-        this._fragment.productListBinding().listContainer.addView(cardBinding.getRoot());
-      }
+      cardComponent.setProduct(product);
+      this._fragment.productListBinding().listContainer.addView(cardBinding.getRoot());
     }
   }
 }

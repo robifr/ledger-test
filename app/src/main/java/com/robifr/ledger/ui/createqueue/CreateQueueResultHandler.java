@@ -70,7 +70,7 @@ public class CreateQueueResultHandler {
           final CustomerModel inputtedCustomer =
               !customerId.equals(0L)
                   ? viewModel.selectCustomerById(customerId)
-                  : viewModel.inputtedCustomer().getValue();
+                  : viewModel.inputtedCustomer().getValue().orElse(null);
 
           viewModel.onCustomerChanged(inputtedCustomer);
         }
@@ -103,7 +103,8 @@ public class CreateQueueResultHandler {
                       .createQueueViewModel()
                       .makeProductOrderView()
                       .inputtedProduct()
-                      .getValue();
+                      .getValue()
+                      .orElse(null);
           final boolean isEditingOrder =
               fragment.createQueueViewModel().makeProductOrderView().productOrderToEdit() != null;
 

@@ -27,7 +27,6 @@ import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.ModelChangedListener;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -87,12 +86,11 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(customers);
     Objects.requireNonNull(updater);
 
-    final ArrayList<CustomerBalanceInfo> currentBalanceInfo =
-        this._viewModel._customersWithBalance().getValue() != null
-            ? new ArrayList<>(this._viewModel._customersWithBalance().getValue())
-            : new ArrayList<>();
     final List<CustomerBalanceInfo> balanceInfo =
-        updater.apply(customers, currentBalanceInfo, CustomerBalanceInfo::withModel);
+        updater.apply(
+            customers,
+            this._viewModel._customersWithBalance().getValue(),
+            CustomerBalanceInfo::withModel);
 
     balanceInfo.removeIf(info -> info.balance() == 0L);
     this._viewModel._onCustomersWithBalanceChanged(balanceInfo);
@@ -104,12 +102,11 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(customers);
     Objects.requireNonNull(updater);
 
-    final ArrayList<CustomerDebtInfo> currentDebtInfo =
-        this._viewModel._customersWithDebt().getValue() != null
-            ? new ArrayList<>(this._viewModel._customersWithDebt().getValue())
-            : new ArrayList<>();
     final List<CustomerDebtInfo> debtInfo =
-        updater.apply(customers, currentDebtInfo, CustomerDebtInfo::withModel);
+        updater.apply(
+            customers,
+            this._viewModel._customersWithDebt().getValue(),
+            CustomerDebtInfo::withModel);
 
     debtInfo.removeIf(info -> info.debt().compareTo(BigDecimal.ZERO) == 0);
     this._viewModel._onCustomersWithDebtChanged(debtInfo);

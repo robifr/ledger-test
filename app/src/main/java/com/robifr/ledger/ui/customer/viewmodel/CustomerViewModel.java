@@ -29,8 +29,9 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -51,14 +52,20 @@ public class CustomerViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<CustomerSortMethod> _sortMethod = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<List<CustomerModel>> _customers =
+      new SafeMutableLiveData<>(List.of());
+
+  @NonNull
+  private final SafeMutableLiveData<CustomerSortMethod> _sortMethod =
+      new SafeMutableLiveData<>(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
 
   /**
-   * Currently expanded customer index from {@link CustomerViewModel#_customers customers}. -1 or
-   * null to represent none being expanded.
+   * Currently expanded customer index from {@link CustomerViewModel#_customers customers}. -1 to
+   * represent none being expanded.
    */
-  @NonNull private final MutableLiveData<Integer> _expandedCustomerIndex = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<Integer> _expandedCustomerIndex = new SafeMutableLiveData<>(-1);
 
   @Inject
   public CustomerViewModel(@NonNull CustomerRepository customerRepository) {
@@ -71,7 +78,6 @@ public class CustomerViewModel extends ViewModel {
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
-    this.onSortMethodChanged(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
     LiveDataEvent.observeOnce(
         this.selectAllCustomers(),
         customers ->
@@ -95,19 +101,19 @@ public class CustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<CustomerModel>> customers() {
+  public SafeLiveData<List<CustomerModel>> customers() {
     return this._customers;
   }
 
   @NonNull
-  public LiveData<CustomerSortMethod> sortMethod() {
+  public SafeLiveData<CustomerSortMethod> sortMethod() {
     return this._sortMethod;
   }
 
   /**
    * @see CustomerViewModel#_expandedCustomerIndex
    */
-  public LiveData<Integer> expandedCustomerIndex() {
+  public SafeLiveData<Integer> expandedCustomerIndex() {
     return this._expandedCustomerIndex;
   }
 
@@ -154,9 +160,7 @@ public class CustomerViewModel extends ViewModel {
   }
 
   public void onSortMethodChanged(@NonNull CustomerSortMethod sortMethod) {
-    final List<CustomerModel> customers =
-        Objects.requireNonNullElse(this._customers.getValue(), new ArrayList<>());
-    this.onSortMethodChanged(sortMethod, customers);
+    this.onSortMethodChanged(sortMethod, this._customers.getValue());
   }
 
   public void onSortMethodChanged(
@@ -173,9 +177,7 @@ public class CustomerViewModel extends ViewModel {
    * @see CustomerViewModel#onSortMethodChanged(CustomerSortMethod.SortBy, List)
    */
   public void onSortMethodChanged(@NonNull CustomerSortMethod.SortBy sortBy) {
-    final List<CustomerModel> customers =
-        Objects.requireNonNullElse(this._customers.getValue(), new ArrayList<>());
-    this.onSortMethodChanged(sortBy, customers);
+    this.onSortMethodChanged(sortBy, this._customers.getValue());
   }
 
   /**
@@ -189,12 +191,11 @@ public class CustomerViewModel extends ViewModel {
     Objects.requireNonNull(sortBy);
     Objects.requireNonNull(customers);
 
-    final CustomerSortMethod sortMethod = this._sortMethod.getValue();
-    if (sortMethod == null) return;
-
     // Reverse sort order when selecting same sort option.
     final boolean isAscending =
-        sortMethod.sortBy() == sortBy ? !sortMethod.isAscending() : sortMethod.isAscending();
+        this._sortMethod.getValue().sortBy() == sortBy
+            ? !this._sortMethod.getValue().isAscending()
+            : this._sortMethod.getValue().isAscending();
 
     this.onSortMethodChanged(new CustomerSortMethod(sortBy, isAscending), customers);
   }

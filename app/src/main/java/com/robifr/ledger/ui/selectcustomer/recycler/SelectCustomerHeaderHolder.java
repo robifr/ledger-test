@@ -27,7 +27,6 @@ import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -71,17 +70,13 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
       return;
     }
 
-    final List<CustomerModel> customers =
-        this._fragment.selectCustomerViewModel().customers().getValue();
     final CustomerModel selectedCustomerOnDb =
-        customers != null && selectedCustomer.isPresent()
-            ? customers.stream()
-                .filter(
-                    customer ->
-                        customer.id() != null && customer.id().equals(selectedCustomer.get().id()))
-                .findFirst()
-                .orElse(null)
-            : null;
+        this._fragment.selectCustomerViewModel().customers().getValue().stream()
+            .filter(
+                customer ->
+                    customer.id() != null && customer.id().equals(selectedCustomer.get().id()))
+            .findFirst()
+            .orElse(null);
 
     // The original customer on database was deleted.
     if (selectedCustomerOnDb == null) {
@@ -90,8 +85,7 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
 
       // The original customer on database was edited.
-    } else if (selectedCustomer.isPresent()
-        && !selectedCustomer.get().equals(selectedCustomerOnDb)) {
+    } else if (!selectedCustomer.get().equals(selectedCustomerOnDb)) {
       this._headerBinding.selectedItemDescription.setText(
           this._fragment.getString(R.string.text_originally_selected_customer_was_changed));
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);

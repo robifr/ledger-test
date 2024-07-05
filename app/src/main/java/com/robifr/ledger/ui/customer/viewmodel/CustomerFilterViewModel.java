@@ -19,27 +19,34 @@ package com.robifr.ledger.ui.customer.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import com.robifr.ledger.data.display.CustomerFilterer;
 import com.robifr.ledger.data.display.CustomerFilters;
-import com.robifr.ledger.data.display.CustomerSortMethod;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.util.CurrencyFormat;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class CustomerFilterViewModel {
   @NonNull private final CustomerViewModel _viewModel;
   @NonNull private final CustomerFilterer _filterer;
-  @NonNull private final MutableLiveData<String> _inputtedMinBalanceText = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<String> _inputtedMaxBalanceText = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<String> _inputtedMinDebtText = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<String> _inputtedMaxDebtText = new MutableLiveData<>();
+
+  @NonNull
+  private final SafeMutableLiveData<String> _inputtedMinBalanceText = new SafeMutableLiveData<>("");
+
+  @NonNull
+  private final SafeMutableLiveData<String> _inputtedMaxBalanceText = new SafeMutableLiveData<>("");
+
+  @NonNull
+  private final SafeMutableLiveData<String> _inputtedMinDebtText = new SafeMutableLiveData<>("");
+
+  @NonNull
+  private final SafeMutableLiveData<String> _inputtedMaxDebtText = new SafeMutableLiveData<>("");
 
   public CustomerFilterViewModel(
       @NonNull CustomerViewModel viewModel, @NonNull CustomerFilterer filterer) {
@@ -48,22 +55,22 @@ public class CustomerFilterViewModel {
   }
 
   @NonNull
-  public LiveData<String> inputtedMinBalanceText() {
+  public SafeLiveData<String> inputtedMinBalanceText() {
     return this._inputtedMinBalanceText;
   }
 
   @NonNull
-  public LiveData<String> inputtedMaxBalanceText() {
+  public SafeLiveData<String> inputtedMaxBalanceText() {
     return this._inputtedMaxBalanceText;
   }
 
   @NonNull
-  public LiveData<String> inputtedMinDebtText() {
+  public SafeLiveData<String> inputtedMinDebtText() {
     return this._inputtedMinDebtText;
   }
 
   @NonNull
-  public LiveData<String> inputtedMaxDebtText() {
+  public SafeLiveData<String> inputtedMaxDebtText() {
     return this._inputtedMaxDebtText;
   }
 
@@ -76,46 +83,40 @@ public class CustomerFilterViewModel {
   @NonNull
   public CustomerFilters inputtedFilters() {
     // Nullable value to represent unbounded range.
-    Long minBalance = this._filterer.filters().filteredBalance().first;
-    Long maxBalance = this._filterer.filters().filteredBalance().second;
-    BigDecimal minDebt = this._filterer.filters().filteredDebt().first;
-    BigDecimal maxDebt = this._filterer.filters().filteredDebt().second;
+    Long minBalance = null;
+    Long maxBalance = null;
+    BigDecimal minDebt = null;
+    BigDecimal maxDebt = null;
 
     try {
-      final String minBalanceText = this._inputtedMinBalanceText.getValue();
-
-      if (minBalanceText != null && !minBalanceText.isBlank()) {
-        minBalance = CurrencyFormat.parse(minBalanceText, "id", "ID").longValue();
+      if (!this._inputtedMinBalanceText.getValue().isBlank()) {
+        minBalance =
+            CurrencyFormat.parse(this._inputtedMinBalanceText.getValue(), "id", "ID").longValue();
       }
 
     } catch (ParseException ignore) {
     }
 
     try {
-      final String maxBalanceText = this._inputtedMaxBalanceText.getValue();
-
-      if (maxBalanceText != null && !maxBalanceText.isBlank()) {
-        maxBalance = CurrencyFormat.parse(maxBalanceText, "id", "ID").longValue();
+      if (!this._inputtedMaxBalanceText.getValue().isBlank()) {
+        maxBalance =
+            CurrencyFormat.parse(this._inputtedMaxBalanceText.getValue(), "id", "ID").longValue();
       }
 
     } catch (ParseException ignore) {
     }
 
     try {
-      final String minDebtText = this._inputtedMinDebtText.getValue();
-
-      if (minDebtText != null && !minDebtText.isBlank()) {
-        minDebt = CurrencyFormat.parse(minDebtText, "id", "ID");
+      if (!this._inputtedMinDebtText.getValue().isBlank()) {
+        minDebt = CurrencyFormat.parse(this._inputtedMinDebtText.getValue(), "id", "ID");
       }
 
     } catch (ParseException ignore) {
     }
 
     try {
-      final String maxDebtText = this._inputtedMaxDebtText.getValue();
-
-      if (maxDebtText != null && !maxDebtText.isBlank()) {
-        maxDebt = CurrencyFormat.parse(maxDebtText, "id", "ID");
+      if (!this._inputtedMaxDebtText.getValue().isBlank()) {
+        maxDebt = CurrencyFormat.parse(this._inputtedMaxDebtText.getValue(), "id", "ID");
       }
 
     } catch (ParseException ignore) {
@@ -152,9 +153,7 @@ public class CustomerFilterViewModel {
   }
 
   public void onFiltersChanged(@NonNull CustomerFilters filters) {
-    final List<CustomerModel> customers =
-        Objects.requireNonNullElse(this._viewModel.customers().getValue(), new ArrayList<>());
-    this.onFiltersChanged(filters, customers);
+    this.onFiltersChanged(filters, this._viewModel.customers().getValue());
   }
 
   public void onFiltersChanged(
@@ -187,12 +186,7 @@ public class CustomerFilterViewModel {
     this._filterer.setFilters(filters);
 
     final List<CustomerModel> filteredCustomers = this._filterer.filter(customers);
-    final CustomerSortMethod sortMethod = this._viewModel.sortMethod().getValue();
-
     // Re-sort the list, after previously re-populating the list with a new filtered value.
-    if (sortMethod != null) this._viewModel.onSortMethodChanged(sortMethod, filteredCustomers);
-    // Put in the else to prevent multiple call of `CustomerFilterViewModel#onCustomersChanged()`
-    // from `CustomerFilterViewModel#onSortMethodChanged()`.
-    else this._viewModel.onCustomersChanged(filteredCustomers);
+    this._viewModel.onSortMethodChanged(this._viewModel.sortMethod().getValue(), filteredCustomers);
   }
 }

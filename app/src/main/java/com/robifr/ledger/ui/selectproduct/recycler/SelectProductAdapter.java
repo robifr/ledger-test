@@ -27,7 +27,6 @@ import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -87,19 +86,15 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
       headerHolder.bind(selectedProduct);
 
     } else if (holder instanceof SelectProductListHolder listHolder) {
-      final List<ProductModel> products =
-          this._fragment.selectProductViewModel().products().getValue();
-
       // -1 offset because header holder.
-      if (products != null) listHolder.bind(products.get(index - 1));
+      listHolder.bind(this._fragment.selectProductViewModel().products().getValue().get(index - 1));
     }
   }
 
   @Override
   public int getItemCount() {
-    final List<ProductModel> products =
-        this._fragment.selectProductViewModel().products().getValue();
-    return products != null ? products.size() + 1 : 0; // +1 offset because header holder.
+    // +1 offset because header holder.
+    return this._fragment.selectProductViewModel().products().getValue().size() + 1;
   }
 
   @Override

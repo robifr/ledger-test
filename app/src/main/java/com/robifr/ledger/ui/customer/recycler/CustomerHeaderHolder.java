@@ -21,11 +21,9 @@ import android.util.TypedValue;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerFragment;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -46,8 +44,7 @@ public class CustomerHeaderHolder extends RecyclerViewHolder<Optional> {
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final List<CustomerModel> customers = this._fragment.customerViewModel().customers().getValue();
-    final int totalCustomers = customers != null ? customers.size() : 0;
+    final int totalCustomers = this._fragment.customerViewModel().customers().getValue().size();
     final String text =
         this._fragment
             .getResources()

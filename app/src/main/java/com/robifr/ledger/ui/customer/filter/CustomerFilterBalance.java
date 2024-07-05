@@ -20,7 +20,6 @@ package com.robifr.ledger.ui.customer.filter;
 import android.text.Editable;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.robifr.ledger.R;
@@ -57,7 +56,9 @@ public class CustomerFilterBalance {
   /**
    * @param minBalance Formatted text of min {@link CustomerFilters#filteredBalance() balance}.
    */
-  public void setFilteredMinBalanceText(@Nullable String minBalance) {
+  public void setFilteredMinBalanceText(@NonNull String minBalance) {
+    Objects.requireNonNull(minBalance);
+
     final String currentText =
         this._dialogBinding.filterBalance.minimumBalance.getText().toString();
     if (currentText.equals(minBalance)) return;
@@ -73,7 +74,9 @@ public class CustomerFilterBalance {
   /**
    * @param maxBalance Formatted text of max {@link CustomerFilters#filteredBalance() balance}.
    */
-  public void setFilteredMaxBalanceText(@Nullable String maxBalance) {
+  public void setFilteredMaxBalanceText(@NonNull String maxBalance) {
+    Objects.requireNonNull(maxBalance);
+
     final String currentText =
         this._dialogBinding.filterBalance.maximumBalance.getText().toString();
     if (currentText.equals(maxBalance)) return;

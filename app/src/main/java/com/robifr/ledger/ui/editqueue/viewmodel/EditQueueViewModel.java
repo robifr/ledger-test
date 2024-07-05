@@ -37,7 +37,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
+import java.util.Optional;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -130,28 +130,31 @@ public class EditQueueViewModel extends CreateQueueViewModel {
   protected void _onUpdateAllowedPaymentMethod() {
     final QueueModel inputtedQueue = this.inputtedQueue();
     final HashSet<QueueModel.PaymentMethod> allowedPaymentMethods =
-        this._allowedPaymentMethods.getValue() != null
-            ? new HashSet<>(this._allowedPaymentMethods.getValue())
-            : new HashSet<>(Set.of(QueueModel.PaymentMethod.CASH));
+        new HashSet<>(this._allowedPaymentMethods.getValue());
     final boolean isBalanceSufficient =
-        this._initialQueueToEdit != null
-            && inputtedQueue.status() == QueueModel.Status.COMPLETED
-            && inputtedQueue.customer() != null
-            && inputtedQueue
-                .customer()
-                .isBalanceSufficient(this._initialQueueToEdit, inputtedQueue);
+        this._inputtedCustomer
+            .getValue()
+            .filter(
+                customer ->
+                    this._initialQueueToEdit != null
+                        && inputtedQueue.status() == QueueModel.Status.COMPLETED
+                        && customer.isBalanceSufficient(this._initialQueueToEdit, inputtedQueue))
+            .isPresent();
     final boolean isTemporalBalancePositive =
-        inputtedQueue.customer() != null
-            // Compare with the account balance payment option
-            // as if the user does it before they actually do.
-            && inputtedQueue
-                    .customer()
-                    .balanceOnUpdatedPayment(
-                        this._initialQueueToEdit,
-                        QueueModel.toBuilder(inputtedQueue)
-                            .setPaymentMethod(QueueModel.PaymentMethod.ACCOUNT_BALANCE)
-                            .build())
-                >= 0L;
+        // Compare with the account balance payment option
+        // as if the user does it before they actually do.
+        this._inputtedCustomer
+            .getValue()
+            .filter(
+                customer ->
+                    this._initialQueueToEdit != null
+                        && customer.balanceOnUpdatedPayment(
+                                this._initialQueueToEdit,
+                                QueueModel.toBuilder(inputtedQueue)
+                                    .setPaymentMethod(QueueModel.PaymentMethod.ACCOUNT_BALANCE)
+                                    .build())
+                            >= 0L)
+            .isPresent();
 
     if (isBalanceSufficient && isTemporalBalancePositive) {
       allowedPaymentMethods.add(QueueModel.PaymentMethod.ACCOUNT_BALANCE);
@@ -171,20 +174,20 @@ public class EditQueueViewModel extends CreateQueueViewModel {
   protected void _onUpdateTemporalInputtedCustomer() {
     final QueueModel inputtedQueue = this.inputtedQueue();
     final CustomerModel customer =
-        inputtedQueue.customer() != null && this._initialQueueToEdit != null
-            ? CustomerModel.toBuilder(inputtedQueue.customer())
-                .setBalance(
-                    inputtedQueue
-                        .customer()
-                        .balanceOnUpdatedPayment(this._initialQueueToEdit, inputtedQueue))
-                .setDebt(
-                    inputtedQueue
-                        .customer()
-                        .debtOnUpdatedPayment(this._initialQueueToEdit, inputtedQueue))
-                .build()
-            : null;
+        this._inputtedCustomer
+            .getValue()
+            .filter(model -> this._initialQueueToEdit != null)
+            .map(
+                model ->
+                    CustomerModel.toBuilder(model)
+                        .setBalance(
+                            model.balanceOnUpdatedPayment(this._initialQueueToEdit, inputtedQueue))
+                        .setDebt(
+                            model.debtOnUpdatedPayment(this._initialQueueToEdit, inputtedQueue))
+                        .build())
+            .orElse(null);
 
-    this._temporalInputtedCustomer.setValue(customer);
+    this._temporalInputtedCustomer.setValue(Optional.ofNullable(customer));
   }
 
   private void _updateQueue(@NonNull QueueModel queue) {

@@ -22,7 +22,6 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.robifr.ledger.R;
@@ -155,32 +154,32 @@ public class CreateCustomerBalance
   /**
    * @param amount Formatted text of balance amount.
    */
-  public void setInputtedBalanceAmountText(@Nullable String amount) {
+  public void setInputtedBalanceAmountText(@NonNull String amount) {
+    Objects.requireNonNull(amount);
+
     final String currentText = this._addBalanceDialogBinding.amount.getText().toString();
     if (currentText.equals(amount)) return;
-
-    final int cursorPosition = amount != null ? amount.length() : 0;
 
     // Remove listener to prevent any sort of formatting.
     this._addBalanceDialogBinding.amount.removeTextChangedListener(this._addBalanceTextWatcher);
     this._addBalanceDialogBinding.amount.setText(amount);
-    this._addBalanceDialogBinding.amount.setSelection(cursorPosition);
+    this._addBalanceDialogBinding.amount.setSelection(amount.length());
     this._addBalanceDialogBinding.amount.addTextChangedListener(this._addBalanceTextWatcher);
   }
 
   /**
    * @param amount Formatted text of withdraw amount.
    */
-  public void setInputtedWithdrawAmountText(@Nullable String amount) {
+  public void setInputtedWithdrawAmountText(@NonNull String amount) {
+    Objects.requireNonNull(amount);
+
     final String currentText = this._withdrawDialogBinding.amount.getText().toString();
     if (currentText.equals(amount)) return;
-
-    final int cursorPosition = amount != null ? amount.length() : 0;
 
     // Remove listener to prevent any sort of formatting.
     this._withdrawDialogBinding.amount.removeTextChangedListener(this._withdrawTextWatcher);
     this._withdrawDialogBinding.amount.setText(amount);
-    this._withdrawDialogBinding.amount.setSelection(cursorPosition);
+    this._withdrawDialogBinding.amount.setSelection(amount.length());
     this._withdrawDialogBinding.amount.addTextChangedListener(this._withdrawTextWatcher);
   }
 

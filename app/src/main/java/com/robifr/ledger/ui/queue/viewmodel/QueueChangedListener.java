@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import com.robifr.ledger.data.ModelUpdater;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.ModelChangedListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -73,13 +72,10 @@ class QueueChangedListener implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
     Objects.requireNonNull(updater);
 
-    final ArrayList<QueueModel> currentQueues =
-        this._viewModel.queues().getValue() != null
-            ? new ArrayList<>(this._viewModel.queues().getValue())
-            : new ArrayList<>();
     this._viewModel
         .filterView()
         .onFiltersChanged(
-            this._viewModel.filterView().inputtedFilters(), updater.apply(currentQueues, queues));
+            this._viewModel.filterView().inputtedFilters(),
+            updater.apply(this._viewModel.queues().getValue(), queues));
   }
 }

@@ -18,11 +18,11 @@
 package com.robifr.ledger.ui.dashboard.viewmodel;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.QueueModel;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMediatorLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -35,65 +35,64 @@ import java.util.Objects;
 public class DashboardPerformanceViewModel {
   @NonNull private final DashboardViewModel _viewModel;
 
-  @NonNull private final MediatorLiveData<Integer> _totalQueue = new MediatorLiveData<>();
-  @NonNull private final MutableLiveData<BigDecimal> _totalQueueAverage = new MutableLiveData<>();
-  @NonNull private final MediatorLiveData<Integer> _totalActiveCustomers = new MediatorLiveData<>();
+  @NonNull private final SafeMediatorLiveData<Integer> _totalQueue = new SafeMediatorLiveData<>(0);
 
   @NonNull
-  private final MutableLiveData<BigDecimal> _totalActiveCustomersAverage = new MutableLiveData<>();
-
-  @NonNull private final MediatorLiveData<BigDecimal> _totalProductsSold = new MediatorLiveData<>();
+  private final SafeMutableLiveData<BigDecimal> _totalQueueAverage =
+      new SafeMutableLiveData<>(BigDecimal.ZERO);
 
   @NonNull
-  private final MutableLiveData<BigDecimal> _totalProductsSoldAverage = new MutableLiveData<>();
+  private final SafeMediatorLiveData<Integer> _totalActiveCustomers = new SafeMediatorLiveData<>(0);
+
+  @NonNull
+  private final SafeMutableLiveData<BigDecimal> _totalActiveCustomersAverage =
+      new SafeMutableLiveData<>(BigDecimal.ZERO);
+
+  @NonNull
+  private final SafeMediatorLiveData<BigDecimal> _totalProductsSold =
+      new SafeMediatorLiveData<>(BigDecimal.ZERO);
+
+  @NonNull
+  private final SafeMutableLiveData<BigDecimal> _totalProductsSoldAverage =
+      new SafeMutableLiveData<>(BigDecimal.ZERO);
 
   public DashboardPerformanceViewModel(@NonNull DashboardViewModel viewModel) {
     this._viewModel = Objects.requireNonNull(viewModel);
 
-    this._totalQueue.addSource(
-        this._viewModel._queues(),
-        queues -> {
-          if (queues != null) this._onTotalQueueChanged(queues);
-        });
+    this._totalQueue.addSource(this._viewModel._queues().toLiveData(), this::_onTotalQueueChanged);
     this._totalActiveCustomers.addSource(
-        this._viewModel._queues(),
-        queues -> {
-          if (queues != null) this._onTotalActiveCustomersChanged(queues);
-        });
+        this._viewModel._queues().toLiveData(), this::_onTotalActiveCustomersChanged);
     this._totalProductsSold.addSource(
-        this._viewModel._queues(),
-        queues -> {
-          if (queues != null) this._onTotalProductsSoldChanged(queues);
-        });
+        this._viewModel._queues().toLiveData(), this::_onTotalProductsSoldChanged);
   }
 
   @NonNull
-  public LiveData<Integer> totalQueue() {
+  public SafeLiveData<Integer> totalQueue() {
     return this._totalQueue;
   }
 
   @NonNull
-  public LiveData<BigDecimal> totalQueueAverage() {
+  public SafeLiveData<BigDecimal> totalQueueAverage() {
     return this._totalQueueAverage;
   }
 
   @NonNull
-  public LiveData<Integer> totalActiveCustomers() {
+  public SafeLiveData<Integer> totalActiveCustomers() {
     return this._totalActiveCustomers;
   }
 
   @NonNull
-  public LiveData<BigDecimal> totalActiveCustomersAverage() {
+  public SafeLiveData<BigDecimal> totalActiveCustomersAverage() {
     return this._totalActiveCustomersAverage;
   }
 
   @NonNull
-  public LiveData<BigDecimal> totalProductsSold() {
+  public SafeLiveData<BigDecimal> totalProductsSold() {
     return this._totalProductsSold;
   }
 
   @NonNull
-  public LiveData<BigDecimal> totalProductsSoldAverage() {
+  public SafeLiveData<BigDecimal> totalProductsSoldAverage() {
     return this._totalProductsSoldAverage;
   }
 
@@ -101,8 +100,6 @@ public class DashboardPerformanceViewModel {
     Objects.requireNonNull(queues);
 
     final QueueDate date = this._viewModel.date().getValue();
-    if (date == null) return;
-
     final ZonedDateTime startDate =
         date.range() == QueueDate.Range.ALL_TIME
             // Remove unnecessary dates.
@@ -127,8 +124,6 @@ public class DashboardPerformanceViewModel {
     Objects.requireNonNull(queues);
 
     final QueueDate date = this._viewModel.date().getValue();
-    if (date == null) return;
-
     final ZonedDateTime startDate =
         date.range() == QueueDate.Range.ALL_TIME
             // Remove unnecessary dates.
@@ -154,8 +149,6 @@ public class DashboardPerformanceViewModel {
     Objects.requireNonNull(queues);
 
     final QueueDate date = this._viewModel.date().getValue();
-    if (date == null) return;
-
     final ZonedDateTime startDate =
         date.range() == QueueDate.Range.ALL_TIME
             // Remove unnecessary dates.

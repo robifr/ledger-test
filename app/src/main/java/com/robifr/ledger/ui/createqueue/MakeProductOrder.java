@@ -84,7 +84,8 @@ public class MakeProductOrder
                 .createQueueViewModel()
                 .makeProductOrderView()
                 .inputtedProduct()
-                .getValue());
+                .getValue()
+                .orElse(null));
 
         Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
             .navigate(R.id.selectProductFragment, bundle);
@@ -141,29 +142,29 @@ public class MakeProductOrder
     this._dialogBinding.product.setText(text);
   }
 
-  public void setInputtedQuantityText(@Nullable String quantity) {
+  public void setInputtedQuantityText(@NonNull String quantity) {
+    Objects.requireNonNull(quantity);
+
     final String currentText = this._dialogBinding.quantity.getText().toString();
     if (currentText.equals(quantity)) return;
-
-    final int cursorPosition = quantity != null ? quantity.length() : 0;
 
     // Remove listener to prevent any sort of formatting.
     this._dialogBinding.quantity.removeTextChangedListener(this._quantityTextWatcher);
     this._dialogBinding.quantity.setText(quantity);
-    this._dialogBinding.quantity.setSelection(cursorPosition);
+    this._dialogBinding.quantity.setSelection(quantity.length());
     this._dialogBinding.quantity.addTextChangedListener(this._quantityTextWatcher);
   }
 
-  public void setInputtedDiscountText(@Nullable String discount) {
+  public void setInputtedDiscountText(@NonNull String discount) {
+    Objects.requireNonNull(discount);
+
     final String currentText = this._dialogBinding.discount.getText().toString();
     if (currentText.equals(discount)) return;
-
-    final int cursorPosition = discount != null ? discount.length() : 0;
 
     // Remove listener to prevent any sort of formatting.
     this._dialogBinding.discount.removeTextChangedListener(this._discountTextWatcher);
     this._dialogBinding.discount.setText(discount);
-    this._dialogBinding.discount.setSelection(cursorPosition);
+    this._dialogBinding.discount.setSelection(discount.length());
     this._dialogBinding.discount.addTextChangedListener(this._discountTextWatcher);
   }
 
@@ -178,8 +179,12 @@ public class MakeProductOrder
     this._dialog.show();
 
     final boolean isProductInputted =
-        this._fragment.createQueueViewModel().makeProductOrderView().inputtedProduct().getValue()
-            != null;
+        this._fragment
+            .createQueueViewModel()
+            .makeProductOrderView()
+            .inputtedProduct()
+            .getValue()
+            .isPresent();
 
     // Only invoke `AlertDialog#getButton()` after `AlertDialog.show()` called, otherwise NPE.
     final Button positiveButton = this._dialog.getButton(DialogInterface.BUTTON_POSITIVE);

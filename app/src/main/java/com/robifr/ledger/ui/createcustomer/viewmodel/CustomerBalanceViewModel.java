@@ -18,10 +18,11 @@
 package com.robifr.ledger.ui.createcustomer.viewmodel;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import com.robifr.ledger.util.CurrencyFormat;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Objects;
@@ -30,30 +31,33 @@ public class CustomerBalanceViewModel {
   @NonNull private final CreateCustomerViewModel _createCustomerViewModel;
 
   @NonNull
-  private final MutableLiveData<String> _inputtedBalanceAmountText = new MutableLiveData<>();
+  private final SafeMutableLiveData<String> _inputtedBalanceAmountText =
+      new SafeMutableLiveData<>("");
 
   @NonNull
-  private final MutableLiveData<String> _inputtedWithdrawAmountText = new MutableLiveData<>();
+  private final SafeMutableLiveData<String> _inputtedWithdrawAmountText =
+      new SafeMutableLiveData<>("");
 
   @NonNull
-  private final MutableLiveData<Long> _availableBalanceToWithdraw = new MutableLiveData<>();
+  private final SafeMutableLiveData<Long> _availableBalanceToWithdraw =
+      new SafeMutableLiveData<>(0L);
 
   public CustomerBalanceViewModel(@NonNull CreateCustomerViewModel createCustomerViewModel) {
     this._createCustomerViewModel = Objects.requireNonNull(createCustomerViewModel);
   }
 
   @NonNull
-  public LiveData<String> inputtedBalanceAmountText() {
+  public SafeLiveData<String> inputtedBalanceAmountText() {
     return this._inputtedBalanceAmountText;
   }
 
   @NonNull
-  public LiveData<String> inputtedWithdrawAmountText() {
+  public SafeLiveData<String> inputtedWithdrawAmountText() {
     return this._inputtedWithdrawAmountText;
   }
 
   @NonNull
-  public LiveData<Long> availableBalanceToWithdraw() {
+  public SafeLiveData<Long> availableBalanceToWithdraw() {
     return this._availableBalanceToWithdraw;
   }
 
@@ -71,9 +75,8 @@ public class CustomerBalanceViewModel {
     long inputtedAmount = 0L;
 
     try {
-      final String text =
-          Objects.requireNonNullElse(this._inputtedBalanceAmountText.getValue(), "");
-      inputtedAmount = CurrencyFormat.parse(text, "id", "ID").longValue();
+      inputtedAmount =
+          CurrencyFormat.parse(this._inputtedBalanceAmountText.getValue(), "id", "ID").longValue();
 
     } catch (ParseException ignore) {
     }
@@ -91,9 +94,8 @@ public class CustomerBalanceViewModel {
     long inputtedAmount = 0L;
 
     try {
-      final String text =
-          Objects.requireNonNullElse(this._inputtedWithdrawAmountText.getValue(), "");
-      inputtedAmount = CurrencyFormat.parse(text, "id", "ID").longValue();
+      inputtedAmount =
+          CurrencyFormat.parse(this._inputtedWithdrawAmountText.getValue(), "id", "ID").longValue();
 
     } catch (ParseException ignore) {
     }
@@ -113,7 +115,7 @@ public class CustomerBalanceViewModel {
     }
 
     final BigDecimal balanceAfter =
-        BigDecimal.valueOf(this._createCustomerViewModel.inputtedCustomer().balance())
+        BigDecimal.valueOf(this._createCustomerViewModel.inputtedBalance().getValue())
             .add(amountToAdd);
 
     // Revert back when trying to add larger than maximum allowed.
@@ -136,7 +138,7 @@ public class CustomerBalanceViewModel {
     }
 
     final BigDecimal balanceAfter =
-        BigDecimal.valueOf(this._createCustomerViewModel.inputtedCustomer().balance())
+        BigDecimal.valueOf(this._createCustomerViewModel.inputtedBalance().getValue())
             .subtract(amountToWithdraw);
     final boolean isLeftOverBalanceAvailable = balanceAfter.compareTo(BigDecimal.ZERO) >= 0;
 
@@ -154,19 +156,19 @@ public class CustomerBalanceViewModel {
 
   public void onAddSubmitted() {
     final long balance =
-        this._createCustomerViewModel.inputtedCustomer().balance() + this.inputtedBalanceAmount();
+        this._createCustomerViewModel.inputtedBalance().getValue() + this.inputtedBalanceAmount();
     this._createCustomerViewModel.onBalanceChanged(balance);
   }
 
   public void onWithdrawSubmitted() {
     final long balance =
-        this._createCustomerViewModel.inputtedCustomer().balance() - this.inputtedWithdrawAmount();
+        this._createCustomerViewModel.inputtedBalance().getValue() - this.inputtedWithdrawAmount();
     this._createCustomerViewModel.onBalanceChanged(balance);
   }
 
   public void onReset() {
-    this._inputtedBalanceAmountText.setValue(null);
-    this._inputtedWithdrawAmountText.setValue(null);
-    this._availableBalanceToWithdraw.setValue(null);
+    this._inputtedBalanceAmountText.setValue("");
+    this._inputtedWithdrawAmountText.setValue("");
+    this._availableBalanceToWithdraw.setValue(0L);
   }
 }

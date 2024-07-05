@@ -51,7 +51,7 @@ public class CreateQueueCustomer implements View.OnClickListener {
         final Bundle bundle = new Bundle();
         bundle.putParcelable(
             SelectCustomerFragment.Arguments.INITIAL_SELECTED_CUSTOMER.key(),
-            this._fragment.createQueueViewModel().inputtedCustomer().getValue());
+            this._fragment.createQueueViewModel().inputtedCustomer().getValue().orElse(null));
 
         Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
             .navigate(R.id.selectCustomerFragment, bundle);

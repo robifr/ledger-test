@@ -85,7 +85,9 @@ public class FilterCustomerViewModelHandler {
         .show();
   }
 
-  private void _onCustomers(@Nullable List<CustomerModel> customers) {
+  private void _onCustomers(@NonNull List<CustomerModel> customers) {
+    Objects.requireNonNull(customers);
+
     this._fragment.adapter().notifyDataSetChanged();
   }
 
@@ -93,7 +95,9 @@ public class FilterCustomerViewModelHandler {
     if (customers != null) this._viewModel.onFilteredCustomersChanged(customers);
   }
 
-  private void _onFilteredCustomers(@Nullable List<CustomerModel> customers) {
+  private void _onFilteredCustomers(@NonNull List<CustomerModel> customers) {
+    Objects.requireNonNull(customers);
+
     // Uncheck all cards.
     for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
       final RecyclerView.ViewHolder holder =
@@ -106,18 +110,16 @@ public class FilterCustomerViewModelHandler {
     }
 
     // Check the selected card.
-    if (customers != null && this._viewModel.customers().getValue() != null) {
-      for (CustomerModel customer : customers) {
-        final int customerIndex = this._viewModel.customers().getValue().indexOf(customer);
-        final RecyclerView.ViewHolder holder =
-            // +1 offset because header holder.
-            this._fragment
-                .fragmentBinding()
-                .recyclerView
-                .findViewHolderForLayoutPosition(customerIndex + 1);
+    for (CustomerModel customer : customers) {
+      final int customerIndex = this._viewModel.customers().getValue().indexOf(customer);
+      final RecyclerView.ViewHolder holder =
+          // +1 offset because header holder.
+          this._fragment
+              .fragmentBinding()
+              .recyclerView
+              .findViewHolderForLayoutPosition(customerIndex + 1);
 
-        if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setChecked(true);
-      }
+      if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setChecked(true);
     }
 
     this._fragment.adapter().notifyItemChanged(0); // Notify header holder.

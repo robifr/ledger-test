@@ -46,9 +46,7 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
         .post(
             () -> {
               final ArrayList<QueueModel> queues =
-                  this._viewModel.queues().getValue() != null
-                      ? new ArrayList<>(this._viewModel.queues().getValue())
-                      : new ArrayList<>();
+                  new ArrayList<>(this._viewModel.queues().getValue());
 
               for (CustomerModel customer : customers) {
                 for (int i = 0; i < queues.size(); i++) {
@@ -79,9 +77,7 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
         .post(
             () -> {
               final ArrayList<QueueModel> queues =
-                  this._viewModel.queues().getValue() != null
-                      ? new ArrayList<>(this._viewModel.queues().getValue())
-                      : new ArrayList<>();
+                  new ArrayList<>(this._viewModel.queues().getValue());
 
               for (CustomerModel customer : customers) {
                 for (int i = 0; i < queues.size(); i++) {

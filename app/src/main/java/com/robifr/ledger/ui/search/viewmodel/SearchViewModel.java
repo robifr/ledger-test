@@ -20,16 +20,17 @@ package com.robifr.ledger.ui.search.viewmodel;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.ProductRepository;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -38,8 +39,14 @@ public class SearchViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
 
-  @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<Optional<List<CustomerModel>>> _customers =
+      new SafeMutableLiveData<>(Optional.empty());
+
+  @NonNull
+  private final SafeMutableLiveData<Optional<List<ProductModel>>> _products =
+      new SafeMutableLiveData<>(Optional.empty());
+
   @NonNull private String _query = "";
 
   @Inject
@@ -51,12 +58,12 @@ public class SearchViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<CustomerModel>> customers() {
+  public SafeLiveData<Optional<List<CustomerModel>>> customers() {
     return this._customers;
   }
 
   @NonNull
-  public LiveData<List<ProductModel>> products() {
+  public SafeLiveData<Optional<List<ProductModel>>> products() {
     return this._products;
   }
 
@@ -75,13 +82,15 @@ public class SearchViewModel extends ViewModel {
           // Send null when user hasn't type anything to prevent
           // no-results-found illustration shows up.
           if (this._query.isEmpty()) {
-            this._customers.postValue(null);
-            this._products.postValue(null);
+            this._customers.postValue(Optional.empty());
+            this._products.postValue(Optional.empty());
           } else {
             this._customerRepository
                 .search(this._query)
-                .thenAcceptAsync(this._customers::postValue);
-            this._productRepository.search(this._query).thenAcceptAsync(this._products::postValue);
+                .thenAcceptAsync(customers -> this._customers.postValue(Optional.of(customers)));
+            this._productRepository
+                .search(this._query)
+                .thenAcceptAsync(products -> this._products.postValue(Optional.of(products)));
           }
         },
         300);

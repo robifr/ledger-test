@@ -20,7 +20,6 @@ package com.robifr.ledger.ui.product.filter;
 import android.text.Editable;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.robifr.ledger.R;
@@ -57,7 +56,9 @@ public class ProductFilterPrice {
   /**
    * @param minPrice Formatted text of min {@link ProductFilters#filteredPrice() price}.
    */
-  public void setFilteredMinPriceText(@Nullable String minPrice) {
+  public void setFilteredMinPriceText(@NonNull String minPrice) {
+    Objects.requireNonNull(minPrice);
+
     final String currentText = this._dialogBinding.filterPrice.minimumPrice.getText().toString();
     if (currentText.equals(minPrice)) return;
 
@@ -71,7 +72,9 @@ public class ProductFilterPrice {
   /**
    * @param maxPrice Formatted text of max {@link ProductFilters#filteredPrice() price}.
    */
-  public void setFilteredMaxPriceText(@Nullable String maxPrice) {
+  public void setFilteredMaxPriceText(@NonNull String maxPrice) {
+    Objects.requireNonNull(maxPrice);
+
     final String currentText = this._dialogBinding.filterPrice.maximumPrice.getText().toString();
     if (currentText.equals(maxPrice)) return;
 

@@ -21,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
@@ -86,19 +85,20 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
       headerHolder.bind(Optional.empty());
 
     } else if (holder instanceof SearchCustomerListHolder listHolder) {
-      final List<CustomerModel> customers =
-          this._fragment.searchCustomerViewModel().customers().getValue();
-
-      // -1 offset because header holder.
-      if (customers != null) listHolder.bind(customers.get(index - 1));
+      this._fragment
+          .searchCustomerViewModel()
+          .customers()
+          .getValue()
+          .map(customers -> customers.get(index - 1)) // -1 offset because header holder.
+          .ifPresent(listHolder::bind);
     }
   }
 
   @Override
   public int getItemCount() {
-    final List<CustomerModel> customers =
-        this._fragment.searchCustomerViewModel().customers().getValue();
-    return customers != null ? customers.size() + 1 : 0; // +1 offset because header holder.
+    // +1 offset because header holder.
+    return this._fragment.searchCustomerViewModel().customers().getValue().map(List::size).orElse(0)
+        + 1;
   }
 
   @Override

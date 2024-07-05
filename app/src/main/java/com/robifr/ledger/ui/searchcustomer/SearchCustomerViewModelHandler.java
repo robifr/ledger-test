@@ -27,6 +27,7 @@ import com.robifr.ledger.ui.searchcustomer.viewmodel.SearchCustomerViewModel;
 import com.robifr.ledger.util.Compats;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SearchCustomerViewModelHandler {
   @NonNull private final SearchCustomerFragment _fragment;
@@ -72,13 +73,19 @@ public class SearchCustomerViewModelHandler {
     }
   }
 
-  private void _onCustomers(@Nullable List<CustomerModel> customers) {
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onCustomers(@NonNull Optional<List<CustomerModel>> customers) {
+    Objects.requireNonNull(customers);
+
     this._fragment.adapter().notifyDataSetChanged();
 
     final int noResultsVisibility =
-        customers != null && customers.isEmpty() ? View.VISIBLE : View.GONE;
+        // Only show illustration when customers are empty list.
+        customers.isPresent() && customers.get().isEmpty() ? View.VISIBLE : View.GONE;
     final int recyclerVisibility =
-        customers != null && !customers.isEmpty() ? View.VISIBLE : View.GONE;
+        customers.isPresent() && !customers.get().isEmpty() ? View.VISIBLE : View.GONE;
 
     this._fragment.fragmentBinding().horizontalListContainer.setVisibility(noResultsVisibility);
     this._fragment.fragmentBinding().noResultsImage.getRoot().setVisibility(noResultsVisibility);

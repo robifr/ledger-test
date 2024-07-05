@@ -29,8 +29,9 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -50,14 +51,20 @@ public class ProductViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<ProductSortMethod> _sortMethod = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<List<ProductModel>> _products =
+      new SafeMutableLiveData<>(List.of());
+
+  @NonNull
+  private final SafeMutableLiveData<ProductSortMethod> _sortMethod =
+      new SafeMutableLiveData<>(new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
 
   /**
-   * Currently expanded product index from {@link ProductViewModel#_products products}. -1 or null
-   * to represent none being expanded.
+   * Currently expanded product index from {@link ProductViewModel#_products products}. -1 to
+   * represent none being expanded.
    */
-  @NonNull private final MutableLiveData<Integer> _expandedProductIndex = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<Integer> _expandedProductIndex = new SafeMutableLiveData<>(-1);
 
   @Inject
   public ProductViewModel(@NonNull ProductRepository productRepository) {
@@ -70,7 +77,6 @@ public class ProductViewModel extends ViewModel {
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
-    this.onSortMethodChanged(new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
     LiveDataEvent.observeOnce(
         this.selectAllProducts(),
         products -> this._filterView.onFiltersChanged(this._filterView.inputtedFilters(), products),
@@ -93,19 +99,19 @@ public class ProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<ProductModel>> products() {
+  public SafeLiveData<List<ProductModel>> products() {
     return this._products;
   }
 
   @NonNull
-  public LiveData<ProductSortMethod> sortMethod() {
+  public SafeLiveData<ProductSortMethod> sortMethod() {
     return this._sortMethod;
   }
 
   /**
    * @see ProductViewModel#_expandedProductIndex
    */
-  public LiveData<Integer> expandedProductIndex() {
+  public SafeLiveData<Integer> expandedProductIndex() {
     return this._expandedProductIndex;
   }
 
@@ -152,9 +158,7 @@ public class ProductViewModel extends ViewModel {
   }
 
   public void onSortMethodChanged(@NonNull ProductSortMethod sortMethod) {
-    final List<ProductModel> products =
-        Objects.requireNonNullElse(this._products.getValue(), new ArrayList<>());
-    this.onSortMethodChanged(sortMethod, products);
+    this.onSortMethodChanged(sortMethod, this._products.getValue());
   }
 
   public void onSortMethodChanged(
@@ -171,9 +175,7 @@ public class ProductViewModel extends ViewModel {
    * @see ProductViewModel#onSortMethodChanged(ProductSortMethod.SortBy, List)
    */
   public void onSortMethodChanged(@NonNull ProductSortMethod.SortBy sortBy) {
-    final List<ProductModel> products =
-        Objects.requireNonNullElse(this._products.getValue(), new ArrayList<>());
-    this.onSortMethodChanged(sortBy, products);
+    this.onSortMethodChanged(sortBy, this._products.getValue());
   }
 
   /**
@@ -186,12 +188,11 @@ public class ProductViewModel extends ViewModel {
       @NonNull ProductSortMethod.SortBy sortBy, @NonNull List<ProductModel> products) {
     Objects.requireNonNull(sortBy);
 
-    final ProductSortMethod sortMethod = this._sortMethod.getValue();
-    if (sortMethod == null) return;
-
     // Reverse sort order when selecting same sort option.
     final boolean isAscending =
-        sortMethod.sortBy() == sortBy ? !sortMethod.isAscending() : sortMethod.isAscending();
+        this._sortMethod.getValue().sortBy() == sortBy
+            ? !this._sortMethod.getValue().isAscending()
+            : this._sortMethod.getValue().isAscending();
 
     this.onSortMethodChanged(new ProductSortMethod(sortBy, isAscending), products);
   }

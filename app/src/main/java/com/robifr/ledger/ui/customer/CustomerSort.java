@@ -56,16 +56,14 @@ public class CustomerSort implements RadioButton.OnClickListener {
   }
 
   public void openDialog() {
-    final CustomerSortMethod sortMethod =
-        this._fragment.customerViewModel().sortMethod().getValue();
-    if (sortMethod == null) return;
-
     for (CustomerSortMethod.SortBy sortBy : CustomerSortMethod.SortBy.values()) {
       // Don't use `RadioGroup#OnCheckedChangeListener` interface,
       // cause that wouldn't work when user re-select same radio to revert sort order.
       this._dialogBinding.radioGroup.findViewWithTag(sortBy.toString()).setOnClickListener(this);
     }
 
+    final CustomerSortMethod sortMethod =
+        this._fragment.customerViewModel().sortMethod().getValue();
     final RadioButton initialRadio =
         this._dialogBinding.radioGroup.findViewWithTag(sortMethod.sortBy().toString());
 

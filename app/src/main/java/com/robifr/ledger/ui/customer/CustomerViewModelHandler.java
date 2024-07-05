@@ -75,11 +75,13 @@ public class CustomerViewModelHandler {
         .show();
   }
 
-  private void _onCustomers(@Nullable List<CustomerModel> customers) {
+  private void _onCustomers(@NonNull List<CustomerModel> customers) {
+    Objects.requireNonNull(customers);
+
     this._fragment.adapter().notifyDataSetChanged();
   }
 
-  private void _onExpandedCustomerIndex(@Nullable Integer index) {
+  private void _onExpandedCustomerIndex(int index) {
     // Shrink all cards.
     for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
       final RecyclerView.ViewHolder viewHolder =
@@ -92,7 +94,7 @@ public class CustomerViewModelHandler {
     }
 
     // Expand the selected card.
-    if (index != null && index != -1) {
+    if (index != -1) {
       final RecyclerView.ViewHolder viewHolder =
           // +1 offset because header holder.
           this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
@@ -101,19 +103,27 @@ public class CustomerViewModelHandler {
     }
   }
 
-  private void _onFilterMinBalanceText(@Nullable String minBalance) {
+  private void _onFilterMinBalanceText(@NonNull String minBalance) {
+    Objects.requireNonNull(minBalance);
+
     this._fragment.filter().filterBalance().setFilteredMinBalanceText(minBalance);
   }
 
-  private void _onFilterMaxBalanceText(@Nullable String maxBalance) {
+  private void _onFilterMaxBalanceText(@NonNull String maxBalance) {
+    Objects.requireNonNull(maxBalance);
+
     this._fragment.filter().filterBalance().setFilteredMaxBalanceText(maxBalance);
   }
 
-  private void _onFilterMinDebtText(@Nullable String minDebt) {
+  private void _onFilterMinDebtText(@NonNull String minDebt) {
+    Objects.requireNonNull(minDebt);
+
     this._fragment.filter().filterDebt().setFilteredMinDebtText(minDebt);
   }
 
-  private void _onFilterMaxDebtText(@Nullable String maxDebt) {
+  private void _onFilterMaxDebtText(@NonNull String maxDebt) {
+    Objects.requireNonNull(maxDebt);
+
     this._fragment.filter().filterDebt().setFilteredMaxDebtText(maxDebt);
   }
 }

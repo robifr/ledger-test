@@ -19,18 +19,17 @@ package com.robifr.ledger.ui.queue.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.display.QueueFilterer;
 import com.robifr.ledger.data.display.QueueFilters;
-import com.robifr.ledger.data.display.QueueSortMethod;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.util.CurrencyFormat;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -40,21 +39,29 @@ public class QueueFilterViewModel {
   @NonNull private final QueueViewModel _viewModel;
   @NonNull private final QueueFilterer _filterer;
 
-  @NonNull private final MutableLiveData<List<Long>> _inputtedCustomerIds = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<List<Long>> _inputtedCustomerIds =
+      new SafeMutableLiveData<>(List.of());
 
   @NonNull
-  private final MutableLiveData<Boolean> _inputtedIsNullCustomerShown = new MutableLiveData<>();
+  private final SafeMutableLiveData<Boolean> _inputtedIsNullCustomerShown =
+      new SafeMutableLiveData<>(true);
 
   @NonNull
-  private final MutableLiveData<Set<QueueModel.Status>> _inputtedStatus = new MutableLiveData<>();
+  private final SafeMutableLiveData<Set<QueueModel.Status>> _inputtedStatus =
+      new SafeMutableLiveData<>(Set.of(QueueModel.Status.values()));
 
   @NonNull
-  private final MutableLiveData<String> _inputtedMinTotalPriceText = new MutableLiveData<>();
+  private final SafeMutableLiveData<String> _inputtedMinTotalPriceText =
+      new SafeMutableLiveData<>("");
 
   @NonNull
-  private final MutableLiveData<String> _inputtedMaxTotalPriceText = new MutableLiveData<>();
+  private final SafeMutableLiveData<String> _inputtedMaxTotalPriceText =
+      new SafeMutableLiveData<>("");
 
-  @NonNull private final MutableLiveData<QueueDate> _inputtedDate = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<QueueDate> _inputtedDate =
+      new SafeMutableLiveData<>(QueueDate.withRange(QueueDate.Range.ALL_TIME));
 
   public QueueFilterViewModel(@NonNull QueueViewModel viewModel, @NonNull QueueFilterer filterer) {
     this._viewModel = Objects.requireNonNull(viewModel);
@@ -62,32 +69,32 @@ public class QueueFilterViewModel {
   }
 
   @NonNull
-  public LiveData<List<Long>> inputtedCustomerIds() {
+  public SafeLiveData<List<Long>> inputtedCustomerIds() {
     return this._inputtedCustomerIds;
   }
 
   @NonNull
-  public LiveData<Boolean> inputtedIsNullCustomerShown() {
+  public SafeLiveData<Boolean> inputtedIsNullCustomerShown() {
     return this._inputtedIsNullCustomerShown;
   }
 
   @NonNull
-  public LiveData<Set<QueueModel.Status>> inputtedStatus() {
+  public SafeLiveData<Set<QueueModel.Status>> inputtedStatus() {
     return this._inputtedStatus;
   }
 
   @NonNull
-  public LiveData<String> inputtedMinTotalPriceText() {
+  public SafeLiveData<String> inputtedMinTotalPriceText() {
     return this._inputtedMinTotalPriceText;
   }
 
   @NonNull
-  public LiveData<String> inputtedMaxTotalPriceText() {
+  public SafeLiveData<String> inputtedMaxTotalPriceText() {
     return this._inputtedMaxTotalPriceText;
   }
 
   @NonNull
-  public LiveData<QueueDate> inputtedDate() {
+  public SafeLiveData<QueueDate> inputtedDate() {
     return this._inputtedDate;
   }
 
@@ -99,49 +106,33 @@ public class QueueFilterViewModel {
    */
   @NonNull
   public QueueFilters inputtedFilters() {
-    final List<Long> customerIds =
-        Objects.requireNonNullElse(
-            this._inputtedCustomerIds.getValue(), this._filterer.filters().filteredCustomerIds());
-    final boolean isNullCustomerShown =
-        Objects.requireNonNullElse(
-            this._inputtedIsNullCustomerShown.getValue(),
-            this._filterer.filters().isNullCustomerShown());
-    final Set<QueueModel.Status> status =
-        Objects.requireNonNullElse(
-            this._inputtedStatus.getValue(), this._filterer.filters().filteredStatus());
-    final QueueDate date =
-        Objects.requireNonNullElse(
-            this._inputtedDate.getValue(), this._filterer.filters().filteredDate());
-
     // Nullable value to represent unbounded range.
-    BigDecimal minTotalPrice = this._filterer.filters().filteredTotalPrice().first;
-    BigDecimal maxTotalPrice = this._filterer.filters().filteredTotalPrice().second;
+    BigDecimal minTotalPrice = null;
+    BigDecimal maxTotalPrice = null;
 
     try {
-      final String minTotalPriceText = this._inputtedMinTotalPriceText.getValue();
-
-      if (minTotalPriceText != null && !minTotalPriceText.isBlank()) {
-        minTotalPrice = CurrencyFormat.parse(minTotalPriceText, "id", "ID");
+      if (!this._inputtedMinTotalPriceText.getValue().isBlank()) {
+        minTotalPrice =
+            CurrencyFormat.parse(this._inputtedMinTotalPriceText.getValue(), "id", "ID");
       }
 
     } catch (ParseException ignore) {
     }
 
     try {
-      final String maxTotalPriceText = this._inputtedMaxTotalPriceText.getValue();
-
-      if (maxTotalPriceText != null && !maxTotalPriceText.isBlank()) {
-        maxTotalPrice = CurrencyFormat.parse(maxTotalPriceText, "id", "ID");
+      if (!this._inputtedMaxTotalPriceText.getValue().isBlank()) {
+        maxTotalPrice =
+            CurrencyFormat.parse(this._inputtedMaxTotalPriceText.getValue(), "id", "ID");
       }
 
     } catch (ParseException ignore) {
     }
 
     return QueueFilters.toBuilder()
-        .setFilteredCustomerIds(customerIds)
-        .setNullCustomerShown(isNullCustomerShown)
-        .setFilteredStatus(status)
-        .setFilteredDate(date)
+        .setFilteredCustomerIds(this._inputtedCustomerIds.getValue())
+        .setNullCustomerShown(this._inputtedIsNullCustomerShown.getValue())
+        .setFilteredStatus(this._inputtedStatus.getValue())
+        .setFilteredDate(this._inputtedDate.getValue())
         .setFilteredTotalPrice(new Pair<>(minTotalPrice, maxTotalPrice))
         .build();
   }
@@ -181,9 +172,7 @@ public class QueueFilterViewModel {
   }
 
   public void onFiltersChanged(@NonNull QueueFilters filters) {
-    final List<QueueModel> queues =
-        Objects.requireNonNullElse(this._viewModel.queues().getValue(), new ArrayList<>());
-    this.onFiltersChanged(filters, queues);
+    this.onFiltersChanged(filters, this._viewModel.queues().getValue());
   }
 
   public void onFiltersChanged(@NonNull QueueFilters filters, @NonNull List<QueueModel> queues) {
@@ -208,12 +197,7 @@ public class QueueFilterViewModel {
     this._filterer.setFilters(filters);
 
     final List<QueueModel> filteredQueues = this._filterer.filter(queues);
-    final QueueSortMethod sortMethod = this._viewModel.sortMethod().getValue();
-
     // Re-sort the list, after previously re-populating the list with a new filtered value.
-    if (sortMethod != null) this._viewModel.onSortMethodChanged(sortMethod, filteredQueues);
-    // Put in the else to prevent multiple call of `QueueFilterViewModel#onCustomersChanged()`
-    // from `QueueFilterViewModel#onSortMethodChanged()`.
-    else this._viewModel.onQueuesChanged(filteredQueues);
+    this._viewModel.onSortMethodChanged(this._viewModel.sortMethod().getValue(), filteredQueues);
   }
 }

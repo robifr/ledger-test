@@ -33,6 +33,7 @@ import com.robifr.ledger.assetbinding.chart.ChartAxisBinding;
 import com.robifr.ledger.assetbinding.chart.ChartLayoutBinding;
 import com.robifr.ledger.databinding.DashboardCardRevenueBinding;
 import com.robifr.ledger.ui.LocalWebChrome;
+import com.robifr.ledger.ui.dashboard.viewmodel.DashboardRevenueViewModel;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.util.List;
@@ -225,28 +226,12 @@ public class DashboardRevenue implements View.OnClickListener {
       Objects.requireNonNull(view);
       Objects.requireNonNull(url);
 
-      final DashboardRevenue.OverviewType displayedChart =
-          DashboardRevenue.this
-              ._fragment
-              .dashboardViewModel()
-              .revenueView()
-              .displayedChart()
-              .getValue();
-      if (displayedChart == null) return;
+      final DashboardRevenueViewModel revenueViewModel =
+          DashboardRevenue.this._fragment.dashboardViewModel().revenueView();
 
-      switch (displayedChart) {
-        case PROJECTED_INCOME ->
-            DashboardRevenue.this
-                ._fragment
-                .dashboardViewModel()
-                .revenueView()
-                .onDisplayProjectedIncomeChart();
-        case RECEIVED_INCOME ->
-            DashboardRevenue.this
-                ._fragment
-                .dashboardViewModel()
-                .revenueView()
-                .onDisplayReceivedIncomeChart();
+      switch (revenueViewModel.displayedChart().getValue()) {
+        case PROJECTED_INCOME -> revenueViewModel.onDisplayProjectedIncomeChart();
+        case RECEIVED_INCOME -> revenueViewModel.onDisplayReceivedIncomeChart();
       }
     }
   }

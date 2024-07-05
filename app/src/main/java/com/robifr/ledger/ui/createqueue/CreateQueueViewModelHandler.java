@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class CreateQueueViewModelHandler {
@@ -130,12 +131,19 @@ public class CreateQueueViewModelHandler {
         .show();
   }
 
-  private void _onInputtedCustomer(@Nullable CustomerModel customer) {
-    this._fragment.inputCustomer().setInputtedCustomer(customer);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onInputtedCustomer(@NonNull Optional<CustomerModel> customer) {
+    Objects.requireNonNull(customer);
 
-    if (customer != null) {
+    this._fragment.inputCustomer().setInputtedCustomer(customer.orElse(null));
+
+    if (customer.isPresent()) {
       final String croppedName =
-          customer.name().length() > 12 ? customer.name().substring(0, 12) : customer.name();
+          customer.get().name().length() > 12
+              ? customer.get().name().substring(0, 12)
+              : customer.get().name();
 
       this._fragment
           .inputProductOrder()
@@ -153,24 +161,34 @@ public class CreateQueueViewModelHandler {
     }
   }
 
-  private void _onTemporalInputtedCustomer(@Nullable CustomerModel customer) {
-    final Long balance = customer != null ? customer.balance() : null;
-    final BigDecimal debt = customer != null ? customer.debt() : null;
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onTemporalInputtedCustomer(@NonNull Optional<CustomerModel> customer) {
+    Objects.requireNonNull(customer);
 
-    this._fragment.inputProductOrder().setCustomerBalanceAfterPayment(balance);
-    this._fragment.inputProductOrder().setCustomerDebtAfterPayment(debt);
+    this._fragment
+        .inputProductOrder()
+        .setCustomerBalanceAfterPayment(customer.map(CustomerModel::balance).orElse(null));
+    this._fragment
+        .inputProductOrder()
+        .setCustomerDebtAfterPayment(customer.map(CustomerModel::debt).orElse(null));
   }
 
-  private void _onInputtedDate(@Nullable ZonedDateTime date) {
-    if (date != null) this._fragment.inputDate().setInputtedDate(date);
+  private void _onInputtedDate(@NonNull ZonedDateTime date) {
+    Objects.requireNonNull(date);
+
+    this._fragment.inputDate().setInputtedDate(date);
   }
 
-  private void _onInputtedStatus(@Nullable QueueModel.Status status) {
-    if (status != null) this._fragment.inputStatus().setInputtedStatus(status);
+  private void _onInputtedStatus(@NonNull QueueModel.Status status) {
+    Objects.requireNonNull(status);
+
+    this._fragment.inputStatus().setInputtedStatus(status);
   }
 
-  private void _onProductOrders(@Nullable List<ProductOrderModel> productOrders) {
-    if (productOrders == null) return;
+  private void _onProductOrders(@NonNull List<ProductOrderModel> productOrders) {
+    Objects.requireNonNull(productOrders);
 
     this._fragment.inputProductOrder().setInputtedProductOrders(productOrders);
     this._fragment
@@ -181,65 +199,71 @@ public class CreateQueueViewModelHandler {
         .setGrandTotalPrice(this._viewModel.inputtedQueue().grandTotalPrice());
   }
 
-  private void _onInputtedPaymentMethod(@Nullable QueueModel.PaymentMethod paymentMethod) {
-    if (paymentMethod != null) {
-      this._fragment.inputPaymentMethod().setInputtedPaymentMethod(paymentMethod);
-    }
+  private void _onInputtedPaymentMethod(@NonNull QueueModel.PaymentMethod paymentMethod) {
+    Objects.requireNonNull(paymentMethod);
+
+    this._fragment.inputPaymentMethod().setInputtedPaymentMethod(paymentMethod);
   }
 
-  private void _onAllowedPaymentMethods(@Nullable Set<QueueModel.PaymentMethod> paymentMethods) {
-    if (paymentMethods != null) {
-      this._fragment.inputPaymentMethod().setEnabledButtons(paymentMethods);
-    }
+  private void _onAllowedPaymentMethods(@NonNull Set<QueueModel.PaymentMethod> paymentMethods) {
+    Objects.requireNonNull(paymentMethods);
+
+    this._fragment.inputPaymentMethod().setEnabledButtons(paymentMethods);
   }
 
-  private void _onPaymentMethodsViewVisible(@Nullable Boolean isVisible) {
-    if (isVisible != null) this._fragment.inputPaymentMethod().setVisible(isVisible);
+  private void _onPaymentMethodsViewVisible(boolean isVisible) {
+    this._fragment.inputPaymentMethod().setVisible(isVisible);
   }
 
-  private void _onMakeOrderProduct(@Nullable ProductModel product) {
-    this._fragment.inputProductOrder().makeProductOrder().setInputtedProduct(product);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onMakeOrderProduct(@NonNull Optional<ProductModel> product) {
+    Objects.requireNonNull(product);
+
+    this._fragment.inputProductOrder().makeProductOrder().setInputtedProduct(product.orElse(null));
   }
 
-  private void _onMakeOrderQuantityText(@Nullable String quantity) {
+  private void _onMakeOrderQuantityText(@NonNull String quantity) {
+    Objects.requireNonNull(quantity);
+
     this._fragment.inputProductOrder().makeProductOrder().setInputtedQuantityText(quantity);
   }
 
-  private void _onMakeOrderDiscountText(@Nullable String discount) {
+  private void _onMakeOrderDiscountText(@NonNull String discount) {
+    Objects.requireNonNull(discount);
+
     this._fragment.inputProductOrder().makeProductOrder().setInputtedDiscountText(discount);
   }
 
-  private void _onMakeOrderTotalPrice(@Nullable BigDecimal totalPrice) {
-    if (totalPrice != null) {
-      this._fragment.inputProductOrder().makeProductOrder().setInputtedTotalPrice(totalPrice);
-    }
+  private void _onMakeOrderTotalPrice(@NonNull BigDecimal totalPrice) {
+    Objects.requireNonNull(totalPrice);
+
+    this._fragment.inputProductOrder().makeProductOrder().setInputtedTotalPrice(totalPrice);
   }
 
-  private void _onSelectOrderContextualModeActive(@Nullable Boolean isActive) {
-    if (isActive == null) return;
-
+  private void _onSelectOrderContextualModeActive(boolean isActive) {
     this._fragment.inputProductOrder().setContextualMode(isActive);
     // Disable every possible irrelevant action when contextual mode is on.
     this._fragment.fragmentBinding().customer.setEnabled(!isActive);
-    this._fragment.fragmentBinding().customerLayout.setEndIconVisible(!isActive);
+    this._fragment.fragmentBinding().customerLayout.setEnabled(!isActive);
     this._fragment.fragmentBinding().date.setEnabled(!isActive);
     this._fragment.fragmentBinding().status.setEnabled(!isActive);
     this._fragment.fragmentBinding().productOrder.addButton.setEnabled(!isActive);
 
-    final Set<QueueModel.PaymentMethod> allowedPayments =
-        this._viewModel.allowedPaymentMethods().getValue();
-
     // Don't set it via view model as doing so will make the actual allowed payments lost.
-    if (!isActive && allowedPayments != null) {
-      this._fragment.inputPaymentMethod().setEnabledButtons(allowedPayments);
+    if (!isActive) {
+      this._fragment
+          .inputPaymentMethod()
+          .setEnabledButtons(this._viewModel.allowedPaymentMethods().getValue());
     } else {
       this._fragment.inputPaymentMethod().setEnabledButtons(Set.of());
     }
   }
 
-  private void _onSelectOrderSelectedIndexes(@Nullable Set<Integer> selectedIndexes) {
-    if (selectedIndexes != null) {
-      this._fragment.inputProductOrder().setSelectedProductOrderByIndexes(selectedIndexes);
-    }
+  private void _onSelectOrderSelectedIndexes(@NonNull Set<Integer> selectedIndexes) {
+    Objects.requireNonNull(selectedIndexes);
+
+    this._fragment.inputProductOrder().setSelectedProductOrderByIndexes(selectedIndexes);
   }
 }

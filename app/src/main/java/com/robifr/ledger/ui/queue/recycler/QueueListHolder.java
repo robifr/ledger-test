@@ -70,13 +70,9 @@ public class QueueListHolder extends RecyclerViewHolder<QueueModel>
     // Prevent reused view holder to expand the card
     // if current bound queue is different with selected expanded card.
     final List<QueueModel> queues = this._fragment.queueViewModel().queues().getValue();
-    final int expandedQueueIndex =
-        Objects.requireNonNullElse(
-            this._fragment.queueViewModel().expandedQueueIndex().getValue(), -1);
+    final int expandedQueueIndex = this._fragment.queueViewModel().expandedQueueIndex().getValue();
     final boolean shouldCardExpanded =
-        expandedQueueIndex != -1
-            && queues != null
-            && this._boundQueue.equals(queues.get(expandedQueueIndex));
+        expandedQueueIndex != -1 && this._boundQueue.equals(queues.get(expandedQueueIndex));
 
     this.setCardExpanded(shouldCardExpanded);
   }
@@ -87,13 +83,10 @@ public class QueueListHolder extends RecyclerViewHolder<QueueModel>
 
     switch (view.getId()) {
       case R.id.cardView -> {
-        final List<QueueModel> queues = this._fragment.queueViewModel().queues().getValue();
-        if (queues == null) return;
-
         // Only expand when it shrank.
         final int expandedQueueIndex =
             this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
-                ? queues.indexOf(this._boundQueue)
+                ? this._fragment.queueViewModel().queues().getValue().indexOf(this._boundQueue)
                 : -1;
         this._fragment.queueViewModel().onExpandedQueueIndexChanged(expandedQueueIndex);
       }

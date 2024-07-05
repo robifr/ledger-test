@@ -21,12 +21,10 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.QueueCardWideBinding;
 import com.robifr.ledger.ui.queue.QueueFragment;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -84,17 +82,15 @@ public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
       headerHolder.bind(Optional.empty());
 
     } else if (holder instanceof QueueListHolder listHolder) {
-      final List<QueueModel> queues = this._fragment.queueViewModel().queues().getValue();
-
       // -1 offset because header holder.
-      if (queues != null) listHolder.bind(queues.get(index - 1));
+      listHolder.bind(this._fragment.queueViewModel().queues().getValue().get(index - 1));
     }
   }
 
   @Override
   public int getItemCount() {
-    final List<QueueModel> queues = this._fragment.queueViewModel().queues().getValue();
-    return queues != null ? queues.size() + 1 : 0; // +1 offset because header holder.
+    // +1 offset because header holder.
+    return this._fragment.queueViewModel().queues().getValue().size() + 1;
   }
 
   @Override

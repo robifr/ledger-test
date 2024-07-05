@@ -42,9 +42,6 @@ public class CreateQueueDate implements View.OnClickListener {
   public void onClick(@NonNull View view) {
     Objects.requireNonNull(view);
 
-    final ZonedDateTime inputtedDate =
-        this._fragment.createQueueViewModel().inputtedDate().getValue();
-
     switch (view.getId()) {
       case R.id.date -> {
         final MaterialDatePicker.Builder<Long> pickerBuilder =
@@ -57,16 +54,16 @@ public class CreateQueueDate implements View.OnClickListener {
                     new CalendarConstraints.Builder()
                         .setValidator(DateValidatorPointBackward.now())
                         .build());
-
-        if (inputtedDate != null) {
-          pickerBuilder.setSelection(
-              inputtedDate
-                  .toLocalDate()
-                  .atStartOfDay()
-                  .atZone(ZoneId.of("UTC")) // Material only accept UTC time.
-                  .toInstant()
-                  .toEpochMilli());
-        }
+        pickerBuilder.setSelection(
+            this._fragment
+                .createQueueViewModel()
+                .inputtedDate()
+                .getValue()
+                .toLocalDate()
+                .atStartOfDay()
+                .atZone(ZoneId.of("UTC")) // Material only accept UTC time.
+                .toInstant()
+                .toEpochMilli());
 
         final MaterialDatePicker<Long> picker = pickerBuilder.build();
         picker.show(this._fragment.getChildFragmentManager(), CreateQueueDate.class.toString());

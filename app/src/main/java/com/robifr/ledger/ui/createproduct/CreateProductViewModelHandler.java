@@ -87,11 +87,11 @@ public class CreateProductViewModelHandler {
     this._fragment.inputName().setError(text);
   }
 
-  private void _onInputtedNameText(@Nullable String name) {
+  private void _onInputtedNameText(@NonNull String name) {
     this._fragment.inputName().setInputtedNameText(name);
   }
 
-  private void _onInputtedPriceText(@Nullable String price) {
+  private void _onInputtedPriceText(@NonNull String price) {
     this._fragment.inputPrice().setInputtedPriceText(price);
   }
 }

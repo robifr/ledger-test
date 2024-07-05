@@ -29,9 +29,12 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -43,7 +46,9 @@ public class SearchProductViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<String>> _initializedInitialQuery =
       new MutableLiveData<>();
 
-  @NonNull private final MutableLiveData<List<ProductModel>> _products = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<Optional<List<ProductModel>>> _products =
+      new SafeMutableLiveData<>(Optional.empty());
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedProductId =
@@ -67,7 +72,7 @@ public class SearchProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<ProductModel>> products() {
+  public SafeLiveData<Optional<List<ProductModel>>> products() {
     return this._products;
   }
 
@@ -85,8 +90,13 @@ public class SearchProductViewModel extends ViewModel {
         () -> {
           // Send null when user hasn't type anything to prevent
           // no-results-found illustration shows up.
-          if (query.isEmpty()) this._products.postValue(null);
-          else this._productRepository.search(query).thenAcceptAsync(this._products::postValue);
+          if (query.isEmpty()) {
+            this._products.postValue(Optional.empty());
+          } else {
+            this._productRepository
+                .search(query)
+                .thenAcceptAsync(products -> this._products.postValue(Optional.of(products)));
+          }
         },
         300);
   }

@@ -27,6 +27,7 @@ import com.robifr.ledger.ui.searchproduct.viewmodel.SearchProductViewModel;
 import com.robifr.ledger.util.Compats;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SearchProductViewModelHandler {
   @NonNull private final SearchProductFragment _fragment;
@@ -72,13 +73,19 @@ public class SearchProductViewModelHandler {
     }
   }
 
-  private void _onProducts(@Nullable List<ProductModel> products) {
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onProducts(@NonNull Optional<List<ProductModel>> products) {
+    Objects.requireNonNull(products);
+
     this._fragment.adapter().notifyDataSetChanged();
 
     final int noResultsVisibility =
-        products != null && products.isEmpty() ? View.VISIBLE : View.GONE;
+        // Only show illustration when products are empty list.
+        products.isPresent() && products.get().isEmpty() ? View.VISIBLE : View.GONE;
     final int recyclerVisibility =
-        products != null && !products.isEmpty() ? View.VISIBLE : View.GONE;
+        products.isPresent() && !products.get().isEmpty() ? View.VISIBLE : View.GONE;
 
     this._fragment.fragmentBinding().horizontalListContainer.setVisibility(noResultsVisibility);
     this._fragment.fragmentBinding().noResultsImage.getRoot().setVisibility(noResultsVisibility);

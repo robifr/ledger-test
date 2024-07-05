@@ -45,10 +45,6 @@ public class CreateQueueStatus implements RadioGroup.OnCheckedChangeListener {
   public void onCheckedChanged(@NonNull RadioGroup group, int radioId) {
     Objects.requireNonNull(group);
 
-    final QueueModel.Status inputtedStatus =
-        this._fragment.createQueueViewModel().inputtedStatus().getValue();
-    if (inputtedStatus == null) return;
-
     switch (group.getId()) {
       case R.id.radioGroup -> {
         final QueueModel.Status status =
@@ -73,11 +69,8 @@ public class CreateQueueStatus implements RadioGroup.OnCheckedChangeListener {
     final QueueModel.Status inputtedStatus =
         this._fragment.createQueueViewModel().inputtedStatus().getValue();
 
-    if (inputtedStatus != null) {
-      this._dialogBinding.radioGroup.check(
-          this._dialogBinding.radioGroup.findViewWithTag(inputtedStatus.toString()).getId());
-    }
-
+    this._dialogBinding.radioGroup.check(
+        this._dialogBinding.radioGroup.findViewWithTag(inputtedStatus.toString()).getId());
     this._dialogBinding.radioGroup.setOnCheckedChangeListener(this);
     this._dialog.show();
   }

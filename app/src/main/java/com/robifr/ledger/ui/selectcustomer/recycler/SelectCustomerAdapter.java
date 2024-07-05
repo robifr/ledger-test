@@ -27,7 +27,6 @@ import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -87,19 +86,16 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
       headerHolder.bind(selectedCustomer);
 
     } else if (holder instanceof SelectCustomerListHolder listHolder) {
-      final List<CustomerModel> customers =
-          this._fragment.selectCustomerViewModel().customers().getValue();
-
       // -1 offset because header holder.
-      if (customers != null) listHolder.bind(customers.get(index - 1));
+      listHolder.bind(
+          this._fragment.selectCustomerViewModel().customers().getValue().get(index - 1));
     }
   }
 
   @Override
   public int getItemCount() {
-    final List<CustomerModel> customers =
-        this._fragment.selectCustomerViewModel().customers().getValue();
-    return customers != null ? customers.size() + 1 : 0; // +1 offset because header holder.
+    // +1 offset because header holder.
+    return this._fragment.selectCustomerViewModel().customers().getValue().size() + 1;
   }
 
   @Override

@@ -73,10 +73,9 @@ public class DashboardViewModel extends ViewModel {
       @NonNull QueueRepository queueRepository, @NonNull CustomerRepository customerRepository) {
     this._queueRepository = Objects.requireNonNull(queueRepository);
     this._customerRepository = Objects.requireNonNull(customerRepository);
-    this._balanceView =
-        new DashboardBalanceViewModel(this._customersWithBalance, this._customersWithDebt);
+    this._balanceView = new DashboardBalanceViewModel(this);
     this._performanceView = new DashboardPerformanceViewModel(this);
-    this._revenueView = new DashboardRevenueViewModel(this, this._queues);
+    this._revenueView = new DashboardRevenueViewModel(this);
 
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);

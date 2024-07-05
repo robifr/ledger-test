@@ -20,13 +20,13 @@ package com.robifr.ledger.ui.dashboard.viewmodel;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import com.robifr.ledger.data.model.CustomerBalanceInfo;
 import com.robifr.ledger.data.model.CustomerDebtInfo;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 public class DashboardBalanceViewModel {
+  @NonNull private final DashboardViewModel _viewModel;
+
   @NonNull private final MediatorLiveData<BigDecimal> _totalBalance = new MediatorLiveData<>();
 
   @NonNull
@@ -37,14 +37,11 @@ public class DashboardBalanceViewModel {
   @NonNull
   private final MediatorLiveData<Integer> _totalCustomersWithDebt = new MediatorLiveData<>();
 
-  public DashboardBalanceViewModel(
-      @NonNull LiveData<List<CustomerBalanceInfo>> balanceInfoLiveData,
-      @NonNull LiveData<List<CustomerDebtInfo>> debtInfoLiveData) {
-    Objects.requireNonNull(balanceInfoLiveData);
-    Objects.requireNonNull(debtInfoLiveData);
+  public DashboardBalanceViewModel(@NonNull DashboardViewModel viewModel) {
+    this._viewModel = Objects.requireNonNull(viewModel);
 
     this._totalBalance.addSource(
-        balanceInfoLiveData,
+        this._viewModel._customersWithBalance(),
         balanceInfo -> {
           if (balanceInfo != null) {
             this._totalBalance.setValue(
@@ -54,12 +51,12 @@ public class DashboardBalanceViewModel {
           }
         });
     this._totalCustomersWithBalance.addSource(
-        balanceInfoLiveData,
+        this._viewModel._customersWithBalance(),
         balanceInfo -> {
           if (balanceInfo != null) this._totalCustomersWithBalance.setValue(balanceInfo.size());
         });
     this._totalDebt.addSource(
-        debtInfoLiveData,
+        this._viewModel._customersWithDebt(),
         debtInfo -> {
           if (debtInfo != null) {
             this._totalDebt.setValue(
@@ -69,7 +66,7 @@ public class DashboardBalanceViewModel {
           }
         });
     this._totalCustomersWithDebt.addSource(
-        debtInfoLiveData,
+        this._viewModel._customersWithDebt(),
         debtInfo -> {
           if (debtInfo != null) this._totalCustomersWithDebt.setValue(debtInfo.size());
         });

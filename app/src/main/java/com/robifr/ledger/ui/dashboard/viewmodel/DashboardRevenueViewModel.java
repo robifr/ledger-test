@@ -50,14 +50,11 @@ public class DashboardRevenueViewModel {
   @NonNull private final MediatorLiveData<BigDecimal> _receivedIncome = new MediatorLiveData<>();
   @NonNull private final MediatorLiveData<BigDecimal> _projectedIncome = new MediatorLiveData<>();
 
-  public DashboardRevenueViewModel(
-      @NonNull DashboardViewModel viewModel, @NonNull LiveData<List<QueueModel>> queuesLiveData) {
-    Objects.requireNonNull(queuesLiveData);
-
+  public DashboardRevenueViewModel(@NonNull DashboardViewModel viewModel) {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._receivedIncome.addSource(
-        queuesLiveData,
+        this._viewModel._queues(),
         queues -> {
           if (queues != null) {
             this._receivedIncome.setValue(
@@ -70,7 +67,7 @@ public class DashboardRevenueViewModel {
           }
         });
     this._projectedIncome.addSource(
-        queuesLiveData,
+        this._viewModel._queues(),
         queues -> {
           if (queues != null) {
             this._projectedIncome.setValue(

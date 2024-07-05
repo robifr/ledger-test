@@ -73,7 +73,7 @@
 
       <include
           android:id="@+id/receivedIncomeCard"
-          layout="@layout/dashboard_card_revenue_selectable" />
+          layout="@layout/dashboard_card_revenue_overview" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -97,7 +97,7 @@
 
       <include
           android:id="@+id/projectedIncomeCard"
-          layout="@layout/dashboard_card_revenue_selectable" />
+          layout="@layout/dashboard_card_revenue_overview" />
     </com.google.android.material.card.MaterialCardView>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -64,7 +64,7 @@ public class CustomerFilterer {
     final BigDecimal first = this._filters.filteredDebt().first;
     final BigDecimal second = this._filters.filteredDebt().second;
 
-    return (first != null && customer.debt().compareTo(first) < 0)
-        || (second != null && customer.debt().compareTo(second) > 0);
+    return (first != null && customer.debt().abs().compareTo(first.abs()) < 0)
+        || (second != null && customer.debt().abs().compareTo(second.abs()) > 0);
   }
 }

@@ -20,13 +20,13 @@ package com.robifr.ledger.ui.createqueue;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentResultListener;
-import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.createqueue.viewmodel.CreateQueueViewModel;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public class CreateQueueResultHandler {
   @NonNull private final CreateQueueFragment _fragment;
@@ -67,12 +67,16 @@ public class CreateQueueResultHandler {
               CreateQueueResultHandler.this._fragment.createQueueViewModel();
           final Long customerId =
               result.getLong(SelectCustomerFragment.Result.SELECTED_CUSTOMER_ID.key());
-          final CustomerModel inputtedCustomer =
-              !customerId.equals(0L)
-                  ? viewModel.selectCustomerById(customerId)
-                  : viewModel.inputtedCustomer().getValue().orElse(null);
 
-          viewModel.onCustomerChanged(inputtedCustomer);
+          if (!customerId.equals(0L)) {
+            viewModel
+                .selectCustomerById(customerId)
+                .observe(
+                    CreateQueueResultHandler.this._fragment.getViewLifecycleOwner(),
+                    viewModel::onCustomerChanged);
+          } else {
+            viewModel.onCustomerChanged(viewModel.inputtedCustomer().getValue().orElse(null));
+          }
         }
       }
     }
@@ -96,23 +100,38 @@ public class CreateQueueResultHandler {
           final CreateQueueFragment fragment = CreateQueueResultHandler.this._fragment;
           final Long productId =
               result.getLong(SelectProductFragment.Result.SELECTED_PRODUCT_ID.key());
-          final ProductModel selectedProduct =
-              !productId.equals(0L)
-                  ? fragment.createQueueViewModel().selectProductById(productId)
-                  : fragment
-                      .createQueueViewModel()
-                      .makeProductOrderView()
-                      .inputtedProduct()
-                      .getValue()
-                      .orElse(null);
-          final boolean isEditingOrder =
-              fragment.createQueueViewModel().makeProductOrderView().productOrderToEdit() != null;
 
-          fragment.createQueueViewModel().makeProductOrderView().onProductChanged(selectedProduct);
+          //noinspection ExtractMethodRecommender
+          final CompletableFuture<ProductModel> selectedProduct = new CompletableFuture<>();
+          selectedProduct.thenAccept(
+              product -> {
+                fragment.createQueueViewModel().makeProductOrderView().onProductChanged(product);
 
-          // Reopen make product order dialog if already opened before.
-          if (isEditingOrder) fragment.inputProductOrder().makeProductOrder().openEditDialog();
-          else fragment.inputProductOrder().makeProductOrder().openCreateDialog();
+                final boolean isEditingOrder =
+                    fragment.createQueueViewModel().makeProductOrderView().productOrderToEdit()
+                        != null;
+                // Reopen make product order dialog if already opened before.
+                if (isEditingOrder) {
+                  fragment.inputProductOrder().makeProductOrder().openEditDialog();
+                } else {
+                  fragment.inputProductOrder().makeProductOrder().openCreateDialog();
+                }
+              });
+
+          if (!productId.equals(0L)) {
+            fragment
+                .createQueueViewModel()
+                .selectProductById(productId)
+                .observe(fragment.getViewLifecycleOwner(), selectedProduct::complete);
+          } else {
+            selectedProduct.complete(
+                fragment
+                    .createQueueViewModel()
+                    .makeProductOrderView()
+                    .inputtedProduct()
+                    .getValue()
+                    .orElse(null));
+          }
         }
       }
     }

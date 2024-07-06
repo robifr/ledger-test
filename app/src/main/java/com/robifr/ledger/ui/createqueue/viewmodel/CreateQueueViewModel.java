@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -247,38 +246,44 @@ public class CreateQueueViewModel extends ViewModel {
     this._addQueue(this.inputtedQueue());
   }
 
-  @Nullable
-  public CustomerModel selectCustomerById(@Nullable Long customerId) {
-    final StringResources notFoundRes =
-        new StringResources.Strings(R.string.text_error_failed_to_find_related_customer);
-    CustomerModel customer = null;
+  @NonNull
+  public LiveData<CustomerModel> selectCustomerById(@Nullable Long customerId) {
+    final MutableLiveData<CustomerModel> result = new MutableLiveData<>();
 
-    try {
-      customer = this._customerRepository.selectById(customerId).get();
-      if (customer == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
+    this._customerRepository
+        .selectById(customerId)
+        .thenAcceptAsync(
+            customer -> {
+              if (customer == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_failed_to_find_related_customer)));
+              }
 
-    } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
-    }
-
-    return customer;
+              result.postValue(customer);
+            });
+    return result;
   }
 
-  @Nullable
-  public ProductModel selectProductById(@Nullable Long productId) {
-    final StringResources notFoundRes =
-        new StringResources.Strings(R.string.text_error_failed_to_find_related_product);
-    ProductModel product = null;
+  @NonNull
+  public LiveData<ProductModel> selectProductById(@Nullable Long productId) {
+    final MutableLiveData<ProductModel> result = new MutableLiveData<>();
 
-    try {
-      product = this._productRepository.selectById(productId).get();
-      if (product == null) this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
+    this._productRepository
+        .selectById(productId)
+        .thenAcceptAsync(
+            product -> {
+              if (product == null) {
+                this._snackbarMessage.postValue(
+                    new LiveDataEvent<>(
+                        new StringResources.Strings(
+                            R.string.text_error_failed_to_find_related_product)));
+              }
 
-    } catch (ExecutionException | InterruptedException e) {
-      this._snackbarMessage.setValue(new LiveDataEvent<>(notFoundRes));
-    }
-
-    return product;
+              result.postValue(product);
+            });
+    return result;
   }
 
   protected void _onUpdateAllowedPaymentMethod() {

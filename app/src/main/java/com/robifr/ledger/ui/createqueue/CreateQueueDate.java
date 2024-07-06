@@ -68,11 +68,10 @@ public class CreateQueueDate implements View.OnClickListener {
         final MaterialDatePicker<Long> picker = pickerBuilder.build();
         picker.show(this._fragment.getChildFragmentManager(), CreateQueueDate.class.toString());
         picker.addOnPositiveButtonClickListener(
-            date -> {
-              final ZonedDateTime parsedDate =
-                  Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault());
-              this._fragment.createQueueViewModel().onDateChanged(parsedDate);
-            });
+            date ->
+                this._fragment
+                    .createQueueViewModel()
+                    .onDateChanged(Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault())));
       }
     }
   }

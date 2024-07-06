@@ -200,10 +200,12 @@ public class DashboardViewModel extends ViewModel {
     return result;
   }
 
+  @NonNull
   LiveData<List<CustomerBalanceInfo>> _customersWithBalance() {
     return this._customersWithBalance;
   }
 
+  @NonNull
   LiveData<List<CustomerDebtInfo>> _customersWithDebt() {
     return this._customersWithDebt;
   }

@@ -19,6 +19,7 @@ package com.robifr.ledger.ui.filtercustomer.recycler;
 
 import android.view.View;
 import androidx.annotation.NonNull;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -32,7 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
-    implements ChipGroup.OnCheckedStateChangeListener {
+    implements View.OnClickListener {
   @NonNull private final FilterCustomerFragment _fragment;
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final ChipGroup _chipGroup;
@@ -55,7 +56,6 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
     this._chipGroup.setSingleLine(false);
     this._chipGroup.setChipSpacingVertical(chipSpacing);
     this._chipGroup.setChipSpacingHorizontal(chipSpacing);
-    this._chipGroup.setOnCheckedStateChangeListener(this);
     this._headerBinding.selectedItemContainer.addView(this._chipGroup);
     this._headerBinding.selectedItemTitle.setText(
         this._fragment.getString(R.string.text_filtered_customers));
@@ -85,6 +85,7 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
       // Set chip ID based on the customer index to make them easier to find.
       chipBinding.chip.setId(i);
       chipBinding.chip.setText(filteredCustomer.name());
+      chipBinding.chip.setOnClickListener(this);
 
       if (chipBinding.chip.getParent() == null) this._chipGroup.addView(chipBinding.chip);
     }
@@ -97,24 +98,23 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
   }
 
   @Override
-  public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
-    Objects.requireNonNull(group);
-    Objects.requireNonNull(checkedIds);
+  public void onClick(@NonNull View view) {
+    Objects.requireNonNull(view);
 
-    final ArrayList<CustomerModel> filteredCustomers =
-        new ArrayList<>(this._fragment.filterCustomerViewModel().filteredCustomers().getValue());
+    if (view instanceof Chip) {
+      final ArrayList<CustomerModel> filteredCustomers =
+          new ArrayList<>(this._fragment.filterCustomerViewModel().filteredCustomers().getValue());
 
-    for (int id : checkedIds) {
       for (int i = filteredCustomers.size(); i-- > 0; ) {
-        if (id == i) {
+        if (view.getId() == i) {
           // The ID is the chip index itself.
-          group.removeViewAt(id);
-          filteredCustomers.remove(id);
+          this._chipGroup.removeViewAt(view.getId());
+          filteredCustomers.remove(view.getId());
           break;
         }
       }
-    }
 
-    this._fragment.filterCustomerViewModel().onFilteredCustomersChanged(filteredCustomers);
+      this._fragment.filterCustomerViewModel().onFilteredCustomersChanged(filteredCustomers);
+    }
   }
 }

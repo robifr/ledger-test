@@ -19,7 +19,6 @@ package com.robifr.ledger.ui.queue;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentResultListener;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import com.robifr.ledger.util.Compats;
 import java.util.ArrayList;
@@ -38,37 +37,34 @@ public class QueueResultHandler {
         .setFragmentResultListener(
             FilterCustomerFragment.Request.FILTER_CUSTOMER.key(),
             this._fragment.getViewLifecycleOwner(),
-            new FilterCustomerResultListener());
+            this::onFilterCustomerResult);
   }
 
-  private class FilterCustomerResultListener implements FragmentResultListener {
-    @Override
-    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-      Objects.requireNonNull(requestKey);
-      Objects.requireNonNull(result);
+  public void onFilterCustomerResult(@NonNull String requestKey, @NonNull Bundle result) {
+    Objects.requireNonNull(requestKey);
+    Objects.requireNonNull(result);
 
-      final FilterCustomerFragment.Request request =
-          Arrays.stream(FilterCustomerFragment.Request.values())
-              .filter(e -> e.key().equals(requestKey))
-              .findFirst()
-              .orElse(null);
-      if (request == null) return;
+    final FilterCustomerFragment.Request request =
+        Arrays.stream(FilterCustomerFragment.Request.values())
+            .filter(e -> e.key().equals(requestKey))
+            .findFirst()
+            .orElse(null);
+    if (request == null) return;
 
-      switch (request) {
-        case FILTER_CUSTOMER -> {
-          final List<Long> customerIds =
-              Objects.requireNonNullElse(
-                  Compats.longArrayListOf(
-                      result, FilterCustomerFragment.Result.FILTERED_CUSTOMER_IDS.key()),
-                  new ArrayList<>());
+    switch (request) {
+      case FILTER_CUSTOMER -> {
+        final List<Long> customerIds =
+            Objects.requireNonNullElse(
+                Compats.longArrayListOf(
+                    result, FilterCustomerFragment.Result.FILTERED_CUSTOMER_IDS.key()),
+                new ArrayList<>());
 
-          QueueResultHandler.this
-              ._fragment
-              .queueViewModel()
-              .filterView()
-              .onCustomersIdsChanged(customerIds);
-          QueueResultHandler.this._fragment.filter().openDialog();
-        }
+        QueueResultHandler.this
+            ._fragment
+            .queueViewModel()
+            .filterView()
+            .onCustomersIdsChanged(customerIds);
+        QueueResultHandler.this._fragment.filter().openDialog();
       }
     }
   }

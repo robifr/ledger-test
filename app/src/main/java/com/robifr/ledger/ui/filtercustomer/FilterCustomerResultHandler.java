@@ -19,7 +19,6 @@ package com.robifr.ledger.ui.filtercustomer;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentResultListener;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.filtercustomer.viewmodel.FilterCustomerViewModel;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
@@ -38,49 +37,46 @@ public class FilterCustomerResultHandler {
         .setFragmentResultListener(
             SearchCustomerFragment.Request.SELECT_CUSTOMER.key(),
             this._fragment.getViewLifecycleOwner(),
-            new SearchCustomerResultListener());
+            this::onSearchCustomerResult);
   }
 
-  private class SearchCustomerResultListener implements FragmentResultListener {
-    @Override
-    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-      Objects.requireNonNull(requestKey);
-      Objects.requireNonNull(result);
+  public void onSearchCustomerResult(@NonNull String requestKey, @NonNull Bundle result) {
+    Objects.requireNonNull(requestKey);
+    Objects.requireNonNull(result);
 
-      final SearchCustomerFragment.Request request =
-          Arrays.stream(SearchCustomerFragment.Request.values())
-              .filter(e -> e.key().equals(requestKey))
-              .findFirst()
-              .orElse(null);
-      if (request == null) return;
+    final SearchCustomerFragment.Request request =
+        Arrays.stream(SearchCustomerFragment.Request.values())
+            .filter(e -> e.key().equals(requestKey))
+            .findFirst()
+            .orElse(null);
+    if (request == null) return;
 
-      switch (request) {
-        case SELECT_CUSTOMER -> {
-          final FilterCustomerViewModel viewModel =
-              FilterCustomerResultHandler.this._fragment.filterCustomerViewModel();
-          final Long customerId =
-              result.getLong(SearchCustomerFragment.Result.SELECTED_CUSTOMER_ID.key());
+    switch (request) {
+      case SELECT_CUSTOMER -> {
+        final FilterCustomerViewModel viewModel =
+            FilterCustomerResultHandler.this._fragment.filterCustomerViewModel();
+        final Long customerId =
+            result.getLong(SearchCustomerFragment.Result.SELECTED_CUSTOMER_ID.key());
 
-          final CustomerModel selectedCustomer =
-              !customerId.equals(0L)
-                  ? viewModel.customers().getValue().stream()
-                      .filter(customer -> customer.id() != null && customer.id().equals(customerId))
-                      .findFirst()
-                      .orElse(null)
-                  : null;
-          if (selectedCustomer == null) return;
+        final CustomerModel selectedCustomer =
+            !customerId.equals(0L)
+                ? viewModel.customers().getValue().stream()
+                    .filter(customer -> customer.id() != null && customer.id().equals(customerId))
+                    .findFirst()
+                    .orElse(null)
+                : null;
+        if (selectedCustomer == null) return;
 
-          final ArrayList<CustomerModel> filteredCustomers =
-              new ArrayList<>(viewModel.filteredCustomers().getValue());
+        final ArrayList<CustomerModel> filteredCustomers =
+            new ArrayList<>(viewModel.filteredCustomers().getValue());
 
-          if (filteredCustomers.contains(selectedCustomer)) {
-            filteredCustomers.remove(selectedCustomer);
-          } else {
-            filteredCustomers.add(selectedCustomer);
-          }
-
-          viewModel.onFilteredCustomersChanged(filteredCustomers);
+        if (filteredCustomers.contains(selectedCustomer)) {
+          filteredCustomers.remove(selectedCustomer);
+        } else {
+          filteredCustomers.add(selectedCustomer);
         }
+
+        viewModel.onFilteredCustomersChanged(filteredCustomers);
       }
     }
   }

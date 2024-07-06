@@ -60,7 +60,7 @@ public class SelectCustomerResultHandler {
           final Long customerId =
               result.getLong(SearchCustomerFragment.Result.SELECTED_CUSTOMER_ID.key());
           final CustomerModel selectedCustomer =
-              viewModel.customers().getValue() != null && !customerId.equals(0L)
+              !customerId.equals(0L)
                   ? viewModel.customers().getValue().stream()
                       .filter(customer -> customer.id() != null && customer.id().equals(customerId))
                       .findFirst()

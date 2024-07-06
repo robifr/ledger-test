@@ -28,7 +28,6 @@ import com.robifr.ledger.data.display.QueueFilters;
 import com.robifr.ledger.databinding.QueueDialogFilterBinding;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import com.robifr.ledger.ui.queue.QueueFragment;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,9 +58,7 @@ public class QueueFilterCustomer
     switch (view.getId()) {
       case R.id.filterCustomerButton -> {
         final List<Long> filteredCustomerIds =
-            Objects.requireNonNullElse(
-                this._fragment.queueViewModel().filterView().inputtedCustomerIds().getValue(),
-                new ArrayList<>());
+            this._fragment.queueViewModel().filterView().inputtedCustomerIds().getValue();
 
         final Bundle bundle = new Bundle();
         bundle.putLongArray(

@@ -21,11 +21,9 @@ import android.util.TypedValue;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductFragment;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -46,8 +44,7 @@ public class ProductHeaderHolder extends RecyclerViewHolder<Optional> {
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final List<ProductModel> products = this._fragment.productViewModel().products().getValue();
-    final int totalProducts = products != null ? products.size() : 0;
+    final int totalProducts = this._fragment.productViewModel().products().getValue().size();
     final String text =
         this._fragment
             .getResources()

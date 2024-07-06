@@ -60,7 +60,7 @@ public class SelectProductResultHandler {
           final Long productId =
               result.getLong(SearchProductFragment.Result.SELECTED_PRODUCT_ID.key());
           final ProductModel selectedProduct =
-              viewModel.products().getValue() != null && !productId.equals(0L)
+              !productId.equals(0L)
                   ? viewModel.products().getValue().stream()
                       .filter(product -> product.id() != null && product.id().equals(productId))
                       .findFirst()

@@ -30,9 +30,11 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -44,7 +46,9 @@ public class SearchCustomerViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<String>> _initializedInitialQuery =
       new MediatorLiveData<>();
 
-  @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<Optional<List<CustomerModel>>> _customers =
+      new SafeMutableLiveData<>(Optional.empty());
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedCustomerId =
@@ -68,7 +72,7 @@ public class SearchCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<CustomerModel>> customers() {
+  public SafeMutableLiveData<Optional<List<CustomerModel>>> customers() {
     return this._customers;
   }
 
@@ -86,8 +90,13 @@ public class SearchCustomerViewModel extends ViewModel {
         () -> {
           // Send null when user hasn't type anything to prevent
           // no-results-found illustration shows up.
-          if (query.isEmpty()) this._customers.postValue(null);
-          else this._customerRepository.search(query).thenAcceptAsync(this._customers::postValue);
+          if (query.isEmpty()) {
+            this._customers.postValue(Optional.empty());
+          } else {
+            this._customerRepository
+                .search(query)
+                .thenAcceptAsync(customers -> this._customers.postValue(Optional.of(customers)));
+          }
         },
         300);
   }

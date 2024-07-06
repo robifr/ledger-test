@@ -31,6 +31,8 @@ import com.robifr.ledger.repository.QueueRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.DashboardRevenue;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -57,16 +59,21 @@ public class DashboardViewModel extends ViewModel {
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull private final MutableLiveData<QueueDate> _date = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<List<QueueModel>> _queues = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<QueueDate> _date =
+      new SafeMutableLiveData<>(QueueDate.withRange(QueueDate.Range.ALL_TIME));
 
   @NonNull
-  private final MutableLiveData<List<CustomerBalanceInfo>> _customersWithBalance =
-      new MutableLiveData<>();
+  private final SafeMutableLiveData<List<QueueModel>> _queues =
+      new SafeMutableLiveData<>(List.of());
 
   @NonNull
-  private final MutableLiveData<List<CustomerDebtInfo>> _customersWithDebt =
-      new MutableLiveData<>();
+  private final SafeMutableLiveData<List<CustomerBalanceInfo>> _customersWithBalance =
+      new SafeMutableLiveData<>(List.of());
+
+  @NonNull
+  private final SafeMutableLiveData<List<CustomerDebtInfo>> _customersWithDebt =
+      new SafeMutableLiveData<>(List.of());
 
   @Inject
   public DashboardViewModel(
@@ -80,13 +87,16 @@ public class DashboardViewModel extends ViewModel {
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
-    final QueueDate date = QueueDate.withRange(QueueDate.Range.ALL_TIME);
     // It's unusual indeed to call its own method in its constructor. Setting up initial values
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
-    this.onDateChanged(date);
     this._revenueView.onDisplayedChartChanged(DashboardRevenue.OverviewType.RECEIVED_INCOME);
+    LiveDataEvent.observeOnce(
+        this._selectAllQueuesInRange(
+            this._date.getValue().dateStart(), this._date.getValue().dateEnd()),
+        this::_onQueuesChanged,
+        Objects::nonNull);
     LiveDataEvent.observeOnce(
         this._selectAllCustomersWithBalance(),
         this::_onCustomersWithBalanceChanged,
@@ -122,7 +132,7 @@ public class DashboardViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<QueueDate> date() {
+  public SafeLiveData<QueueDate> date() {
     return this._date;
   }
 
@@ -201,17 +211,17 @@ public class DashboardViewModel extends ViewModel {
   }
 
   @NonNull
-  LiveData<List<CustomerBalanceInfo>> _customersWithBalance() {
+  SafeLiveData<List<CustomerBalanceInfo>> _customersWithBalance() {
     return this._customersWithBalance;
   }
 
   @NonNull
-  LiveData<List<CustomerDebtInfo>> _customersWithDebt() {
+  SafeLiveData<List<CustomerDebtInfo>> _customersWithDebt() {
     return this._customersWithDebt;
   }
 
   @NonNull
-  LiveData<List<QueueModel>> _queues() {
+  SafeLiveData<List<QueueModel>> _queues() {
     return this._queues;
   }
 

@@ -104,28 +104,35 @@ public class CreateCustomerViewModelHandler {
     this._fragment.inputName().setError(text);
   }
 
-  private void _onInputtedNameText(@Nullable String name) {
-    this._fragment.inputName().setInputtedNameText(this._viewModel.inputtedCustomer().name());
+  private void _onInputtedNameText(@NonNull String name) {
+    Objects.requireNonNull(name);
+
+    this._fragment.inputName().setInputtedNameText(name);
   }
 
-  private void _onInputtedBalance(@Nullable Long balance) {
-    if (balance != null) this._fragment.inputBalance().setInputtedBalance(balance);
+  private void _onInputtedBalance(long balance) {
+    this._fragment.inputBalance().setInputtedBalance(balance);
   }
 
-  private void _onInputtedDebt(@Nullable BigDecimal debt) {
-    if (debt != null) this._fragment.inputDebt().setInputtedDebt(debt);
+  private void _onInputtedDebt(@NonNull BigDecimal debt) {
+    Objects.requireNonNull(debt);
+
+    this._fragment.inputDebt().setInputtedDebt(debt);
   }
 
-  private void _onInputtedBalanceAmountText(@Nullable String amount) {
+  private void _onInputtedBalanceAmountText(@NonNull String amount) {
+    Objects.requireNonNull(amount);
+
     this._fragment.inputBalance().setInputtedBalanceAmountText(amount);
   }
 
-  private void _onInputtedWithdrawAmountText(@Nullable String amount) {
+  private void _onInputtedWithdrawAmountText(@NonNull String amount) {
+    Objects.requireNonNull(amount);
+
     this._fragment.inputBalance().setInputtedWithdrawAmountText(amount);
   }
 
-  private void _onAvailableBalanceToWithdraw(@Nullable Long amount) {
-    final long availableAmount = Objects.requireNonNullElse(amount, 0L);
-    this._fragment.inputBalance().setAvailableAmountToWithdraw(availableAmount);
+  private void _onAvailableBalanceToWithdraw(long amount) {
+    this._fragment.inputBalance().setAvailableAmountToWithdraw(amount);
   }
 }

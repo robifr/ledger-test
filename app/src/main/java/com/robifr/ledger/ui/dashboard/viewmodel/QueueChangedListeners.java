@@ -22,10 +22,8 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 import com.robifr.ledger.data.ModelUpdater;
-import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.ModelChangedListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -79,19 +77,13 @@ class QueueChangedListeners implements ModelChangedListener<QueueModel> {
     Objects.requireNonNull(queues);
     Objects.requireNonNull(updater);
 
-    final QueueDate date =
-        Objects.requireNonNullElse(
-            this._viewModel.date().getValue(), QueueDate.withRange(QueueDate.Range.ALL_TIME));
-    final ArrayList<QueueModel> currentQueues =
-        this._viewModel._queues().getValue() != null
-            ? new ArrayList<>(this._viewModel._queues().getValue())
-            : new ArrayList<>();
-    final List<QueueModel> filteredQueues = updater.apply(currentQueues, queues);
+    final List<QueueModel> filteredQueues =
+        updater.apply(this._viewModel._queues().getValue(), queues);
 
     filteredQueues.removeIf(
         info ->
-            info.date().isBefore(date.dateStart().toInstant())
-                || info.date().isAfter(date.dateEnd().toInstant()));
+            info.date().isBefore(this._viewModel.date().getValue().dateStart().toInstant())
+                || info.date().isAfter(this._viewModel.date().getValue().dateEnd().toInstant()));
     this._viewModel._onQueuesChanged(filteredQueues);
   }
 }

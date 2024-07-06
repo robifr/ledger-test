@@ -20,7 +20,6 @@ package com.robifr.ledger.ui.searchcustomer.recycler;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
@@ -41,9 +40,8 @@ public class SearchCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final List<CustomerModel> customers =
-        this._fragment.searchCustomerViewModel().customers().getValue();
-    final int totalCustomers = customers != null ? customers.size() : 0;
+    final int totalCustomers =
+        this._fragment.searchCustomerViewModel().customers().getValue().map(List::size).orElse(0);
     final String text =
         this._fragment
             .getResources()

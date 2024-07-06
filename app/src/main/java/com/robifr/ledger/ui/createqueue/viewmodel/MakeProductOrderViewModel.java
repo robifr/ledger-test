@@ -19,23 +19,36 @@ package com.robifr.ledger.ui.createqueue.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.util.CurrencyFormat;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 
 public class MakeProductOrderViewModel {
   @NonNull private final CreateQueueViewModel _viewModel;
-  @NonNull private final MutableLiveData<ProductModel> _inputtedProduct = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<String> _inputtedQuantityText = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<String> _inputtedDiscountText = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<BigDecimal> _inputtedTotalPrice = new MutableLiveData<>();
+
+  @NonNull
+  private final SafeMutableLiveData<Optional<ProductModel>> _inputtedProduct =
+      new SafeMutableLiveData<>(Optional.empty());
+
+  @NonNull
+  private final SafeMutableLiveData<String> _inputtedQuantityText = new SafeMutableLiveData<>("");
+
+  @NonNull
+  private final SafeMutableLiveData<String> _inputtedDiscountText = new SafeMutableLiveData<>("");
+
+  @NonNull
+  private final SafeMutableLiveData<BigDecimal> _inputtedTotalPrice =
+      new SafeMutableLiveData<>(BigDecimal.ZERO);
+
   @Nullable private ProductOrderModel _productOrderToEdit = null;
 
   public MakeProductOrderViewModel(@NonNull CreateQueueViewModel viewModel) {
@@ -43,22 +56,22 @@ public class MakeProductOrderViewModel {
   }
 
   @NonNull
-  public LiveData<ProductModel> inputtedProduct() {
+  public SafeLiveData<Optional<ProductModel>> inputtedProduct() {
     return this._inputtedProduct;
   }
 
   @NonNull
-  public LiveData<String> inputtedQuantityText() {
+  public SafeLiveData<String> inputtedQuantityText() {
     return this._inputtedQuantityText;
   }
 
   @NonNull
-  public LiveData<String> inputtedDiscountText() {
+  public SafeLiveData<String> inputtedDiscountText() {
     return this._inputtedDiscountText;
   }
 
   @NonNull
-  public LiveData<BigDecimal> inputtedTotalPrice() {
+  public SafeLiveData<BigDecimal> inputtedTotalPrice() {
     return this._inputtedTotalPrice;
   }
 
@@ -75,32 +88,19 @@ public class MakeProductOrderViewModel {
    */
   @NonNull
   public ProductOrderModel inputtedProductOrder() {
-    final ProductOrderModel defaultOrder = ProductOrderModel.toBuilder().build();
-
-    final ProductModel product = this._inputtedProduct.getValue();
-    final Long productId =
-        product != null && product.id() != null ? product.id() : defaultOrder.productId();
-    final String productName = product != null ? product.name() : defaultOrder.productName();
-    final Long productPrice =
-        product != null ? (Long) product.price() : defaultOrder.productPrice();
-
     final Long id =
         this._productOrderToEdit != null && this._productOrderToEdit.id() != null
             ? this._productOrderToEdit.id()
-            : defaultOrder.id();
+            : null;
     final Long queueId =
         this._productOrderToEdit != null && this._productOrderToEdit.queueId() != null
             ? this._productOrderToEdit.queueId()
-            : defaultOrder.queueId();
-    final BigDecimal totalPrice =
-        Objects.requireNonNullElse(this._inputtedTotalPrice.getValue(), defaultOrder.totalPrice());
-    double quantity = defaultOrder.quantity();
-    long discount = defaultOrder.discount();
+            : null;
+    double quantity = 0.0;
+    long discount = 0L;
 
     try {
-      final String quantityText = this._inputtedQuantityText.getValue();
-
-      if (quantityText != null && !quantityText.isBlank()) {
+      if (!this._inputtedQuantityText.getValue().isBlank()) {
         quantity =
             CurrencyFormat.parse(this._inputtedQuantityText.getValue(), "id", "ID")
                 .stripTrailingZeros()
@@ -111,9 +111,7 @@ public class MakeProductOrderViewModel {
     }
 
     try {
-      final String discountText = this._inputtedDiscountText.getValue();
-
-      if (discountText != null && !discountText.isBlank()) {
+      if (!this._inputtedDiscountText.getValue().isBlank()) {
         discount =
             CurrencyFormat.parse(this._inputtedDiscountText.getValue(), "id", "ID").longValue();
       }
@@ -121,20 +119,20 @@ public class MakeProductOrderViewModel {
     } catch (ParseException ignore) {
     }
 
-    return ProductOrderModel.toBuilder(defaultOrder)
+    return ProductOrderModel.toBuilder()
         .setId(id)
         .setQueueId(queueId)
-        .setProductId(productId)
-        .setProductName(productName)
-        .setProductPrice(productPrice)
-        .setTotalPrice(totalPrice)
+        .setProductId(this._inputtedProduct.getValue().map(ProductModel::id).orElse(null))
+        .setProductName(this._inputtedProduct.getValue().map(ProductModel::name).orElse(null))
+        .setProductPrice(this._inputtedProduct.getValue().map(ProductModel::price).orElse(null))
+        .setTotalPrice(this._inputtedTotalPrice.getValue())
         .setQuantity(quantity)
         .setDiscount(discount)
         .build();
   }
 
   public void onProductChanged(@Nullable ProductModel product) {
-    this._inputtedProduct.setValue(product);
+    this._inputtedProduct.setValue(Optional.ofNullable(product));
     this.onTotalPriceChanged(this.inputtedProductOrder().calculateTotalPrice());
   }
 
@@ -175,9 +173,7 @@ public class MakeProductOrderViewModel {
 
   public void onSave() {
     final ArrayList<ProductOrderModel> productOrders =
-        this._viewModel.inputtedProductOrders().getValue() != null
-            ? new ArrayList<>(this._viewModel.inputtedProductOrders().getValue())
-            : new ArrayList<>();
+        new ArrayList<>(this._viewModel.inputtedProductOrders().getValue());
     final int indexToUpdate = productOrders.indexOf(this._productOrderToEdit);
 
     // Add as new when there's no product order to update,
@@ -190,9 +186,9 @@ public class MakeProductOrderViewModel {
 
   public void onReset() {
     this._productOrderToEdit = null;
-    this._inputtedProduct.setValue(null);
-    this._inputtedQuantityText.setValue(null);
-    this._inputtedDiscountText.setValue(null);
+    this._inputtedProduct.setValue(Optional.empty());
+    this._inputtedQuantityText.setValue("");
+    this._inputtedDiscountText.setValue("");
     this._inputtedTotalPrice.setValue(BigDecimal.ZERO);
   }
 }

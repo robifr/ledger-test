@@ -74,7 +74,7 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
                 .getValue();
 
         // Check product order on contextual mode.
-        if (isContextualModeActive != null && isContextualModeActive) {
+        if (isContextualModeActive) {
           this._fragment
               .createQueueViewModel()
               .selectProductOrderView()
@@ -82,14 +82,15 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
 
           // Edit selected product order.
         } else {
-          final List<ProductOrderModel> productOrders =
-              this._fragment.createQueueViewModel().inputtedProductOrders().getValue();
-          if (productOrders == null) return;
-
           this._fragment
               .createQueueViewModel()
               .makeProductOrderView()
-              .onProductOrderToEditChanged(productOrders.get(cardIndex));
+              .onProductOrderToEditChanged(
+                  this._fragment
+                      .createQueueViewModel()
+                      .inputtedProductOrders()
+                      .getValue()
+                      .get(cardIndex));
           this._makeProductOrder.openEditDialog();
         }
       }

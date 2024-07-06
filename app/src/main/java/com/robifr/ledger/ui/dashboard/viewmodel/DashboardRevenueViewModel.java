@@ -19,14 +19,14 @@ package com.robifr.ledger.ui.dashboard.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import com.robifr.ledger.assetbinding.chart.ChartUtil;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.dashboard.DashboardRevenue;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMediatorLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -41,61 +41,61 @@ public class DashboardRevenueViewModel {
   @NonNull private final DashboardViewModel _viewModel;
 
   @NonNull
-  private final MutableLiveData<DashboardRevenue.OverviewType> _displayedChart =
-      new MutableLiveData<>();
+  private final SafeMutableLiveData<DashboardRevenue.OverviewType> _displayedChart =
+      new SafeMutableLiveData<>(DashboardRevenue.OverviewType.RECEIVED_INCOME);
 
   @NonNull
-  private final MutableLiveData<DashboardRevenue.ChartModel> _chartModel = new MutableLiveData<>();
+  private final SafeMutableLiveData<DashboardRevenue.ChartModel> _chartModel =
+      new SafeMutableLiveData<>(new DashboardRevenue.ChartModel(List.of(), List.of(), Map.of()));
 
-  @NonNull private final MediatorLiveData<BigDecimal> _receivedIncome = new MediatorLiveData<>();
-  @NonNull private final MediatorLiveData<BigDecimal> _projectedIncome = new MediatorLiveData<>();
+  @NonNull
+  private final SafeMediatorLiveData<BigDecimal> _receivedIncome =
+      new SafeMediatorLiveData<>(BigDecimal.ZERO);
+
+  @NonNull
+  private final SafeMediatorLiveData<BigDecimal> _projectedIncome =
+      new SafeMediatorLiveData<>(BigDecimal.ZERO);
 
   public DashboardRevenueViewModel(@NonNull DashboardViewModel viewModel) {
     this._viewModel = Objects.requireNonNull(viewModel);
 
     this._receivedIncome.addSource(
-        this._viewModel._queues(),
-        queues -> {
-          if (queues != null) {
+        this._viewModel._queues().toLiveData(),
+        queues ->
             this._receivedIncome.setValue(
                 queues.stream()
                     // Received income are from the completed queues.
                     .filter(queue -> queue.status() == QueueModel.Status.COMPLETED)
                     .flatMap(queue -> queue.productOrders().stream())
                     .map(ProductOrderModel::totalPrice)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add));
-          }
-        });
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)));
     this._projectedIncome.addSource(
-        this._viewModel._queues(),
-        queues -> {
-          if (queues != null) {
+        this._viewModel._queues().toLiveData(),
+        queues ->
             this._projectedIncome.setValue(
                 queues.stream()
                     .flatMap(queue -> queue.productOrders().stream())
                     .map(ProductOrderModel::totalPrice)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add));
-          }
-        });
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)));
   }
 
   @NonNull
-  public LiveData<DashboardRevenue.OverviewType> displayedChart() {
+  public SafeLiveData<DashboardRevenue.OverviewType> displayedChart() {
     return this._displayedChart;
   }
 
   @NonNull
-  public LiveData<DashboardRevenue.ChartModel> chartModel() {
+  public SafeLiveData<DashboardRevenue.ChartModel> chartModel() {
     return this._chartModel;
   }
 
   @NonNull
-  public LiveData<BigDecimal> receivedIncome() {
+  public SafeLiveData<BigDecimal> receivedIncome() {
     return this._receivedIncome;
   }
 
   @NonNull
-  public LiveData<BigDecimal> projectedIncome() {
+  public SafeLiveData<BigDecimal> projectedIncome() {
     return this._projectedIncome;
   }
 
@@ -106,13 +106,9 @@ public class DashboardRevenueViewModel {
   }
 
   public void onDisplayReceivedIncomeChart() {
-    final QueueDate date = this._viewModel.date().getValue();
-    final List<QueueModel> queues = this._viewModel._queues().getValue();
-    if (date == null || queues == null) return;
-
     final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
 
-    for (QueueModel queue : queues) {
+    for (QueueModel queue : this._viewModel._queues().getValue()) {
       // Received income are from the completed queues.
       if (queue.status() != QueueModel.Status.COMPLETED) continue;
 
@@ -124,10 +120,11 @@ public class DashboardRevenueViewModel {
       }
     }
 
+    final QueueDate date = this._viewModel.date().getValue();
     final ZonedDateTime startDate =
         date.range() == QueueDate.Range.ALL_TIME
             // Remove unnecessary dates.
-            ? queues.stream()
+            ? this._viewModel._queues().getValue().stream()
                 .map(QueueModel::date)
                 .min(Instant::compareTo)
                 .orElse(date.dateStart().toInstant())
@@ -149,13 +146,9 @@ public class DashboardRevenueViewModel {
   }
 
   public void onDisplayProjectedIncomeChart() {
-    final QueueDate date = this._viewModel.date().getValue();
-    final List<QueueModel> queues = this._viewModel._queues().getValue();
-    if (date == null || queues == null) return;
-
     final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
 
-    for (QueueModel queue : queues) {
+    for (QueueModel queue : this._viewModel._queues().getValue()) {
       for (ProductOrderModel productOrder : queue.productOrders()) {
         unformattedQueueDateWithTotalPrice.merge(
             queue.date().atZone(ZoneId.systemDefault()),
@@ -164,10 +157,11 @@ public class DashboardRevenueViewModel {
       }
     }
 
+    final QueueDate date = this._viewModel.date().getValue();
     final ZonedDateTime startDate =
         date.range() == QueueDate.Range.ALL_TIME
             // Remove unnecessary dates.
-            ? queues.stream()
+            ? this._viewModel._queues().getValue().stream()
                 .map(QueueModel::date)
                 .min(Instant::compareTo)
                 .orElse(date.dateStart().toInstant())

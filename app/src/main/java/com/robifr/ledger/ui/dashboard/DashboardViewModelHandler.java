@@ -114,8 +114,8 @@ public class DashboardViewModelHandler {
         .show();
   }
 
-  private void _onDate(@Nullable QueueDate date) {
-    if (date == null) return;
+  private void _onDate(@NonNull QueueDate date) {
+    Objects.requireNonNull(date);
 
     final DateTimeFormatter format =
         DateTimeFormatter.ofPattern("d MMM yyyy", new Locale("id", "ID"));
@@ -130,66 +130,80 @@ public class DashboardViewModelHandler {
     this._fragment.fragmentBinding().dateChip.setText(text);
   }
 
-  private void _onBalanceTotalBalance(@Nullable BigDecimal amount) {
-    if (amount != null) this._fragment.balanceOverview().setTotalBalance(amount);
+  private void _onBalanceTotalBalance(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
+
+    this._fragment.balanceOverview().setTotalBalance(amount);
   }
 
-  private void _onBalanceCustomersWithBalance(@Nullable Integer amount) {
-    if (amount != null) this._fragment.balanceOverview().setTotalCustomersWithBalance(amount);
+  private void _onBalanceCustomersWithBalance(int amount) {
+    this._fragment.balanceOverview().setTotalCustomersWithBalance(amount);
   }
 
-  private void _onBalanceTotalDebt(@Nullable BigDecimal amount) {
-    if (amount != null) this._fragment.balanceOverview().setTotalDebt(amount);
+  private void _onBalanceTotalDebt(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
+
+    this._fragment.balanceOverview().setTotalDebt(amount);
   }
 
-  private void _onBalanceCustomersWithDebt(@Nullable Integer amount) {
-    if (amount != null) this._fragment.balanceOverview().setTotalCustomersWithDebt(amount);
+  private void _onBalanceCustomersWithDebt(int amount) {
+    this._fragment.balanceOverview().setTotalCustomersWithDebt(amount);
   }
 
-  private void _onTotalQueue(@Nullable Integer amount) {
-    if (amount != null) this._fragment.performanceOverview().setTotalQueue(amount);
+  private void _onTotalQueue(int amount) {
+    this._fragment.performanceOverview().setTotalQueue(amount);
   }
 
-  private void _onTotalQueueAverage(@Nullable BigDecimal amount) {
-    if (amount != null) this._fragment.performanceOverview().setTotalQueueAverage(amount);
+  private void _onTotalQueueAverage(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
+
+    this._fragment.performanceOverview().setTotalQueueAverage(amount);
   }
 
-  private void _onTotalActiveCustomers(@Nullable Integer amount) {
-    if (amount != null) this._fragment.performanceOverview().setTotalActiveCustomers(amount);
+  private void _onTotalActiveCustomers(int amount) {
+    this._fragment.performanceOverview().setTotalActiveCustomers(amount);
   }
 
-  private void _onTotalActiveCustomersAverage(@Nullable BigDecimal amount) {
-    if (amount != null) this._fragment.performanceOverview().setTotalActiveCustomersAverage(amount);
+  private void _onTotalActiveCustomersAverage(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
+
+    this._fragment.performanceOverview().setTotalActiveCustomersAverage(amount);
   }
 
-  private void _onTotalProductsSold(@Nullable BigDecimal amount) {
-    if (amount != null) this._fragment.performanceOverview().setTotalProductsSold(amount);
+  private void _onTotalProductsSold(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
+
+    this._fragment.performanceOverview().setTotalProductsSold(amount);
   }
 
-  private void _onTotalProductsSoldAverage(@Nullable BigDecimal amount) {
-    if (amount != null) this._fragment.performanceOverview().setTotalProductsSoldAverage(amount);
+  private void _onTotalProductsSoldAverage(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
+
+    this._fragment.performanceOverview().setTotalProductsSoldAverage(amount);
   }
 
-  private void _onRevenueDisplayedChart(@Nullable DashboardRevenue.OverviewType overviewType) {
-    if (overviewType == null) return;
+  private void _onRevenueDisplayedChart(@NonNull DashboardRevenue.OverviewType overviewType) {
+    Objects.requireNonNull(overviewType);
 
     this._fragment.revenueOverview().selectCard(overviewType);
     this._fragment.revenueOverview().loadChart();
   }
 
-  private void _onRevenueChartModel(@Nullable DashboardRevenue.ChartModel model) {
-    if (model != null) this._fragment.revenueOverview().displayChart(model);
+  private void _onRevenueChartModel(@NonNull DashboardRevenue.ChartModel model) {
+    Objects.requireNonNull(model);
+
+    this._fragment.revenueOverview().displayChart(model);
   }
 
-  private void _onRevenueReceivedIncome(@Nullable BigDecimal amount) {
-    if (amount == null) return;
+  private void _onRevenueReceivedIncome(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
 
     this._fragment.revenueOverview().setTotalReceivedIncome(amount);
     this._fragment.revenueOverview().loadChart();
   }
 
-  private void _onRevenueProjectedIncome(@Nullable BigDecimal amount) {
-    if (amount == null) return;
+  private void _onRevenueProjectedIncome(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
 
     this._fragment.revenueOverview().setTotalProjectedIncome(amount);
     this._fragment.revenueOverview().loadChart();

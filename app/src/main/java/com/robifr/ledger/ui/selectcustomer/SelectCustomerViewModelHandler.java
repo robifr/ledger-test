@@ -72,7 +72,9 @@ public class SelectCustomerViewModelHandler {
         .show();
   }
 
-  private void _onCustomers(@Nullable List<CustomerModel> customers) {
+  private void _onCustomers(@NonNull List<CustomerModel> customers) {
+    Objects.requireNonNull(customers);
+
     this._fragment.adapter().notifyDataSetChanged();
   }
 }

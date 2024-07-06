@@ -35,16 +35,16 @@ public class CreateCustomerName {
     this._fragment.fragmentBinding().name.addTextChangedListener(this._nameTextWatcher);
   }
 
-  public void setInputtedNameText(@Nullable String name) {
+  public void setInputtedNameText(@NonNull String name) {
+    Objects.requireNonNull(name);
+
     final String currentText = this._fragment.fragmentBinding().name.getText().toString();
     if (currentText.equals(name)) return;
-
-    final int cursorPosition = name != null ? name.length() : 0;
 
     // Remove listener to prevent any sort of formatting although there isn't.
     this._fragment.fragmentBinding().name.removeTextChangedListener(this._nameTextWatcher);
     this._fragment.fragmentBinding().name.setText(name);
-    this._fragment.fragmentBinding().name.setSelection(cursorPosition);
+    this._fragment.fragmentBinding().name.setSelection(name.length());
     this._fragment.fragmentBinding().name.addTextChangedListener(this._nameTextWatcher);
   }
 

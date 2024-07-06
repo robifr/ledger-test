@@ -67,11 +67,13 @@ public class ProductViewModelHandler {
         .show();
   }
 
-  private void _onProducts(@Nullable List<ProductModel> products) {
+  private void _onProducts(@NonNull List<ProductModel> products) {
+    Objects.requireNonNull(products);
+
     this._fragment.adapter().notifyDataSetChanged();
   }
 
-  private void _onExpandedProductIndex(@Nullable Integer index) {
+  private void _onExpandedProductIndex(int index) {
     // Shrink all cards.
     for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
       final RecyclerView.ViewHolder viewHolder =
@@ -84,7 +86,7 @@ public class ProductViewModelHandler {
     }
 
     // Expand the selected card.
-    if (index != null && index != -1) {
+    if (index != -1) {
       final RecyclerView.ViewHolder viewHolder =
           // +1 offset because header holder.
           this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
@@ -93,11 +95,15 @@ public class ProductViewModelHandler {
     }
   }
 
-  private void _onFilteredMinPriceText(@Nullable String minPrice) {
+  private void _onFilteredMinPriceText(@NonNull String minPrice) {
+    Objects.requireNonNull(minPrice);
+
     this._fragment.filter().filterPrice().setFilteredMinPriceText(minPrice);
   }
 
-  private void _onFilteredMaxPriceText(@Nullable String maxPrice) {
+  private void _onFilteredMaxPriceText(@NonNull String maxPrice) {
+    Objects.requireNonNull(maxPrice);
+
     this._fragment.filter().filterPrice().setFilteredMaxPriceText(maxPrice);
   }
 }

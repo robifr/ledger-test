@@ -19,25 +19,28 @@ package com.robifr.ledger.ui.product.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import com.robifr.ledger.data.display.ProductFilterer;
 import com.robifr.ledger.data.display.ProductFilters;
-import com.robifr.ledger.data.display.ProductSortMethod;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.util.CurrencyFormat;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ProductFilterViewModel {
   @NonNull private final ProductViewModel _viewModel;
   @NonNull private final ProductFilterer _filterer;
-  @NonNull private final MutableLiveData<String> _inputtedMinPriceText = new MutableLiveData<>();
-  @NonNull private final MutableLiveData<String> _inputtedMaxPriceText = new MutableLiveData<>();
+
+  @NonNull
+  private final SafeMutableLiveData<String> _inputtedMinPriceText = new SafeMutableLiveData<>("");
+
+  @NonNull
+  private final SafeMutableLiveData<String> _inputtedMaxPriceText = new SafeMutableLiveData<>("");
 
   public ProductFilterViewModel(
       @NonNull ProductViewModel viewModel, @NonNull ProductFilterer filterer) {
@@ -46,12 +49,12 @@ public class ProductFilterViewModel {
   }
 
   @NonNull
-  public LiveData<String> inputtedMinPriceText() {
+  public SafeLiveData<String> inputtedMinPriceText() {
     return this._inputtedMinPriceText;
   }
 
   @NonNull
-  public LiveData<String> inputtedMaxPriceText() {
+  public SafeLiveData<String> inputtedMaxPriceText() {
     return this._inputtedMaxPriceText;
   }
 
@@ -64,24 +67,22 @@ public class ProductFilterViewModel {
   @NonNull
   public ProductFilters inputtedFilters() {
     // Nullable value to represent unbounded range.
-    Long minPrice = this._filterer.filters().filteredPrice().first;
-    Long maxPrice = this._filterer.filters().filteredPrice().second;
+    Long minPrice = null;
+    Long maxPrice = null;
 
     try {
-      final String minPriceText = this._inputtedMinPriceText.getValue();
-
-      if (minPriceText != null && !minPriceText.isBlank()) {
-        minPrice = CurrencyFormat.parse(minPriceText, "id", "ID").longValue();
+      if (!this._inputtedMinPriceText.getValue().isBlank()) {
+        minPrice =
+            CurrencyFormat.parse(this._inputtedMinPriceText.getValue(), "id", "ID").longValue();
       }
 
     } catch (ParseException ignore) {
     }
 
     try {
-      final String maxPriceText = this._inputtedMaxPriceText.getValue();
-
-      if (maxPriceText != null && !maxPriceText.isBlank()) {
-        maxPrice = CurrencyFormat.parse(maxPriceText, "id", "ID").longValue();
+      if (!this._inputtedMaxPriceText.getValue().isBlank()) {
+        maxPrice =
+            CurrencyFormat.parse(this._inputtedMaxPriceText.getValue(), "id", "ID").longValue();
       }
 
     } catch (ParseException ignore) {
@@ -103,9 +104,7 @@ public class ProductFilterViewModel {
   }
 
   public void onFiltersChanged(@NonNull ProductFilters filters) {
-    final List<ProductModel> products =
-        Objects.requireNonNullElse(this._viewModel.products().getValue(), new ArrayList<>());
-    this.onFiltersChanged(filters, products);
+    this.onFiltersChanged(filters, this._viewModel.products().getValue());
   }
 
   public void onFiltersChanged(
@@ -127,12 +126,7 @@ public class ProductFilterViewModel {
     this._filterer.setFilters(filters);
 
     final List<ProductModel> filteredProducts = this._filterer.filter(products);
-    final ProductSortMethod sortMethod = this._viewModel.sortMethod().getValue();
-
     // Re-sort the list, after previously re-populating the list with a new filtered value.
-    if (sortMethod != null) this._viewModel.onSortMethodChanged(sortMethod, filteredProducts);
-    // Put in the else to prevent multiple call of `ProductFilterViewModel#onCustomersChanged()`
-    // from `ProductFilterViewModel#onSortMethodChanged()`.
-    else this._viewModel.onProductsChanged(filteredProducts);
+    this._viewModel.onSortMethodChanged(this._viewModel.sortMethod().getValue(), filteredProducts);
   }
 }

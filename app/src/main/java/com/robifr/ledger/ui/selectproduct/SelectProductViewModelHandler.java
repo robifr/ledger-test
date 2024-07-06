@@ -72,7 +72,9 @@ public class SelectProductViewModelHandler {
         .show();
   }
 
-  private void _onProducts(@Nullable List<ProductModel> products) {
+  private void _onProducts(@NonNull List<ProductModel> products) {
+    Objects.requireNonNull(products);
+
     this._fragment.adapter().notifyDataSetChanged();
   }
 }

@@ -76,7 +76,7 @@ public class EditProductViewModel extends CreateProductViewModel {
 
   @Override
   public void onSave() {
-    if (this._inputtedNameText.getValue() == null || this._inputtedNameText.getValue().isBlank()) {
+    if (this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
           new LiveDataEvent<>(new StringResources.Strings(R.string.text_product_name_is_required)));
       return;

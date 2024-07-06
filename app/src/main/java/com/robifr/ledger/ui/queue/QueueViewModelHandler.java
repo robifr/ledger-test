@@ -80,11 +80,13 @@ public class QueueViewModelHandler {
         .show();
   }
 
-  private void _onQueues(@Nullable List<QueueModel> queues) {
+  private void _onQueues(@NonNull List<QueueModel> queues) {
+    Objects.requireNonNull(queues);
+
     this._fragment.adapter().notifyDataSetChanged();
   }
 
-  private void _onExpandedQueueIndex(@Nullable Integer index) {
+  private void _onExpandedQueueIndex(int index) {
     // Shrink all cards.
     for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
       final RecyclerView.ViewHolder viewHolder =
@@ -97,7 +99,7 @@ public class QueueViewModelHandler {
     }
 
     // Expand the selected card.
-    if (index != null && index != -1) {
+    if (index != -1) {
       final RecyclerView.ViewHolder viewHolder =
           // +1 offset because header holder.
           this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
@@ -106,23 +108,31 @@ public class QueueViewModelHandler {
     }
   }
 
-  private void _onNullCustomerShown(@Nullable Boolean isShown) {
-    if (isShown != null) this._fragment.filter().filterCustomer().setNullCustomerShown(isShown);
+  private void _onNullCustomerShown(boolean isShown) {
+    this._fragment.filter().filterCustomer().setNullCustomerShown(isShown);
   }
 
-  private void _onFilteredStatus(@Nullable Set<QueueModel.Status> status) {
-    if (status != null) this._fragment.filter().filterStatus().setFilteredStatus(status);
+  private void _onFilteredStatus(@NonNull Set<QueueModel.Status> status) {
+    Objects.requireNonNull(status);
+
+    this._fragment.filter().filterStatus().setFilteredStatus(status);
   }
 
-  private void _onFilteredDate(@Nullable QueueDate date) {
-    if (date != null) this._fragment.filter().filterDate().setFilteredDate(date);
+  private void _onFilteredDate(@NonNull QueueDate date) {
+    Objects.requireNonNull(date);
+
+    this._fragment.filter().filterDate().setFilteredDate(date);
   }
 
-  private void _onFilteredMinTotalPriceText(@Nullable String minTotalPrice) {
+  private void _onFilteredMinTotalPriceText(@NonNull String minTotalPrice) {
+    Objects.requireNonNull(minTotalPrice);
+
     this._fragment.filter().filterTotalPrice().setFilteredMinTotalPriceText(minTotalPrice);
   }
 
-  private void _onFilteredMaxTotalPriceText(@Nullable String maxTotalPrice) {
+  private void _onFilteredMaxTotalPriceText(@NonNull String maxTotalPrice) {
+    Objects.requireNonNull(maxTotalPrice);
+
     this._fragment.filter().filterTotalPrice().setFilteredMaxTotalPriceText(maxTotalPrice);
   }
 }

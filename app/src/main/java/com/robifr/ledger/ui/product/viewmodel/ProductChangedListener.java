@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import com.robifr.ledger.data.ModelUpdater;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ModelChangedListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -73,14 +72,10 @@ class ProductChangedListener implements ModelChangedListener<ProductModel> {
     Objects.requireNonNull(products);
     Objects.requireNonNull(updater);
 
-    final ArrayList<ProductModel> currentProducts =
-        this._viewModel.products().getValue() != null
-            ? new ArrayList<>(this._viewModel.products().getValue())
-            : new ArrayList<>();
     this._viewModel
         .filterView()
         .onFiltersChanged(
             this._viewModel.filterView().inputtedFilters(),
-            updater.apply(currentProducts, products));
+            updater.apply(this._viewModel.products().getValue(), products));
   }
 }

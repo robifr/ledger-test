@@ -66,11 +66,8 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final ArrayList<CustomerModel> filteredCustomers =
-        this._fragment.filterCustomerViewModel().filteredCustomers().getValue() != null
-            ? new ArrayList<>(
-                this._fragment.filterCustomerViewModel().filteredCustomers().getValue())
-            : new ArrayList<>();
+    final List<CustomerModel> filteredCustomers =
+        this._fragment.filterCustomerViewModel().filteredCustomers().getValue();
     final int filteredCustomersViewsVisibility =
         !filteredCustomers.isEmpty() ? View.VISIBLE : View.GONE;
 
@@ -105,10 +102,7 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
     Objects.requireNonNull(checkedIds);
 
     final ArrayList<CustomerModel> filteredCustomers =
-        this._fragment.filterCustomerViewModel().filteredCustomers().getValue() != null
-            ? new ArrayList<>(
-                this._fragment.filterCustomerViewModel().filteredCustomers().getValue())
-            : new ArrayList<>();
+        new ArrayList<>(this._fragment.filterCustomerViewModel().filteredCustomers().getValue());
 
     for (int id : checkedIds) {
       for (int i = filteredCustomers.size(); i-- > 0; ) {

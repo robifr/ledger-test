@@ -68,11 +68,9 @@ public class CustomerListHolder extends RecyclerViewHolder<CustomerModel>
     // if current bound customer is different with selected expanded card.
     final List<CustomerModel> customers = this._fragment.customerViewModel().customers().getValue();
     final int expandedCustomerIndex =
-        Objects.requireNonNullElse(
-            this._fragment.customerViewModel().expandedCustomerIndex().getValue(), -1);
+        this._fragment.customerViewModel().expandedCustomerIndex().getValue();
     final boolean shouldCardExpanded =
         expandedCustomerIndex != -1
-            && customers != null
             && this._boundCustomer.equals(customers.get(expandedCustomerIndex));
 
     this.setCardExpanded(shouldCardExpanded);
@@ -84,14 +82,14 @@ public class CustomerListHolder extends RecyclerViewHolder<CustomerModel>
 
     switch (view.getId()) {
       case R.id.cardView -> {
-        final List<CustomerModel> customers =
-            this._fragment.customerViewModel().customers().getValue();
-        if (customers == null) return;
-
         // Only expand when it shrank.
         final int expandedCustomerIndex =
             this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
-                ? customers.indexOf(this._boundCustomer)
+                ? this._fragment
+                    .customerViewModel()
+                    .customers()
+                    .getValue()
+                    .indexOf(this._boundCustomer)
                 : -1;
         this._fragment.customerViewModel().onExpandedCustomerIndexChanged(expandedCustomerIndex);
       }

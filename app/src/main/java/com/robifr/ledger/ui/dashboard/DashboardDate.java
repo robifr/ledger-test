@@ -47,9 +47,6 @@ public class DashboardDate implements RadioGroup.OnCheckedChangeListener {
   public void onCheckedChanged(@NonNull RadioGroup group, int radioId) {
     Objects.requireNonNull(group);
 
-    final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
-    if (date == null) return;
-
     switch (group.getId()) {
       case R.id.radioGroup -> {
         final QueueDate.Range selectedDate =
@@ -63,7 +60,6 @@ public class DashboardDate implements RadioGroup.OnCheckedChangeListener {
 
   public void openDialog() {
     final QueueDate date = this._fragment.dashboardViewModel().date().getValue();
-    if (date == null) return;
 
     // Remove listener to prevent callback being called during `clearCheck()`.
     this._dialogBinding.radioGroup.setOnCheckedChangeListener(null);

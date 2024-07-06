@@ -20,7 +20,6 @@ package com.robifr.ledger.ui.searchproduct.recycler;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
-import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
@@ -41,9 +40,8 @@ public class SearchProductHeaderHolder extends RecyclerViewHolder<Optional> {
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final List<ProductModel> products =
-        this._fragment.searchProductViewModel().products().getValue();
-    final int totalProducts = products != null ? products.size() : 0;
+    final int totalProducts =
+        this._fragment.searchProductViewModel().products().getValue().map(List::size).orElse(0);
     final String text =
         this._fragment
             .getResources()

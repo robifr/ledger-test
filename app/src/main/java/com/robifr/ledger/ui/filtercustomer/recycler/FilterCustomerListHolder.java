@@ -27,6 +27,7 @@ import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
@@ -53,11 +54,8 @@ public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
   @Override
   public void bind(@NonNull CustomerModel customer) {
     this._boundCustomer = Objects.requireNonNull(customer);
-    final ArrayList<CustomerModel> filteredCustomers =
-        this._fragment.filterCustomerViewModel().filteredCustomers().getValue() != null
-            ? new ArrayList<>(
-                this._fragment.filterCustomerViewModel().filteredCustomers().getValue())
-            : new ArrayList<>();
+    final List<CustomerModel> filteredCustomers =
+        this._fragment.filterCustomerViewModel().filteredCustomers().getValue();
 
     this._normalCard.setCustomer(this._boundCustomer);
     this._cardBinding.cardView.setChecked(filteredCustomers.contains(this._boundCustomer));
@@ -71,10 +69,8 @@ public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
     switch (view.getId()) {
       case R.id.cardView -> {
         final ArrayList<CustomerModel> filteredCustomers =
-            this._fragment.filterCustomerViewModel().filteredCustomers().getValue() != null
-                ? new ArrayList<>(
-                    this._fragment.filterCustomerViewModel().filteredCustomers().getValue())
-                : new ArrayList<>();
+            new ArrayList<>(
+                this._fragment.filterCustomerViewModel().filteredCustomers().getValue());
 
         if (this._cardBinding.cardView.isChecked()) filteredCustomers.remove(this._boundCustomer);
         else filteredCustomers.add(this._boundCustomer);

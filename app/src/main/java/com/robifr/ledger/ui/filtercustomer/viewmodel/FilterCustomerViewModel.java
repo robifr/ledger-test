@@ -31,6 +31,8 @@ import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
+import com.robifr.ledger.util.livedata.SafeLiveData;
+import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,13 +51,16 @@ public class FilterCustomerViewModel extends ViewModel {
       _initializedInitialFilteredCustomers = new MediatorLiveData<>();
 
   @NonNull
-  private final MutableLiveData<List<CustomerModel>> _filteredCustomers = new MutableLiveData<>();
+  private final SafeMutableLiveData<List<CustomerModel>> _filteredCustomers =
+      new SafeMutableLiveData<>(List.of());
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
-  @NonNull private final MutableLiveData<List<CustomerModel>> _customers = new MutableLiveData<>();
+  @NonNull
+  private final SafeMutableLiveData<List<CustomerModel>> _customers =
+      new SafeMutableLiveData<>(List.of());
 
   @NonNull
   private final MutableLiveData<LiveDataEvent<List<Long>>> _resultFilteredCustomerIds =
@@ -104,7 +109,7 @@ public class FilterCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<CustomerModel>> filteredCustomers() {
+  public SafeLiveData<List<CustomerModel>> filteredCustomers() {
     return this._filteredCustomers;
   }
 
@@ -114,7 +119,7 @@ public class FilterCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<List<CustomerModel>> customers() {
+  public SafeLiveData<List<CustomerModel>> customers() {
     return this._customers;
   }
 
@@ -137,11 +142,9 @@ public class FilterCustomerViewModel extends ViewModel {
 
   public void onSave() {
     final List<Long> customerIds =
-        this._customers.getValue() != null && this._filteredCustomers.getValue() != null
-            ? this._filteredCustomers.getValue().stream()
-                .map(CustomerModel::id)
-                .collect(Collectors.toList())
-            : List.of();
+        this._filteredCustomers.getValue().stream()
+            .map(CustomerModel::id)
+            .collect(Collectors.toList());
 
     this._resultFilteredCustomerIds.setValue(new LiveDataEvent<>(customerIds));
   }

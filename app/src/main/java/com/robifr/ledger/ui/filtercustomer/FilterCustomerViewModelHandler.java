@@ -20,11 +20,9 @@ package com.robifr.ledger.ui.filtercustomer;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.filtercustomer.recycler.FilterCustomerListHolder;
 import com.robifr.ledger.ui.filtercustomer.viewmodel.FilterCustomerViewModel;
@@ -44,22 +42,21 @@ public class FilterCustomerViewModelHandler {
         .resultFilteredCustomerIds()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onResultFilteredCustomerIds));
+            event -> event.handleIfNotHandled(this::_onResultFilteredCustomerIds));
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
-    this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
-    this._viewModel
-        .initializedInitialFilteredCustomers()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onInitializedInitialFilteredCustomers));
+            event -> event.handleIfNotHandled(this::_onSnackbarMessage));
+    this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
     this._viewModel
         .filteredCustomers()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onFilteredCustomers);
   }
 
-  private void _onResultFilteredCustomerIds(@Nullable List<Long> customerIds) {
+  private void _onResultFilteredCustomerIds(@NonNull List<Long> customerIds) {
+    Objects.requireNonNull(customerIds);
+
     final long[] filteredCustomerIds =
         customerIds != null
             ? customerIds.stream().mapToLong(Long::longValue).toArray()
@@ -75,8 +72,8 @@ public class FilterCustomerViewModelHandler {
     this._fragment.finish();
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
+  private void _onSnackbarMessage(@NonNull StringResources stringRes) {
+    Objects.requireNonNull(stringRes);
 
     Snackbar.make(
             (View) this._fragment.fragmentBinding().getRoot().getParent(),
@@ -89,10 +86,6 @@ public class FilterCustomerViewModelHandler {
     Objects.requireNonNull(customers);
 
     this._fragment.adapter().notifyDataSetChanged();
-  }
-
-  private void _onInitializedInitialFilteredCustomers(@Nullable List<CustomerModel> customers) {
-    if (customers != null) this._viewModel.onFilteredCustomersChanged(customers);
   }
 
   private void _onFilteredCustomers(@NonNull List<CustomerModel> customers) {

@@ -20,30 +20,28 @@ package com.robifr.ledger.ui.editproduct.viewmodel;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createproduct.viewmodel.CreateProductViewModel;
 import com.robifr.ledger.ui.editproduct.EditProductFragment;
+import com.robifr.ledger.util.CurrencyFormat;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 
 @HiltViewModel
 public class EditProductViewModel extends CreateProductViewModel {
-  @NonNull
-  private final MediatorLiveData<LiveDataEvent<ProductModel>> _initializedInitialProductToEdit =
-      new MediatorLiveData<>();
-
   @Nullable private ProductModel _initialProductToEdit = null;
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _resultEditedProductId =
+  private final MutableLiveData<SafeEvent<Optional<Long>>> _resultEditedProductId =
       new MutableLiveData<>();
 
   @Inject
@@ -52,7 +50,7 @@ public class EditProductViewModel extends CreateProductViewModel {
     super(productRepository);
     Objects.requireNonNull(savedStateHandle);
 
-    this._initializedInitialProductToEdit.addSource(
+    SafeEvent.observeOnce(
         // Shouldn't be null when editing data.
         this.selectProductById(
             Objects.requireNonNull(
@@ -60,8 +58,11 @@ public class EditProductViewModel extends CreateProductViewModel {
                     EditProductFragment.Arguments.INITIAL_PRODUCT_ID_TO_EDIT.key()))),
         product -> {
           this._initialProductToEdit = product;
-          this._initializedInitialProductToEdit.setValue(new LiveDataEvent<>(product));
-        });
+          this.onNameTextChanged(product.name());
+          this.onPriceTextChanged(
+              CurrencyFormat.format(BigDecimal.valueOf(product.price()), "id", "ID"));
+        },
+        Objects::nonNull);
   }
 
   @Override
@@ -78,7 +79,7 @@ public class EditProductViewModel extends CreateProductViewModel {
   public void onSave() {
     if (this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
-          new LiveDataEvent<>(new StringResources.Strings(R.string.text_product_name_is_required)));
+          Optional.of(new StringResources.Strings(R.string.text_product_name_is_required)));
       return;
     }
 
@@ -86,12 +87,7 @@ public class EditProductViewModel extends CreateProductViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<ProductModel>> initializedInitialProductToEdit() {
-    return this._initializedInitialProductToEdit;
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<Long>> resultEditedProductId() {
+  public LiveData<SafeEvent<Optional<Long>>> resultEditedProductId() {
     return this._resultEditedProductId;
   }
 
@@ -105,7 +101,7 @@ public class EditProductViewModel extends CreateProductViewModel {
             product -> {
               if (product == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_failed_to_find_related_product)));
               }
@@ -123,7 +119,8 @@ public class EditProductViewModel extends CreateProductViewModel {
         .thenAcceptAsync(
             effected -> {
               if (effected > 0) {
-                this._resultEditedProductId.postValue(new LiveDataEvent<>(product.id()));
+                this._resultEditedProductId.postValue(
+                    new SafeEvent<>(Optional.ofNullable(product.id())));
               }
 
               final StringResources stringRes =
@@ -131,7 +128,7 @@ public class EditProductViewModel extends CreateProductViewModel {
                       ? new StringResources.Plurals(
                           R.plurals.args_updated_x_product, effected, effected)
                       : new StringResources.Strings(R.string.text_error_failed_to_update_product);
-              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }
 }

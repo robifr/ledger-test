@@ -28,8 +28,8 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.List;
@@ -43,7 +43,7 @@ public class SearchCustomerViewModel extends ViewModel {
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<String>> _initializedInitialQuery =
+  private final MutableLiveData<SafeEvent<String>> _initializedInitialQuery =
       new MediatorLiveData<>();
 
   @NonNull
@@ -51,7 +51,7 @@ public class SearchCustomerViewModel extends ViewModel {
       new SafeMutableLiveData<>(Optional.empty());
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedCustomerId =
+  private final MutableLiveData<SafeEvent<Optional<Long>>> _resultSelectedCustomerId =
       new MutableLiveData<>();
 
   @Inject
@@ -62,12 +62,13 @@ public class SearchCustomerViewModel extends ViewModel {
     this._customerRepository = Objects.requireNonNull(customerRepository);
 
     this._initializedInitialQuery.setValue(
-        new LiveDataEvent<>(
-            savedStateHandle.get(SearchCustomerFragment.Arguments.INITIAL_QUERY.key())));
+        new SafeEvent<>(
+            Objects.requireNonNullElse(
+                savedStateHandle.get(SearchCustomerFragment.Arguments.INITIAL_QUERY.key()), "")));
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<String>> initializedInitialQuery() {
+  public LiveData<SafeEvent<String>> initializedInitialQuery() {
     return this._initializedInitialQuery;
   }
 
@@ -77,7 +78,7 @@ public class SearchCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> resultSelectedCustomerId() {
+  public LiveData<SafeEvent<Optional<Long>>> resultSelectedCustomerId() {
     return this._resultSelectedCustomerId;
   }
 
@@ -102,7 +103,7 @@ public class SearchCustomerViewModel extends ViewModel {
   }
 
   public void onCustomerSelected(@Nullable CustomerModel customer) {
-    final Long customerId = customer != null && customer.id() != null ? customer.id() : null;
-    this._resultSelectedCustomerId.setValue(new LiveDataEvent<>(customerId));
+    this._resultSelectedCustomerId.setValue(
+        new SafeEvent<>(Optional.ofNullable(customer).map(CustomerModel::id)));
   }
 }

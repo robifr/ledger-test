@@ -25,14 +25,15 @@ import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.util.CurrencyFormat;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.text.ParseException;
 import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -40,12 +41,12 @@ public class CreateProductViewModel extends ViewModel {
   @NonNull protected final ProductRepository _productRepository;
 
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+  protected final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<StringResources>> _inputtedNameError =
-      new MutableLiveData<>();
+  protected final SafeMutableLiveData<Optional<StringResources>> _inputtedNameError =
+      new SafeMutableLiveData<>(Optional.empty());
 
   @NonNull
   protected final SafeMutableLiveData<String> _inputtedNameText = new SafeMutableLiveData<>("");
@@ -54,7 +55,7 @@ public class CreateProductViewModel extends ViewModel {
   protected final SafeMutableLiveData<String> _inputtedPriceText = new SafeMutableLiveData<>("");
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _resultCreatedProductId =
+  private final MutableLiveData<SafeEvent<Optional<Long>>> _resultCreatedProductId =
       new MutableLiveData<>();
 
   @Inject
@@ -63,12 +64,12 @@ public class CreateProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> inputtedNameError() {
+  public SafeLiveData<Optional<StringResources>> inputtedNameError() {
     return this._inputtedNameError;
   }
 
@@ -83,7 +84,7 @@ public class CreateProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> resultCreatedProductId() {
+  public LiveData<SafeEvent<Optional<Long>>> resultCreatedProductId() {
     return this._resultCreatedProductId;
   }
 
@@ -115,7 +116,7 @@ public class CreateProductViewModel extends ViewModel {
     this._inputtedNameText.setValue(name);
 
     // Disable error when name field filled.
-    if (!name.isBlank()) this._inputtedNameError.setValue(new LiveDataEvent<>(null));
+    if (!name.isBlank()) this._inputtedNameError.setValue(Optional.empty());
   }
 
   public void onPriceTextChanged(@NonNull String price) {
@@ -127,7 +128,7 @@ public class CreateProductViewModel extends ViewModel {
   public void onSave() {
     if (this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
-          new LiveDataEvent<>(new StringResources.Strings(R.string.text_product_name_is_required)));
+          Optional.of(new StringResources.Strings(R.string.text_product_name_is_required)));
       return;
     }
 
@@ -141,13 +142,15 @@ public class CreateProductViewModel extends ViewModel {
         .add(product)
         .thenAcceptAsync(
             id -> {
-              if (id != 0L) this._resultCreatedProductId.postValue(new LiveDataEvent<>(id));
+              if (id != 0L) {
+                this._resultCreatedProductId.postValue(new SafeEvent<>(Optional.of(id)));
+              }
 
               final StringResources stringRes =
                   id != 0L
                       ? new StringResources.Plurals(R.plurals.args_added_x_product, 1, 1)
                       : new StringResources.Strings(R.string.text_error_failed_to_add_product);
-              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }
 }

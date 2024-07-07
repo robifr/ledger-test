@@ -19,12 +19,10 @@ package com.robifr.ledger.ui.editqueue;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.createqueue.CreateQueueViewModelHandler;
 import com.robifr.ledger.ui.editqueue.viewmodel.EditQueueViewModel;
-import java.time.ZoneId;
+import java.util.Objects;
+import java.util.Optional;
 
 public class EditQueueViewModelHandler extends CreateQueueViewModelHandler {
   public EditQueueViewModelHandler(
@@ -33,34 +31,25 @@ public class EditQueueViewModelHandler extends CreateQueueViewModelHandler {
     viewModel
         .resultEditedQueueId()
         .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onResultEditedQueueId));
-    viewModel
-        .initializedInitialQueueToEdit()
-        .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onInitializedInitialQueueToEdit));
+            event -> event.handleIfNotHandled(this::_onResultEditedQueueId));
   }
 
-  private void _onResultEditedQueueId(@Nullable Long queueId) {
-    if (queueId != null) {
-      final Bundle bundle = new Bundle();
-      bundle.putLong(EditQueueFragment.Result.EDITED_QUEUE_ID.key(), queueId);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultEditedQueueId(@NonNull Optional<Long> queueId) {
+    Objects.requireNonNull(queueId);
 
-      this._fragment
-          .getParentFragmentManager()
-          .setFragmentResult(EditQueueFragment.Request.EDIT_QUEUE.key(), bundle);
-    }
+    queueId.ifPresent(
+        id -> {
+          final Bundle bundle = new Bundle();
+          bundle.putLong(EditQueueFragment.Result.EDITED_QUEUE_ID.key(), id);
 
+          this._fragment
+              .getParentFragmentManager()
+              .setFragmentResult(EditQueueFragment.Request.EDIT_QUEUE.key(), bundle);
+        });
     this._fragment.finish();
-  }
-
-  private void _onInitializedInitialQueueToEdit(@Nullable QueueModel queue) {
-    if (queue == null) return;
-
-    this._viewModel.onCustomerChanged(queue.customer());
-    this._viewModel.onDateChanged(queue.date().atZone(ZoneId.systemDefault()));
-    this._viewModel.onStatusChanged(queue.status());
-    this._viewModel.onPaymentMethodChanged(queue.paymentMethod());
-    this._viewModel.onProductOrdersChanged(queue.productOrders());
   }
 }

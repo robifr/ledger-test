@@ -31,8 +31,8 @@ import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.repository.QueueRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -53,7 +53,7 @@ public class CreateQueueViewModel extends ViewModel {
   @NonNull protected final SelectProductOrderViewModel _selectProductOrderView;
 
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+  protected final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
   /**
@@ -96,7 +96,7 @@ public class CreateQueueViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _resultCreatedQueueId =
+  private final MutableLiveData<SafeEvent<Optional<Long>>> _resultCreatedQueueId =
       new MutableLiveData<>();
 
   @Inject
@@ -122,7 +122,7 @@ public class CreateQueueViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -170,7 +170,7 @@ public class CreateQueueViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> resultCreatedQueueId() {
+  public LiveData<SafeEvent<Optional<Long>>> resultCreatedQueueId() {
     return this._resultCreatedQueueId;
   }
 
@@ -237,7 +237,7 @@ public class CreateQueueViewModel extends ViewModel {
   public void onSave() {
     if (this._inputtedProductOrders.getValue().isEmpty()) {
       this._snackbarMessage.setValue(
-          new LiveDataEvent<>(
+          new SafeEvent<>(
               new StringResources.Strings(
                   R.string.text_please_to_include_at_least_one_product_order)));
       return;
@@ -256,7 +256,7 @@ public class CreateQueueViewModel extends ViewModel {
             customer -> {
               if (customer == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_failed_to_find_related_customer)));
               }
@@ -276,7 +276,7 @@ public class CreateQueueViewModel extends ViewModel {
             product -> {
               if (product == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_failed_to_find_related_product)));
               }
@@ -331,13 +331,13 @@ public class CreateQueueViewModel extends ViewModel {
         .add(queue)
         .thenAcceptAsync(
             id -> {
-              if (id != 0L) this._resultCreatedQueueId.postValue(new LiveDataEvent<>(id));
+              if (id != 0L) this._resultCreatedQueueId.postValue(new SafeEvent<>(Optional.of(id)));
 
               final StringResources stringRes =
                   id != 0L
                       ? new StringResources.Plurals(R.plurals.args_added_x_queue, 1, 1)
                       : new StringResources.Strings(R.string.text_error_failed_to_add_queue);
-              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }
 }

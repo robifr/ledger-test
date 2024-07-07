@@ -19,7 +19,6 @@ package com.robifr.ledger.ui.filtercustomer.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
@@ -28,9 +27,9 @@ import com.robifr.ledger.data.display.CustomerSortMethod;
 import com.robifr.ledger.data.display.CustomerSorter;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -47,15 +46,11 @@ public class FilterCustomerViewModel extends ViewModel {
   @NonNull private final CustomerSorter _sorter = new CustomerSorter();
 
   @NonNull
-  private final MediatorLiveData<LiveDataEvent<List<CustomerModel>>>
-      _initializedInitialFilteredCustomers = new MediatorLiveData<>();
-
-  @NonNull
   private final SafeMutableLiveData<List<CustomerModel>> _filteredCustomers =
       new SafeMutableLiveData<>(List.of());
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+  private final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
   @NonNull
@@ -63,7 +58,7 @@ public class FilterCustomerViewModel extends ViewModel {
       new SafeMutableLiveData<>(List.of());
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<List<Long>>> _resultFilteredCustomerIds =
+  private final MutableLiveData<SafeEvent<List<Long>>> _resultFilteredCustomerIds =
       new MutableLiveData<>();
 
   @Inject
@@ -74,8 +69,12 @@ public class FilterCustomerViewModel extends ViewModel {
     this._customerRepository = Objects.requireNonNull(customerRepository);
 
     this._sorter.setSortMethod(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
-    this._initializedInitialFilteredCustomers.addSource(
-        this._customers,
+    // It's unusual indeed to call its own method in its constructor. Setting up initial values
+    // inside a fragment is painful. You have to consider whether the fragment recreated due to
+    // configuration changes, or if it's popped from the backstack, or when the view model itself
+    // is recreated due to the fragment being navigated by bottom navigation.
+    SafeEvent.observeOnce(
+        this.selectAllCustomers(),
         customers -> {
           final long[] filteredCustomerIds =
               Objects.requireNonNullElse(
@@ -91,21 +90,10 @@ public class FilterCustomerViewModel extends ViewModel {
                               .anyMatch(id -> customer.id() != null && customer.id().equals(id)))
                   .collect(Collectors.toList());
 
-          this._initializedInitialFilteredCustomers.setValue(
-              new LiveDataEvent<>(filteredCustomers));
-        });
-
-    // It's unusual indeed to call its own method in its constructor. Setting up initial values
-    // inside a fragment is painful. You have to consider whether the fragment recreated due to
-    // configuration changes, or if it's popped from the backstack, or when the view model itself
-    // is recreated due to the fragment being navigated by bottom navigation.
-    LiveDataEvent.observeOnce(
-        this.selectAllCustomers(), this::onCustomersChanged, Objects::nonNull);
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<List<CustomerModel>>> initializedInitialFilteredCustomers() {
-    return this._initializedInitialFilteredCustomers;
+          this.onCustomersChanged(customers);
+          this.onFilteredCustomersChanged(filteredCustomers);
+        },
+        Objects::nonNull);
   }
 
   @NonNull
@@ -114,7 +102,7 @@ public class FilterCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -124,7 +112,7 @@ public class FilterCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<List<Long>>> resultFilteredCustomerIds() {
+  public LiveData<SafeEvent<List<Long>>> resultFilteredCustomerIds() {
     return this._resultFilteredCustomerIds;
   }
 
@@ -146,7 +134,7 @@ public class FilterCustomerViewModel extends ViewModel {
             .map(CustomerModel::id)
             .collect(Collectors.toList());
 
-    this._resultFilteredCustomerIds.setValue(new LiveDataEvent<>(customerIds));
+    this._resultFilteredCustomerIds.setValue(new SafeEvent<>(customerIds));
   }
 
   @NonNull
@@ -159,7 +147,7 @@ public class FilterCustomerViewModel extends ViewModel {
             customers -> {
               if (customers == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_unable_to_retrieve_all_customers)));
               }

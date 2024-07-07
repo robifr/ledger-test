@@ -20,9 +20,7 @@ package com.robifr.ledger.ui.searchproduct;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.ProductModel;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.searchproduct.viewmodel.SearchProductViewModel;
 import com.robifr.ledger.util.Compats;
 import java.util.List;
@@ -42,21 +40,21 @@ public class SearchProductViewModelHandler {
         .resultSelectedProductId()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onResultSelectedProductId));
-    this._viewModel
-        .initializedInitialQuery()
-        .observe(
-            this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onInitializedInitialQuery));
+            event -> event.handleIfNotHandled(this::_onResultSelectedProductId));
+    this._viewModel.query().observe(this._fragment.getViewLifecycleOwner(), this::_onQuery);
     this._viewModel.products().observe(this._fragment.getViewLifecycleOwner(), this::_onProducts);
   }
 
-  private void _onResultSelectedProductId(@Nullable Long productId) {
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultSelectedProductId(@NonNull Optional<Long> productId) {
+    Objects.requireNonNull(productId);
+
     final Bundle bundle = new Bundle();
 
-    if (productId != null) {
-      bundle.putLong(SearchProductFragment.Result.SELECTED_PRODUCT_ID.key(), productId);
-    }
+    productId.ifPresent(
+        id -> bundle.putLong(SearchProductFragment.Result.SELECTED_PRODUCT_ID.key(), id));
 
     this._fragment
         .getParentFragmentManager()
@@ -64,8 +62,10 @@ public class SearchProductViewModelHandler {
     this._fragment.finish();
   }
 
-  private void _onInitializedInitialQuery(@Nullable String query) {
-    if (query != null) {
+  private void _onQuery(@NonNull String query) {
+    Objects.requireNonNull(query);
+
+    if (!query.isEmpty()) {
       this._fragment.fragmentBinding().searchView.setQuery(query, true);
     } else {
       Compats.showKeyboard(

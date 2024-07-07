@@ -19,11 +19,10 @@ package com.robifr.ledger.ui.editcustomer;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.createcustomer.CreateCustomerViewModelHandler;
 import com.robifr.ledger.ui.editcustomer.viewmodel.EditCustomerViewModel;
+import java.util.Objects;
+import java.util.Optional;
 
 public class EditCustomerViewModelHandler extends CreateCustomerViewModelHandler {
   public EditCustomerViewModelHandler(
@@ -33,32 +32,24 @@ public class EditCustomerViewModelHandler extends CreateCustomerViewModelHandler
         .resultEditedCustomerId()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onResultEditedCustomerId));
-    viewModel
-        .initializedInitialCustomerToEdit()
-        .observe(
-            this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onInitializedInitialCustomerToEdit));
+            event -> event.handleIfNotHandled(this::_onResultEditedCustomerId));
   }
 
-  private void _onResultEditedCustomerId(@Nullable Long customerId) {
-    if (customerId != null) {
-      final Bundle bundle = new Bundle();
-      bundle.putLong(EditCustomerFragment.Result.EDITED_CUSTOMER_ID.key(), customerId);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultEditedCustomerId(@NonNull Optional<Long> customerId) {
+    Objects.requireNonNull(customerId);
 
-      this._fragment
-          .getParentFragmentManager()
-          .setFragmentResult(EditCustomerFragment.Request.EDIT_CUSTOMER.key(), bundle);
-    }
+    customerId.ifPresent(
+        id -> {
+          final Bundle bundle = new Bundle();
+          bundle.putLong(EditCustomerFragment.Result.EDITED_CUSTOMER_ID.key(), id);
 
+          this._fragment
+              .getParentFragmentManager()
+              .setFragmentResult(EditCustomerFragment.Request.EDIT_CUSTOMER.key(), bundle);
+        });
     this._fragment.finish();
-  }
-
-  private void _onInitializedInitialCustomerToEdit(@Nullable CustomerModel customer) {
-    if (customer == null) return;
-
-    this._viewModel.onNameTextChanged(customer.name());
-    this._viewModel.onBalanceChanged(customer.balance());
-    this._viewModel.onDebtChanged(customer.debt());
   }
 }

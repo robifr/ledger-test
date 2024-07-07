@@ -20,13 +20,12 @@ package com.robifr.ledger.ui.createcustomer;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createcustomer.viewmodel.CreateCustomerViewModel;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CreateCustomerViewModelHandler {
   @NonNull protected final CreateCustomerFragment _fragment;
@@ -41,14 +40,15 @@ public class CreateCustomerViewModelHandler {
         .resultCreatedCustomerId()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onResultCreatedCustomerId));
+            event -> event.handleIfNotHandled(this::_onResultCreatedCustomerId));
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            event -> event.handleIfNotHandled(this::_onSnackbarMessage));
     this._viewModel
         .inputtedNameError()
-        .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onInputtedNameError));
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onInputtedNameError);
     this._viewModel
         .inputtedNameText()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onInputtedNameText);
@@ -73,21 +73,26 @@ public class CreateCustomerViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onAvailableBalanceToWithdraw);
   }
 
-  private void _onResultCreatedCustomerId(@Nullable Long id) {
-    if (id != null) {
-      final Bundle bundle = new Bundle();
-      bundle.putLong(CreateCustomerFragment.Result.CREATED_CUSTOMER_ID.key(), id);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultCreatedCustomerId(@NonNull Optional<Long> customerId) {
+    Objects.requireNonNull(customerId);
 
-      this._fragment
-          .getParentFragmentManager()
-          .setFragmentResult(CreateCustomerFragment.Request.CREATE_CUSTOMER.key(), bundle);
-    }
+    customerId.ifPresent(
+        id -> {
+          final Bundle bundle = new Bundle();
+          bundle.putLong(CreateCustomerFragment.Result.CREATED_CUSTOMER_ID.key(), id);
 
+          this._fragment
+              .getParentFragmentManager()
+              .setFragmentResult(CreateCustomerFragment.Request.CREATE_CUSTOMER.key(), bundle);
+        });
     this._fragment.finish();
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
+  private void _onSnackbarMessage(@NonNull StringResources stringRes) {
+    Objects.requireNonNull(stringRes);
 
     Snackbar.make(
             (View) this._fragment.fragmentBinding().getRoot().getParent(),
@@ -96,12 +101,18 @@ public class CreateCustomerViewModelHandler {
         .show();
   }
 
-  private void _onInputtedNameError(@Nullable StringResources stringRes) {
-    final String text =
-        stringRes != null
-            ? StringResources.stringOf(this._fragment.requireContext(), stringRes)
-            : null;
-    this._fragment.inputName().setError(text);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onInputtedNameError(@NonNull Optional<StringResources> stringRes) {
+    Objects.requireNonNull(stringRes);
+
+    this._fragment
+        .inputName()
+        .setError(
+            stringRes
+                .map(string -> StringResources.stringOf(this._fragment.requireContext(), string))
+                .orElse(null));
   }
 
   private void _onInputtedNameText(@NonNull String name) {

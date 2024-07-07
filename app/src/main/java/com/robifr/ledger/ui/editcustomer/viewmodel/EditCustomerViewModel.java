@@ -20,30 +20,26 @@ package com.robifr.ledger.ui.editcustomer.viewmodel;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createcustomer.viewmodel.CreateCustomerViewModel;
 import com.robifr.ledger.ui.editcustomer.EditCustomerFragment;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 
 @HiltViewModel
 public class EditCustomerViewModel extends CreateCustomerViewModel {
-  @NonNull
-  private final MediatorLiveData<LiveDataEvent<CustomerModel>> _initializedInitialCustomerToEdit =
-      new MediatorLiveData<>();
-
   @Nullable private CustomerModel _initialCustomerToEdit = null;
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _resultEditedCustomerId =
+  private final MutableLiveData<SafeEvent<Optional<Long>>> _resultEditedCustomerId =
       new MutableLiveData<>();
 
   @Inject
@@ -52,7 +48,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
     super(customerRepository);
     Objects.requireNonNull(savedStateHandle);
 
-    this._initializedInitialCustomerToEdit.addSource(
+    SafeEvent.observeOnce(
         // Shouldn't be null when editing data.
         this.selectCustomerById(
             Objects.requireNonNull(
@@ -60,8 +56,11 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
                     EditCustomerFragment.Arguments.INITIAL_CUSTOMER_ID_TO_EDIT.key()))),
         customer -> {
           this._initialCustomerToEdit = customer;
-          this._initializedInitialCustomerToEdit.setValue(new LiveDataEvent<>(customer));
-        });
+          this.onNameTextChanged(customer.name());
+          this.onBalanceChanged(customer.balance());
+          this.onDebtChanged(customer.debt());
+        },
+        Objects::nonNull);
   }
 
   @Override
@@ -78,8 +77,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
   public void onSave() {
     if (this.inputtedCustomer().name().isBlank()) {
       this._inputtedNameError.setValue(
-          new LiveDataEvent<>(
-              new StringResources.Strings(R.string.text_customer_name_is_required)));
+          Optional.of(new StringResources.Strings(R.string.text_customer_name_is_required)));
       return;
     }
 
@@ -87,12 +85,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<CustomerModel>> initializedInitialCustomerToEdit() {
-    return this._initializedInitialCustomerToEdit;
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<Long>> resultEditedCustomerId() {
+  public LiveData<SafeEvent<Optional<Long>>> resultEditedCustomerId() {
     return this._resultEditedCustomerId;
   }
 
@@ -106,7 +99,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
             customer -> {
               if (customer == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_failed_to_find_related_customer)));
               }
@@ -124,7 +117,8 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
         .thenAcceptAsync(
             effected -> {
               if (effected > 0) {
-                this._resultEditedCustomerId.postValue(new LiveDataEvent<>(customer.id()));
+                this._resultEditedCustomerId.postValue(
+                    new SafeEvent<>(Optional.ofNullable(customer.id())));
               }
 
               final StringResources stringRes =
@@ -132,7 +126,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
                       ? new StringResources.Plurals(
                           R.plurals.args_updated_x_customer, effected, effected)
                       : new StringResources.Strings(R.string.text_error_failed_to_update_customer);
-              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }
 }

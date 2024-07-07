@@ -20,12 +20,11 @@ package com.robifr.ledger.ui.createproduct;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createproduct.viewmodel.CreateProductViewModel;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CreateProductViewModelHandler {
   @NonNull protected final CreateProductFragment _fragment;
@@ -40,14 +39,15 @@ public class CreateProductViewModelHandler {
         .resultCreatedProductId()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onResultCreatedProductId));
+            event -> event.handleIfNotHandled(this::_onResultCreatedProductId));
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            event -> event.handleIfNotHandled(this::_onSnackbarMessage));
     this._viewModel
         .inputtedNameError()
-        .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onInputtedNameError));
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onInputtedNameError);
     this._viewModel
         .inputtedNameText()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onInputtedNameText);
@@ -56,21 +56,26 @@ public class CreateProductViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onInputtedPriceText);
   }
 
-  private void _onResultCreatedProductId(@Nullable Long id) {
-    if (id != null) {
-      final Bundle bundle = new Bundle();
-      bundle.putLong(CreateProductFragment.Result.CREATED_PRODUCT_ID.key(), id);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultCreatedProductId(@NonNull Optional<Long> productId) {
+    Objects.requireNonNull(productId);
 
-      this._fragment
-          .getParentFragmentManager()
-          .setFragmentResult(CreateProductFragment.Request.CREATE_PRODUCT.key(), bundle);
-    }
+    productId.ifPresent(
+        id -> {
+          final Bundle bundle = new Bundle();
+          bundle.putLong(CreateProductFragment.Result.CREATED_PRODUCT_ID.key(), id);
 
+          this._fragment
+              .getParentFragmentManager()
+              .setFragmentResult(CreateProductFragment.Request.CREATE_PRODUCT.key(), bundle);
+        });
     this._fragment.finish();
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
+  private void _onSnackbarMessage(@NonNull StringResources stringRes) {
+    Objects.requireNonNull(stringRes);
 
     Snackbar.make(
             (View) this._fragment.fragmentBinding().getRoot().getParent(),
@@ -79,12 +84,18 @@ public class CreateProductViewModelHandler {
         .show();
   }
 
-  private void _onInputtedNameError(@Nullable StringResources stringRes) {
-    final String text =
-        stringRes != null
-            ? StringResources.stringOf(this._fragment.requireContext(), stringRes)
-            : null;
-    this._fragment.inputName().setError(text);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onInputtedNameError(@NonNull Optional<StringResources> stringRes) {
+    Objects.requireNonNull(stringRes);
+
+    this._fragment
+        .inputName()
+        .setError(
+            stringRes
+                .map(string -> StringResources.stringOf(this._fragment.requireContext(), string))
+                .orElse(null));
   }
 
   private void _onInputtedNameText(@NonNull String name) {

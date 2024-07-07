@@ -27,8 +27,8 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -42,16 +42,14 @@ public class SearchProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
 
-  @NonNull
-  private final MutableLiveData<LiveDataEvent<String>> _initializedInitialQuery =
-      new MutableLiveData<>();
+  @NonNull private final SafeMutableLiveData<String> _query;
 
   @NonNull
   private final SafeMutableLiveData<Optional<List<ProductModel>>> _products =
       new SafeMutableLiveData<>(Optional.empty());
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedProductId =
+  private final MutableLiveData<SafeEvent<Optional<Long>>> _resultSelectedProductId =
       new MutableLiveData<>();
 
   @Inject
@@ -60,15 +58,15 @@ public class SearchProductViewModel extends ViewModel {
     Objects.requireNonNull(savedStateHandle);
 
     this._productRepository = Objects.requireNonNull(productRepository);
-
-    this._initializedInitialQuery.setValue(
-        new LiveDataEvent<>(
-            savedStateHandle.get(SearchProductFragment.Arguments.INITIAL_QUERY.key())));
+    this._query =
+        new SafeMutableLiveData<>(
+            Objects.requireNonNullElse(
+                savedStateHandle.get(SearchProductFragment.Arguments.INITIAL_QUERY.key()), ""));
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<String>> initializedInitialQuery() {
-    return this._initializedInitialQuery;
+  public SafeLiveData<String> query() {
+    return this._query;
   }
 
   @NonNull
@@ -77,13 +75,14 @@ public class SearchProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> resultSelectedProductId() {
+  public LiveData<SafeEvent<Optional<Long>>> resultSelectedProductId() {
     return this._resultSelectedProductId;
   }
 
   public void onSearch(@NonNull String query) {
     Objects.requireNonNull(query);
 
+    this._query.setValue(query);
     // Remove old runnable to ensure old query result wouldn't appear in future.
     this._handler.removeCallbacksAndMessages(null);
     this._handler.postDelayed(
@@ -102,7 +101,7 @@ public class SearchProductViewModel extends ViewModel {
   }
 
   public void onProductSelected(@Nullable ProductModel product) {
-    final Long productId = product != null && product.id() != null ? product.id() : null;
-    this._resultSelectedProductId.setValue(new LiveDataEvent<>(productId));
+    this._resultSelectedProductId.setValue(
+        new SafeEvent<>(Optional.ofNullable(product).map(ProductModel::id)));
   }
 }

@@ -20,7 +20,6 @@ package com.robifr.ledger.ui.editqueue.viewmodel;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import com.robifr.ledger.R;
@@ -29,11 +28,12 @@ import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.repository.QueueRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createqueue.viewmodel.CreateQueueViewModel;
 import com.robifr.ledger.ui.editqueue.EditQueueFragment;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -42,14 +42,11 @@ import javax.inject.Inject;
 
 @HiltViewModel
 public class EditQueueViewModel extends CreateQueueViewModel {
-  @NonNull
-  private final MediatorLiveData<LiveDataEvent<QueueModel>> _initializedInitialQueueToEdit =
-      new MediatorLiveData<>();
-
   @Nullable private QueueModel _initialQueueToEdit = null;
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _resultEditedQueueId = new MutableLiveData<>();
+  private final MutableLiveData<SafeEvent<Optional<Long>>> _resultEditedQueueId =
+      new MutableLiveData<>();
 
   @Inject
   public EditQueueViewModel(
@@ -60,15 +57,20 @@ public class EditQueueViewModel extends CreateQueueViewModel {
     super(queueRepository, customerRepository, productRepository);
     Objects.requireNonNull(savedStateHandle);
 
-    this._initializedInitialQueueToEdit.addSource(
+    SafeEvent.observeOnce(
         // Shouldn't be null when editing data.
         this.selectQueueById(
             Objects.requireNonNull(
                 savedStateHandle.get(EditQueueFragment.Arguments.INITIAL_QUEUE_ID_TO_EDIT.key()))),
         queue -> {
           this._initialQueueToEdit = queue;
-          this._initializedInitialQueueToEdit.setValue(new LiveDataEvent<>(queue));
-        });
+          this.onCustomerChanged(queue.customer());
+          this.onDateChanged(queue.date().atZone(ZoneId.systemDefault()));
+          this.onStatusChanged(queue.status());
+          this.onPaymentMethodChanged(queue.paymentMethod());
+          this.onProductOrdersChanged(queue.productOrders());
+        },
+        Objects::nonNull);
   }
 
   @Override
@@ -87,7 +89,7 @@ public class EditQueueViewModel extends CreateQueueViewModel {
 
     if (inputtedQueue.productOrders().isEmpty()) {
       this._snackbarMessage.setValue(
-          new LiveDataEvent<>(
+          new SafeEvent<>(
               new StringResources.Strings(
                   R.string.text_please_to_include_at_least_one_product_order)));
       return;
@@ -97,12 +99,7 @@ public class EditQueueViewModel extends CreateQueueViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<QueueModel>> initializedInitialQueueToEdit() {
-    return this._initializedInitialQueueToEdit;
-  }
-
-  @NonNull
-  public LiveData<LiveDataEvent<Long>> resultEditedQueueId() {
+  public LiveData<SafeEvent<Optional<Long>>> resultEditedQueueId() {
     return this._resultEditedQueueId;
   }
 
@@ -116,7 +113,7 @@ public class EditQueueViewModel extends CreateQueueViewModel {
             queue -> {
               if (queue == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_failed_to_find_related_queue)));
               }
@@ -198,7 +195,8 @@ public class EditQueueViewModel extends CreateQueueViewModel {
         .thenAcceptAsync(
             effected -> {
               if (effected > 0) {
-                this._resultEditedQueueId.postValue(new LiveDataEvent<>(queue.id()));
+                this._resultEditedQueueId.postValue(
+                    new SafeEvent<>(Optional.ofNullable(queue.id())));
               }
 
               final StringResources stringRes =
@@ -206,7 +204,7 @@ public class EditQueueViewModel extends CreateQueueViewModel {
                       ? new StringResources.Plurals(
                           R.plurals.args_updated_x_queue, effected, effected)
                       : new StringResources.Strings(R.string.text_error_failed_to_update_queue);
-              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }
 }

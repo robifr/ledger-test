@@ -15,14 +15,14 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.ui;
+package com.robifr.ledger.util.livedata;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A {@link LiveData} is good for maintaining lifecycle-aware state, like on configuration changes
@@ -33,30 +33,37 @@ import org.jetbrains.annotations.NotNull;
  * <pre>
  * MainFragment.java
  * {@code
- *  viewModel.snackbar().observe(this, new LiveDataEvent.Observer<>(
- *      message ->
+ *  viewModel.snackbar().observe(
+ *      this.getViewLifecycleOwner(),
+ *      event -> event.handleIfNotHandled(
  *          //Message received: "Hello"
- *          Snackbar.make(this, message, Snackbar.LENGTH_LONG).show());
+ *          message -> Snackbar.make(this, message, Snackbar.LENGTH_LONG).show());
  * }
  *
  * MainViewModel.java
  * {@code
  *  public class MainViewModel extends ViewModel {
- *    @NonNull private MutableLiveData<LiveDataEvent<String>> _snackbar = new MutableLiveData<>();
+ *    @NonNull private final MutableLiveData<SafeEvent<String>> _snackbar =
+ *        new MutableLiveData<>();
+ *
+ *    @NonNull
+ *    public LiveData<SafeEvent<String>> snackbar() {
+ *      return this._snackbar;
+ *    }
  *    ...
  *  }
  * }
  *
  * Somewhere in MainViewModel.java
- * {@code this._snackbar.setValue(new LiveDataEvent<>("Hello")); }
+ * {@code this._snackbar.setValue(new SafeEvent<>("Hello")); }
  * </pre>
  */
-public class LiveDataEvent<T> {
-  @Nullable private final T _value;
+public class SafeEvent<T> {
+  @NonNull private final T _value;
   private boolean _isHandled = false;
 
-  public LiveDataEvent(@Nullable T value) {
-    this._value = value;
+  public SafeEvent(@NonNull T value) {
+    this._value = Objects.requireNonNull(value);
   }
 
   public static <T> void observeOnce(
@@ -80,14 +87,14 @@ public class LiveDataEvent<T> {
   }
 
   @Nullable
-  public T getValueIfNotHandled() {
+  public T valueIfNotHandled() {
     if (this._isHandled) return null;
 
     this._isHandled = true;
     return this._value;
   }
 
-  @Nullable
+  @NonNull
   public T value() {
     return this._value;
   }
@@ -96,22 +103,10 @@ public class LiveDataEvent<T> {
     return this._isHandled;
   }
 
-  public interface Handler<T> {
-    void onEventUnHandled(@Nullable T value);
-  }
+  public void handleIfNotHandled(@NonNull Consumer<T> handler) {
+    Objects.requireNonNull(handler);
 
-  public static class Observer<T> implements androidx.lifecycle.Observer<LiveDataEvent<T>> {
-    @NonNull private final Handler<T> _handler;
-
-    public Observer(@NotNull Handler<T> handler) {
-      this._handler = Objects.requireNonNull(handler);
-    }
-
-    @Override
-    public void onChanged(@NonNull LiveDataEvent<T> event) {
-      Objects.requireNonNull(event);
-
-      this._handler.onEventUnHandled(event.getValueIfNotHandled());
-    }
+    final T value = this.valueIfNotHandled();
+    if (value != null) handler.accept(value);
   }
 }

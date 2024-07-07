@@ -19,10 +19,8 @@ package com.robifr.ledger.ui.dashboard;
 
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
 import java.math.BigDecimal;
@@ -41,7 +39,9 @@ public class DashboardViewModelHandler {
 
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            event -> event.handleIfNotHandled(this::_onSnackbarMessage));
     this._viewModel.date().observe(this._fragment.getViewLifecycleOwner(), this::_onDate);
 
     this._viewModel
@@ -104,8 +104,8 @@ public class DashboardViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onRevenueProjectedIncome);
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
+  private void _onSnackbarMessage(@NonNull StringResources stringRes) {
+    Objects.requireNonNull(stringRes);
 
     Snackbar.make(
             (View) this._fragment.fragmentBinding().getRoot().getParent(),

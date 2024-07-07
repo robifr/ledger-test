@@ -20,14 +20,13 @@ package com.robifr.ledger.ui.selectcustomer;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.selectcustomer.viewmodel.SelectCustomerViewModel;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SelectCustomerViewModelHandler {
   @NonNull private final SelectCustomerFragment _fragment;
@@ -42,19 +41,25 @@ public class SelectCustomerViewModelHandler {
         .resultSelectedCustomerId()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onResultSelectedCustomerId));
+            event -> event.handleIfNotHandled(this::_onResultSelectedCustomerId));
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            event -> event.handleIfNotHandled(this::_onSnackbarMessage));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
   }
 
-  private void _onResultSelectedCustomerId(@Nullable Long customerId) {
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultSelectedCustomerId(@NonNull Optional<Long> customerId) {
+    Objects.requireNonNull(customerId);
+
     final Bundle bundle = new Bundle();
 
-    if (customerId != null) {
-      bundle.putLong(SelectCustomerFragment.Result.SELECTED_CUSTOMER_ID.key(), customerId);
-    }
+    customerId.ifPresent(
+        id -> bundle.putLong(SelectCustomerFragment.Result.SELECTED_CUSTOMER_ID.key(), id));
 
     this._fragment
         .getParentFragmentManager()
@@ -62,8 +67,8 @@ public class SelectCustomerViewModelHandler {
     this._fragment.finish();
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
+  private void _onSnackbarMessage(@NonNull StringResources stringRes) {
+    Objects.requireNonNull(stringRes);
 
     Snackbar.make(
             (View) this._fragment.fragmentBinding().getRoot().getParent(),

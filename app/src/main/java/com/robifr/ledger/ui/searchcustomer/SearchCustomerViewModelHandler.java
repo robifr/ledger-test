@@ -20,9 +20,7 @@ package com.robifr.ledger.ui.searchcustomer;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.CustomerModel;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.searchcustomer.viewmodel.SearchCustomerViewModel;
 import com.robifr.ledger.util.Compats;
 import java.util.List;
@@ -42,21 +40,25 @@ public class SearchCustomerViewModelHandler {
         .resultSelectedCustomerId()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onResultSelectedCustomerId));
+            event -> event.handleIfNotHandled(this::_onResultSelectedCustomerId));
     this._viewModel
         .initializedInitialQuery()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onInitializedInitialQuery));
+            event -> event.handleIfNotHandled(this::_onInitializedInitialQuery));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
   }
 
-  private void _onResultSelectedCustomerId(@Nullable Long customerId) {
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultSelectedCustomerId(@NonNull Optional<Long> customerId) {
+    Objects.requireNonNull(customerId);
+
     final Bundle bundle = new Bundle();
 
-    if (customerId != null) {
-      bundle.putLong(SearchCustomerFragment.Result.SELECTED_CUSTOMER_ID.key(), customerId);
-    }
+    customerId.ifPresent(
+        id -> bundle.putLong(SearchCustomerFragment.Result.SELECTED_CUSTOMER_ID.key(), id));
 
     this._fragment
         .getParentFragmentManager()
@@ -64,8 +66,10 @@ public class SearchCustomerViewModelHandler {
     this._fragment.finish();
   }
 
-  private void _onInitializedInitialQuery(@Nullable String query) {
-    if (query != null) {
+  private void _onInitializedInitialQuery(@NonNull String query) {
+    Objects.requireNonNull(query);
+
+    if (!query.isEmpty()) {
       this._fragment.fragmentBinding().searchView.setQuery(query, true);
     } else {
       Compats.showKeyboard(

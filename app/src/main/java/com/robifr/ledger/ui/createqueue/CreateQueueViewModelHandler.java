@@ -20,14 +20,12 @@ package com.robifr.ledger.ui.createqueue;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.createqueue.viewmodel.CreateQueueViewModel;
 import java.math.BigDecimal;
@@ -49,10 +47,13 @@ public class CreateQueueViewModelHandler {
     this._viewModel
         .resultCreatedQueueId()
         .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onResultCreatedQueueId));
+            this._fragment.getViewLifecycleOwner(),
+            event -> event.handleIfNotHandled(this::_onResultCreatedQueueId));
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            event -> event.handleIfNotHandled(this::_onSnackbarMessage));
 
     this._viewModel
         .inputtedCustomer()
@@ -108,21 +109,26 @@ public class CreateQueueViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSelectOrderSelectedIndexes);
   }
 
-  private void _onResultCreatedQueueId(@Nullable Long queueId) {
-    if (queueId != null) {
-      final Bundle bundle = new Bundle();
-      bundle.putLong(CreateQueueFragment.Result.CREATED_QUEUE_ID.key(), queueId);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultCreatedQueueId(@NonNull Optional<Long> queueId) {
+    Objects.requireNonNull(queueId);
 
-      this._fragment
-          .getParentFragmentManager()
-          .setFragmentResult(CreateQueueFragment.Request.CREATE_QUEUE.key(), bundle);
-    }
+    queueId.ifPresent(
+        id -> {
+          final Bundle bundle = new Bundle();
+          bundle.putLong(CreateQueueFragment.Result.CREATED_QUEUE_ID.key(), id);
 
+          this._fragment
+              .getParentFragmentManager()
+              .setFragmentResult(CreateQueueFragment.Request.CREATE_QUEUE.key(), bundle);
+        });
     this._fragment.finish();
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
+  private void _onSnackbarMessage(@NonNull StringResources stringRes) {
+    Objects.requireNonNull(stringRes);
 
     Snackbar.make(
             (View) this._fragment.fragmentBinding().getRoot().getParent(),

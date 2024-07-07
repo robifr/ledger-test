@@ -20,14 +20,13 @@ package com.robifr.ledger.ui.selectproduct;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.ProductModel;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.selectproduct.viewmodel.SelectProductViewModel;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SelectProductViewModelHandler {
   @NonNull private final SelectProductFragment _fragment;
@@ -42,19 +41,25 @@ public class SelectProductViewModelHandler {
         .resultSelectedProductId()
         .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onResultSelectedProductId));
+            event -> event.handleIfNotHandled(this::_onResultSelectedProductId));
     this._viewModel
         .snackbarMessage()
-        .observe(this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onSnackbarMessage));
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            event -> event.handleIfNotHandled(this::_onSnackbarMessage));
     this._viewModel.products().observe(this._fragment.getViewLifecycleOwner(), this::_onProducts);
   }
 
-  private void _onResultSelectedProductId(@Nullable Long productId) {
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultSelectedProductId(@NonNull Optional<Long> productId) {
+    Objects.requireNonNull(productId);
+
     final Bundle bundle = new Bundle();
 
-    if (productId != null) {
-      bundle.putLong(SelectProductFragment.Result.SELECTED_PRODUCT_ID.key(), productId);
-    }
+    productId.ifPresent(
+        id -> bundle.putLong(SelectProductFragment.Result.SELECTED_PRODUCT_ID.key(), id));
 
     this._fragment
         .getParentFragmentManager()
@@ -62,8 +67,8 @@ public class SelectProductViewModelHandler {
     this._fragment.finish();
   }
 
-  private void _onSnackbarMessage(@Nullable StringResources stringRes) {
-    if (stringRes == null) return;
+  private void _onSnackbarMessage(@NonNull StringResources stringRes) {
+    Objects.requireNonNull(stringRes);
 
     Snackbar.make(
             (View) this._fragment.fragmentBinding().getRoot().getParent(),

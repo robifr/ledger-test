@@ -25,13 +25,14 @@ import androidx.lifecycle.ViewModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -42,12 +43,12 @@ public class CreateCustomerViewModel extends ViewModel {
   protected final CustomerBalanceViewModel _balanceView = new CustomerBalanceViewModel(this);
 
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+  protected final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
   @NonNull
-  protected final MutableLiveData<LiveDataEvent<StringResources>> _inputtedNameError =
-      new MutableLiveData<>();
+  protected final SafeMutableLiveData<Optional<StringResources>> _inputtedNameError =
+      new SafeMutableLiveData<>(Optional.empty());
 
   @NonNull
   protected final SafeMutableLiveData<String> _inputtedNameText = new SafeMutableLiveData<>("");
@@ -60,7 +61,7 @@ public class CreateCustomerViewModel extends ViewModel {
       new SafeMutableLiveData<>(BigDecimal.ZERO);
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _resultCreatedCustomerId =
+  private final MutableLiveData<SafeEvent<Optional<Long>>> _resultCreatedCustomerId =
       new MutableLiveData<>();
 
   @Inject
@@ -73,12 +74,12 @@ public class CreateCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> inputtedNameError() {
+  public SafeLiveData<Optional<StringResources>> inputtedNameError() {
     return this._inputtedNameError;
   }
 
@@ -98,7 +99,7 @@ public class CreateCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> resultCreatedCustomerId() {
+  public LiveData<SafeEvent<Optional<Long>>> resultCreatedCustomerId() {
     return this._resultCreatedCustomerId;
   }
 
@@ -123,7 +124,7 @@ public class CreateCustomerViewModel extends ViewModel {
     this._inputtedNameText.setValue(name);
 
     // Disable error when name field filled.
-    if (!name.isBlank()) this._inputtedNameError.setValue(new LiveDataEvent<>(null));
+    if (!name.isBlank()) this._inputtedNameError.setValue(Optional.empty());
   }
 
   public void onBalanceChanged(long balance) {
@@ -139,8 +140,7 @@ public class CreateCustomerViewModel extends ViewModel {
   public void onSave() {
     if (this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
-          new LiveDataEvent<>(
-              new StringResources.Strings(R.string.text_customer_name_is_required)));
+          Optional.of(new StringResources.Strings(R.string.text_customer_name_is_required)));
       return;
     }
 
@@ -154,13 +154,15 @@ public class CreateCustomerViewModel extends ViewModel {
         .add(customer)
         .thenAcceptAsync(
             id -> {
-              if (id != 0L) this._resultCreatedCustomerId.postValue(new LiveDataEvent<>(id));
+              if (id != 0L) {
+                this._resultCreatedCustomerId.postValue(new SafeEvent<>(Optional.of(id)));
+              }
 
               final StringResources stringRes =
                   id != 0L
                       ? new StringResources.Plurals(R.plurals.args_added_x_customer, 1, 1)
                       : new StringResources.Strings(R.string.text_error_failed_to_add_customer);
-              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }
 }

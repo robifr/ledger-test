@@ -28,9 +28,9 @@ import com.robifr.ledger.data.model.CustomerDebtInfo;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.DashboardRevenue;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -56,7 +56,7 @@ public class DashboardViewModel extends ViewModel {
       new CustomerChangedListener(this);
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+  private final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
   @NonNull
@@ -92,16 +92,16 @@ public class DashboardViewModel extends ViewModel {
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
     this._revenueView.onDisplayedChartChanged(DashboardRevenue.OverviewType.RECEIVED_INCOME);
-    LiveDataEvent.observeOnce(
+    SafeEvent.observeOnce(
         this._selectAllQueuesInRange(
             this._date.getValue().dateStart(), this._date.getValue().dateEnd()),
         this::_onQueuesChanged,
         Objects::nonNull);
-    LiveDataEvent.observeOnce(
+    SafeEvent.observeOnce(
         this._selectAllCustomersWithBalance(),
         this::_onCustomersWithBalanceChanged,
         Objects::nonNull);
-    LiveDataEvent.observeOnce(
+    SafeEvent.observeOnce(
         this._selectAllCustomersWithDebt(), this::_onCustomersWithDebtChanged, Objects::nonNull);
   }
 
@@ -127,7 +127,7 @@ public class DashboardViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -140,7 +140,7 @@ public class DashboardViewModel extends ViewModel {
     Objects.requireNonNull(date);
 
     this._date.setValue(date);
-    LiveDataEvent.observeOnce(
+    SafeEvent.observeOnce(
         this._selectAllQueuesInRange(date.dateStart(), date.dateEnd()),
         this::_onQueuesChanged,
         Objects::nonNull);
@@ -156,7 +156,7 @@ public class DashboardViewModel extends ViewModel {
             customers -> {
               if (customers == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_unable_to_retrieve_all_customers)));
               }
@@ -176,7 +176,7 @@ public class DashboardViewModel extends ViewModel {
             customers -> {
               if (customers == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_unable_to_retrieve_all_customers)));
               }
@@ -200,7 +200,7 @@ public class DashboardViewModel extends ViewModel {
             queues -> {
               if (queues == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_unable_to_retrieve_all_queues)));
               }

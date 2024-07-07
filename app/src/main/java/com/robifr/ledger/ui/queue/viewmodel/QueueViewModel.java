@@ -28,8 +28,8 @@ import com.robifr.ledger.data.display.QueueSorter;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.QueueRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -54,7 +54,7 @@ public class QueueViewModel extends ViewModel {
   @NonNull private final QueueSorter _sorter = new QueueSorter();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+  private final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
   @NonNull
@@ -86,7 +86,7 @@ public class QueueViewModel extends ViewModel {
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
-    LiveDataEvent.observeOnce(
+    SafeEvent.observeOnce(
         this.selectAllQueues(),
         queues -> this._filterView.onFiltersChanged(this._filterView.inputtedFilters(), queues),
         Objects::nonNull);
@@ -104,7 +104,7 @@ public class QueueViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -135,7 +135,7 @@ public class QueueViewModel extends ViewModel {
             queues -> {
               if (queues == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_unable_to_retrieve_all_queues)));
               }
@@ -157,7 +157,7 @@ public class QueueViewModel extends ViewModel {
                       ? new StringResources.Plurals(
                           R.plurals.args_deleted_x_queue, effected, effected)
                       : new StringResources.Strings(R.string.text_error_failed_to_delete_queue);
-              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }
 

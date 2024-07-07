@@ -27,8 +27,8 @@ import com.robifr.ledger.data.display.CustomerSortMethod;
 import com.robifr.ledger.data.display.CustomerSorter;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -49,7 +49,7 @@ public class CustomerViewModel extends ViewModel {
   @NonNull private final CustomerSorter _sorter = new CustomerSorter();
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+  private final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
   @NonNull
@@ -78,7 +78,7 @@ public class CustomerViewModel extends ViewModel {
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
-    LiveDataEvent.observeOnce(
+    SafeEvent.observeOnce(
         this.selectAllCustomers(),
         customers ->
             this._filterView.onFiltersChanged(this._filterView.inputtedFilters(), customers),
@@ -96,7 +96,7 @@ public class CustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -127,7 +127,7 @@ public class CustomerViewModel extends ViewModel {
             customers -> {
               if (customers == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_unable_to_retrieve_all_customers)));
               }
@@ -149,7 +149,7 @@ public class CustomerViewModel extends ViewModel {
                       ? new StringResources.Plurals(
                           R.plurals.args_deleted_x_customer, effected, effected)
                       : new StringResources.Strings(R.string.text_error_failed_to_delete_customer);
-              this._snackbarMessage.postValue(new LiveDataEvent<>(stringRes));
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }
 

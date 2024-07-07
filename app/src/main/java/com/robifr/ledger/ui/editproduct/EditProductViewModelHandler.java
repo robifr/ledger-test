@@ -19,13 +19,10 @@ package com.robifr.ledger.ui.editproduct;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.robifr.ledger.data.model.ProductModel;
-import com.robifr.ledger.ui.LiveDataEvent.Observer;
 import com.robifr.ledger.ui.createproduct.CreateProductViewModelHandler;
 import com.robifr.ledger.ui.editproduct.viewmodel.EditProductViewModel;
-import com.robifr.ledger.util.CurrencyFormat;
-import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.Optional;
 
 public class EditProductViewModelHandler extends CreateProductViewModelHandler {
   public EditProductViewModelHandler(
@@ -34,32 +31,25 @@ public class EditProductViewModelHandler extends CreateProductViewModelHandler {
     viewModel
         .resultEditedProductId()
         .observe(
-            this._fragment.getViewLifecycleOwner(), new Observer<>(this::_onResultEditedProductId));
-    viewModel
-        .initializedInitialProductToEdit()
-        .observe(
             this._fragment.getViewLifecycleOwner(),
-            new Observer<>(this::_onInitializedInitialProductToEdit));
+            event -> event.handleIfNotHandled(this::_onResultEditedProductId));
   }
 
-  private void _onResultEditedProductId(@Nullable Long productId) {
-    if (productId != null) {
-      final Bundle bundle = new Bundle();
-      bundle.putLong(EditProductFragment.Result.EDITED_PRODUCT_ID.key(), productId);
+  /**
+   * @noinspection OptionalUsedAsFieldOrParameterType
+   */
+  private void _onResultEditedProductId(@NonNull Optional<Long> productId) {
+    Objects.requireNonNull(productId);
 
-      this._fragment
-          .getParentFragmentManager()
-          .setFragmentResult(EditProductFragment.Request.EDIT_PRODUCT.key(), bundle);
-    }
+    productId.ifPresent(
+        id -> {
+          final Bundle bundle = new Bundle();
+          bundle.putLong(EditProductFragment.Result.EDITED_PRODUCT_ID.key(), id);
 
+          this._fragment
+              .getParentFragmentManager()
+              .setFragmentResult(EditProductFragment.Request.EDIT_PRODUCT.key(), bundle);
+        });
     this._fragment.finish();
-  }
-
-  private void _onInitializedInitialProductToEdit(@Nullable ProductModel product) {
-    if (product == null) return;
-
-    this._viewModel.onNameTextChanged(product.name());
-    this._viewModel.onPriceTextChanged(
-        CurrencyFormat.format(BigDecimal.valueOf(product.price()), "id", "ID"));
   }
 }

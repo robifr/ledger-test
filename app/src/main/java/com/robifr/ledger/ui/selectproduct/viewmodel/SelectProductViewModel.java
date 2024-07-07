@@ -28,15 +28,16 @@ import com.robifr.ledger.data.display.ProductSortMethod;
 import com.robifr.ledger.data.display.ProductSorter;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
-import com.robifr.ledger.ui.LiveDataEvent;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
+import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -50,7 +51,7 @@ public class SelectProductViewModel extends ViewModel {
   @Nullable private final ProductModel _initialSelectedProduct;
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<StringResources>> _snackbarMessage =
+  private final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
 
   @NonNull
@@ -58,7 +59,7 @@ public class SelectProductViewModel extends ViewModel {
       new SafeMutableLiveData<>(List.of());
 
   @NonNull
-  private final MutableLiveData<LiveDataEvent<Long>> _resultSelectedProductId =
+  private final MutableLiveData<SafeEvent<Optional<Long>>> _resultSelectedProductId =
       new MutableLiveData<>();
 
   @Inject
@@ -77,7 +78,7 @@ public class SelectProductViewModel extends ViewModel {
     // inside a fragment is painful. You have to consider whether the fragment recreated due to
     // configuration changes, or if it's popped from the backstack, or when the view model itself
     // is recreated due to the fragment being navigated by bottom navigation.
-    LiveDataEvent.observeOnce(this.selectAllProducts(), this::onProductsChanged, Objects::nonNull);
+    SafeEvent.observeOnce(this.selectAllProducts(), this::onProductsChanged, Objects::nonNull);
   }
 
   @Override
@@ -91,7 +92,7 @@ public class SelectProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<StringResources>> snackbarMessage() {
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
     return this._snackbarMessage;
   }
 
@@ -101,7 +102,7 @@ public class SelectProductViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<LiveDataEvent<Long>> resultSelectedProductId() {
+  public LiveData<SafeEvent<Optional<Long>>> resultSelectedProductId() {
     return this._resultSelectedProductId;
   }
 
@@ -112,8 +113,8 @@ public class SelectProductViewModel extends ViewModel {
   }
 
   public void onProductSelected(@Nullable ProductModel product) {
-    final Long productId = product != null && product.id() != null ? product.id() : null;
-    this._resultSelectedProductId.setValue(new LiveDataEvent<>(productId));
+    this._resultSelectedProductId.setValue(
+        new SafeEvent<>(Optional.ofNullable(product).map(ProductModel::id)));
   }
 
   @NonNull
@@ -126,7 +127,7 @@ public class SelectProductViewModel extends ViewModel {
             products -> {
               if (products == null) {
                 this._snackbarMessage.postValue(
-                    new LiveDataEvent<>(
+                    new SafeEvent<>(
                         new StringResources.Strings(
                             R.string.text_error_unable_to_retrieve_all_products)));
               }

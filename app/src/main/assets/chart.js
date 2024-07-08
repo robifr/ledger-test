@@ -305,7 +305,8 @@ class BarChart extends Chart {
       .call(this._yAxis.axis)
       .call((g) => g.select(".domain").remove()) // Remove y-axis line.
       .selectAll("line")
-      .style("stroke", Android.colorHex("stroke"));
+      .style("stroke", Android.colorHex("stroke"))
+      .attr("stroke-width", 0.3);
 
     // Draw bar with rounded corners.
     this._svg

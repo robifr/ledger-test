@@ -32,7 +32,8 @@
   <dimen name="screen_padding">15dp</dimen>
   <dimen name="screen_paddingbottom">90dp</dimen>
 
-  <dimen name="stroke_width">1.5px</dimen>
+  <dimen name="stroke_width">0.5dp</dimen>
+  <dimen name="stroke_selectable_width">0.7dp</dimen>
 
   <dimen name="bottomdialog_padding">20dp</dimen>
   <dimen name="bottomdialog_button_minheight">45dp</dimen>

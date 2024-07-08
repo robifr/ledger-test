@@ -69,7 +69,6 @@
         android:paddingStart="@dimen/cardlist_padding"
         android:paddingTop="@dimen/cardlist_padding"
         android:paddingEnd="@dimen/cardlist_padding"
-        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/productPriceQuantity"
         app:layout_constraintEnd_toStartOf="@id/totalPrice"
         app:layout_constraintHorizontal_chainStyle="packed"

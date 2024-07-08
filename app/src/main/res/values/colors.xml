@@ -64,7 +64,7 @@
 
   <color name="surface">@color/dark_white</color>
 
-  <color name="stroke">@color/darker_white</color>
+  <color name="stroke">@color/gray</color>
 
   <color name="image">@color/darker_white</color>
 </resources>

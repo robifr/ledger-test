@@ -61,7 +61,7 @@
             android:textSize="@dimen/text_small"
             app:chipIcon="@drawable/icon_arrow_dropdown_20"
             app:chipIconTint="?android:textColor"
-            app:chipStrokeWidth="@dimen/stroke_width"
+            app:chipStrokeWidth="@dimen/stroke_selectable_width"
             app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
@@ -74,7 +74,7 @@
             android:textSize="@dimen/text_small"
             app:chipIcon="@drawable/icon_arrow_dropdown_20"
             app:chipIconTint="?android:textColor"
-            app:chipStrokeWidth="@dimen/stroke_width"
+            app:chipStrokeWidth="@dimen/stroke_selectable_width"
             app:ensureMinTouchTargetSize="false" />
       </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>

@@ -82,6 +82,7 @@
 
   <com.google.android.material.divider.MaterialDivider
       android:id="@+id/dividerForName"
+      style="@style/Divider"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/cardlist_padding"

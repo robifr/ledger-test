@@ -44,6 +44,7 @@
         layout="@layout/dashboard_card_performance_overview" />
 
     <com.google.android.material.divider.MaterialDivider
+        style="@style/Divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp" />
@@ -53,6 +54,7 @@
         layout="@layout/dashboard_card_performance_overview" />
 
     <com.google.android.material.divider.MaterialDivider
+        style="@style/Divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp" />

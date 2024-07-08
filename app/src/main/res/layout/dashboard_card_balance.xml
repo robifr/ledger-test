@@ -83,6 +83,7 @@
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/dividerForTotalBalance"
+        style="@style/Divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"

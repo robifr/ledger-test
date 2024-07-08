@@ -69,7 +69,7 @@
         app:layout_constraintVertical_bias="0"
         app:layout_constraintVertical_chainStyle="packed"
         app:strokeColor="@color/stroke_selectable"
-        app:strokeWidth="@dimen/stroke_width">
+        app:strokeWidth="@dimen/stroke_selectable_width">
 
       <include
           android:id="@+id/receivedIncomeCard"
@@ -93,7 +93,7 @@
         app:layout_constraintVertical_bias="0"
         app:layout_constraintVertical_chainStyle="packed"
         app:strokeColor="@color/stroke_selectable"
-        app:strokeWidth="@dimen/stroke_width">
+        app:strokeWidth="@dimen/stroke_selectable_width">
 
       <include
           android:id="@+id/projectedIncomeCard"

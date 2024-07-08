@@ -32,9 +32,9 @@
       android:text="@string/text_filters" />
 
   <com.google.android.material.divider.MaterialDivider
+      style="@style/Divider"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="5dp" />
+      android:layout_height="wrap_content" />
 
   <androidx.core.widget.NestedScrollView
       android:layout_width="wrap_content"
@@ -50,6 +50,7 @@
           layout="@layout/customer_dialog_filter_balance" />
 
       <com.google.android.material.divider.MaterialDivider
+          style="@style/Divider"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="@dimen/bottomdialog_padding"

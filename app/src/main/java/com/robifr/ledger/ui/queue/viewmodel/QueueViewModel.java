@@ -82,10 +82,7 @@ public class QueueViewModel extends ViewModel {
     this._queueRepository.addModelChangedListener(this._queueChangedListener);
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
-    // It's unusual indeed to call its own method in its constructor. Setting up initial values
-    // inside a fragment is painful. You have to consider whether the fragment recreated due to
-    // configuration changes, or if it's popped from the backstack, or when the view model itself
-    // is recreated due to the fragment being navigated by bottom navigation.
+    // Setting up initial values inside a fragment is painful. See commit d5604599.
     SafeEvent.observeOnce(
         this.selectAllQueues(),
         queues -> this._filterView.onFiltersChanged(this._filterView.inputtedFilters(), queues),

@@ -57,6 +57,7 @@ public class EditQueueViewModel extends CreateQueueViewModel {
     super(queueRepository, customerRepository, productRepository);
     Objects.requireNonNull(savedStateHandle);
 
+    // Setting up initial values inside a fragment is painful. See commit d5604599.
     SafeEvent.observeOnce(
         // Shouldn't be null when editing data.
         this.selectQueueById(

@@ -99,10 +99,14 @@ public class CreateProductViewModelHandler {
   }
 
   private void _onInputtedNameText(@NonNull String name) {
+    Objects.requireNonNull(name);
+
     this._fragment.inputName().setInputtedNameText(name);
   }
 
   private void _onInputtedPriceText(@NonNull String price) {
+    Objects.requireNonNull(price);
+
     this._fragment.inputPrice().setInputtedPriceText(price);
   }
 }

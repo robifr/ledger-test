@@ -76,8 +76,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/cardlist_item_margin"
         android:textSize="@dimen/text_mediumlarge"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/dividerForTotalBalance"
         app:layout_constraintStart_toStartOf="@id/totalBalanceTitle"
         app:layout_constraintTop_toBottomOf="@id/totalCustomersWithBalanceTitle" />
 
@@ -86,7 +88,7 @@
         style="@style/Divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toTopOf="@id/totalDebtTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/totalBalance" />
 
@@ -105,10 +107,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_icon_padding"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/cardlist_item_margin"
         android:text="@string/text_total_debt"
         android:textSize="@dimen/text_small"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/totalCustomersWithDebtTitle"
         app:layout_constraintStart_toEndOf="@id/totalDebtTitleIcon"
         app:layout_constraintTop_toBottomOf="@id/dividerForTotalBalance" />
 

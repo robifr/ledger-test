@@ -45,7 +45,6 @@
   </style>
 
   <style name="BottomSheetDialog.Style" parent="Widget.Material3.BottomSheet.Modal">
-    <item name="android:paddingBottom">@dimen/bottomdialog_button_minheight</item>
     <item name="android:orientation">vertical</item>
     <item name="backgroundTint">?colorSurface</item>
     <item name="layout_behavior">com.google.android.material.bottomsheet.BottomSheetBehavior</item>

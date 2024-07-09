@@ -36,70 +36,82 @@
       android:layout_height="wrap_content"
       android:layout_marginBottom="5dp" />
 
-  <RadioGroup
-      android:id="@+id/radioGroup"
+  <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingEnd="@dimen/bottomdialog_padding">
+      android:layout_height="wrap_content">
 
-    <!-- Radio buttons tag are based on `QueueDate.Range` enum. -->
-    <RadioButton
-        android:id="@+id/allTimeRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:tag="ALL_TIME"
-        android:text="@string/text_all_time" />
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/bottomdialog_paddingbottom">
 
-    <RadioButton
-        android:id="@+id/todayRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:tag="TODAY"
-        android:text="@string/text_today" />
+      <RadioGroup
+          android:id="@+id/radioGroup"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingEnd="@dimen/bottomdialog_padding">
 
-    <RadioButton
-        android:id="@+id/yesterdayRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:tag="YESTERDAY"
-        android:text="@string/text_yesterday" />
+        <!-- Radio buttons tag are based on `QueueDate.Range` enum. -->
+        <RadioButton
+            android:id="@+id/allTimeRadioButton"
+            style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="ALL_TIME"
+            android:text="@string/text_all_time" />
 
-    <RadioButton
-        android:id="@+id/thisWeekRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:tag="THIS_WEEK"
-        android:text="@string/text_this_week" />
+        <RadioButton
+            android:id="@+id/todayRadioButton"
+            style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="TODAY"
+            android:text="@string/text_today" />
 
-    <RadioButton
-        android:id="@+id/thisMonthRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:tag="THIS_MONTH"
-        android:text="@string/text_this_month" />
+        <RadioButton
+            android:id="@+id/yesterdayRadioButton"
+            style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="YESTERDAY"
+            android:text="@string/text_yesterday" />
 
-    <RadioButton
-        android:id="@+id/thisYearRadioButton"
-        style="@style/BottomSheetDialog.RadioButton.RoundedRight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:tag="THIS_YEAR"
-        android:text="@string/text_this_year" />
-  </RadioGroup>
+        <RadioButton
+            android:id="@+id/thisWeekRadioButton"
+            style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="THIS_WEEK"
+            android:text="@string/text_this_week" />
 
-  <com.google.android.material.button.MaterialButton
-      android:id="@+id/customButton"
-      style="@style/BottomSheetDialog.RadioButton.RoundedRight"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/bottomdialog_padding"
-      android:tag="CUSTOM"
-      android:text="@string/text_custom_range"
-      android:textAlignment="textStart"
-      android:textColor="@color/text_selected" />
+        <RadioButton
+            android:id="@+id/thisMonthRadioButton"
+            style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="THIS_MONTH"
+            android:text="@string/text_this_month" />
+
+        <RadioButton
+            android:id="@+id/thisYearRadioButton"
+            style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="THIS_YEAR"
+            android:text="@string/text_this_year" />
+      </RadioGroup>
+
+      <com.google.android.material.button.MaterialButton
+          android:id="@+id/customButton"
+          style="@style/BottomSheetDialog.RadioButton.RoundedRight"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/bottomdialog_padding"
+          android:tag="CUSTOM"
+          android:text="@string/text_custom_range"
+          android:textAlignment="textStart"
+          android:textColor="@color/text_selected" />
+    </LinearLayout>
+  </androidx.core.widget.NestedScrollView>
 </LinearLayout>

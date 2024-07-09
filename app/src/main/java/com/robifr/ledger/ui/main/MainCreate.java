@@ -21,6 +21,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.MainDialogCreateBinding;
@@ -59,6 +60,7 @@ public class MainCreate implements View.OnClickListener {
   }
 
   public void openDialog() {
+    this._dialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
     this._dialog.show();
   }
 }

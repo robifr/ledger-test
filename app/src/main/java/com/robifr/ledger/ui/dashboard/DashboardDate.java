@@ -20,6 +20,7 @@ package com.robifr.ledger.ui.dashboard;
 import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.robifr.ledger.R;
@@ -73,6 +74,7 @@ public class DashboardDate implements RadioGroup.OnCheckedChangeListener {
           this._dialogBinding.radioGroup.findViewWithTag(date.range().toString()).getId());
     }
 
+    this._dialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
     this._dialog.show();
   }
 

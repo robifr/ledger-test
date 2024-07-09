@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.ProductCardDialogMenuBinding;
@@ -71,6 +72,7 @@ public class ProductListMenu implements View.OnClickListener {
   public void openDialog() {
     this._dialogBinding.editButton.setOnClickListener(this);
     this._dialogBinding.deleteButton.setOnClickListener(this);
+    this._dialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
     this._dialog.show();
   }
 }

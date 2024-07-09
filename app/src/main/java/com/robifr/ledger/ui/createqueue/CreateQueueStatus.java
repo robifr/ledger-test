@@ -19,6 +19,7 @@ package com.robifr.ledger.ui.createqueue;
 
 import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.QueueModel;
@@ -72,6 +73,7 @@ public class CreateQueueStatus implements RadioGroup.OnCheckedChangeListener {
     this._dialogBinding.radioGroup.check(
         this._dialogBinding.radioGroup.findViewWithTag(inputtedStatus.toString()).getId());
     this._dialogBinding.radioGroup.setOnCheckedChangeListener(this);
+    this._dialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
     this._dialog.show();
   }
 }

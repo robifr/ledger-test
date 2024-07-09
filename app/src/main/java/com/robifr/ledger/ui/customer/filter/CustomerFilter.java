@@ -18,8 +18,6 @@
 package com.robifr.ledger.ui.customer.filter;
 
 import android.content.DialogInterface;
-import android.view.View;
-import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -81,14 +79,7 @@ public class CustomerFilter implements DialogInterface.OnDismissListener {
   }
 
   public void openDialog() {
-    // Allow bottom sheet to go fully expanded.
-    final View bottomSheet =
-        Objects.requireNonNull(
-            this._dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet));
-    bottomSheet.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-    bottomSheet.setLayoutParams(bottomSheet.getLayoutParams());
-
-    this._dialog.getBehavior().setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+    this._dialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
     this._dialog.show();
   }
 }

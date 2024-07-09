@@ -21,6 +21,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 import android.widget.RadioButton;
 import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.display.CustomerSortMethod;
@@ -69,6 +70,7 @@ public class CustomerSort implements RadioButton.OnClickListener {
 
     this._dialogBinding.radioGroup.check(initialRadio.getId());
     this._updateRadioIcon(initialRadio, sortMethod.isAscending());
+    this._dialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
     this._dialog.show();
   }
 

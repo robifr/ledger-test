@@ -41,24 +41,35 @@
 
     <include
         android:id="@+id/totalQueue"
-        layout="@layout/dashboard_card_performance_overview" />
-
-    <com.google.android.material.divider.MaterialDivider
+        layout="@layout/dashboard_card_performance_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="@dimen/cardlist_item_margin" />
+
+    <com.google.android.material.divider.MaterialDivider
+        style="@style/Divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <include
         android:id="@+id/activeCustomers"
-        layout="@layout/dashboard_card_performance_overview" />
-
-    <com.google.android.material.divider.MaterialDivider
+        layout="@layout/dashboard_card_performance_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="@dimen/cardlist_item_margin"
+        android:layout_marginBottom="@dimen/cardlist_item_margin" />
+
+    <com.google.android.material.divider.MaterialDivider
+        style="@style/Divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <include
         android:id="@+id/productsSold"
-        layout="@layout/dashboard_card_performance_overview" />
+        layout="@layout/dashboard_card_performance_overview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cardlist_item_margin" />
   </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

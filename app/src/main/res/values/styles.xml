@@ -80,6 +80,8 @@
   </style>
 
   <style name="Divider" parent="Widget.Material3.MaterialDivider">
+    <item name="android:layout_marginTop">5dp</item>
+    <item name="android:layout_marginBottom">5dp</item>
     <item name="dividerThickness">@dimen/stroke_width</item>
     <item name="dividerColor">@color/stroke</item>
   </style>
@@ -118,8 +120,8 @@
     <item name="hintTextColor">?android:textColor</item>
     <item name="boxBackgroundColor">@android:color/transparent</item>
     <item name="boxStrokeColor">@color/textinput_boxstroke</item>
-    <item name="boxStrokeWidth">1dp</item>
-    <item name="boxStrokeWidthFocused">1dp</item>
+    <item name="boxStrokeWidth">@dimen/stroke_selectable_width</item>
+    <item name="boxStrokeWidthFocused">@dimen/stroke_selectable_width</item>
     <item name="errorIconDrawable">@null</item>
     <item name="materialThemeOverlay">@style/MaterialOverlay.TextInputEditText.FilledBox</item>
   </style>
@@ -128,8 +130,8 @@
     <item name="hintTextColor">?android:textColor</item>
     <item name="boxBackgroundColor">@android:color/transparent</item>
     <item name="boxStrokeColor">@color/textinput_boxstroke</item>
-    <item name="boxStrokeWidth">1dp</item>
-    <item name="boxStrokeWidthFocused">1dp</item>
+    <item name="boxStrokeWidth">@dimen/stroke_selectable_width</item>
+    <item name="boxStrokeWidthFocused">@dimen/stroke_selectable_width</item>
     <item name="errorIconDrawable">@null</item>
     <item name="materialThemeOverlay">@style/MaterialOverlay.TextInputEditText.OutlinedBox</item>
   </style>

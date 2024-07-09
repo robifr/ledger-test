@@ -50,7 +50,9 @@
       android:id="@+id/name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/cardlist_item_margin"
       app:layout_constrainedWidth="true"
+      app:layout_constraintBottom_toTopOf="@id/dividerForName"
       app:layout_constraintEnd_toStartOf="@id/menuButton"
       app:layout_constraintHorizontal_bias="0"
       app:layout_constraintStart_toStartOf="@id/nameTitle"
@@ -82,11 +84,12 @@
 
   <com.google.android.material.divider.MaterialDivider
       android:id="@+id/dividerForName"
+      style="@style/Divider"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/cardlist_padding"
-      android:layout_marginTop="15dp"
       android:layout_marginEnd="@dimen/cardlist_padding"
+      app:layout_constraintBottom_toTopOf="@id/uniqueIdTitle"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/name" />
@@ -95,7 +98,7 @@
       android:id="@+id/uniqueIdTitle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="12dp"
+      android:layout_marginTop="@dimen/cardlist_item_margin"
       android:enabled="false"
       android:paddingStart="@dimen/cardlist_padding"
       android:text="@string/text_product_id"

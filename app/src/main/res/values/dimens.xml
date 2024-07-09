@@ -46,6 +46,7 @@
   <dimen name="cardlist_padding">10dp</dimen>
   <dimen name="cardlist_margin">5dp</dimen>
   <dimen name="cardlist_margin_reverse">-5dp</dimen>
+  <dimen name="cardlist_item_margin">15dp</dimen>
 
   <dimen name="textinput_margintop">10dp</dimen>
 

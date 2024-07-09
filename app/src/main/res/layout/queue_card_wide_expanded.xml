@@ -17,7 +17,6 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -59,7 +58,9 @@
       android:id="@+id/customerName"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/cardlist_item_margin"
       app:layout_constrainedWidth="true"
+      app:layout_constraintBottom_toTopOf="@id/dividerForCustomer"
       app:layout_constraintEnd_toStartOf="@id/menuButton"
       app:layout_constraintHorizontal_bias="0"
       app:layout_constraintStart_toStartOf="@id/customerNameTitle"
@@ -79,11 +80,12 @@
 
   <com.google.android.material.divider.MaterialDivider
       android:id="@+id/dividerForCustomer"
-      android:layout_width="match_parent"
+      style="@style/Divider"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/cardlist_padding"
-      android:layout_marginTop="15dp"
       android:layout_marginEnd="@dimen/cardlist_padding"
+      app:layout_constraintBottom_toTopOf="@id/uniqueIdTitle"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/coloredSideline"
       app:layout_constraintTop_toBottomOf="@id/customerName" />
@@ -93,7 +95,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/cardlist_padding"
-      android:layout_marginTop="12dp"
+      android:layout_marginTop="@dimen/cardlist_item_margin"
       android:enabled="false"
       android:text="@string/text_queue_id"
       android:textSize="@dimen/text_small"
@@ -106,6 +108,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:paddingEnd="@dimen/cardlist_padding"
+      app:layout_constraintBottom_toTopOf="@id/paymentMethodTitle"
       app:layout_constraintEnd_toEndOf="@id/uniqueIdTitle"
       app:layout_constraintStart_toStartOf="@id/uniqueIdTitle"
       app:layout_constraintTop_toBottomOf="@id/uniqueIdTitle" />
@@ -164,47 +167,39 @@
       android:id="@+id/paymentMethodTitle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="12dp"
+      android:layout_marginTop="@dimen/cardlist_item_margin"
       android:enabled="false"
       android:text="@string/text_payment_method"
       android:textSize="@dimen/text_small"
+      app:layout_constraintBottom_toTopOf="@id/paymentMethod"
       app:layout_constraintStart_toStartOf="@id/uniqueId"
       app:layout_constraintTop_toBottomOf="@id/uniqueId" />
 
   <TextView
       android:id="@+id/paymentMethod"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintStart_toStartOf="@id/paymentMethodTitle"
       app:layout_constraintTop_toBottomOf="@id/paymentMethodTitle" />
 
-  <com.google.android.material.card.MaterialCardView
+  <androidx.constraintlayout.widget.Barrier
+      android:id="@+id/barrierAboveDividerForPaymentMethod"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:barrierDirection="bottom"
+      app:barrierMargin="@dimen/cardlist_item_margin"
+      app:constraint_referenced_ids="statusChip,paymentMethod" />
+
+  <com.google.android.material.divider.MaterialDivider
+      android:id="@+id/dividerForPaymentMethod"
+      style="@style/Divider"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/cardlist_padding"
-      android:layout_marginTop="16dp"
       android:layout_marginEnd="@dimen/cardlist_padding"
-      android:layout_marginBottom="@dimen/cardlist_padding"
-      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/coloredSideline"
-      app:layout_constraintTop_toBottomOf="@id/paymentMethod"
-      app:strokeWidth="0dp"
-      card_view:cardBackgroundColor="?android:colorBackground">
+      app:layout_constraintTop_toBottomOf="@id/barrierAboveDividerForPaymentMethod" />
 
-    <TableLayout
-        android:id="@+id/productOrderTable"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/table_column_padding">
-
-      <include
-          android:id="@+id/productOrderHeaderRow"
-          layout="@layout/queue_card_wide_expanded_order_header" />
-
-      <include
-          android:id="@+id/productOrderTotalRow"
-          layout="@layout/queue_card_wide_expanded_order_total" />
-    </TableLayout>
-  </com.google.android.material.card.MaterialCardView>
+  <include layout="@layout/queue_card_wide_expanded_order" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -45,6 +45,27 @@ public class DashboardViewModelHandler {
     this._viewModel.date().observe(this._fragment.getViewLifecycleOwner(), this::_onDate);
 
     this._viewModel
+        .summaryView()
+        .displayedChart()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryDisplayedChart);
+    this._viewModel
+        .summaryView()
+        .totalQueues()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalQueues);
+    this._viewModel
+        .summaryView()
+        .totalUncompletedQueues()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalUncompletedQueues);
+    this._viewModel
+        .summaryView()
+        .totalActiveCustomers()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalActiveCustomers);
+    this._viewModel
+        .summaryView()
+        .totalProductsSold()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalProductsSold);
+
+    this._viewModel
         .balanceView()
         .totalBalance()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onBalanceTotalBalance);
@@ -128,6 +149,31 @@ public class DashboardViewModelHandler {
             : this._fragment.getString(date.range().resourceString());
 
     this._fragment.fragmentBinding().dateChip.setText(text);
+  }
+
+  private void _onSummaryDisplayedChart(@NonNull DashboardSummary.OverviewType overviewType) {
+    Objects.requireNonNull(overviewType);
+
+    this._fragment.summaryOverview().selectCard(overviewType);
+    this._fragment.summaryOverview().loadChart();
+  }
+
+  private void _onSummaryTotalQueues(int amount) {
+    this._fragment.summaryOverview().setTotalQueues(amount);
+  }
+
+  private void _onSummaryTotalUncompletedQueues(int amount) {
+    this._fragment.summaryOverview().setTotalUncompletedQueues(amount);
+  }
+
+  private void _onSummaryTotalActiveCustomers(int amount) {
+    this._fragment.summaryOverview().setTotalActiveCustomers(amount);
+  }
+
+  private void _onSummaryTotalProductsSold(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
+
+    this._fragment.summaryOverview().setTotalProductsSold(amount);
   }
 
   private void _onBalanceTotalBalance(@NonNull BigDecimal amount) {

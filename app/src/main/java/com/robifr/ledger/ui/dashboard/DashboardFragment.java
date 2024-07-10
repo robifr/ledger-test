@@ -34,6 +34,7 @@ import java.util.Objects;
 public class DashboardFragment extends Fragment {
   @Nullable private DashboardFragmentBinding _fragmentBinding;
   @Nullable private DashboardDate _date;
+  @Nullable private DashboardSummary _summaryOverview;
   @Nullable private DashboardBalance _balanceOverview;
   @Nullable private DashboardPerformance _performanceOverview;
   @Nullable private DashboardRevenue _revenueOverview;
@@ -58,6 +59,7 @@ public class DashboardFragment extends Fragment {
     Objects.requireNonNull(this._fragmentBinding);
 
     this._date = new DashboardDate(this);
+    this._summaryOverview = new DashboardSummary(this);
     this._balanceOverview = new DashboardBalance(this);
     this._performanceOverview = new DashboardPerformance(this);
     this._revenueOverview = new DashboardRevenue(this);
@@ -74,6 +76,11 @@ public class DashboardFragment extends Fragment {
   @NonNull
   public DashboardFragmentBinding fragmentBinding() {
     return Objects.requireNonNull(this._fragmentBinding);
+  }
+
+  @NonNull
+  public DashboardSummary summaryOverview() {
+    return Objects.requireNonNull(this._summaryOverview);
   }
 
   @NonNull

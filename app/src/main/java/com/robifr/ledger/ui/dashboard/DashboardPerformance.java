@@ -33,7 +33,7 @@ public class DashboardPerformance {
     final DashboardCardPerformanceBinding cardBinding =
         this._fragment.fragmentBinding().performance;
     cardBinding.totalQueue.icon.setImageResource(R.drawable.icon_assignment);
-    cardBinding.totalQueue.title.setText(R.string.text_total_queue);
+    cardBinding.totalQueue.title.setText(R.string.text_total_queues);
     cardBinding.activeCustomers.icon.setImageResource(R.drawable.icon_person);
     cardBinding.activeCustomers.title.setText(R.string.text_active_customers);
     cardBinding.productsSold.icon.setImageResource(R.drawable.icon_sell);

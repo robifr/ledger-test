@@ -18,8 +18,13 @@
 package com.robifr.ledger.data.display;
 
 import androidx.annotation.NonNull;
+import java.util.Objects;
 
 public record QueueSortMethod(@NonNull SortBy sortBy, boolean isAscending) {
+  public QueueSortMethod {
+    Objects.requireNonNull(sortBy);
+  }
+
   public enum SortBy {
     CUSTOMER_NAME,
     DATE,

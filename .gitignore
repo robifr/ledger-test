@@ -27,7 +27,8 @@ deploymentTargetDropDown.xml
 render.experimental.xml
 
 # VS Code
-.vscode/
+.vscode/*
+!.vscode/settings.json
 
 # Keystore files
 *.jks
@@ -39,5 +40,6 @@ google-services.json
 # Android Profiling
 *.hprof
 
-# App asset libraries
-app/src/main/assets/libs/
+# JavaScript asset libraries
+**/node_modules/
+**/assets/libs/

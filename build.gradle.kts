@@ -66,8 +66,8 @@ allprojects {
     }
 
     javascript {
-      target("**/src/main/assets/**/*.js")
-      targetExclude("**/src/main/assets/libs/**/*.js")
+      target("**/*.js")
+      targetExclude("**/assets/libs/**/*.js", "**/node_modules/**/*.js")
       prettier().config(mapOf("tabWidth" to 2, "useTabs" to false, "printWidth" to 100))
       licenseHeaderFile(
           file("${project.rootDir}/gradle/spotless/license_header.txt"), "\"use strict\"|^\\w+")

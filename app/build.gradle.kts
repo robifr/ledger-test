@@ -16,6 +16,7 @@
  */
 
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
   kotlin("android")
@@ -115,16 +116,20 @@ dependencies {
   debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }
 
-tasks.register<Exec>("downloadD3Js") {
-  val version: String = "7.9.0"
-  val url: String = "https://cdn.jsdelivr.net/npm/d3@$version/dist/d3.js"
-  val dir: File = file("src/main/assets/libs/").apply { mkdirs() }
-  val file: File = File(dir, "d3.js")
+tasks.register<Exec>("npmClean") {
+  val npm: String = if (Os.isFamily(Os.FAMILY_WINDOWS)) "npm.cmd" else "npm"
+  val clean: String = if (Os.isFamily(Os.FAMILY_WINDOWS)) "clean:windows" else "clean:unix"
 
-  // Prevent re-downloading when rebuilding the project.
-  onlyIf { !file.exists() || !file.readText().contains(version) }
-
-  commandLine("curl", url, "-o", file.absolutePath)
+  commandLine(npm, "run", clean)
 }
 
-tasks.named("preBuild").dependsOn("downloadD3Js")
+tasks.register<Exec>("npmBuild") {
+  val npm: String = if (Os.isFamily(Os.FAMILY_WINDOWS)) "npm.cmd" else "npm"
+
+  doFirst { if (!File(projectDir, "node_modules").exists()) commandLine(npm, "install") }
+  commandLine(npm, "run", "build")
+}
+
+tasks.named("clean").dependsOn("npmClean")
+
+tasks.named("preBuild").dependsOn("npmBuild")

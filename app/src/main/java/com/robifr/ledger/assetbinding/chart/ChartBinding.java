@@ -18,8 +18,6 @@
 package com.robifr.ledger.assetbinding.chart;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -27,38 +25,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class BarChartBinding {
-  private BarChartBinding() {}
+public class ChartBinding {
+  private ChartBinding() {}
 
   /**
-   * @param layoutBinding Instance script from {@link ChartLayoutBinding#init(int, int, int, int,
-   *     int, int, int, int)}.
-   * @param xAxisBinding Instance script from {@link ChartAxisBinding#withBandScale(String,
-   *     ChartAxisBinding.Position, List, boolean)}.
-   * @param yAxisBinding Instance script from {@link ChartAxisBinding#withLinearScale(String,
-   *     ChartAxisBinding.Position, Pair, boolean)}.
-   * @return A valid JavaScript code for this method.
-   */
-  @NonNull
-  public static String init(
-      @NonNull String layoutBinding, @NonNull String xAxisBinding, @NonNull String yAxisBinding) {
-    Objects.requireNonNull(layoutBinding);
-    Objects.requireNonNull(xAxisBinding);
-    Objects.requireNonNull(yAxisBinding);
-
-    return "new BarChart(" + layoutBinding + ", " + xAxisBinding + ", " + yAxisBinding + ")";
-  }
-
-  /**
-   * @param barChartBinding Instance script from {@link BarChartBinding#init(String, String,
-   *     String)}.
+   * @param layoutBinding JavaScript code from {@link ChartLayoutBinding#init}.
+   * @param xScaleBinding JavaScript code from {@link ChartScaleBinding#createBandScale}.
+   * @param yScaleBinding JavaScript code from {@link ChartScaleBinding#createLinearScale} or {@link
+   *     ChartScaleBinding#createPercentageLinearScale}.
    * @param data Map of data to be rendered with. The key should match the {@code domain} from
-   *     {@link BarChartBinding#init(String, String, String) xAxisBinding}.
+   *     {@code xScaleBinding}.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
-  public static String render(@NonNull String barChartBinding, @NonNull Map<String, Double> data) {
-    Objects.requireNonNull(barChartBinding);
+  public static String renderBarChart(
+      @NonNull String layoutBinding,
+      @NonNull String xScaleBinding,
+      @NonNull String yScaleBinding,
+      @NonNull Map<String, Double> data) {
+    Objects.requireNonNull(layoutBinding);
+    Objects.requireNonNull(xScaleBinding);
+    Objects.requireNonNull(yScaleBinding);
     Objects.requireNonNull(data);
 
     final JSONArray formattedData =
@@ -75,6 +62,14 @@ public class BarChartBinding {
                       }
                     })
                 .collect(Collectors.toList()));
-    return barChartBinding + ".render(" + formattedData + ")";
+    return "chart.renderBarChart("
+        + layoutBinding
+        + ", "
+        + xScaleBinding
+        + ", "
+        + yScaleBinding
+        + ", "
+        + formattedData
+        + ")";
   }
 }

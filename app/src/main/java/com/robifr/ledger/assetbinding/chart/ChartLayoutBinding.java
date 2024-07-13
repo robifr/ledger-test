@@ -37,7 +37,7 @@ public class ChartLayoutBinding {
       int marginRight,
       int fontSize,
       @ColorInt int backgroundColor) {
-    return "new ChartLayout("
+    return "new chart.ChartLayout("
         + width
         + ", "
         + height

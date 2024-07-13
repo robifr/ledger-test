@@ -18,19 +18,18 @@
 package com.robifr.ledger.assetbinding.chart;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import java.util.List;
 import java.util.Objects;
 import org.json.JSONArray;
 
-public class ChartAxisBinding {
-  public enum Position {
+public class ChartScaleBinding {
+  public enum AxisPosition {
     BOTTOM(1),
     LEFT(2);
 
     private final int _value;
 
-    private Position(int value) {
+    private AxisPosition(int value) {
       this._value = value;
     }
 
@@ -39,56 +38,56 @@ public class ChartAxisBinding {
     }
   }
 
-  private ChartAxisBinding() {}
+  private ChartScaleBinding() {}
 
   /**
-   * @param layoutBinding Instance script from {@link ChartLayoutBinding#init(int, int, int, int,
-   *     int, int, int, int)}.
+   * @param layoutBinding JavaScript code from {@link ChartLayoutBinding#init}.
    * @param axisPosition Position for the axis.
-   * @param domain Pair of min (first) and max (second) number for the label.
+   * @param domain List of numbers containing at least two numbers representing the minimum and
+   *     maximum values.
    * @param isAllLabelVisible Whether label should be visible, even when the domain is large.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
-  public static String withLinearScale(
+  public static String createLinearScale(
       @NonNull String layoutBinding,
-      @NonNull Position axisPosition,
-      @NonNull Pair<Integer, Integer> domain,
+      @NonNull AxisPosition axisPosition,
+      @NonNull List<Double> domain,
       boolean isAllLabelVisible) {
     Objects.requireNonNull(layoutBinding);
     Objects.requireNonNull(axisPosition);
     Objects.requireNonNull(domain);
 
-    return "ChartAxis.withLinearScale("
+    return "chart.createLinearScale("
         + layoutBinding
         + ", "
         + axisPosition.value()
         + ", "
-        + new JSONArray(List.of(domain.first, domain.second))
+        + new JSONArray(domain)
         + ", "
         + isAllLabelVisible
         + ")";
   }
 
   /**
-   * Same as a {@link ChartAxisBinding#withLinearScale(String, Position, Pair, boolean)} but with
-   * support for larger numbers by using percentage. Each domain (0-100) will be presented with the
-   * provided domain strings.
+   * Same as a {@link ChartScaleBinding#createLinearScale} but with support for larger numbers by
+   * using percentage. Each domain (0-100) will be presented with the provided domain strings.
    *
-   * @param layoutBinding Instance script from {@link ChartLayoutBinding#init(int, int, int, int,
-   *     int, int, int, int)}.
+   * @param layoutBinding JavaScript code from {@link ChartLayoutBinding#init}.
    * @param axisPosition Position for the axis.
    * @param domain List of 101 strings representing the percentage values.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
-  public static String withPercentageLinearScale(
-      @NonNull String layoutBinding, @NonNull Position axisPosition, @NonNull List<String> domain) {
+  public static String createPercentageLinearScale(
+      @NonNull String layoutBinding,
+      @NonNull AxisPosition axisPosition,
+      @NonNull List<String> domain) {
     Objects.requireNonNull(layoutBinding);
     Objects.requireNonNull(axisPosition);
     Objects.requireNonNull(domain);
 
-    return "ChartAxis.withPercentageLinearScale("
+    return "chart.createPercentageLinearScale("
         + layoutBinding
         + ", "
         + axisPosition.value()
@@ -98,24 +97,23 @@ public class ChartAxisBinding {
   }
 
   /**
-   * @param layoutBinding Instance script from {@link ChartLayoutBinding#init(int, int, int, int,
-   *     int, int, int, int)}.
+   * @param layoutBinding JavaScript code from {@link ChartLayoutBinding#init}.
    * @param axisPosition Position for the axis.
    * @param domain List of string for the label.
    * @param isAllLabelVisible Whether label should be visible, even when the domain is large.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
-  public static String withBandScale(
+  public static String createBandScale(
       @NonNull String layoutBinding,
-      @NonNull Position axisPosition,
+      @NonNull AxisPosition axisPosition,
       @NonNull List<String> domain,
       boolean isAllLabelVisible) {
     Objects.requireNonNull(layoutBinding);
     Objects.requireNonNull(axisPosition);
     Objects.requireNonNull(domain);
 
-    return "ChartAxis.withBandScale("
+    return "chart.createBandScale("
         + layoutBinding
         + ", "
         + axisPosition.value()

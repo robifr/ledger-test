@@ -130,7 +130,7 @@ public class DashboardViewModelHandler {
     Objects.requireNonNull(overviewType);
 
     this._fragment.summaryOverview().selectCard(overviewType);
-    this._fragment.summaryOverview().loadChart();
+    this._fragment.summaryOverview().chart().load();
   }
 
   private void _onSummaryTotalQueues(int amount) {
@@ -175,26 +175,26 @@ public class DashboardViewModelHandler {
     Objects.requireNonNull(overviewType);
 
     this._fragment.revenueOverview().selectCard(overviewType);
-    this._fragment.revenueOverview().loadChart();
+    this._fragment.revenueOverview().chart().load();
   }
 
-  private void _onRevenueChartModel(@NonNull DashboardRevenue.ChartModel model) {
+  private void _onRevenueChartModel(@NonNull CartesianChartModel<String, String> model) {
     Objects.requireNonNull(model);
 
-    this._fragment.revenueOverview().displayChart(model);
+    this._fragment.revenueOverview().chart().displayBarChart(model);
   }
 
   private void _onRevenueReceivedIncome(@NonNull BigDecimal amount) {
     Objects.requireNonNull(amount);
 
     this._fragment.revenueOverview().setTotalReceivedIncome(amount);
-    this._fragment.revenueOverview().loadChart();
+    this._fragment.revenueOverview().chart().load();
   }
 
   private void _onRevenueProjectedIncome(@NonNull BigDecimal amount) {
     Objects.requireNonNull(amount);
 
     this._fragment.revenueOverview().setTotalProjectedIncome(amount);
-    this._fragment.revenueOverview().loadChart();
+    this._fragment.revenueOverview().chart().load();
   }
 }

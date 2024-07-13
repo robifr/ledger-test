@@ -19,10 +19,9 @@ package com.robifr.ledger.ui.dashboard;
 
 import android.view.View;
 import androidx.annotation.NonNull;
-import com.google.android.material.color.MaterialColors;
+import androidx.webkit.WebViewClientCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.DashboardCardSummaryBinding;
-import com.robifr.ledger.ui.LocalWebChrome;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -36,19 +35,17 @@ public class DashboardSummary implements View.OnClickListener {
   }
 
   @NonNull private final DashboardFragment _fragment;
+  @NonNull private final Chart _chart;
 
   public DashboardSummary(@NonNull DashboardFragment fragment) {
     this._fragment = Objects.requireNonNull(fragment);
+    this._chart =
+        new Chart(
+            this._fragment.requireContext(),
+            this._fragment.fragmentBinding().summary.chart,
+            new WebViewClientCompat());
 
     final DashboardCardSummaryBinding cardBinding = this._fragment.fragmentBinding().summary;
-    cardBinding.chart.getSettings().setSupportZoom(false);
-    cardBinding.chart.getSettings().setBuiltInZoomControls(false);
-    cardBinding.chart.getSettings().setAllowFileAccess(false);
-    cardBinding.chart.getSettings().setJavaScriptEnabled(true);
-    cardBinding.chart.setWebChromeClient(new LocalWebChrome());
-    cardBinding.chart.setBackgroundColor( // Background color can't be set from xml.
-        MaterialColors.getColor(
-            this._fragment.requireContext(), com.google.android.material.R.attr.colorSurface, 0));
     cardBinding.totalQueuesCardView.setOnClickListener(this);
     cardBinding.totalQueuesCard.icon.setImageResource(R.drawable.icon_assignment);
     cardBinding.totalQueuesCard.title.setText(R.string.text_total_queues);
@@ -79,6 +76,11 @@ public class DashboardSummary implements View.OnClickListener {
     }
   }
 
+  @NonNull
+  public Chart chart() {
+    return this._chart;
+  }
+
   public void selectCard(@NonNull OverviewType overviewType) {
     Objects.requireNonNull(overviewType);
 
@@ -96,8 +98,6 @@ public class DashboardSummary implements View.OnClickListener {
       case PRODUCTS_SOLD -> cardBinding.productsSoldCardView.setSelected(true);
     }
   }
-
-  public void loadChart() {}
 
   public void setTotalQueues(int amount) {
     this._fragment

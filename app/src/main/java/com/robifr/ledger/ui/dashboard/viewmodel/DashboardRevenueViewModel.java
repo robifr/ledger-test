@@ -23,6 +23,7 @@ import com.robifr.ledger.assetbinding.chart.ChartUtil;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
+import com.robifr.ledger.ui.dashboard.CartesianChartModel;
 import com.robifr.ledger.ui.dashboard.DashboardRevenue;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMediatorLiveData;
@@ -45,8 +46,8 @@ public class DashboardRevenueViewModel {
       new SafeMutableLiveData<>(DashboardRevenue.OverviewType.RECEIVED_INCOME);
 
   @NonNull
-  private final SafeMutableLiveData<DashboardRevenue.ChartModel> _chartModel =
-      new SafeMutableLiveData<>(new DashboardRevenue.ChartModel(List.of(), List.of(), Map.of()));
+  private final SafeMutableLiveData<CartesianChartModel<String, String>> _chartModel =
+      new SafeMutableLiveData<>(new CartesianChartModel<>(List.of(), List.of(), Map.of()));
 
   @NonNull
   private final SafeMediatorLiveData<BigDecimal> _receivedIncome =
@@ -85,7 +86,7 @@ public class DashboardRevenueViewModel {
   }
 
   @NonNull
-  public SafeLiveData<DashboardRevenue.ChartModel> chartModel() {
+  public SafeLiveData<CartesianChartModel<String, String>> chartModel() {
     return this._chartModel;
   }
 
@@ -139,7 +140,7 @@ public class DashboardRevenueViewModel {
     final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
 
     this._chartModel.setValue(
-        new DashboardRevenue.ChartModel(
+        new CartesianChartModel<>(
             xAxisDomain,
             yAxisDomain,
             ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new)));
@@ -176,7 +177,7 @@ public class DashboardRevenueViewModel {
     final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
 
     this._chartModel.setValue(
-        new DashboardRevenue.ChartModel(
+        new CartesianChartModel<>(
             xAxisDomain,
             yAxisDomain,
             ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new)));

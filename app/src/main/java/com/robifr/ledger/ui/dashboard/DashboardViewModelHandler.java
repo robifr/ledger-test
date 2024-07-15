@@ -45,6 +45,27 @@ public class DashboardViewModelHandler {
     this._viewModel.date().observe(this._fragment.getViewLifecycleOwner(), this::_onDate);
 
     this._viewModel
+        .summaryView()
+        .displayedChart()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryDisplayedChart);
+    this._viewModel
+        .summaryView()
+        .totalQueues()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalQueues);
+    this._viewModel
+        .summaryView()
+        .totalUncompletedQueues()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalUncompletedQueues);
+    this._viewModel
+        .summaryView()
+        .totalActiveCustomers()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalActiveCustomers);
+    this._viewModel
+        .summaryView()
+        .totalProductsSold()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalProductsSold);
+
+    this._viewModel
         .balanceView()
         .totalBalance()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onBalanceTotalBalance);
@@ -60,31 +81,6 @@ public class DashboardViewModelHandler {
         .balanceView()
         .totalCustomersWithDebt()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onBalanceCustomersWithDebt);
-
-    this._viewModel
-        .performanceView()
-        .totalQueue()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalQueue);
-    this._viewModel
-        .performanceView()
-        .totalQueueAverage()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalQueueAverage);
-    this._viewModel
-        .performanceView()
-        .totalActiveCustomers()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalActiveCustomers);
-    this._viewModel
-        .performanceView()
-        .totalActiveCustomersAverage()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalActiveCustomersAverage);
-    this._viewModel
-        .performanceView()
-        .totalProductsSold()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalProductsSold);
-    this._viewModel
-        .performanceView()
-        .totalProductsSoldAverage()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onTotalProductsSoldAverage);
 
     this._viewModel
         .revenueView()
@@ -130,6 +126,31 @@ public class DashboardViewModelHandler {
     this._fragment.fragmentBinding().dateChip.setText(text);
   }
 
+  private void _onSummaryDisplayedChart(@NonNull DashboardSummary.OverviewType overviewType) {
+    Objects.requireNonNull(overviewType);
+
+    this._fragment.summaryOverview().selectCard(overviewType);
+    this._fragment.summaryOverview().loadChart();
+  }
+
+  private void _onSummaryTotalQueues(int amount) {
+    this._fragment.summaryOverview().setTotalQueues(amount);
+  }
+
+  private void _onSummaryTotalUncompletedQueues(int amount) {
+    this._fragment.summaryOverview().setTotalUncompletedQueues(amount);
+  }
+
+  private void _onSummaryTotalActiveCustomers(int amount) {
+    this._fragment.summaryOverview().setTotalActiveCustomers(amount);
+  }
+
+  private void _onSummaryTotalProductsSold(@NonNull BigDecimal amount) {
+    Objects.requireNonNull(amount);
+
+    this._fragment.summaryOverview().setTotalProductsSold(amount);
+  }
+
   private void _onBalanceTotalBalance(@NonNull BigDecimal amount) {
     Objects.requireNonNull(amount);
 
@@ -148,38 +169,6 @@ public class DashboardViewModelHandler {
 
   private void _onBalanceCustomersWithDebt(int amount) {
     this._fragment.balanceOverview().setTotalCustomersWithDebt(amount);
-  }
-
-  private void _onTotalQueue(int amount) {
-    this._fragment.performanceOverview().setTotalQueue(amount);
-  }
-
-  private void _onTotalQueueAverage(@NonNull BigDecimal amount) {
-    Objects.requireNonNull(amount);
-
-    this._fragment.performanceOverview().setTotalQueueAverage(amount);
-  }
-
-  private void _onTotalActiveCustomers(int amount) {
-    this._fragment.performanceOverview().setTotalActiveCustomers(amount);
-  }
-
-  private void _onTotalActiveCustomersAverage(@NonNull BigDecimal amount) {
-    Objects.requireNonNull(amount);
-
-    this._fragment.performanceOverview().setTotalActiveCustomersAverage(amount);
-  }
-
-  private void _onTotalProductsSold(@NonNull BigDecimal amount) {
-    Objects.requireNonNull(amount);
-
-    this._fragment.performanceOverview().setTotalProductsSold(amount);
-  }
-
-  private void _onTotalProductsSoldAverage(@NonNull BigDecimal amount) {
-    Objects.requireNonNull(amount);
-
-    this._fragment.performanceOverview().setTotalProductsSoldAverage(amount);
   }
 
   private void _onRevenueDisplayedChart(@NonNull DashboardRevenue.OverviewType overviewType) {

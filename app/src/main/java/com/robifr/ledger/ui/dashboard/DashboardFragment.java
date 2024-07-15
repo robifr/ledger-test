@@ -34,8 +34,8 @@ import java.util.Objects;
 public class DashboardFragment extends Fragment {
   @Nullable private DashboardFragmentBinding _fragmentBinding;
   @Nullable private DashboardDate _date;
+  @Nullable private DashboardSummary _summaryOverview;
   @Nullable private DashboardBalance _balanceOverview;
-  @Nullable private DashboardPerformance _performanceOverview;
   @Nullable private DashboardRevenue _revenueOverview;
 
   @Nullable private DashboardViewModel _dashboardViewModel;
@@ -58,8 +58,8 @@ public class DashboardFragment extends Fragment {
     Objects.requireNonNull(this._fragmentBinding);
 
     this._date = new DashboardDate(this);
+    this._summaryOverview = new DashboardSummary(this);
     this._balanceOverview = new DashboardBalance(this);
-    this._performanceOverview = new DashboardPerformance(this);
     this._revenueOverview = new DashboardRevenue(this);
 
     // Use activity store owner because this fragment is used by bottom navigation.
@@ -77,13 +77,13 @@ public class DashboardFragment extends Fragment {
   }
 
   @NonNull
-  public DashboardBalance balanceOverview() {
-    return Objects.requireNonNull(this._balanceOverview);
+  public DashboardSummary summaryOverview() {
+    return Objects.requireNonNull(this._summaryOverview);
   }
 
   @NonNull
-  public DashboardPerformance performanceOverview() {
-    return Objects.requireNonNull(this._performanceOverview);
+  public DashboardBalance balanceOverview() {
+    return Objects.requireNonNull(this._balanceOverview);
   }
 
   @NonNull

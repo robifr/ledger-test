@@ -124,6 +124,10 @@ tasks.register<Exec>("npmClean") {
 }
 
 tasks.register<Exec>("npmBuild") {
+  // Prevent rebuilding by checking if the file is up-to-date
+  inputs.files(fileTree("src/main/assets/libs"))
+  outputs.dir("build/js")
+
   val npm: String = if (Os.isFamily(Os.FAMILY_WINDOWS)) "npm.cmd" else "npm"
 
   doFirst { if (!File(projectDir, "node_modules").exists()) commandLine(npm, "install") }

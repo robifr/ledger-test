@@ -25,7 +25,7 @@
   <color name="white">#FFFFFF</color>
   <color name="white_10">#1AFFFFFF</color>
   <color name="dark_white">#F4F5F8</color>
-  <color name="darker_white">#DADEDF</color>
+  <color name="darker_white">#E0E2E5</color>
 
   <color name="light_red">#F58989</color>
   <color name="light_red_15">#26F58989</color>
@@ -56,7 +56,7 @@
   <color name="primary_text_disabled">@color/darker_gray</color>
   <color name="primary_ripple">@color/black_10</color>
 
-  <color name="secondary">@color/black</color>
+  <color name="secondary">@color/dark_gray</color>
   <color name="secondary_disabled">@color/darker_white</color>
   <color name="secondary_text">@color/white</color>
   <color name="secondary_text_disabled">@color/gray</color>

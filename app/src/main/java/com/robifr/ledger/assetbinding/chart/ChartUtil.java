@@ -17,20 +17,19 @@
 
 package com.robifr.ledger.assetbinding.chart;
 
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -38,28 +37,11 @@ public class ChartUtil {
   private ChartUtil() {}
 
   @NonNull
-  public static Map<String, BigDecimal> toDateTimeData(
-      @NonNull Map<ZonedDateTime, BigDecimal> data,
+  public static String toDateTime(
+      @NonNull ZonedDateTime dateToConvert,
       @NonNull Pair<ZonedDateTime, ZonedDateTime> dateStartEnd) {
-    Objects.requireNonNull(data);
+    Objects.requireNonNull(dateToConvert);
     Objects.requireNonNull(dateStartEnd);
-
-    final Map<String, BigDecimal> result = new LinkedHashMap<>();
-    final BiFunction<ChronoUnit, ZonedDateTime, String> formatKey =
-        (unit, date) ->
-            switch (unit) {
-              case DAYS -> Integer.toString(date.getDayOfMonth());
-              case MONTHS ->
-                  date.getMonth().name().substring(0, 1).toUpperCase()
-                      + date.getMonth().name().substring(1, 3).toLowerCase();
-              default -> Integer.toString(date.getYear());
-            };
-    final BiFunction<ChronoUnit, String, BigDecimal> sumValueForKey =
-        (unit, key) ->
-            data.entrySet().stream()
-                .filter(entry -> formatKey.apply(unit, entry.getKey()).equals(key))
-                .map(Map.Entry::getValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     ChronoUnit groupBy;
     // Determine how the data will be grouped based on the date range.
@@ -71,77 +53,73 @@ public class ChartUtil {
       groupBy = ChronoUnit.DAYS;
     }
 
+    return switch (groupBy) {
+      case DAYS -> Integer.toString(dateToConvert.getDayOfMonth());
+      case MONTHS ->
+          dateToConvert.getMonth().name().substring(0, 1).toUpperCase()
+              + dateToConvert.getMonth().name().substring(1, 3).toLowerCase();
+      default -> Integer.toString(dateToConvert.getYear());
+    };
+  }
+
+  @NonNull
+  public static List<String> toDateTimeDomain(
+      @NonNull Pair<ZonedDateTime, ZonedDateTime> dateStartEnd) {
+    Objects.requireNonNull(dateStartEnd);
+
+    ChronoUnit groupBy;
+    // Determine how the data will be grouped based on the date range.
+    if (dateStartEnd.first.getYear() != dateStartEnd.second.getYear()) {
+      groupBy = ChronoUnit.YEARS;
+    } else if (dateStartEnd.first.getMonthValue() != dateStartEnd.second.getMonthValue()) {
+      groupBy = ChronoUnit.MONTHS;
+    } else {
+      groupBy = ChronoUnit.DAYS;
+    }
+
+    final ArrayList<String> result = new ArrayList<>();
+
     // Fill the map with summed values for each key in the date range.
     for (ZonedDateTime date = dateStartEnd.first;
         !date.isAfter(dateStartEnd.second);
         date = date.plus(1, groupBy)) {
-      final String formattedKey = formatKey.apply(groupBy, date);
-
-      result.put(formattedKey, sumValueForKey.apply(groupBy, formattedKey));
+      result.add(ChartUtil.toDateTime(date, dateStartEnd));
     }
 
     // Ensure that the end date is included.
     // There's a bug when the month total between the start date and end date is less than 12.
     // For example, in the range 2023/7/1 - 2024/6/1, the map will not show the end date's year.
-    if (!result.containsKey(formatKey.apply(groupBy, dateStartEnd.second))) {
-      final String formattedKey = formatKey.apply(groupBy, dateStartEnd.second);
-
-      result.put(formattedKey, sumValueForKey.apply(groupBy, formattedKey));
+    if (!result.contains(ChartUtil.toDateTime(dateStartEnd.second, dateStartEnd))) {
+      result.add(ChartUtil.toDateTime(dateStartEnd.second, dateStartEnd));
     }
 
     return result;
   }
 
-  /**
-   * @param data Map of data to convert.
-   * @param mapType Type of map to be used to determine its sorting behavior.
-   */
-  @NonNull
-  public static Map<String, Double> toPercentageData(
-      @NonNull Map<String, BigDecimal> data, @NonNull Supplier<Map<String, Double>> mapType) {
-    Objects.requireNonNull(data);
-    Objects.requireNonNull(mapType);
+  public static double toPercentage(
+      @NonNull BigDecimal valueToConvert, @NonNull BigDecimal maxValue) {
+    Objects.requireNonNull(valueToConvert);
+    Objects.requireNonNull(maxValue);
 
-    final Map<String, Double> result =
-        mapType.get() instanceof TreeMap
-            ? new TreeMap<>(
-                (a, b) -> {
-                  // Special case where string of numbers sorted wrongly.
-                  if (a.length() != b.length()) return a.length() < b.length() ? -1 : 1;
-                  return a.compareTo(b);
-                })
-            : mapType.get();
-    final BigDecimal actualMaxValue =
-        data.values().stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
     final BigDecimal paddedMaxValue =
-        actualMaxValue.compareTo(BigDecimal.ZERO) == 0
+        maxValue.compareTo(BigDecimal.ZERO) == 0
             ? BigDecimal.ONE // Prevent zero division.
             : ChartUtil._ceilToNearestTen(
-                actualMaxValue.add(
-                    actualMaxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+                maxValue.add(maxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
 
-    for (Map.Entry<String, BigDecimal> d : data.entrySet()) {
-      result.put(
-          d.getKey(),
-          d.getValue()
-              .divide(paddedMaxValue, 2, RoundingMode.HALF_UP)
-              .multiply(BigDecimal.valueOf(100))
-              .doubleValue());
-    }
-
-    return result;
+    return valueToConvert
+        .divide(paddedMaxValue, 2, RoundingMode.HALF_UP)
+        .multiply(BigDecimal.valueOf(100))
+        .doubleValue();
   }
 
   @NonNull
-  public static List<String> toPercentageLinearDomain(@NonNull Map<String, BigDecimal> data) {
-    Objects.requireNonNull(data);
+  public static List<String> toPercentageLinearDomain(@NonNull BigDecimal maxValue) {
+    Objects.requireNonNull(maxValue);
 
-    final BigDecimal actualMaxValue =
-        data.values().stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
     final BigDecimal paddedMaxValue =
         ChartUtil._ceilToNearestTen(
-            actualMaxValue.add(
-                actualMaxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+            maxValue.add(maxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
     final BigDecimal gap = paddedMaxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
     return IntStream.rangeClosed(0, 100)

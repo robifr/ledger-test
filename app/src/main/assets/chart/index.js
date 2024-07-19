@@ -17,18 +17,15 @@
 
 "use strict";
 
-import { ChartLayout, renderBarChart } from "./chart.js";
-import {
-  createLinearScale,
-  createPercentageLinearScale,
-  createBandScale,
-} from "./scale.js";
+import { ChartLayout, renderBarChart, renderStackedBarChart } from "./chart.js";
+import { createLinearScale, createPercentageLinearScale, createBandScale } from "./scale.js";
 
 // Web view only works in global scope.
 // @ts-ignore
 window.chart = {
   ChartLayout,
   renderBarChart,
+  renderStackedBarChart,
   createLinearScale,
   createPercentageLinearScale,
   createBandScale,

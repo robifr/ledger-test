@@ -17,7 +17,6 @@
 
 package com.robifr.ledger.assetbinding.chart;
 
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import com.robifr.ledger.util.CurrencyFormat;
@@ -97,15 +96,13 @@ public class ChartUtil {
   }
 
   public static double toPercentage(
-      @NonNull BigDecimal valueToConvert, @NonNull BigDecimal maxValue) {
+      @NonNull BigDecimal valueToConvert, @NonNull BigDecimal maxValue, int ticks) {
     Objects.requireNonNull(valueToConvert);
     Objects.requireNonNull(maxValue);
 
+    // Set to one as the minimum to prevent zero division.
     final BigDecimal paddedMaxValue =
-        maxValue.compareTo(BigDecimal.ZERO) == 0
-            ? BigDecimal.ONE // Prevent zero division.
-            : ChartUtil._ceilToNearestTen(
-                maxValue.add(maxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+        BigDecimal.ONE.max(ChartUtil._ceilToNearestNiceNumber(maxValue, ticks));
 
     return valueToConvert
         .divide(paddedMaxValue, 2, RoundingMode.HALF_UP)
@@ -114,12 +111,12 @@ public class ChartUtil {
   }
 
   @NonNull
-  public static List<String> toPercentageLinearDomain(@NonNull BigDecimal maxValue) {
+  public static List<String> toPercentageLinearDomain(@NonNull BigDecimal maxValue, int ticks) {
     Objects.requireNonNull(maxValue);
 
+    // Set to one as the minimum to prevent zero division.
     final BigDecimal paddedMaxValue =
-        ChartUtil._ceilToNearestTen(
-            maxValue.add(maxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+        BigDecimal.ONE.max(ChartUtil._ceilToNearestNiceNumber(maxValue, ticks));
     final BigDecimal gap = paddedMaxValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
     return IntStream.rangeClosed(0, 100)
@@ -131,19 +128,68 @@ public class ChartUtil {
         .collect(Collectors.toList());
   }
 
+  /**
+   * @implNote The algorithm is based on <a href="https://stackoverflow.com/a/16363437">this Stack
+   *     Overflow answer</a>.
+   * @return Array of nice minimum value (index 0), nice maximum value (index 1), and ticks spacing
+   *     (index 2).
+   */
   @NonNull
-  private static BigDecimal _ceilToNearestTen(@NonNull BigDecimal amount) {
+  public static double[] calculateNiceScale(double minPoint, double maxPoint, double ticks) {
+    final BiFunction<Double, Boolean, Double> obtainNiceNumber =
+        (range, shouldRound) -> {
+          final double exponent = Math.floor(Math.log10(range));
+          final double fraction = range / Math.pow(10, exponent);
+          double niceFraction;
+
+          if (shouldRound) {
+            if (fraction < 1.5) niceFraction = 1;
+            else if (fraction < 3) niceFraction = 2;
+            else if (fraction < 7) niceFraction = 5;
+            else niceFraction = 10;
+          } else {
+            if (fraction <= 1) niceFraction = 1;
+            else if (fraction <= 2) niceFraction = 2;
+            else if (fraction <= 5) niceFraction = 5;
+            else niceFraction = 10;
+          }
+
+          return niceFraction * Math.pow(10, exponent);
+        };
+
+    final double range = obtainNiceNumber.apply(maxPoint - minPoint, false);
+    final double tickSpacing = obtainNiceNumber.apply(range / (ticks - 1), true);
+    final double niceMin = Math.floor(minPoint / tickSpacing) * tickSpacing;
+    final double niceMax = Math.ceil(maxPoint / tickSpacing) * tickSpacing;
+
+    return new double[] {niceMin, niceMax, tickSpacing};
+  }
+
+  @NonNull
+  private static BigDecimal _ceilToNearestNiceNumber(@NonNull BigDecimal amount, int ticks) {
     Objects.requireNonNull(amount);
 
-    // Calculate the amount ensuring it's rounded
-    // to the nearest ceiling multiple of 10 (e.g. 10, 1K, 10K).
-    amount = amount.max(BigDecimal.ONE);
-    final int magnitude = amount.precision() - amount.scale();
-    final BigDecimal rounding = BigDecimal.TEN.pow(magnitude - 1);
+    final BigDecimal hundred = BigDecimal.valueOf(100);
+    final BigDecimal thousand = BigDecimal.valueOf(1000);
+    final BigDecimal million = BigDecimal.valueOf(1_000_000);
+    final BigDecimal billion = BigDecimal.valueOf(1_000_000_000);
+    final BigDecimal trillion = BigDecimal.valueOf(1_000_000_000_000L);
+    BigDecimal scaleFactor = BigDecimal.ONE;
 
-    return amount
-        .divide(rounding, 0, RoundingMode.CEILING)
-        .multiply(rounding)
-        .max(BigDecimal.TEN); // Set the minimum value to 10.
+    if (amount.compareTo(trillion) >= 0) scaleFactor = trillion;
+    else if (amount.compareTo(billion) >= 0) scaleFactor = billion;
+    else if (amount.compareTo(million) >= 0) scaleFactor = million;
+    else if (amount.compareTo(thousand) >= 0) scaleFactor = thousand;
+    else if (amount.compareTo(hundred) >= 0) scaleFactor = hundred;
+
+    // Scale down the value because `Math#log10` doesn't work with `BigDecimal`,
+    // but the algorithm occasionally requires it.
+    final double minScaled =
+        BigDecimal.ZERO.divide(scaleFactor, MathContext.DECIMAL128).doubleValue();
+    final double maxScaled =
+        amount.max(BigDecimal.ONE).divide(scaleFactor, MathContext.DECIMAL128).doubleValue();
+
+    return BigDecimal.valueOf(ChartUtil.calculateNiceScale(minScaled, maxScaled, ticks)[1])
+        .multiply(scaleFactor); // Scale up to the actual value.
   }
 }

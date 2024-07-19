@@ -23,6 +23,7 @@ import com.robifr.ledger.assetbinding.JsInterface;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,7 +83,7 @@ public class ChartBinding {
    * @param yScaleBinding JavaScript code from {@link ChartScaleBinding#createLinearScale} or {@link
    *     ChartScaleBinding#createPercentageLinearScale}.
    * @param data List of data to be rendered with.
-   * @param colors Bar colors for the {@code groupInOrder}
+   * @param colors Ordered bar colors for the {@code groupInOrder}.
    * @param groupInOrder Ordered groups, indicating which one is drawn first.
    * @return A valid JavaScript code for this method.
    */
@@ -93,7 +94,7 @@ public class ChartBinding {
       @NonNull String yScaleBinding,
       @NonNull List<ChartData.Multiple<K, V, G>> data,
       @NonNull @ColorInt List<Integer> colors,
-      @NonNull List<String> groupInOrder) {
+      @NonNull Set<String> groupInOrder) {
     Objects.requireNonNull(layoutBinding);
     Objects.requireNonNull(xScaleBinding);
     Objects.requireNonNull(yScaleBinding);

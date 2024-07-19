@@ -20,16 +20,20 @@ package com.robifr.ledger.ui.dashboard;
 import android.content.Context;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.webkit.WebViewClientCompat;
 import com.google.android.material.color.MaterialColors;
 import com.robifr.ledger.R;
 import com.robifr.ledger.assetbinding.JsInterface;
 import com.robifr.ledger.assetbinding.chart.ChartBinding;
+import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.assetbinding.chart.ChartLayoutBinding;
 import com.robifr.ledger.assetbinding.chart.ChartScaleBinding;
 import com.robifr.ledger.ui.LocalWebChrome;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class Chart {
   @NonNull private final Context _context;
@@ -88,6 +92,63 @@ public class Chart {
     final String chartRender =
         ChartBinding.renderBarChart(
             "layoutBinding", "xScaleBinding", "yScaleBinding", model.data());
+
+    this._webView.evaluateJavascript(
+        String.format(
+            """
+            (() => { // Wrap in a function to avoid variable redeclaration.
+              const layoutBinding = %s;
+              const xScaleBinding = %s;
+              const yScaleBinding = %s;
+
+              %s;
+            })();
+            """,
+            layoutBinding, xScaleBinding, yScaleBinding, chartRender),
+        null);
+  }
+
+  /**
+   * @see ChartBinding#renderStackedBarChart
+   */
+  public <K, V, G> void displayStackedBarChartWithLargeValue(
+      @NonNull List<String> xAxisDomain,
+      @NonNull List<String> yAxisDomain,
+      @NonNull List<ChartData.Multiple<K, V, G>> data,
+      @NonNull @ColorInt List<Integer> colors,
+      @NonNull Set<String> groupInOrder) {
+    Objects.requireNonNull(xAxisDomain);
+    Objects.requireNonNull(yAxisDomain);
+    Objects.requireNonNull(data);
+    Objects.requireNonNull(colors);
+    Objects.requireNonNull(groupInOrder);
+
+    final ViewGroup.MarginLayoutParams margin =
+        (ViewGroup.MarginLayoutParams) this._webView.getLayoutParams();
+    final int fontSize =
+        JsInterface.dpToCssPx(
+            this._context, this._context.getResources().getDimension(R.dimen.text_small));
+
+    final String layoutBinding =
+        ChartLayoutBinding.init(
+            JsInterface.dpToCssPx(this._context, this._webView.getWidth()),
+            JsInterface.dpToCssPx(this._context, this._webView.getHeight()),
+            JsInterface.dpToCssPx(this._context, margin.topMargin),
+            JsInterface.dpToCssPx(this._context, margin.bottomMargin) + fontSize,
+            JsInterface.dpToCssPx(this._context, margin.leftMargin + 80), // Prevent text truncated.
+            JsInterface.dpToCssPx(this._context, margin.rightMargin),
+            fontSize,
+            MaterialColors.getColor(
+                this._context, com.google.android.material.R.attr.colorSurface, 0));
+    final String xScaleBinding =
+        ChartScaleBinding.createBandScale(
+            "layoutBinding", ChartScaleBinding.AxisPosition.BOTTOM, xAxisDomain, false);
+    final String yScaleBinding =
+        ChartScaleBinding.createPercentageLinearScale(
+            "layoutBinding", ChartScaleBinding.AxisPosition.LEFT, yAxisDomain);
+    final String chartRender =
+        ChartBinding.renderStackedBarChart(
+            "layoutBinding", "xScaleBinding", "yScaleBinding", data, colors, groupInOrder);
 
     this._webView.evaluateJavascript(
         String.format(

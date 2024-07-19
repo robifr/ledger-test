@@ -22,11 +22,13 @@ import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.ui.dashboard.viewmodel.DashboardRevenueViewModel;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DashboardViewModelHandler {
   @NonNull private final DashboardFragment _fragment;
@@ -178,10 +180,20 @@ public class DashboardViewModelHandler {
     this._fragment.revenueOverview().chart().load();
   }
 
-  private void _onRevenueChartModel(@NonNull CartesianChartModel<String, String> model) {
+  private void _onRevenueChartModel(@NonNull DashboardRevenueViewModel.IncomeChartModel model) {
     Objects.requireNonNull(model);
 
-    this._fragment.revenueOverview().chart().displayBarChart(model);
+    this._fragment
+        .revenueOverview()
+        .chart()
+        .displayStackedBarChartWithLargeValue(
+            model.xAxisDomain(),
+            model.yAxisDomain(),
+            model.data(),
+            model.colors().stream()
+                .map(this._fragment.requireContext()::getColor)
+                .collect(Collectors.toList()),
+            model.groupInOrder().stream().map(Enum::toString).collect(Collectors.toSet()));
   }
 
   private void _onRevenueReceivedIncome(@NonNull BigDecimal amount) {

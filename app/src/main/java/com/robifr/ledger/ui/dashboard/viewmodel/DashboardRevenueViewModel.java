@@ -17,13 +17,15 @@
 
 package com.robifr.ledger.ui.dashboard.viewmodel;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
+import com.robifr.ledger.assetbinding.chart.ChartBinding;
+import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.assetbinding.chart.ChartUtil;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
-import com.robifr.ledger.ui.dashboard.CartesianChartModel;
 import com.robifr.ledger.ui.dashboard.DashboardRevenue;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMediatorLiveData;
@@ -33,10 +35,13 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DashboardRevenueViewModel {
   @NonNull private final DashboardViewModel _viewModel;
@@ -46,8 +51,9 @@ public class DashboardRevenueViewModel {
       new SafeMutableLiveData<>(DashboardRevenue.OverviewType.RECEIVED_INCOME);
 
   @NonNull
-  private final SafeMutableLiveData<CartesianChartModel<String, String>> _chartModel =
-      new SafeMutableLiveData<>(new CartesianChartModel<>(List.of(), List.of(), Map.of()));
+  private final SafeMutableLiveData<IncomeChartModel> _chartModel =
+      new SafeMutableLiveData<>(
+          new IncomeChartModel(List.of(), List.of(), List.of(), List.of(), Set.of()));
 
   @NonNull
   private final SafeMediatorLiveData<BigDecimal> _receivedIncome =
@@ -86,7 +92,7 @@ public class DashboardRevenueViewModel {
   }
 
   @NonNull
-  public SafeLiveData<CartesianChartModel<String, String>> chartModel() {
+  public SafeLiveData<IncomeChartModel> chartModel() {
     return this._chartModel;
   }
 
@@ -107,79 +113,104 @@ public class DashboardRevenueViewModel {
   }
 
   public void onDisplayReceivedIncomeChart() {
-    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
-
-    for (QueueModel queue : this._viewModel._queues().getValue()) {
-      // Received income are from the completed queues.
-      if (queue.status() != QueueModel.Status.COMPLETED) continue;
-
-      for (ProductOrderModel productOrder : queue.productOrders()) {
-        unformattedQueueDateWithTotalPrice.merge(
-            queue.date().atZone(ZoneId.systemDefault()),
-            productOrder.totalPrice(),
-            BigDecimal::add);
-      }
-    }
-
-    final QueueDate date = this._viewModel.date().getValue();
-    final ZonedDateTime startDate =
-        date.range() == QueueDate.Range.ALL_TIME
-            // Remove unnecessary dates.
-            ? this._viewModel._queues().getValue().stream()
-                .map(QueueModel::date)
-                .min(Instant::compareTo)
-                .orElse(date.dateStart().toInstant())
-                .atZone(ZoneId.systemDefault())
-            : date.dateStart();
-    final Map<String, BigDecimal> queueDateWithTotalPrice =
-        ChartUtil.toDateTimeData(
-            unformattedQueueDateWithTotalPrice, new Pair<>(startDate, date.dateEnd()));
-
-    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalPrice.keySet());
-    // Convert to percent because D3.js can't handle big decimal.
-    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
-
-    this._chartModel.setValue(
-        new CartesianChartModel<>(
-            xAxisDomain,
-            yAxisDomain,
-            ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new)));
+    this._onDisplayChart(
+        List.of(
+            DashboardRevenue.OverviewType.PROJECTED_INCOME.unselectedResourceColor(),
+            DashboardRevenue.OverviewType.RECEIVED_INCOME.selectedResourceColor()));
   }
 
   public void onDisplayProjectedIncomeChart() {
-    final Map<ZonedDateTime, BigDecimal> unformattedQueueDateWithTotalPrice = new LinkedHashMap<>();
+    this._onDisplayChart(
+        List.of(
+            DashboardRevenue.OverviewType.PROJECTED_INCOME.selectedResourceColor(),
+            DashboardRevenue.OverviewType.RECEIVED_INCOME.unselectedResourceColor()));
+  }
 
-    for (QueueModel queue : this._viewModel._queues().getValue()) {
-      for (ProductOrderModel productOrder : queue.productOrders()) {
-        unformattedQueueDateWithTotalPrice.merge(
-            queue.date().atZone(ZoneId.systemDefault()),
-            productOrder.totalPrice(),
-            BigDecimal::add);
-      }
-    }
+  private void _onDisplayChart(@NonNull @ColorRes List<Integer> colors) {
+    Objects.requireNonNull(colors);
 
-    final QueueDate date = this._viewModel.date().getValue();
     final ZonedDateTime startDate =
-        date.range() == QueueDate.Range.ALL_TIME
+        this._viewModel.date().getValue().range() == QueueDate.Range.ALL_TIME
             // Remove unnecessary dates.
             ? this._viewModel._queues().getValue().stream()
                 .map(QueueModel::date)
                 .min(Instant::compareTo)
-                .orElse(date.dateStart().toInstant())
+                .orElse(this._viewModel.date().getValue().dateStart().toInstant())
                 .atZone(ZoneId.systemDefault())
-            : date.dateStart();
-    final Map<String, BigDecimal> queueDateWithTotalPrice =
-        ChartUtil.toDateTimeData(
-            unformattedQueueDateWithTotalPrice, new Pair<>(startDate, date.dateEnd()));
+            : this._viewModel.date().getValue().dateStart();
+    final ZonedDateTime endDate = this._viewModel.date().getValue().dateEnd();
 
-    final List<String> xAxisDomain = new ArrayList<>(queueDateWithTotalPrice.keySet());
-    // Convert to percent because D3.js can't handle big decimal.
-    final List<String> yAxisDomain = ChartUtil.toPercentageLinearDomain(queueDateWithTotalPrice);
+    final Map<Pair<String, DashboardRevenue.OverviewType>, BigDecimal> rawDataSummed =
+        new LinkedHashMap<>();
+    BigDecimal maxValue = BigDecimal.ZERO;
+
+    // Sum the values if the date and overview type are equal.
+    // The queues also have to be sorted by date because D3.js draws everything in order.
+    for (QueueModel queue :
+        this._viewModel._queues().getValue().stream()
+            .sorted(Comparator.comparing(QueueModel::date))
+            .collect(Collectors.toList())) {
+      final String formattedDate =
+          ChartUtil.toDateTime(
+              queue.date().atZone(ZoneId.systemDefault()), new Pair<>(startDate, endDate));
+
+      // Received income are from the completed queue only.
+      if (queue.status() == QueueModel.Status.COMPLETED) {
+        final BigDecimal receivedIncomeData =
+            rawDataSummed.merge(
+                new Pair<>(formattedDate, DashboardRevenue.OverviewType.RECEIVED_INCOME),
+                queue.grandTotalPrice(),
+                BigDecimal::add);
+        maxValue = maxValue.max(receivedIncomeData);
+      }
+
+      final BigDecimal projectedIncomeData =
+          rawDataSummed.merge(
+              new Pair<>(formattedDate, DashboardRevenue.OverviewType.PROJECTED_INCOME),
+              queue.grandTotalPrice(),
+              BigDecimal::add);
+      maxValue = maxValue.max(projectedIncomeData);
+    }
+
+    final int yAxisTicks = 6; // Defined in `createPercentageLinearScale()`. It includes zero.
+    final List<ChartData.Multiple<String, Double, String>> formattedData = new ArrayList<>();
+
+    for (var rawData : rawDataSummed.entrySet()) {
+      formattedData.add(
+          new ChartData.Multiple<>(
+              rawData.getKey().first,
+              // Convert to percent because D3.js can't handle big decimal.
+              ChartUtil.toPercentage(rawData.getValue(), maxValue, yAxisTicks),
+              rawData.getKey().second.toString()));
+    }
 
     this._chartModel.setValue(
-        new CartesianChartModel<>(
-            xAxisDomain,
-            yAxisDomain,
-            ChartUtil.toPercentageData(queueDateWithTotalPrice, LinkedHashMap::new)));
+        new IncomeChartModel(
+            // Both domains must be the same as the formatted ones.
+            ChartUtil.toDateTimeDomain(new Pair<>(startDate, endDate)),
+            ChartUtil.toPercentageLinearDomain(maxValue, yAxisTicks),
+            formattedData,
+            colors,
+            Set.of(
+                DashboardRevenue.OverviewType.PROJECTED_INCOME,
+                DashboardRevenue.OverviewType.RECEIVED_INCOME)));
+  }
+
+  /**
+   * @see ChartBinding#renderStackedBarChart
+   */
+  public static record IncomeChartModel(
+      @NonNull List<String> xAxisDomain,
+      @NonNull List<String> yAxisDomain,
+      @NonNull List<ChartData.Multiple<String, Double, String>> data,
+      @NonNull @ColorRes List<Integer> colors,
+      @NonNull Set<DashboardRevenue.OverviewType> groupInOrder) {
+    public IncomeChartModel {
+      Objects.requireNonNull(xAxisDomain);
+      Objects.requireNonNull(yAxisDomain);
+      Objects.requireNonNull(data);
+      Objects.requireNonNull(colors);
+      Objects.requireNonNull(groupInOrder);
+    }
   }
 }

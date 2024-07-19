@@ -21,6 +21,7 @@ import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
@@ -33,8 +34,27 @@ import java.util.Objects;
 
 public class DashboardRevenue implements View.OnClickListener {
   public enum OverviewType {
-    PROJECTED_INCOME,
-    RECEIVED_INCOME,
+    PROJECTED_INCOME(R.color.secondary, R.color.secondary_disabled),
+    RECEIVED_INCOME(R.color.primary, R.color.secondary);
+
+    @ColorRes private final int _selectedResourceColor;
+    @ColorRes private final int _unselectedResourceColor;
+
+    private OverviewType(
+        @ColorRes int selectedResourceColor, @ColorRes int unselectedResourceColor) {
+      this._selectedResourceColor = selectedResourceColor;
+      this._unselectedResourceColor = unselectedResourceColor;
+    }
+
+    @ColorRes
+    public int selectedResourceColor() {
+      return this._selectedResourceColor;
+    }
+
+    @ColorRes
+    public int unselectedResourceColor() {
+      return this._unselectedResourceColor;
+    }
   }
 
   @NonNull private final DashboardFragment _fragment;
@@ -51,10 +71,18 @@ public class DashboardRevenue implements View.OnClickListener {
     final DashboardCardRevenueBinding cardBinding = this._fragment.fragmentBinding().revenue;
     cardBinding.projectedIncomeCardView.setOnClickListener(this);
     cardBinding.projectedIncomeCard.icon.setImageResource(R.drawable.icon_trending_up);
+    cardBinding.projectedIncomeCard.legendColor.setCardBackgroundColor(
+        this._fragment
+            .requireContext()
+            .getColor(OverviewType.PROJECTED_INCOME.selectedResourceColor()));
     cardBinding.projectedIncomeCard.title.setText(R.string.text_projected_income);
     cardBinding.projectedIncomeCard.description.setText(R.string.text_from_any_queues);
     cardBinding.receivedIncomeCardView.setOnClickListener(this);
     cardBinding.receivedIncomeCard.icon.setImageResource(R.drawable.icon_paid);
+    cardBinding.receivedIncomeCard.legendColor.setCardBackgroundColor(
+        this._fragment
+            .requireContext()
+            .getColor(OverviewType.RECEIVED_INCOME.selectedResourceColor()));
     cardBinding.receivedIncomeCard.title.setText(R.string.text_received_income);
     cardBinding.receivedIncomeCard.description.setText(R.string.text_from_completed_queues);
   }

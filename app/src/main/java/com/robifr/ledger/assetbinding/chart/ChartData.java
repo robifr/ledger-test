@@ -17,6 +17,7 @@
 
 package com.robifr.ledger.assetbinding.chart;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -60,15 +61,16 @@ public interface ChartData {
     return json;
   }
 
-  public static record Single<K, V>(@NonNull K key, @NonNull V value) implements ChartData {
+  public static record Single<K, V>(@NonNull @Keep K key, @NonNull @Keep V value)
+      implements ChartData {
     public Single {
       Objects.requireNonNull(key);
       Objects.requireNonNull(value);
     }
   }
 
-  public static record Multiple<K, V, G>(@NonNull K key, @NonNull V value, @NonNull G group)
-      implements ChartData {
+  public static record Multiple<K, V, G>(
+      @NonNull @Keep K key, @NonNull @Keep V value, @NonNull @Keep G group) implements ChartData {
     public Multiple {
       Objects.requireNonNull(key);
       Objects.requireNonNull(value);

@@ -213,7 +213,8 @@ public class QueueCardExpandedComponent {
           CurrencyFormat.format(productOrder.totalPrice(), "id", "ID"));
       dataRowBinding.discount.setText(
           this._context.getString(
-              R.string.productordercard_discount_title, productOrder.discountPercent()));
+              R.string.productordercard_discount_title,
+              productOrder.discountPercent().toPlainString()));
       dataRowBinding.discount.setVisibility(discountVisibility);
       this._productOrderBinding.table.addView(dataRowBinding.getRoot());
     }

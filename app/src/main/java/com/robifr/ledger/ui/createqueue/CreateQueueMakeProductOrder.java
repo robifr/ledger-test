@@ -41,7 +41,7 @@ import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class MakeProductOrder
+public class CreateQueueMakeProductOrder
     implements View.OnClickListener,
         DialogInterface.OnClickListener,
         DialogInterface.OnDismissListener {
@@ -51,7 +51,7 @@ public class MakeProductOrder
   @NonNull private final QuantityTextWatcher _quantityTextWatcher;
   @NonNull private final DiscountTextWatcher _discountTextWatcher;
 
-  public MakeProductOrder(@NonNull CreateQueueFragment fragment) {
+  public CreateQueueMakeProductOrder(@NonNull CreateQueueFragment fragment) {
     this._fragment = Objects.requireNonNull(fragment);
     this._dialogBinding =
         CreateQueueDialogProductOrderBinding.inflate(this._fragment.getLayoutInflater());
@@ -212,7 +212,7 @@ public class MakeProductOrder
     @Override
     public void afterTextChanged(@NonNull Editable editable) {
       super.afterTextChanged(editable);
-      MakeProductOrder.this
+      CreateQueueMakeProductOrder.this
           ._fragment
           .createQueueViewModel()
           .makeProductOrderView()
@@ -229,7 +229,7 @@ public class MakeProductOrder
     @Override
     public void afterTextChanged(@NonNull Editable editable) {
       super.afterTextChanged(editable);
-      MakeProductOrder.this
+      CreateQueueMakeProductOrder.this
           ._fragment
           .createQueueViewModel()
           .makeProductOrderView()

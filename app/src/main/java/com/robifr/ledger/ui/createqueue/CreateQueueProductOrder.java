@@ -39,12 +39,12 @@ import java.util.TreeSet;
 
 public class CreateQueueProductOrder implements View.OnClickListener, View.OnLongClickListener {
   @NonNull private final CreateQueueFragment _fragment;
-  @NonNull private final MakeProductOrder _makeProductOrder;
+  @NonNull private final CreateQueueMakeProductOrder _makeProductOrder;
   @Nullable private ActionMode _contextualMode;
 
   public CreateQueueProductOrder(@NonNull CreateQueueFragment fragment) {
     this._fragment = Objects.requireNonNull(fragment);
-    this._makeProductOrder = new MakeProductOrder(this._fragment);
+    this._makeProductOrder = new CreateQueueMakeProductOrder(this._fragment);
 
     this._fragment
         .fragmentBinding()
@@ -122,7 +122,7 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
   }
 
   @NonNull
-  public MakeProductOrder makeProductOrder() {
+  public CreateQueueMakeProductOrder makeProductOrder() {
     return this._makeProductOrder;
   }
 

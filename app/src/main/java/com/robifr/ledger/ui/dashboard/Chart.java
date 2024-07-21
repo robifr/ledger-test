@@ -30,7 +30,6 @@ import com.robifr.ledger.assetbinding.chart.ChartBinding;
 import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.assetbinding.chart.ChartLayoutBinding;
 import com.robifr.ledger.assetbinding.chart.ChartScaleBinding;
-import com.robifr.ledger.ui.LocalWebChrome;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -54,7 +53,6 @@ public class Chart {
     this._webView.getSettings().setJavaScriptEnabled(true);
     this._webView.addJavascriptInterface(new JsInterface(this._context), JsInterface.NAME);
     this._webView.setWebViewClient(webViewClient);
-    this._webView.setWebChromeClient(new LocalWebChrome()); // To show log from the JavaScript.
     this._webView.setBackgroundColor( // Background color can't be set from xml.
         MaterialColors.getColor(this._context, com.google.android.material.R.attr.colorSurface, 0));
   }

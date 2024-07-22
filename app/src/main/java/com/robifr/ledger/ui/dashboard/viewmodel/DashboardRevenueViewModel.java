@@ -142,7 +142,8 @@ public class DashboardRevenueViewModel {
 
     final Map<Pair<String, DashboardRevenue.OverviewType>, BigDecimal> rawDataSummed =
         new LinkedHashMap<>();
-    BigDecimal maxValue = BigDecimal.ZERO;
+    final int yAxisTicks = 6; // Defined in `createPercentageLinearScale()`. It includes zero.
+    BigDecimal maxValue = BigDecimal.valueOf(yAxisTicks - 1);
 
     // Sum the values if the date and overview type are equal.
     // The queues also have to be sorted by date because D3.js draws everything in order.
@@ -172,7 +173,6 @@ public class DashboardRevenueViewModel {
       maxValue = maxValue.max(projectedIncomeData);
     }
 
-    final int yAxisTicks = 6; // Defined in `createPercentageLinearScale()`. It includes zero.
     final List<ChartData.Multiple<String, Double, String>> formattedData = new ArrayList<>();
 
     for (var rawData : rawDataSummed.entrySet()) {

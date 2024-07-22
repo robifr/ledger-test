@@ -54,13 +54,12 @@ export const AxisPosition = Object.freeze({
  * @param {ChartLayout} layout
  * @param {number} axisPosition
  * @param {number[]} domain
- * @param {boolean} [isAllLabelVisible=true]
  * @returns {{scale: d3.scaleLinear, axis: d3.axisBottom | d3.axisLeft }}
  */
-export function createLinearScale(layout, axisPosition, domain, isAllLabelVisible = true) {
-  // Just a hack to prevent label on the edge of axis.
-  domain[0] = domain[0] !== 0 ? domain[0] - 0.5 : domain[0];
-  domain[domain.length - 1] = domain[domain.length - 1] + 0.5;
+export function createLinearScale(layout, axisPosition, domain) {
+  domain = d3.extent(domain);
+  const ticks = 6;
+  const tickStep = (domain[1] - domain[0]) / (ticks - 1);
 
   const axisPos = _axisPositionOf(axisPosition);
   const scale = d3
@@ -69,12 +68,9 @@ export function createLinearScale(layout, axisPosition, domain, isAllLabelVisibl
     .range([axisPos.minRange(layout), axisPos.maxRange(layout)]);
   const axis = axisPos
     .axis(scale)
+    .tickValues(d3.range(domain[0], domain[1] + tickStep, tickStep))
     .tickSizeOuter(0)
     .tickFormat((d) => {
-      // Hide some label to improve readability.
-      if (!isAllLabelVisible && _gapBetweenTicks(scale.ticks().length) !== 0) return "";
-      // Hide label for decimal numbers.
-      if (Math.floor(d) !== d) return "";
       // Format with unit.
       if (d >= 1e9) return d3.format("d")(d / 1e9) + "b";
       if (d >= 1e6) return d3.format("d")(d / 1e6) + "m";
@@ -106,7 +102,7 @@ export function createPercentageLinearScale(layout, axisPosition, domain) {
     .range([axisPos.minRange(layout), axisPos.maxRange(layout)]);
   const axis = axisPos
     .axis(scale)
-    .ticks(5)
+    .ticks(6)
     .tickSizeOuter(0)
     .tickSize(-layout.width + layout.marginRight + layout.marginLeft)
     .tickFormat((d, i) => {

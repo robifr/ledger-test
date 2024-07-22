@@ -65,12 +65,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <TextView
+    <com.robifr.ledger.components.AutoScrollTextView
         android:id="@+id/balance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
         android:paddingTop="3dp"
         android:textSize="@dimen/text_small"
         app:layout_constraintBottom_toBottomOf="parent"

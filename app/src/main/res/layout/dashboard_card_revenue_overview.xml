@@ -54,11 +54,14 @@
       android:layout_height="wrap_content"
       android:layout_marginBottom="5dp"
       android:textSize="@dimen/text_small"
+      app:layout_constrainedWidth="true"
       app:layout_constraintBottom_toTopOf="@id/amount"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0"
       app:layout_constraintStart_toStartOf="@id/title"
       app:layout_constraintTop_toBottomOf="@id/title" />
 
-  <TextView
+  <com.robifr.ledger.components.AutoScrollTextView
       android:id="@+id/amount"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

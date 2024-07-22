@@ -75,18 +75,17 @@ public class Chart {
             JsInterface.dpToCssPx(this._context, this._webView.getWidth()),
             JsInterface.dpToCssPx(this._context, this._webView.getHeight()),
             JsInterface.dpToCssPx(this._context, margin.topMargin),
-            JsInterface.dpToCssPx(this._context, margin.bottomMargin) + fontSize,
-            JsInterface.dpToCssPx(this._context, margin.leftMargin + 80), // Prevent text truncated.
+            JsInterface.dpToCssPx(this._context, margin.bottomMargin),
+            JsInterface.dpToCssPx(this._context, margin.leftMargin),
             JsInterface.dpToCssPx(this._context, margin.rightMargin),
             fontSize,
             MaterialColors.getColor(
                 this._context, com.google.android.material.R.attr.colorSurface, 0));
     final String xScaleBinding =
         ChartScaleBinding.createBandScale(
-            "layoutBinding", ChartScaleBinding.AxisPosition.BOTTOM, model.xAxisDomain(), false);
+            ChartScaleBinding.AxisPosition.BOTTOM, xAxisDomain, false);
     final String yScaleBinding =
-        ChartScaleBinding.createPercentageLinearScale(
-            "layoutBinding", ChartScaleBinding.AxisPosition.LEFT, model.yAxisDomain());
+        ChartScaleBinding.createLinearScale(ChartScaleBinding.AxisPosition.LEFT, yAxisDomain);
     final String chartRender =
         ChartBinding.renderBarChart(
             "layoutBinding", "xScaleBinding", "yScaleBinding", model.data());
@@ -132,18 +131,18 @@ public class Chart {
             JsInterface.dpToCssPx(this._context, this._webView.getWidth()),
             JsInterface.dpToCssPx(this._context, this._webView.getHeight()),
             JsInterface.dpToCssPx(this._context, margin.topMargin),
-            JsInterface.dpToCssPx(this._context, margin.bottomMargin) + fontSize,
-            JsInterface.dpToCssPx(this._context, margin.leftMargin + 80), // Prevent text truncated.
+            JsInterface.dpToCssPx(this._context, margin.bottomMargin),
+            JsInterface.dpToCssPx(this._context, margin.leftMargin),
             JsInterface.dpToCssPx(this._context, margin.rightMargin),
             fontSize,
             MaterialColors.getColor(
                 this._context, com.google.android.material.R.attr.colorSurface, 0));
     final String xScaleBinding =
         ChartScaleBinding.createBandScale(
-            "layoutBinding", ChartScaleBinding.AxisPosition.BOTTOM, xAxisDomain, false);
+            ChartScaleBinding.AxisPosition.BOTTOM, xAxisDomain, false);
     final String yScaleBinding =
         ChartScaleBinding.createPercentageLinearScale(
-            "layoutBinding", ChartScaleBinding.AxisPosition.LEFT, yAxisDomain);
+            ChartScaleBinding.AxisPosition.LEFT, yAxisDomain);
     final String chartRender =
         ChartBinding.renderStackedBarChart(
             "layoutBinding", "xScaleBinding", "yScaleBinding", data, colors, groupInOrder);

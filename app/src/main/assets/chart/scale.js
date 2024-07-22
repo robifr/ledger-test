@@ -51,21 +51,17 @@ export const AxisPosition = Object.freeze({
 });
 
 /**
- * @param {ChartLayout} layout
  * @param {number} axisPosition
  * @param {number[]} domain
- * @returns {{scale: d3.scaleLinear, axis: d3.axisBottom | d3.axisLeft }}
+ * @returns {{scale: d3.scaleLinear, axis: d3.axisBottom | d3.axisLeft, axisPosition: AxisPosition}}
  */
-export function createLinearScale(layout, axisPosition, domain) {
+export function createLinearScale(axisPosition, domain) {
   domain = d3.extent(domain);
   const ticks = 6;
   const tickStep = (domain[1] - domain[0]) / (ticks - 1);
 
   const axisPos = _axisPositionOf(axisPosition);
-  const scale = d3
-    .scaleLinear()
-    .domain(domain)
-    .range([axisPos.minRange(layout), axisPos.maxRange(layout)]);
+  const scale = d3.scaleLinear().domain(domain);
   const axis = axisPos
     .axis(scale)
     .tickValues(d3.range(domain[0], domain[1] + tickStep, tickStep))
@@ -78,55 +74,42 @@ export function createLinearScale(layout, axisPosition, domain) {
       return d3.format("d")(d);
     });
 
-  return {
-    scale: scale,
-    axis: axis,
-  };
+  return { scale: scale, axis: axis, axisPosition: axisPos };
 }
 
 /**
  * Same as a linear scale but with support for larger numbers by using percentages.
  * Each domain (0-100) will be replaced with the provided domain strings.
- * @param {ChartLayout} layout
  * @param {number} axisPosition
  * @param {string[]} domain
- * @returns {{scale: d3.scaleLinear, axis: d3.axisBottom | d3.axisLeft }}
+ * @returns {{scale: d3.scaleLinear, axis: d3.axisBottom | d3.axisLeft, axisPosition: AxisPosition}}
  */
-export function createPercentageLinearScale(layout, axisPosition, domain) {
+export function createPercentageLinearScale(axisPosition, domain) {
   if (domain.length !== 101) throw new Error("Domain size should contain 101 items");
 
   const axisPos = _axisPositionOf(axisPosition);
-  const scale = d3
-    .scaleLinear()
-    .domain([0, 100])
-    .range([axisPos.minRange(layout), axisPos.maxRange(layout)]);
+  const scale = d3.scaleLinear().domain([0, 100]);
   const axis = axisPos
     .axis(scale)
     .ticks(6)
     .tickSizeOuter(0)
-    .tickSize(-layout.width + layout.marginRight + layout.marginLeft)
     .tickFormat((d, i) => {
       if (Math.floor(d) !== d) return ""; // Hide label for decimal numbers.
       return domain[i * 2 * (scale.ticks().length - 1)];
     });
 
-  return { scale: scale, axis: axis };
+  return { scale: scale, axis: axis, axisPosition: axisPos };
 }
 
 /**
- * @param {ChartLayout} layout
  * @param {number} axisPosition
  * @param {string[]} domain
  * @param {boolean} [isAllLabelVisible=true]
- * @returns {{scale: d3.scaleBand, axis: d3.axisBottom | d3.axisLeft }}
+ * @returns {{scale: d3.scaleBand, axis: d3.axisBottom | d3.axisLeft, axisPosition: AxisPosition}}
  */
-export function createBandScale(layout, axisPosition, domain, isAllLabelVisible = true) {
+export function createBandScale(axisPosition, domain, isAllLabelVisible = true) {
   const axisPos = _axisPositionOf(axisPosition);
-  const scale = d3
-    .scaleBand()
-    .domain(domain)
-    .range([axisPos.minRange(layout), axisPos.maxRange(layout)])
-    .padding(0.4);
+  const scale = d3.scaleBand().domain(domain).padding(0.4);
   const axis = axisPos
     .axis(scale)
     .tickSizeOuter(0)
@@ -135,7 +118,7 @@ export function createBandScale(layout, axisPosition, domain, isAllLabelVisible 
       !isAllLabelVisible && i % _gapBetweenTicks(domain.length) !== 0 ? null : d
     );
 
-  return { scale, axis };
+  return { scale: scale, axis: axis, axisPosition: axisPos };
 }
 
 /**

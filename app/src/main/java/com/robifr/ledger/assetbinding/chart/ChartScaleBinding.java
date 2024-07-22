@@ -41,55 +41,35 @@ public class ChartScaleBinding {
   private ChartScaleBinding() {}
 
   /**
-   * @param layoutBinding JavaScript code from {@link ChartLayoutBinding#init}.
    * @param axisPosition Position for the axis.
    * @param domain List of numbers containing at least two numbers representing the minimum and
    *     maximum values.
-   * @param isAllLabelVisible Whether label should be visible, even when the domain is large.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
   public static String createLinearScale(
-      @NonNull String layoutBinding,
-      @NonNull AxisPosition axisPosition,
-      @NonNull List<Double> domain,
-      boolean isAllLabelVisible) {
-    Objects.requireNonNull(layoutBinding);
+      @NonNull AxisPosition axisPosition, @NonNull List<Double> domain) {
     Objects.requireNonNull(axisPosition);
     Objects.requireNonNull(domain);
 
-    return "chart.createLinearScale("
-        + layoutBinding
-        + ", "
-        + axisPosition.value()
-        + ", "
-        + new JSONArray(domain)
-        + ", "
-        + isAllLabelVisible
-        + ")";
+    return "chart.createLinearScale(" + axisPosition.value() + ", " + new JSONArray(domain) + ")";
   }
 
   /**
    * Same as a {@link ChartScaleBinding#createLinearScale} but with support for larger numbers by
    * using percentage. Each domain (0-100) will be presented with the provided domain strings.
    *
-   * @param layoutBinding JavaScript code from {@link ChartLayoutBinding#init}.
    * @param axisPosition Position for the axis.
    * @param domain List of 101 strings representing the percentage values.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
   public static String createPercentageLinearScale(
-      @NonNull String layoutBinding,
-      @NonNull AxisPosition axisPosition,
-      @NonNull List<String> domain) {
-    Objects.requireNonNull(layoutBinding);
+      @NonNull AxisPosition axisPosition, @NonNull List<String> domain) {
     Objects.requireNonNull(axisPosition);
     Objects.requireNonNull(domain);
 
     return "chart.createPercentageLinearScale("
-        + layoutBinding
-        + ", "
         + axisPosition.value()
         + ", "
         + new JSONArray(domain)
@@ -97,7 +77,6 @@ public class ChartScaleBinding {
   }
 
   /**
-   * @param layoutBinding JavaScript code from {@link ChartLayoutBinding#init}.
    * @param axisPosition Position for the axis.
    * @param domain List of string for the label.
    * @param isAllLabelVisible Whether label should be visible, even when the domain is large.
@@ -105,17 +84,11 @@ public class ChartScaleBinding {
    */
   @NonNull
   public static String createBandScale(
-      @NonNull String layoutBinding,
-      @NonNull AxisPosition axisPosition,
-      @NonNull List<String> domain,
-      boolean isAllLabelVisible) {
-    Objects.requireNonNull(layoutBinding);
+      @NonNull AxisPosition axisPosition, @NonNull List<String> domain, boolean isAllLabelVisible) {
     Objects.requireNonNull(axisPosition);
     Objects.requireNonNull(domain);
 
     return "chart.createBandScale("
-        + layoutBinding
-        + ", "
         + axisPosition.value()
         + ", "
         + new JSONArray(domain)

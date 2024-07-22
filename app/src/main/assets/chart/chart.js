@@ -70,7 +70,6 @@ export class ChartLayout {
     /** @type {string} */
     this.backgroundColor = backgroundColor;
 
-    Object.freeze(this);
     Object.seal(this);
   }
 }
@@ -83,7 +82,17 @@ export class ChartLayout {
  */
 export function renderBarChart(layout, xScale, yScale, data) {
   d3.select("#container").select("svg").remove();
+
   const svg = d3.create("svg").attr("width", layout.width).attr("height", layout.height);
+
+  d3.select("#container").append(() => svg.node());
+  d3.select("body").style("background-color", layout.backgroundColor);
+
+  layout.marginBottom = layout.marginBottom + _measureSpaceForTicksLabel(svg, xScale.axis).highest;
+  layout.marginLeft = layout.marginLeft + _measureSpaceForTicksLabel(svg, yScale.axis).widest;
+  xScale.scale.range([xScale.axisPosition.minRange(layout), xScale.axisPosition.maxRange(layout)]);
+  yScale.scale.range([yScale.axisPosition.minRange(layout), yScale.axisPosition.maxRange(layout)]);
+  yScale.axis.tickSize(-layout.width + layout.marginRight + layout.marginLeft);
 
   // Draw y-axis.
   svg
@@ -104,9 +113,6 @@ export function renderBarChart(layout, xScale, yScale, data) {
     .attr("transform", `translate(0, ${layout.height - layout.marginBottom})`)
     .style("font-size", `${layout.fontSize}`)
     .call(xScale.axis);
-
-  d3.select("#container").append(() => svg.node());
-  d3.select("body").style("background-color", layout.backgroundColor);
 }
 
 /**
@@ -126,6 +132,16 @@ export function renderStackedBarChart(layout, xScale, yScale, data, colors, grou
   d3.select("#container").select("svg").remove();
 
   const svg = d3.create("svg").attr("width", layout.width).attr("height", layout.height);
+
+  d3.select("#container").append(() => svg.node());
+  d3.select("body").style("background-color", layout.backgroundColor);
+
+  layout.marginBottom = layout.marginBottom + _measureSpaceForTicksLabel(svg, xScale.axis).highest;
+  layout.marginLeft = layout.marginLeft + _measureSpaceForTicksLabel(svg, yScale.axis).widest;
+  xScale.scale.range([xScale.axisPosition.minRange(layout), xScale.axisPosition.maxRange(layout)]);
+  yScale.scale.range([yScale.axisPosition.minRange(layout), yScale.axisPosition.maxRange(layout)]);
+  yScale.axis.tickSize(-layout.width + layout.marginRight + layout.marginLeft);
+
   const groupedData = new Map();
 
   // Group the data so that we can render them in order.
@@ -160,9 +176,23 @@ export function renderStackedBarChart(layout, xScale, yScale, data, colors, grou
     .attr("transform", `translate(0, ${layout.height - layout.marginBottom})`)
     .style("font-size", `${layout.fontSize}`)
     .call(xScale.axis);
+}
 
-  d3.select("#container").append(() => svg.node());
-  d3.select("body").style("background-color", layout.backgroundColor);
+/**
+ * This function works correctly only if called after the SVG is rendered,
+ * as `getBBox()` requires the SVG to be drawn first.
+ * @param {d3.select<SVGElement>} svg
+ * @param {d3.axisBottom | d3.axisLeft} axis
+ * @returns {{ widest: number, highest: number }}
+ */
+function _measureSpaceForTicksLabel(svg, axis) {
+  const tempGroup = svg.append("g").call(axis);
+  const textNodes = tempGroup.selectAll("text").nodes();
+  const widest = d3.max(textNodes.map((node) => node.getBBox().width));
+  const highest = d3.max(textNodes.map((node) => node.getBBox().height));
+
+  tempGroup.remove();
+  return { widest, highest };
 }
 
 /**

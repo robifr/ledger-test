@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
     this.getOnBackPressedDispatcher().addCallback(this, new OnBackPressedHandler());
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-    List.of(R.id.queueFragment, R.id.customerFragment, R.id.productFragment)
+    List.of(R.id.dashboardFragment, R.id.queueFragment, R.id.customerFragment, R.id.productFragment)
         .forEach(
             id ->
                 this._activityBinding

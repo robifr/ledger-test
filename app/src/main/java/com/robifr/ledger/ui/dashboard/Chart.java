@@ -83,10 +83,10 @@ public class Chart {
         ChartLayoutBinding.init(
             JsInterface.dpToCssPx(this._context, this._webView.getWidth()),
             JsInterface.dpToCssPx(this._context, this._webView.getHeight()),
-            JsInterface.dpToCssPx(this._context, margin.topMargin),
-            JsInterface.dpToCssPx(this._context, margin.bottomMargin),
-            JsInterface.dpToCssPx(this._context, margin.leftMargin),
-            JsInterface.dpToCssPx(this._context, margin.rightMargin),
+            0,
+            0,
+            0,
+            0,
             fontSize,
             MaterialColors.getColor(
                 this._context, com.google.android.material.R.attr.colorSurface, 0));
@@ -138,10 +138,10 @@ public class Chart {
         ChartLayoutBinding.init(
             JsInterface.dpToCssPx(this._context, this._webView.getWidth()),
             JsInterface.dpToCssPx(this._context, this._webView.getHeight()),
-            JsInterface.dpToCssPx(this._context, margin.topMargin),
-            JsInterface.dpToCssPx(this._context, margin.bottomMargin),
-            JsInterface.dpToCssPx(this._context, margin.leftMargin),
-            JsInterface.dpToCssPx(this._context, margin.rightMargin),
+            0,
+            0,
+            0,
+            0,
             fontSize,
             MaterialColors.getColor(
                 this._context, com.google.android.material.R.attr.colorSurface, 0));

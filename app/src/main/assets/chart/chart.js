@@ -80,7 +80,7 @@ export class ChartLayout {
  * @param {linearScale | percentageLinearScale} yScale
  * @param {singleChartData[]} data
  */
-export function renderBarChart(layout, xScale, yScale, data) {
+export function renderBarChart(layout, xScale, yScale, data, color) {
   d3.select("#container").select("svg").remove();
 
   const svg = d3.create("svg").attr("width", layout.width).attr("height", layout.height);
@@ -105,7 +105,7 @@ export function renderBarChart(layout, xScale, yScale, data) {
     .style("stroke", Android.colorHex("stroke"))
     .attr("stroke-width", 0.3);
 
-  _drawBarChart(svg, layout, xScale, yScale, data, Android.colorHex("colorPrimary"));
+  _drawBarChart(svg, layout, xScale, yScale, data, color);
 
   // Draw x-axis. Ensure that the x-axis is rendered after the bars to prevent overlapping.
   svg

@@ -19,10 +19,12 @@ package com.robifr.ledger.ui.dashboard;
 
 import android.view.View;
 import androidx.annotation.NonNull;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardRevenueViewModel;
+import com.robifr.ledger.ui.dashboard.viewmodel.DashboardSummaryViewModel;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
@@ -50,6 +52,10 @@ public class DashboardViewModelHandler {
         .summaryView()
         .displayedChart()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryDisplayedChart);
+    this._viewModel
+        .summaryView()
+        .totalQueuesChartModel()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalQueuesChartModel);
     this._viewModel
         .summaryView()
         .totalQueues()
@@ -135,8 +141,26 @@ public class DashboardViewModelHandler {
     this._fragment.summaryOverview().chart().load();
   }
 
+  private void _onSummaryTotalQueuesChartModel(
+      @NonNull DashboardSummaryViewModel.TotalQueuesChartModel model) {
+    Objects.requireNonNull(model);
+
+    this._fragment
+        .summaryOverview()
+        .chart()
+        .displayBarChart(
+            model.xAxisDomain(),
+            model.yAxisDomain(),
+            model.data(),
+            MaterialColors.getColor(
+                this._fragment.requireContext(),
+                com.google.android.material.R.attr.colorPrimary,
+                0));
+  }
+
   private void _onSummaryTotalQueues(int amount) {
     this._fragment.summaryOverview().setTotalQueues(amount);
+    this._fragment.summaryOverview().chart().load();
   }
 
   private void _onSummaryTotalUncompletedQueues(int amount) {

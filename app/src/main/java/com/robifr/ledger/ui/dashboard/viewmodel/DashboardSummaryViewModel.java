@@ -18,13 +18,27 @@
 package com.robifr.ledger.ui.dashboard.viewmodel;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
+import com.robifr.ledger.assetbinding.chart.ChartBinding;
+import com.robifr.ledger.assetbinding.chart.ChartData;
+import com.robifr.ledger.assetbinding.chart.ChartUtil;
+import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.dashboard.DashboardSummary;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMediatorLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DashboardSummaryViewModel {
   @NonNull private final DashboardViewModel _viewModel;
@@ -32,6 +46,10 @@ public class DashboardSummaryViewModel {
   @NonNull
   private final SafeMutableLiveData<DashboardSummary.OverviewType> _displayedChart =
       new SafeMutableLiveData<>(DashboardSummary.OverviewType.TOTAL_QUEUES);
+
+  @NonNull
+  private final SafeMutableLiveData<TotalQueuesChartModel> _totalQueuesChartModel =
+      new SafeMutableLiveData<>(new TotalQueuesChartModel(List.of(), List.of(), List.of()));
 
   @NonNull private final SafeMediatorLiveData<Integer> _totalQueues = new SafeMediatorLiveData<>(0);
 
@@ -82,6 +100,11 @@ public class DashboardSummaryViewModel {
   }
 
   @NonNull
+  public SafeLiveData<TotalQueuesChartModel> totalQueuesChartModel() {
+    return this._totalQueuesChartModel;
+  }
+
+  @NonNull
   public SafeLiveData<Integer> totalQueues() {
     return this._totalQueues;
   }
@@ -105,5 +128,63 @@ public class DashboardSummaryViewModel {
     Objects.requireNonNull(overviewType);
 
     this._displayedChart.setValue(overviewType);
+  }
+
+  public void onDisplayTotalQueuesChart() {
+    final ZonedDateTime startDate =
+        this._viewModel.date().getValue().range() == QueueDate.Range.ALL_TIME
+            // Remove unnecessary dates.
+            ? this._viewModel._queues().getValue().stream()
+                .map(QueueModel::date)
+                .min(Instant::compareTo)
+                .orElse(this._viewModel.date().getValue().dateStart().toInstant())
+                .atZone(ZoneId.systemDefault())
+            : this._viewModel.date().getValue().dateStart();
+    final ZonedDateTime endDate = this._viewModel.date().getValue().dateEnd();
+
+    final Map<String, Integer> rawDataSummed = new LinkedHashMap<>();
+    final int yAxisTicks = 6; // Defined in `createLinearScale()`. It includes zero.
+    int maxValue = yAxisTicks - 1;
+
+    // Sum the values if the date is equal. The queues also have to be sorted by date
+    // because D3.js draws everything in order.
+    for (QueueModel queue :
+        this._viewModel._queues().getValue().stream()
+            .sorted(Comparator.comparing(QueueModel::date))
+            .collect(Collectors.toList())) {
+      final int data =
+          rawDataSummed.merge(
+              ChartUtil.toDateTime(
+                  queue.date().atZone(ZoneId.systemDefault()), new Pair<>(startDate, endDate)),
+              1,
+              Integer::sum);
+      maxValue = Math.max(maxValue, data);
+    }
+
+    final List<ChartData.Single<String, Integer>> formattedData = new ArrayList<>();
+
+    for (var rawData : rawDataSummed.entrySet()) {
+      formattedData.add(new ChartData.Single<>(rawData.getKey(), rawData.getValue()));
+    }
+
+    this._totalQueuesChartModel.setValue(
+        new TotalQueuesChartModel(
+            ChartUtil.toDateTimeDomain(new Pair<>(startDate, endDate)),
+            List.of(0.0, ChartUtil.calculateNiceScale(0.0, maxValue, yAxisTicks)[1]),
+            formattedData));
+  }
+
+  /**
+   * @see ChartBinding#renderBarChart
+   */
+  public static record TotalQueuesChartModel(
+      @NonNull List<String> xAxisDomain,
+      @NonNull List<Double> yAxisDomain,
+      @NonNull List<ChartData.Single<String, Integer>> data) {
+    public TotalQueuesChartModel {
+      Objects.requireNonNull(xAxisDomain);
+      Objects.requireNonNull(yAxisDomain);
+      Objects.requireNonNull(data);
+    }
   }
 }

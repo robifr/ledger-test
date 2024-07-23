@@ -61,8 +61,17 @@ public class Chart {
     this._webView.loadUrl("https://appassets.androidplatform.net/assets/chart/index.html");
   }
 
-  public void displayBarChart(@NonNull CartesianChartModel<String, String> model) {
-    Objects.requireNonNull(model);
+  /**
+   * @see ChartBinding#renderBarChart
+   */
+  public <K, V> void displayBarChart(
+      @NonNull List<String> xAxisDomain,
+      @NonNull List<Double> yAxisDomain,
+      @NonNull List<ChartData.Single<K, V>> data,
+      @ColorInt int color) {
+    Objects.requireNonNull(xAxisDomain);
+    Objects.requireNonNull(yAxisDomain);
+    Objects.requireNonNull(data);
 
     final ViewGroup.MarginLayoutParams margin =
         (ViewGroup.MarginLayoutParams) this._webView.getLayoutParams();
@@ -87,8 +96,7 @@ public class Chart {
     final String yScaleBinding =
         ChartScaleBinding.createLinearScale(ChartScaleBinding.AxisPosition.LEFT, yAxisDomain);
     final String chartRender =
-        ChartBinding.renderBarChart(
-            "layoutBinding", "xScaleBinding", "yScaleBinding", model.data());
+        ChartBinding.renderBarChart("layoutBinding", "xScaleBinding", "yScaleBinding", data, color);
 
     this._webView.evaluateJavascript(
         String.format(

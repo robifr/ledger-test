@@ -18,10 +18,15 @@
 package com.robifr.ledger.ui.dashboard;
 
 import android.view.View;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
 import androidx.annotation.NonNull;
+import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.DashboardCardSummaryBinding;
+import com.robifr.ledger.ui.dashboard.viewmodel.DashboardSummaryViewModel;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -43,7 +48,7 @@ public class DashboardSummary implements View.OnClickListener {
         new Chart(
             this._fragment.requireContext(),
             this._fragment.fragmentBinding().summary.chart,
-            new WebViewClientCompat());
+            new LocalWebView());
 
     final DashboardCardSummaryBinding cardBinding = this._fragment.fragmentBinding().summary;
     cardBinding.totalQueuesCardView.setOnClickListener(this);
@@ -135,5 +140,41 @@ public class DashboardSummary implements View.OnClickListener {
         .productsSoldCard
         .amount
         .setText(CurrencyFormat.format(amount, "id", "ID", ""));
+  }
+
+  private class LocalWebView extends WebViewClientCompat {
+    @NonNull private final WebViewAssetLoader _assetLoader;
+
+    public LocalWebView() {
+      this._assetLoader =
+          new WebViewAssetLoader.Builder()
+              .addPathHandler(
+                  "/assets/",
+                  new WebViewAssetLoader.AssetsPathHandler(
+                      DashboardSummary.this._fragment.requireContext()))
+              .build();
+    }
+
+    @Override
+    public WebResourceResponse shouldInterceptRequest(
+        @NonNull WebView view, @NonNull WebResourceRequest request) {
+      Objects.requireNonNull(view);
+      Objects.requireNonNull(request);
+
+      return this._assetLoader.shouldInterceptRequest(request.getUrl());
+    }
+
+    @Override
+    public void onPageFinished(@NonNull WebView view, @NonNull String url) {
+      Objects.requireNonNull(view);
+      Objects.requireNonNull(url);
+
+      final DashboardSummaryViewModel summaryViewModel =
+          DashboardSummary.this._fragment.dashboardViewModel().summaryView();
+
+      switch (summaryViewModel.displayedChart().getValue()) {
+        case TOTAL_QUEUES -> summaryViewModel.onDisplayTotalQueuesChart();
+      }
+    }
   }
 }

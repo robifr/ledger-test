@@ -21,13 +21,10 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import com.robifr.ledger.assetbinding.JsInterface;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class ChartBinding {
   private ChartBinding() {}
@@ -37,35 +34,25 @@ public class ChartBinding {
    * @param xScaleBinding JavaScript code from {@link ChartScaleBinding#createBandScale}.
    * @param yScaleBinding JavaScript code from {@link ChartScaleBinding#createLinearScale} or {@link
    *     ChartScaleBinding#createPercentageLinearScale}.
-   * @param data Map of data to be rendered with. The key should match the {@code domain} from
-   *     {@code xScaleBinding}.
+   * @param data List of data to be rendered with.
+   * @param color Bar color.
    * @return A valid JavaScript code for this method.
    */
   @NonNull
-  public static String renderBarChart(
+  public static <K, V> String renderBarChart(
       @NonNull String layoutBinding,
       @NonNull String xScaleBinding,
       @NonNull String yScaleBinding,
-      @NonNull Map<String, Double> data) {
+      @NonNull List<ChartData.Single<K, V>> data,
+      @ColorInt int color) {
     Objects.requireNonNull(layoutBinding);
     Objects.requireNonNull(xScaleBinding);
     Objects.requireNonNull(yScaleBinding);
     Objects.requireNonNull(data);
 
     final JSONArray formattedData =
-        new JSONArray(
-            data.entrySet().stream()
-                .map(
-                    entry -> {
-                      try {
-                        return new JSONObject()
-                            .put("key", entry.getKey())
-                            .put("value", entry.getValue());
-                      } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                      }
-                    })
-                .collect(Collectors.toList()));
+        new JSONArray(data.stream().map(ChartData::toJson).collect(Collectors.toList()));
+
     return "chart.renderBarChart("
         + layoutBinding
         + ", "
@@ -74,7 +61,9 @@ public class ChartBinding {
         + yScaleBinding
         + ", "
         + formattedData
-        + ")";
+        + ", \""
+        + JsInterface.argbToRgbaHex(color)
+        + "\")";
   }
 
   /**

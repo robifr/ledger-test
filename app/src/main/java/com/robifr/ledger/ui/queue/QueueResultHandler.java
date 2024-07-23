@@ -37,10 +37,10 @@ public class QueueResultHandler {
         .setFragmentResultListener(
             FilterCustomerFragment.Request.FILTER_CUSTOMER.key(),
             this._fragment.getViewLifecycleOwner(),
-            this::onFilterCustomerResult);
+            this::_onFilterCustomerResult);
   }
 
-  public void onFilterCustomerResult(@NonNull String requestKey, @NonNull Bundle result) {
+  private void _onFilterCustomerResult(@NonNull String requestKey, @NonNull Bundle result) {
     Objects.requireNonNull(requestKey);
     Objects.requireNonNull(result);
 

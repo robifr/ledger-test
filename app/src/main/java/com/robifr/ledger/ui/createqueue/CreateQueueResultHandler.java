@@ -38,16 +38,16 @@ public class CreateQueueResultHandler {
         .setFragmentResultListener(
             SelectCustomerFragment.Request.SELECT_CUSTOMER.key(),
             this._fragment.getViewLifecycleOwner(),
-            this::onSelectCustomerResult);
+            this::_onSelectCustomerResult);
     this._fragment
         .getParentFragmentManager()
         .setFragmentResultListener(
             SelectProductFragment.Request.SELECT_PRODUCT.key(),
             this._fragment.getViewLifecycleOwner(),
-            this::onSelectProductResult);
+            this::_onSelectProductResult);
   }
 
-  public void onSelectCustomerResult(@NonNull String requestKey, @NonNull Bundle result) {
+  private void _onSelectCustomerResult(@NonNull String requestKey, @NonNull Bundle result) {
     Objects.requireNonNull(requestKey);
     Objects.requireNonNull(result);
 
@@ -78,7 +78,7 @@ public class CreateQueueResultHandler {
     }
   }
 
-  public void onSelectProductResult(@NonNull String requestKey, @NonNull Bundle result) {
+  private void _onSelectProductResult(@NonNull String requestKey, @NonNull Bundle result) {
     Objects.requireNonNull(requestKey);
     Objects.requireNonNull(result);
 

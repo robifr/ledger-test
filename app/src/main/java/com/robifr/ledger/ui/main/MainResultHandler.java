@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Environment;
 import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -35,7 +34,7 @@ public class MainResultHandler {
     this._activity = Objects.requireNonNull(activity);
     this._permissionLauncher =
         this._activity.registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new PermissionResultListener());
+            new ActivityResultContracts.StartActivityForResult(), this::_onRequestPermission);
   }
 
   @NonNull
@@ -43,22 +42,18 @@ public class MainResultHandler {
     return this._permissionLauncher;
   }
 
-  private class PermissionResultListener implements ActivityResultCallback<ActivityResult> {
-    @Override
-    public void onActivityResult(@NonNull ActivityResult result) {
-      Objects.requireNonNull(result);
+  private void _onRequestPermission(@NonNull ActivityResult result) {
+    Objects.requireNonNull(result);
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        // Permission granted.
-        if (Environment.isExternalStorageManager()) {
-          MainResultHandler.this._activity.finish();
-          MainResultHandler.this._activity.startActivity(
-              MainResultHandler.this._activity.getIntent());
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      // Permission granted.
+      if (Environment.isExternalStorageManager()) {
+        this._activity.finish();
+        this._activity.startActivity(this._activity.getIntent());
 
-          // Denied. Retry to show dialog permission.
-        } else {
-          MainResultHandler.this._activity.requireStoragePermission();
-        }
+        // Denied. Retry to show dialog permission.
+      } else {
+        this._activity.requireStoragePermission();
       }
     }
   }

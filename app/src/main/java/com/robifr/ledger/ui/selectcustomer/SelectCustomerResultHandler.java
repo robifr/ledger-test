@@ -36,10 +36,10 @@ public class SelectCustomerResultHandler {
         .setFragmentResultListener(
             SearchCustomerFragment.Request.SELECT_CUSTOMER.key(),
             this._fragment.getViewLifecycleOwner(),
-            this::onSearchCustomerResult);
+            this::_onSearchCustomerResult);
   }
 
-  public void onSearchCustomerResult(@NonNull String requestKey, @NonNull Bundle result) {
+  private void _onSearchCustomerResult(@NonNull String requestKey, @NonNull Bundle result) {
     Objects.requireNonNull(requestKey);
     Objects.requireNonNull(result);
 

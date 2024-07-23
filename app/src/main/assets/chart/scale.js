@@ -18,6 +18,7 @@
 "use strict";
 
 import * as d3 from "../libs/d3.js";
+import { Android } from "./typedefs.js";
 
 /**
  * @typedef {import("./chart.js").ChartLayout} ChartLayout
@@ -66,13 +67,7 @@ export function createLinearScale(axisPosition, domain) {
     .axis(scale)
     .tickValues(d3.range(domain[0], domain[1] + tickStep, tickStep))
     .tickSizeOuter(0)
-    .tickFormat((d) => {
-      // Format with unit.
-      if (d >= 1e9) return d3.format("d")(d / 1e9) + "b";
-      if (d >= 1e6) return d3.format("d")(d / 1e6) + "m";
-      if (d >= 1000) return d3.format("d")(d / 1000) + "k";
-      return d3.format("d")(d);
-    });
+    .tickFormat((d) => Android.formatCurrencyWithUnit(d, "id", "ID", ""));
 
   return { scale: scale, axis: axis, axisPosition: axisPos };
 }

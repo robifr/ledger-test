@@ -20,6 +20,11 @@
 /**
  * @typedef {Object} AndroidInterface
  * @property {(colorName: string) => string} colorHex
+ * @property {(
+ *      amount: number, 
+ *      language: string, 
+ *      country: string, 
+ *      symbol: string) => string} formatCurrencyWithUnit
  */
 
 /**

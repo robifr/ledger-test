@@ -23,6 +23,8 @@ import android.webkit.JavascriptInterface;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import com.robifr.ledger.R;
+import com.robifr.ledger.util.CurrencyFormat;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class JsInterface {
@@ -74,5 +76,12 @@ public class JsInterface {
 
     final int color = colorRes != 0 ? colorRes : R.color.black;
     return JsInterface.argbToRgbaHex(this._context.getColor(color));
+  }
+
+  @NonNull
+  @JavascriptInterface
+  public String formatCurrencyWithUnit(
+      double amount, @NonNull String language, @NonNull String country, @NonNull String symbol) {
+    return CurrencyFormat.formatWithUnit(BigDecimal.valueOf(amount), language, country, symbol);
   }
 }

@@ -95,7 +95,7 @@ public class ChartUtil {
     return result;
   }
 
-  public static double toPercentage(
+  public static double toPercentageLinear(
       @NonNull BigDecimal valueToConvert, @NonNull BigDecimal maxValue, int ticks) {
     Objects.requireNonNull(valueToConvert);
     Objects.requireNonNull(maxValue);

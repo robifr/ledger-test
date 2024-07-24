@@ -180,7 +180,7 @@ public class DashboardRevenueViewModel {
           new ChartData.Multiple<>(
               rawData.getKey().first,
               // Convert to percent because D3.js can't handle big decimal.
-              ChartUtil.toPercentage(rawData.getValue(), maxValue, yAxisTicks),
+              ChartUtil.toPercentageLinear(rawData.getValue(), maxValue, yAxisTicks),
               rawData.getKey().second.toString()));
     }
 

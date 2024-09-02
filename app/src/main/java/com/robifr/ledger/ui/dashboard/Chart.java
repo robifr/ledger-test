@@ -18,7 +18,6 @@
 package com.robifr.ledger.ui.dashboard;
 
 import android.content.Context;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -74,8 +73,6 @@ public class Chart {
     Objects.requireNonNull(yAxisDomain);
     Objects.requireNonNull(data);
 
-    final ViewGroup.MarginLayoutParams margin =
-        (ViewGroup.MarginLayoutParams) this._webView.getLayoutParams();
     final int fontSize =
         JsInterface.dpToCssPx(
             this._context, this._context.getResources().getDimension(R.dimen.text_small));
@@ -129,8 +126,6 @@ public class Chart {
     Objects.requireNonNull(colors);
     Objects.requireNonNull(groupInOrder);
 
-    final ViewGroup.MarginLayoutParams margin =
-        (ViewGroup.MarginLayoutParams) this._webView.getLayoutParams();
     final int fontSize =
         JsInterface.dpToCssPx(
             this._context, this._context.getResources().getDimension(R.dimen.text_small));

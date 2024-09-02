@@ -174,6 +174,7 @@ public class DashboardSummary implements View.OnClickListener {
 
       switch (summaryViewModel.displayedChart().getValue()) {
         case TOTAL_QUEUES -> summaryViewModel.onDisplayTotalQueuesChart();
+        case UNCOMPLETED_QUEUES -> summaryViewModel.onDisplayUncompletedQueuesChart();
       }
     }
   }

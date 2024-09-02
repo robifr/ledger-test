@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.webkit.WebViewClientCompat;
 import com.google.android.material.color.MaterialColors;
 import com.robifr.ledger.R;
@@ -167,6 +168,47 @@ public class Chart {
             })();
             """,
             layoutBinding, xScaleBinding, yScaleBinding, chartRender),
+        null);
+  }
+
+  /**
+   * @see ChartBinding#renderDonutChart
+   */
+  public <K, V> void displayDonutChart(
+      @NonNull List<ChartData.Single<K, V>> data,
+      @NonNull @ColorInt List<Integer> colors,
+      @Nullable String svgTextInCenter) {
+    Objects.requireNonNull(data);
+    Objects.requireNonNull(colors);
+
+    final int fontSize =
+        JsInterface.dpToCssPx(
+            this._context, this._context.getResources().getDimension(R.dimen.text_small));
+
+    final String layoutBinding =
+        ChartLayoutBinding.init(
+            JsInterface.dpToCssPx(this._context, this._webView.getWidth()),
+            JsInterface.dpToCssPx(this._context, this._webView.getHeight()),
+            0,
+            0,
+            0,
+            0,
+            fontSize,
+            MaterialColors.getColor(
+                this._context, com.google.android.material.R.attr.colorSurface, 0));
+    final String chartRender =
+        ChartBinding.renderDonutChart("layoutBinding", data, colors, svgTextInCenter);
+
+    this._webView.evaluateJavascript(
+        String.format(
+            """
+              (() => { // Wrap in a function to avoid variable redeclaration.
+                const layoutBinding = %s;
+
+                %s;
+              })();
+              """,
+            layoutBinding, chartRender),
         null);
   }
 }

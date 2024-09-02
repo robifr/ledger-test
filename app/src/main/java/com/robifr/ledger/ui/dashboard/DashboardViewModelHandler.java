@@ -21,6 +21,9 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
+import com.robifr.ledger.R;
+import com.robifr.ledger.assetbinding.JsInterface;
+import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardRevenueViewModel;
@@ -28,6 +31,7 @@ import com.robifr.ledger.ui.dashboard.viewmodel.DashboardSummaryViewModel;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -60,6 +64,11 @@ public class DashboardViewModelHandler {
         .summaryView()
         .totalQueues()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalQueues);
+    this._viewModel
+        .summaryView()
+        .uncompletedQueuesChartModel()
+        .observe(
+            this._fragment.getViewLifecycleOwner(), this::_onSummaryUncompletedQueuesChartModel);
     this._viewModel
         .summaryView()
         .totalUncompletedQueues()
@@ -161,6 +170,50 @@ public class DashboardViewModelHandler {
   private void _onSummaryTotalQueues(int amount) {
     this._fragment.summaryOverview().setTotalQueues(amount);
     this._fragment.summaryOverview().chart().load();
+  }
+
+  private void _onSummaryUncompletedQueuesChartModel(
+      @NonNull DashboardSummaryViewModel.UncompletedQueuesChartModel model) {
+    Objects.requireNonNull(model);
+
+    final int titleFontSize =
+        JsInterface.dpToCssPx(
+            this._fragment.requireContext(),
+            this._fragment.getResources().getDimensionPixelSize(R.dimen.text_medium));
+    final int oldestDateFontSize =
+        JsInterface.dpToCssPx(
+            this._fragment.requireContext(),
+            this._fragment.getResources().getDimensionPixelSize(R.dimen.text_mediumlarge));
+    final String oldestDate =
+        model.oldestDate() != null
+            ? model
+                .oldestDate()
+                .format(
+                    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+                        .withLocale(new Locale("id", "ID")))
+            : null;
+    final String textInCenter =
+        model.oldestDate() != null
+            ? String.format(
+                this._fragment.getString(R.string.args_svg_oldest_queue_x),
+                titleFontSize,
+                oldestDateFontSize,
+                oldestDate)
+            : null;
+
+    this._fragment
+        .summaryOverview()
+        .chart()
+        .displayDonutChart(
+            model.data().stream()
+                .map(
+                    data ->
+                        new ChartData.Single<>(this._fragment.getString(data.key()), data.value()))
+                .collect(Collectors.toList()),
+            model.colors().stream()
+                .map(this._fragment.requireContext()::getColor)
+                .collect(Collectors.toList()),
+            textInCenter);
   }
 
   private void _onSummaryTotalUncompletedQueues(int amount) {

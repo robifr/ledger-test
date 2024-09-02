@@ -141,6 +141,15 @@
   <string name="text_withdraw_balance">Withdraw balance</string>
   <string name="text_yesterday">Yesterday</string>
 
+  <string name="args_svg_oldest_queue_x">
+    <![CDATA[
+      <text>
+        <tspan x=\"0\" dy=\"-0.5em\" style=\"font-size: %d;\">Oldest queue:</tspan>
+        <tspan x=\"0\" dy=\"1.2em\" style=\"font-size: %d; \"font-weight: bold;\">%s</tspan>
+      </text>
+    ]]>
+  </string>
+
   <plurals name="args_added_x_customer">
     <item quantity="one">Added %d customer</item>
     <item quantity="other">Added %d customers</item>

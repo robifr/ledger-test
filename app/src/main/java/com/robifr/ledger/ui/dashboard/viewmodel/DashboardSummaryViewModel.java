@@ -17,7 +17,9 @@
 
 package com.robifr.ledger.ui.dashboard.viewmodel;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import com.robifr.ledger.assetbinding.chart.ChartBinding;
 import com.robifr.ledger.assetbinding.chart.ChartData;
@@ -52,6 +54,10 @@ public class DashboardSummaryViewModel {
       new SafeMutableLiveData<>(new TotalQueuesChartModel(List.of(), List.of(), List.of()));
 
   @NonNull private final SafeMediatorLiveData<Integer> _totalQueues = new SafeMediatorLiveData<>(0);
+
+  @NonNull
+  private final SafeMutableLiveData<UncompletedQueuesChartModel> _uncompletedQueuesChartModel =
+      new SafeMutableLiveData<>(new UncompletedQueuesChartModel(List.of(), List.of(), null));
 
   @NonNull
   private final SafeMediatorLiveData<Integer> _totalUncompletedQueues =
@@ -107,6 +113,11 @@ public class DashboardSummaryViewModel {
   @NonNull
   public SafeLiveData<Integer> totalQueues() {
     return this._totalQueues;
+  }
+
+  @NonNull
+  public SafeLiveData<UncompletedQueuesChartModel> uncompletedQueuesChartModel() {
+    return this._uncompletedQueuesChartModel;
   }
 
   @NonNull
@@ -174,6 +185,42 @@ public class DashboardSummaryViewModel {
             formattedData));
   }
 
+  public void onDisplayUncompletedQueuesChart() {
+    final Map<Integer, Integer> rawDataSummed = new LinkedHashMap<>();
+    // The order is important to ensure that `UncompletedQueuesChartModel#colors` matches.
+    rawDataSummed.put(QueueModel.Status.IN_QUEUE.resourceString(), 0);
+    rawDataSummed.put(QueueModel.Status.IN_PROCESS.resourceString(), 0);
+    rawDataSummed.put(QueueModel.Status.UNPAID.resourceString(), 0);
+
+    ZonedDateTime oldestDate = null;
+
+    for (QueueModel queue : this._viewModel._queues().getValue()) {
+      // Merge the data if the status is uncompleted.
+      if (rawDataSummed.containsKey(queue.status().resourceString())) {
+        rawDataSummed.merge(queue.status().resourceString(), 1, Integer::sum);
+
+        if (oldestDate == null || queue.date().compareTo(oldestDate.toInstant()) < 0) {
+          oldestDate = queue.date().atZone(ZoneId.systemDefault());
+        }
+      }
+    }
+
+    final List<ChartData.Single<Integer, Integer>> formattedData = new ArrayList<>();
+
+    for (Map.Entry<Integer, Integer> rawData : rawDataSummed.entrySet()) {
+      formattedData.add(new ChartData.Single<>(rawData.getKey(), rawData.getValue()));
+    }
+
+    this._uncompletedQueuesChartModel.setValue(
+        new UncompletedQueuesChartModel(
+            formattedData,
+            List.of(
+                QueueModel.Status.IN_QUEUE.resourceBackgroundColor(),
+                QueueModel.Status.IN_PROCESS.resourceBackgroundColor(),
+                QueueModel.Status.UNPAID.resourceBackgroundColor()),
+            oldestDate));
+  }
+
   /**
    * @see ChartBinding#renderBarChart
    */
@@ -185,6 +232,30 @@ public class DashboardSummaryViewModel {
       Objects.requireNonNull(xAxisDomain);
       Objects.requireNonNull(yAxisDomain);
       Objects.requireNonNull(data);
+    }
+  }
+
+  /**
+   * @param data {@link ChartData.Single} contains:
+   *     <ul>
+   *       <li>{@link ChartData.Single#key() key} - The {@link QueueModel.Status#resourceString()
+   *           resourceString} in {@link QueueModel.Status Queue.Status}.
+   *       <li>{@link ChartData.Single#value() value} - The total count of queues with the
+   *           corresponding status.
+   *     </ul>
+   *
+   * @param colors The {@link QueueModel.Status#resourceBackgroundColor() resourceBackgroundColor}
+   *     in {@link QueueModel.Status Queue.Status}.
+   * @param oldestDate Oldest date for ranged queue to be shown in the center of donut chart.
+   * @see ChartBinding#renderDonutChart
+   */
+  public static record UncompletedQueuesChartModel(
+      @NonNull List<ChartData.Single<Integer, Integer>> data,
+      @NonNull @ColorRes List<Integer> colors,
+      @Nullable ZonedDateTime oldestDate) {
+    public UncompletedQueuesChartModel {
+      Objects.requireNonNull(data);
+      Objects.requireNonNull(colors);
     }
   }
 }

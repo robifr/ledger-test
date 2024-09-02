@@ -89,7 +89,11 @@ public class DashboardSummaryViewModel {
         queues ->
             this._totalActiveCustomers.setValue(
                 (int)
-                    queues.stream().map(QueueModel::customerId).filter(Objects::nonNull).count()));
+                    queues.stream()
+                        .map(QueueModel::customerId)
+                        .filter(Objects::nonNull)
+                        .distinct()
+                        .count()));
     this._totalProductsSold.addSource(
         this._viewModel._queues().toLiveData(),
         queues ->

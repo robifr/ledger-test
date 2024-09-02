@@ -17,7 +17,7 @@
 
 "use strict";
 
-import { ChartLayout, renderBarChart, renderStackedBarChart } from "./chart.js";
+import { ChartLayout, renderBarChart, renderStackedBarChart, renderDonutChart } from "./chart.js";
 import { createLinearScale, createPercentageLinearScale, createBandScale } from "./scale.js";
 
 // Web view only works in global scope.
@@ -26,6 +26,7 @@ window.chart = {
   ChartLayout,
   renderBarChart,
   renderStackedBarChart,
+  renderDonutChart,
   createLinearScale,
   createPercentageLinearScale,
   createBandScale,

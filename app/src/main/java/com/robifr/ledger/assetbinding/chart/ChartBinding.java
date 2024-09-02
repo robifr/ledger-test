@@ -19,6 +19,7 @@ package com.robifr.ledger.assetbinding.chart;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.robifr.ledger.assetbinding.JsInterface;
 import java.util.List;
 import java.util.Objects;
@@ -109,5 +110,39 @@ public class ChartBinding {
         + ", "
         + new JSONArray(groupInOrder)
         + ")";
+  }
+
+  /**
+   * @param layoutBinding JavaScript code from {@link ChartLayoutBinding#init}.
+   * @param data List of ordered data to be rendered with.
+   * @param colors Ordered donut slice colors for the data.
+   * @param svgTextInCenter Text in SVG format (within {@code <text>} attribute) positioned at the
+   *     center of the donut graph.
+   * @return A valid JavaScript code for this method.
+   */
+  @NonNull
+  public static <K, V> String renderDonutChart(
+      @NonNull String layoutBinding,
+      @NonNull List<ChartData.Single<K, V>> data,
+      @NonNull @ColorInt List<Integer> colors,
+      @Nullable String svgTextInCenter) {
+    Objects.requireNonNull(layoutBinding);
+    Objects.requireNonNull(data);
+    Objects.requireNonNull(colors);
+
+    final JSONArray formattedData =
+        new JSONArray(data.stream().map(ChartData::toJson).collect(Collectors.toList()));
+    final JSONArray formattedColors =
+        new JSONArray(colors.stream().map(JsInterface::argbToRgbaHex).collect(Collectors.toList()));
+
+    return "chart.renderDonutChart("
+        + layoutBinding
+        + ", "
+        + formattedData
+        + ", "
+        + formattedColors
+        + ", `"
+        + svgTextInCenter
+        + "`)";
   }
 }

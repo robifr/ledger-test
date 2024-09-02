@@ -179,6 +179,23 @@ export function renderStackedBarChart(layout, xScale, yScale, data, colors, grou
 }
 
 /**
+ * @param {ChartLayout} layout
+ * @param {singleChartData[]} data
+ * @param {string[]} colors
+ * @param {string} [svgTextInCenter]
+ */
+export function renderDonutChart(layout, data, colors, svgTextInCenter = "") {
+  d3.select("#container").select("svg").remove();
+
+  const svg = d3.create("svg").attr("width", layout.width).attr("height", layout.height);
+
+  d3.select("#container").append(() => svg.node());
+  d3.select("body").style("background-color", layout.backgroundColor);
+
+  _drawDonutChart(svg, layout, data, colors, svgTextInCenter);
+}
+
+/**
  * This function works correctly only if called after the SVG is rendered,
  * as `getBBox()` requires the SVG to be drawn first.
  * @param {d3.select<SVGElement>} svg
@@ -238,4 +255,99 @@ function _drawBarChart(svg, layout, xScale, yScale, data, color) {
         ? barCornerRadius
         : 0
     );
+}
+
+/**
+ * @param {d3.select<SVGElement>} svg
+ * @param {ChartLayout} layout
+ * @param {singleChartData[]} data
+ * @param {string[]} colors
+ * @param {string} [svgTextInCenter]
+ */
+function _drawDonutChart(svg, layout, data, colors, svgTextInCenter = "") {
+  const usableWidth = layout.width - layout.marginLeft - layout.marginRight;
+  const usableHeight = layout.height - layout.marginTop - layout.marginBottom;
+  // The maximum chart width is 2/3 of the layout, while the remaining 1/3 is used by the legend.
+  const radius = Math.min((usableWidth * 2) / 3, usableHeight) / 2;
+  // This will place the chart in the center of the layout,
+  // slightly moved to the left for the legend.
+  const chartXPosition = layout.marginLeft + usableWidth / 2 - radius / 2;
+  const chartYPosition = layout.marginTop + radius;
+
+  // A placeholder key, used when the total data value is zero. It ensures
+  // the donut chart displays a gray color instead of being completely invisible.
+  // This placeholder should be excluded from the chart legends.
+  const NO_DATA_KEY = "_noData";
+
+  // Add a placeholder if the sum of data values is zero.
+  if (data.reduce((acc, d) => acc + d.value, 0) === 0) {
+    data.push({ key: NO_DATA_KEY, value: 100 });
+    colors.push(Android.colorHex("secondary_disabled"));
+  }
+
+  const pie = d3
+    .pie()
+    .sort(null)
+    .value((d) => d.value);
+
+  const chart = svg
+    .append("g")
+    .attr("transform", `translate(${chartXPosition}, ${chartYPosition})`);
+  chart
+    .selectAll(".slice")
+    .data(pie(data))
+    .join("path")
+    .attr(
+      "d",
+      d3
+        .arc()
+        .innerRadius(radius * 0.7)
+        .outerRadius(radius)
+    )
+    .attr("fill", (d, i) => colors[i])
+    .attr("stroke", Android.colorHex("colorSurface"))
+    .style("stroke-width", "1px");
+  chart
+    .append("g")
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle")
+    .html(svgTextInCenter);
+
+  const legendRectSize = 15;
+  const legendItemPadding = 5;
+
+  const legend = svg.selectAll(".legend").data(pie(data)).enter().append("g");
+  legend
+    .append("rect")
+    .attr("width", legendRectSize)
+    .attr("height", legendRectSize)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", (d, i) => (d.data.key !== NO_DATA_KEY ? colors[i] : "none"));
+  legend
+    .append("text")
+    .text((d) => (d.data.key !== NO_DATA_KEY ? d.data.key : ""))
+    .style("font-size", 12)
+    .attr("x", legendRectSize + legendItemPadding)
+    .attr("y", legendRectSize / 2)
+    .attr("dy", "0.35em"); // Adjust for vertical alignment of text baseline.
+  legend
+    .append("text")
+    .text((d) =>
+      d.data.key !== NO_DATA_KEY ? Android.formatCurrencyWithUnit(d.value, "id", "ID", "") : ""
+    )
+    .style("font-size", 14)
+    .style("font-weight", "bold")
+    .attr("x", legendRectSize + legendItemPadding)
+    .attr("y", legendRectSize / 2 + 12 + legendItemPadding)
+    .attr("dy", "0.35em"); // Adjust for vertical alignment of text baseline.
+
+  const legendXPosition = chartXPosition + radius + 20;
+  let legendYPosition = layout.marginTop + 20;
+
+  // Dynamically set the legend y-position depending on how much space is occupied by the text.
+  legend.each(function () {
+    d3.select(this).attr("transform", `translate(${legendXPosition}, ${legendYPosition})`);
+    legendYPosition += this.getBBox().height + 15;
+  });
 }

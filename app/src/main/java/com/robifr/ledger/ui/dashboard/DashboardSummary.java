@@ -24,16 +24,23 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
+import com.robifr.ledger.assetbinding.JsInterface;
+import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.DashboardCardSummaryBinding;
 import com.robifr.ledger.databinding.DashboardCardSummaryListItemBinding;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardSummaryViewModel;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DashboardSummary implements View.OnClickListener {
   public enum OverviewType {
@@ -85,9 +92,8 @@ public class DashboardSummary implements View.OnClickListener {
     }
   }
 
-  @NonNull
-  public Chart chart() {
-    return this._chart;
+  public void loadChart() {
+    this._chart.load();
   }
 
   public void selectCard(@NonNull OverviewType overviewType) {
@@ -117,6 +123,20 @@ public class DashboardSummary implements View.OnClickListener {
         .setText(Integer.toString(amount));
   }
 
+  public void displayTotalQueuesChart(
+      @NonNull DashboardSummaryViewModel.TotalQueuesChartModel model) {
+    Objects.requireNonNull(model);
+
+    this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
+    this._fragment.fragmentBinding().summary.chart.setVisibility(View.VISIBLE);
+    this._chart.displayBarChart(
+        model.xAxisDomain(),
+        model.yAxisDomain(),
+        model.data(),
+        MaterialColors.getColor(
+            this._fragment.requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
+  }
+
   public void setTotalUncompletedQueues(int amount) {
     this._fragment
         .fragmentBinding()
@@ -124,6 +144,47 @@ public class DashboardSummary implements View.OnClickListener {
         .uncompletedQueuesCard
         .amount
         .setText(Integer.toString(amount));
+  }
+
+  public void displayUncompletedQueuesChart(
+      @NonNull DashboardSummaryViewModel.UncompletedQueuesChartModel model) {
+    Objects.requireNonNull(model);
+
+    final int titleFontSize =
+        JsInterface.dpToCssPx(
+            this._fragment.requireContext(),
+            this._fragment.getResources().getDimensionPixelSize(R.dimen.text_medium));
+    final int oldestDateFontSize =
+        JsInterface.dpToCssPx(
+            this._fragment.requireContext(),
+            this._fragment.getResources().getDimensionPixelSize(R.dimen.text_mediumlarge));
+    final String oldestDate =
+        model.oldestDate() != null
+            ? model
+                .oldestDate()
+                .format(
+                    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+                        .withLocale(new Locale("id", "ID")))
+            : null;
+    final String textInCenter =
+        model.oldestDate() != null
+            ? String.format(
+                this._fragment.getString(R.string.args_svg_oldest_queue_x),
+                titleFontSize,
+                oldestDateFontSize,
+                oldestDate)
+            : null;
+
+    this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
+    this._fragment.fragmentBinding().summary.chart.setVisibility(View.VISIBLE);
+    this._chart.displayDonutChart(
+        model.data().stream()
+            .map(data -> new ChartData.Single<>(this._fragment.getString(data.key()), data.value()))
+            .collect(Collectors.toList()),
+        model.colors().stream()
+            .map(this._fragment.requireContext()::getColor)
+            .collect(Collectors.toList()),
+        textInCenter);
   }
 
   public void setTotalActiveCustomers(int amount) {

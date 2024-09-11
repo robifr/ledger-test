@@ -19,11 +19,7 @@ package com.robifr.ledger.ui.dashboard;
 
 import android.view.View;
 import androidx.annotation.NonNull;
-import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
-import com.robifr.ledger.R;
-import com.robifr.ledger.assetbinding.JsInterface;
-import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.StringResources;
@@ -32,11 +28,9 @@ import com.robifr.ledger.ui.dashboard.viewmodel.DashboardSummaryViewModel;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class DashboardViewModelHandler {
   @NonNull private final DashboardFragment _fragment;
@@ -153,77 +147,26 @@ public class DashboardViewModelHandler {
     Objects.requireNonNull(overviewType);
 
     this._fragment.summaryOverview().selectCard(overviewType);
-    this._fragment.summaryOverview().chart().load();
+    this._fragment.summaryOverview().loadChart();
   }
 
   private void _onSummaryTotalQueuesChartModel(
       @NonNull DashboardSummaryViewModel.TotalQueuesChartModel model) {
     Objects.requireNonNull(model);
 
-    this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
-    this._fragment.fragmentBinding().summary.chart.setVisibility(View.VISIBLE);
-    this._fragment
-        .summaryOverview()
-        .chart()
-        .displayBarChart(
-            model.xAxisDomain(),
-            model.yAxisDomain(),
-            model.data(),
-            MaterialColors.getColor(
-                this._fragment.requireContext(),
-                com.google.android.material.R.attr.colorPrimary,
-                0));
+    this._fragment.summaryOverview().displayTotalQueuesChart(model);
   }
 
   private void _onSummaryTotalQueues(int amount) {
     this._fragment.summaryOverview().setTotalQueues(amount);
-    this._fragment.summaryOverview().chart().load();
+    this._fragment.summaryOverview().loadChart();
   }
 
   private void _onSummaryUncompletedQueuesChartModel(
       @NonNull DashboardSummaryViewModel.UncompletedQueuesChartModel model) {
     Objects.requireNonNull(model);
 
-    final int titleFontSize =
-        JsInterface.dpToCssPx(
-            this._fragment.requireContext(),
-            this._fragment.getResources().getDimensionPixelSize(R.dimen.text_medium));
-    final int oldestDateFontSize =
-        JsInterface.dpToCssPx(
-            this._fragment.requireContext(),
-            this._fragment.getResources().getDimensionPixelSize(R.dimen.text_mediumlarge));
-    final String oldestDate =
-        model.oldestDate() != null
-            ? model
-                .oldestDate()
-                .format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-                        .withLocale(new Locale("id", "ID")))
-            : null;
-    final String textInCenter =
-        model.oldestDate() != null
-            ? String.format(
-                this._fragment.getString(R.string.args_svg_oldest_queue_x),
-                titleFontSize,
-                oldestDateFontSize,
-                oldestDate)
-            : null;
-
-    this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
-    this._fragment.fragmentBinding().summary.chart.setVisibility(View.VISIBLE);
-    this._fragment
-        .summaryOverview()
-        .chart()
-        .displayDonutChart(
-            model.data().stream()
-                .map(
-                    data ->
-                        new ChartData.Single<>(this._fragment.getString(data.key()), data.value()))
-                .collect(Collectors.toList()),
-            model.colors().stream()
-                .map(this._fragment.requireContext()::getColor)
-                .collect(Collectors.toList()),
-            textInCenter);
+    this._fragment.summaryOverview().displayUncompletedQueuesChart(model);
   }
 
   private void _onSummaryTotalUncompletedQueues(int amount) {
@@ -270,36 +213,26 @@ public class DashboardViewModelHandler {
     Objects.requireNonNull(overviewType);
 
     this._fragment.revenueOverview().selectCard(overviewType);
-    this._fragment.revenueOverview().chart().load();
+    this._fragment.revenueOverview().loadChart();
   }
 
   private void _onRevenueChartModel(@NonNull DashboardRevenueViewModel.IncomeChartModel model) {
     Objects.requireNonNull(model);
 
-    this._fragment
-        .revenueOverview()
-        .chart()
-        .displayStackedBarChartWithLargeValue(
-            model.xAxisDomain(),
-            model.yAxisDomain(),
-            model.data(),
-            model.colors().stream()
-                .map(this._fragment.requireContext()::getColor)
-                .collect(Collectors.toList()),
-            model.groupInOrder().stream().map(Enum::toString).collect(Collectors.toSet()));
+    this._fragment.revenueOverview().displayRevenueChart(model);
   }
 
   private void _onRevenueReceivedIncome(@NonNull BigDecimal amount) {
     Objects.requireNonNull(amount);
 
     this._fragment.revenueOverview().setTotalReceivedIncome(amount);
-    this._fragment.revenueOverview().chart().load();
+    this._fragment.revenueOverview().loadChart();
   }
 
   private void _onRevenueProjectedIncome(@NonNull BigDecimal amount) {
     Objects.requireNonNull(amount);
 
     this._fragment.revenueOverview().setTotalProjectedIncome(amount);
-    this._fragment.revenueOverview().chart().load();
+    this._fragment.revenueOverview().loadChart();
   }
 }

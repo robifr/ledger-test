@@ -31,6 +31,7 @@ import com.robifr.ledger.ui.dashboard.viewmodel.DashboardRevenueViewModel;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DashboardRevenue implements View.OnClickListener {
   public enum OverviewType {
@@ -100,9 +101,8 @@ public class DashboardRevenue implements View.OnClickListener {
     }
   }
 
-  @NonNull
-  public Chart chart() {
-    return this._chart;
+  public void loadChart() {
+    this._chart.load();
   }
 
   public void selectCard(@NonNull OverviewType overviewType) {
@@ -139,6 +139,19 @@ public class DashboardRevenue implements View.OnClickListener {
         .receivedIncomeCard
         .amount
         .setText(CurrencyFormat.format(amount, "id", "ID"));
+  }
+
+  public void displayRevenueChart(@NonNull DashboardRevenueViewModel.IncomeChartModel model) {
+    Objects.requireNonNull(model);
+
+    this._chart.displayStackedBarChartWithLargeValue(
+        model.xAxisDomain(),
+        model.yAxisDomain(),
+        model.data(),
+        model.colors().stream()
+            .map(this._fragment.requireContext()::getColor)
+            .collect(Collectors.toList()),
+        model.groupInOrder().stream().map(Enum::toString).collect(Collectors.toSet()));
   }
 
   private class LocalWebView extends WebViewClientCompat {

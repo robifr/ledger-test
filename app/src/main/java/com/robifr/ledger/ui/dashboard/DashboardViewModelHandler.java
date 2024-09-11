@@ -25,6 +25,7 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.assetbinding.JsInterface;
 import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.data.display.QueueDate;
+import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardRevenueViewModel;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardSummaryViewModel;
@@ -33,6 +34,7 @@ import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -73,6 +75,10 @@ public class DashboardViewModelHandler {
         .summaryView()
         .totalUncompletedQueues()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalUncompletedQueues);
+    this._viewModel
+        .summaryView()
+        .mostActiveCustomers()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryMostActiveCustomers);
     this._viewModel
         .summaryView()
         .totalActiveCustomers()
@@ -154,6 +160,8 @@ public class DashboardViewModelHandler {
       @NonNull DashboardSummaryViewModel.TotalQueuesChartModel model) {
     Objects.requireNonNull(model);
 
+    this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
+    this._fragment.fragmentBinding().summary.chart.setVisibility(View.VISIBLE);
     this._fragment
         .summaryOverview()
         .chart()
@@ -201,6 +209,8 @@ public class DashboardViewModelHandler {
                 oldestDate)
             : null;
 
+    this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
+    this._fragment.fragmentBinding().summary.chart.setVisibility(View.VISIBLE);
     this._fragment
         .summaryOverview()
         .chart()
@@ -218,6 +228,12 @@ public class DashboardViewModelHandler {
 
   private void _onSummaryTotalUncompletedQueues(int amount) {
     this._fragment.summaryOverview().setTotalUncompletedQueues(amount);
+  }
+
+  private void _onSummaryMostActiveCustomers(@NonNull Map<CustomerModel, Long> customers) {
+    Objects.requireNonNull(customers);
+
+    this._fragment.summaryOverview().displayMostActiveCustomersList(customers);
   }
 
   private void _onSummaryTotalActiveCustomers(int amount) {

@@ -25,6 +25,7 @@ import com.robifr.ledger.assetbinding.chart.ChartBinding;
 import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.assetbinding.chart.ChartUtil;
 import com.robifr.ledger.data.display.QueueDate;
+import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.dashboard.DashboardSummary;
 import com.robifr.ledger.util.livedata.SafeLiveData;
@@ -62,6 +63,11 @@ public class DashboardSummaryViewModel {
   @NonNull
   private final SafeMediatorLiveData<Integer> _totalUncompletedQueues =
       new SafeMediatorLiveData<>(0);
+
+  /** Map of the most active customers with their appearance counts. */
+  @NonNull
+  private final SafeMutableLiveData<Map<CustomerModel, Long>> _mostActiveCustomers =
+      new SafeMutableLiveData<>(Map.of());
 
   @NonNull
   private final SafeMediatorLiveData<Integer> _totalActiveCustomers = new SafeMediatorLiveData<>(0);
@@ -127,6 +133,14 @@ public class DashboardSummaryViewModel {
   @NonNull
   public SafeLiveData<Integer> totalUncompletedQueues() {
     return this._totalUncompletedQueues;
+  }
+
+  /**
+   * @see DashboardSummaryViewModel#_mostActiveCustomers
+   */
+  @NonNull
+  public SafeLiveData<Map<CustomerModel, Long>> mostActiveCustomers() {
+    return this._mostActiveCustomers;
   }
 
   @NonNull
@@ -223,6 +237,20 @@ public class DashboardSummaryViewModel {
                 QueueModel.Status.IN_PROCESS.resourceBackgroundColor(),
                 QueueModel.Status.UNPAID.resourceBackgroundColor()),
             oldestDate));
+  }
+
+  public void onDisplayMostActiveCustomers() {
+    this._mostActiveCustomers.setValue(
+        this._viewModel._queues().getValue().stream()
+            .filter(queue -> queue.customer() != null)
+            .collect(Collectors.groupingBy(QueueModel::customer, Collectors.counting()))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByValue())
+            .limit(4)
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new)));
   }
 
   /**

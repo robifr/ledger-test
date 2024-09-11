@@ -46,11 +46,28 @@
         android:layout_width="0dp"
         android:layout_height="250dp"
         android:layout_marginTop="@dimen/cardlist_item_margin"
-        android:layout_marginBottom="@dimen/cardlist_item_margin"
-        app:layout_constraintBottom_toTopOf="@id/dividerForChart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <LinearLayout
+        android:id="@+id/listContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cardlist_item_margin"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierAboveDividerForChart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:barrierMargin="@dimen/cardlist_item_margin"
+        app:constraint_referenced_ids="chart,listContainer" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/dividerForChart"
@@ -58,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/summaryFlow"
-        app:layout_constraintTop_toBottomOf="@id/chart" />
+        app:layout_constraintTop_toBottomOf="@id/barrierAboveDividerForChart" />
 
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/summaryFlow"

@@ -31,6 +31,7 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.assetbinding.JsInterface;
 import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.data.model.CustomerModel;
+import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.DashboardCardSummaryBinding;
 import com.robifr.ledger.databinding.DashboardCardSummaryListItemBinding;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardSummaryViewModel;
@@ -250,6 +251,51 @@ public class DashboardSummary implements View.OnClickListener {
         .setText(CurrencyFormat.format(amount, "id", "ID", ""));
   }
 
+  /**
+   * @see DashboardSummaryViewModel#mostProductsSold()
+   */
+  public void displayMostProductsSoldList(@NonNull Map<ProductModel, BigDecimal> products) {
+    Objects.requireNonNull(products);
+
+    this._fragment.fragmentBinding().summary.chart.setVisibility(View.GONE);
+    this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.VISIBLE);
+    this._fragment.fragmentBinding().summary.listContainer.removeAllViews();
+
+    for (Map.Entry<ProductModel, BigDecimal> product : products.entrySet()) {
+      final String amountText =
+          this._fragment
+              .getResources()
+              .getQuantityString(
+                  R.plurals.args_x_item,
+                  product.getValue().intValue(),
+                  CurrencyFormat.format(product.getValue(), "id", "ID", ""));
+
+      final DashboardCardSummaryListItemBinding listItemBinding =
+          DashboardCardSummaryListItemBinding.inflate(
+              this._fragment.getLayoutInflater(),
+              this._fragment.fragmentBinding().summary.listContainer,
+              false);
+      listItemBinding.title.setText(product.getKey().name());
+      listItemBinding.description.setVisibility(View.GONE);
+      listItemBinding.amount.setText(
+          HtmlCompat.fromHtml(amountText, HtmlCompat.FROM_HTML_MODE_LEGACY));
+      listItemBinding.image.shapeableImage.setShapeAppearanceModel(
+          ShapeAppearanceModel.builder(
+                  this._fragment.requireContext(),
+                  com.google.android.material.R.style.Widget_MaterialComponents_ShapeableImageView,
+                  R.style.Shape_Card)
+              .build());
+      listItemBinding.image.text.setText(
+          product
+              .getKey()
+              .name()
+              .trim()
+              .substring(0, Math.min(1, product.getKey().name().trim().length())));
+
+      this._fragment.fragmentBinding().summary.listContainer.addView(listItemBinding.getRoot());
+    }
+  }
+
   private class LocalWebView extends WebViewClientCompat {
     @NonNull private final WebViewAssetLoader _assetLoader;
 
@@ -284,6 +330,7 @@ public class DashboardSummary implements View.OnClickListener {
         case TOTAL_QUEUES -> summaryViewModel.onDisplayTotalQueuesChart();
         case UNCOMPLETED_QUEUES -> summaryViewModel.onDisplayUncompletedQueuesChart();
         case ACTIVE_CUSTOMERS -> summaryViewModel.onDisplayMostActiveCustomers();
+        case PRODUCTS_SOLD -> summaryViewModel.onDisplayMostProductsSold();
       }
     }
   }

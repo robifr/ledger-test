@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerModel;
+import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardRevenueViewModel;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardSummaryViewModel;
@@ -77,6 +78,10 @@ public class DashboardViewModelHandler {
         .summaryView()
         .totalActiveCustomers()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalActiveCustomers);
+    this._viewModel
+        .summaryView()
+        .mostProductsSold()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryMostProductsSold);
     this._viewModel
         .summaryView()
         .totalProductsSold()
@@ -181,6 +186,12 @@ public class DashboardViewModelHandler {
 
   private void _onSummaryTotalActiveCustomers(int amount) {
     this._fragment.summaryOverview().setTotalActiveCustomers(amount);
+  }
+
+  private void _onSummaryMostProductsSold(@NonNull Map<ProductModel, BigDecimal> products) {
+    Objects.requireNonNull(products);
+
+    this._fragment.summaryOverview().displayMostProductsSoldList(products);
   }
 
   private void _onSummaryTotalProductsSold(@NonNull BigDecimal amount) {

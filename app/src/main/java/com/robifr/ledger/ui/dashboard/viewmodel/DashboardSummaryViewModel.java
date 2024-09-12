@@ -26,6 +26,8 @@ import com.robifr.ledger.assetbinding.chart.ChartData;
 import com.robifr.ledger.assetbinding.chart.ChartUtil;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerModel;
+import com.robifr.ledger.data.model.ProductModel;
+import com.robifr.ledger.data.model.ProductOrderModel;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.ui.dashboard.DashboardSummary;
 import com.robifr.ledger.util.livedata.SafeLiveData;
@@ -71,6 +73,11 @@ public class DashboardSummaryViewModel {
 
   @NonNull
   private final SafeMediatorLiveData<Integer> _totalActiveCustomers = new SafeMediatorLiveData<>(0);
+
+  /** Map of the most products sold with their quantity counts. */
+  @NonNull
+  private final SafeMutableLiveData<Map<ProductModel, BigDecimal>> _mostProductsSold =
+      new SafeMutableLiveData<>(Map.of());
 
   @NonNull
   private final SafeMediatorLiveData<BigDecimal> _totalProductsSold =
@@ -146,6 +153,14 @@ public class DashboardSummaryViewModel {
   @NonNull
   public SafeLiveData<Integer> totalActiveCustomers() {
     return this._totalActiveCustomers;
+  }
+
+  /**
+   * @see DashboardSummaryViewModel#_mostProductsSold
+   */
+  @NonNull
+  public SafeLiveData<Map<ProductModel, BigDecimal>> mostProductsSold() {
+    return this._mostProductsSold;
   }
 
   @NonNull
@@ -254,6 +269,25 @@ public class DashboardSummaryViewModel {
                     entry -> entry.getValue().intValue(),
                     (a, b) -> a,
                     LinkedHashMap::new)));
+  }
+
+  public void onDisplayMostProductsSold() {
+    this._mostProductsSold.setValue(
+        this._viewModel._queues().getValue().stream()
+            .flatMap(queue -> queue.productOrders().stream())
+            .filter(order -> order.referencedProduct() != null)
+            .collect(
+                Collectors.toMap(
+                    ProductOrderModel::referencedProduct,
+                    order -> BigDecimal.valueOf(order.quantity()),
+                    BigDecimal::add))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+            .limit(4)
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new)));
   }
 
   /**

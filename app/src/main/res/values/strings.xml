@@ -151,6 +151,10 @@
     ]]>
   </string>
 
+  <plurals name="args_x_item">
+    <item quantity="one"><![CDATA[<b>%s</b> item]]></item>
+    <item quantity="other"><![CDATA[<b>%s</b> items]]></item>
+  </plurals>
   <plurals name="args_x_queue">
     <item quantity="one"><![CDATA[<b>%d</b> queue]]></item>
     <item quantity="other"><![CDATA[<b>%d</b> queues]]></item>

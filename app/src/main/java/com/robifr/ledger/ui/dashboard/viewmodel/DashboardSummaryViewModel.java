@@ -246,7 +246,7 @@ public class DashboardSummaryViewModel {
             .collect(Collectors.groupingBy(QueueModel::customer, Collectors.counting()))
             .entrySet()
             .stream()
-            .sorted(Map.Entry.comparingByValue())
+            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
             .limit(4)
             .collect(
                 Collectors.toMap(

@@ -66,7 +66,7 @@ public class DashboardSummaryViewModel {
 
   /** Map of the most active customers with their appearance counts. */
   @NonNull
-  private final SafeMutableLiveData<Map<CustomerModel, Long>> _mostActiveCustomers =
+  private final SafeMutableLiveData<Map<CustomerModel, Integer>> _mostActiveCustomers =
       new SafeMutableLiveData<>(Map.of());
 
   @NonNull
@@ -139,7 +139,7 @@ public class DashboardSummaryViewModel {
    * @see DashboardSummaryViewModel#_mostActiveCustomers
    */
   @NonNull
-  public SafeLiveData<Map<CustomerModel, Long>> mostActiveCustomers() {
+  public SafeLiveData<Map<CustomerModel, Integer>> mostActiveCustomers() {
     return this._mostActiveCustomers;
   }
 
@@ -250,7 +250,10 @@ public class DashboardSummaryViewModel {
             .limit(4)
             .collect(
                 Collectors.toMap(
-                    Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new)));
+                    Map.Entry::getKey,
+                    entry -> entry.getValue().intValue(),
+                    (a, b) -> a,
+                    LinkedHashMap::new)));
   }
 
   /**

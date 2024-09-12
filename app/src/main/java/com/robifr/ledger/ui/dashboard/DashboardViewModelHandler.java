@@ -173,7 +173,7 @@ public class DashboardViewModelHandler {
     this._fragment.summaryOverview().setTotalUncompletedQueues(amount);
   }
 
-  private void _onSummaryMostActiveCustomers(@NonNull Map<CustomerModel, Long> customers) {
+  private void _onSummaryMostActiveCustomers(@NonNull Map<CustomerModel, Integer> customers) {
     Objects.requireNonNull(customers);
 
     this._fragment.summaryOverview().displayMostActiveCustomersList(customers);

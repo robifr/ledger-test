@@ -199,14 +199,14 @@ public class DashboardSummary implements View.OnClickListener {
   /**
    * @see DashboardSummaryViewModel#mostActiveCustomers()
    */
-  public void displayMostActiveCustomersList(@NonNull Map<CustomerModel, Long> customers) {
+  public void displayMostActiveCustomersList(@NonNull Map<CustomerModel, Integer> customers) {
     Objects.requireNonNull(customers);
 
     this._fragment.fragmentBinding().summary.chart.setVisibility(View.GONE);
     this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.VISIBLE);
     this._fragment.fragmentBinding().summary.listContainer.removeAllViews();
 
-    for (Map.Entry<CustomerModel, Long> customer : customers.entrySet()) {
+    for (Map.Entry<CustomerModel, Integer> customer : customers.entrySet()) {
       final DashboardCardSummaryListItemBinding listItemBinding =
           DashboardCardSummaryListItemBinding.inflate(
               this._fragment.getLayoutInflater(),

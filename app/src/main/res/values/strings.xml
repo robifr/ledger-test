@@ -125,6 +125,7 @@
   <string name="text_sort_by">Sort by</string>
   <string name="text_status">Status</string>
   <string name="text_storage_access_permission_required">Storage access permission required</string>
+  <string name="text_summary">Summary</string>
   <string name="text_this_month">This month</string>
   <string name="text_this_week">This week</string>
   <string name="text_this_year">This year</string>
@@ -149,6 +150,11 @@
       </text>
     ]]>
   </string>
+
+  <plurals name="args_x_queue">
+    <item quantity="one"><![CDATA[<b>%d</b> queue]]></item>
+    <item quantity="other"><![CDATA[<b>%d</b> queues]]></item>
+  </plurals>
 
   <plurals name="args_added_x_customer">
     <item quantity="one">Added %d customer</item>

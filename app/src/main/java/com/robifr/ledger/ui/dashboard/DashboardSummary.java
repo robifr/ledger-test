@@ -22,6 +22,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
 import com.google.android.material.color.MaterialColors;
@@ -207,6 +208,11 @@ public class DashboardSummary implements View.OnClickListener {
     this._fragment.fragmentBinding().summary.listContainer.removeAllViews();
 
     for (Map.Entry<CustomerModel, Integer> customer : customers.entrySet()) {
+      final String amountText =
+          this._fragment
+              .getResources()
+              .getQuantityString(R.plurals.args_x_queue, customer.getValue(), customer.getValue());
+
       final DashboardCardSummaryListItemBinding listItemBinding =
           DashboardCardSummaryListItemBinding.inflate(
               this._fragment.getLayoutInflater(),
@@ -214,7 +220,8 @@ public class DashboardSummary implements View.OnClickListener {
               false);
       listItemBinding.title.setText(customer.getKey().name());
       listItemBinding.description.setVisibility(View.GONE);
-      listItemBinding.amount.setText(customer.getValue().toString());
+      listItemBinding.amount.setText(
+          HtmlCompat.fromHtml(amountText, HtmlCompat.FROM_HTML_MODE_LEGACY));
       listItemBinding.image.shapeableImage.setShapeAppearanceModel(
           ShapeAppearanceModel.builder(
                   this._fragment.requireContext(),

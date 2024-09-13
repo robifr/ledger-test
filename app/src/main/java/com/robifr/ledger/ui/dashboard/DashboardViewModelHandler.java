@@ -55,10 +55,6 @@ public class DashboardViewModelHandler {
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryDisplayedChart);
     this._viewModel
         .summaryView()
-        .totalQueuesChartModel()
-        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalQueuesChartModel);
-    this._viewModel
-        .summaryView()
         .totalQueues()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalQueues);
     this._viewModel
@@ -86,6 +82,16 @@ public class DashboardViewModelHandler {
         .summaryView()
         .totalProductsSold()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalProductsSold);
+    // Since the total queues chart should initially be shown, start observing only after both
+    // `_viewModel.summaryView().mostActiveCustomers()` and
+    // `_viewModel.summaryView().mostProductsSold()` have been observed.
+    // This prevents the chart from shrinking unexpectedly, Because both methods will set
+    // `_fragment.fragmentBinding().summary.listContainer` to be visible while it shouldn't for
+    // the first time, which then cause an issue with `TransitionManager`.
+    this._viewModel
+        .summaryView()
+        .totalQueuesChartModel()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSummaryTotalQueuesChartModel);
 
     this._viewModel
         .balanceView()

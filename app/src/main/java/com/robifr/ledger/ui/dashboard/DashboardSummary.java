@@ -23,6 +23,8 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
+import androidx.transition.ChangeBounds;
+import androidx.transition.TransitionManager;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
 import com.google.android.material.color.MaterialColors;
@@ -129,6 +131,8 @@ public class DashboardSummary implements View.OnClickListener {
       @NonNull DashboardSummaryViewModel.TotalQueuesChartModel model) {
     Objects.requireNonNull(model);
 
+    TransitionManager.beginDelayedTransition(
+        this._fragment.fragmentBinding().getRoot(), new ChangeBounds());
     this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
     this._fragment.fragmentBinding().summary.chart.setVisibility(View.VISIBLE);
     this._chart.displayBarChart(
@@ -177,6 +181,8 @@ public class DashboardSummary implements View.OnClickListener {
                 oldestDate)
             : null;
 
+    TransitionManager.beginDelayedTransition(
+        this._fragment.fragmentBinding().getRoot(), new ChangeBounds());
     this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
     this._fragment.fragmentBinding().summary.chart.setVisibility(View.VISIBLE);
     this._chart.displayDonutChart(
@@ -204,6 +210,8 @@ public class DashboardSummary implements View.OnClickListener {
   public void displayMostActiveCustomersList(@NonNull Map<CustomerModel, Integer> customers) {
     Objects.requireNonNull(customers);
 
+    TransitionManager.beginDelayedTransition(
+        this._fragment.fragmentBinding().getRoot(), new ChangeBounds());
     this._fragment.fragmentBinding().summary.chart.setVisibility(View.GONE);
     this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.VISIBLE);
     this._fragment.fragmentBinding().summary.listContainer.removeAllViews();
@@ -257,6 +265,8 @@ public class DashboardSummary implements View.OnClickListener {
   public void displayMostProductsSoldList(@NonNull Map<ProductModel, BigDecimal> products) {
     Objects.requireNonNull(products);
 
+    TransitionManager.beginDelayedTransition(
+        this._fragment.fragmentBinding().getRoot(), new ChangeBounds());
     this._fragment.fragmentBinding().summary.chart.setVisibility(View.GONE);
     this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.VISIBLE);
     this._fragment.fragmentBinding().summary.listContainer.removeAllViews();

@@ -131,6 +131,7 @@ public class DashboardSummary implements View.OnClickListener {
       @NonNull DashboardSummaryViewModel.TotalQueuesChartModel model) {
     Objects.requireNonNull(model);
 
+    TransitionManager.endTransitions(this._fragment.fragmentBinding().getRoot());
     TransitionManager.beginDelayedTransition(
         this._fragment.fragmentBinding().getRoot(), new ChangeBounds());
     this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
@@ -181,6 +182,7 @@ public class DashboardSummary implements View.OnClickListener {
                 oldestDate)
             : null;
 
+    TransitionManager.endTransitions(this._fragment.fragmentBinding().getRoot());
     TransitionManager.beginDelayedTransition(
         this._fragment.fragmentBinding().getRoot(), new ChangeBounds());
     this._fragment.fragmentBinding().summary.listContainer.setVisibility(View.GONE);
@@ -210,6 +212,7 @@ public class DashboardSummary implements View.OnClickListener {
   public void displayMostActiveCustomersList(@NonNull Map<CustomerModel, Integer> customers) {
     Objects.requireNonNull(customers);
 
+    TransitionManager.endTransitions(this._fragment.fragmentBinding().getRoot());
     TransitionManager.beginDelayedTransition(
         this._fragment.fragmentBinding().getRoot(), new ChangeBounds());
     this._fragment.fragmentBinding().summary.chart.setVisibility(View.GONE);
@@ -265,6 +268,7 @@ public class DashboardSummary implements View.OnClickListener {
   public void displayMostProductsSoldList(@NonNull Map<ProductModel, BigDecimal> products) {
     Objects.requireNonNull(products);
 
+    TransitionManager.endTransitions(this._fragment.fragmentBinding().getRoot());
     TransitionManager.beginDelayedTransition(
         this._fragment.fragmentBinding().getRoot(), new ChangeBounds());
     this._fragment.fragmentBinding().summary.chart.setVisibility(View.GONE);

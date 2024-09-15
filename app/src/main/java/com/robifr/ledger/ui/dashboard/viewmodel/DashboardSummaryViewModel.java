@@ -308,13 +308,13 @@ public class DashboardSummaryViewModel {
    * @param data {@link ChartData.Single} contains:
    *     <ul>
    *       <li>{@link ChartData.Single#key() key} - The {@link QueueModel.Status#resourceString()
-   *           resourceString} in {@link QueueModel.Status Queue.Status}.
+   *           resourceString} in {@link QueueModel.Status QueueModel.Status}.
    *       <li>{@link ChartData.Single#value() value} - The total count of queues with the
    *           corresponding status.
    *     </ul>
    *
    * @param colors The {@link QueueModel.Status#resourceBackgroundColor() resourceBackgroundColor}
-   *     in {@link QueueModel.Status Queue.Status}.
+   *     in {@link QueueModel.Status QueueModel.Status}.
    * @param oldestDate Oldest date for ranged queue to be shown in the center of donut chart.
    * @see ChartBinding#renderDonutChart
    */

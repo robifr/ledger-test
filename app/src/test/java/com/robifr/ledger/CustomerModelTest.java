@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 
 public class CustomerModelTest {
@@ -222,70 +223,75 @@ public class CustomerModelTest {
 
   @Test
   public void debtOnPayment() {
-    final QueueModel completedQueue =
-        QueueModel.toBuilder(this._queue).setStatus(QueueModel.Status.COMPLETED).build();
-    final QueueModel uncompletedQueue =
-        QueueModel.toBuilder(this._queue).setStatus(QueueModel.Status.IN_QUEUE).build();
+    final List<QueueModel> notUnpaidQueues =
+        List.of(
+            QueueModel.toBuilder(this._queue).setStatus(QueueModel.Status.IN_QUEUE).build(),
+            QueueModel.toBuilder(this._queue).setStatus(QueueModel.Status.IN_PROCESS).build(),
+            QueueModel.toBuilder(this._queue).setStatus(QueueModel.Status.COMPLETED).build());
+    final QueueModel unpaidQueue =
+        QueueModel.toBuilder(this._queue).setStatus(QueueModel.Status.UNPAID).build();
+
+    final QueueModel unpaidQueue_noCustomer =
+        QueueModel.toBuilder(unpaidQueue).setCustomerId(null).setCustomer(null).build();
 
     final CustomerModel secondCustomer =
         CustomerModel.toBuilder(this._customer).setId(2L).setName("Ben").build();
-
-    final QueueModel uncompletedQueue_noCustomer =
-        QueueModel.toBuilder(uncompletedQueue).setCustomerId(null).setCustomer(null).build();
-    final QueueModel completedQueue_secondCustomer =
-        QueueModel.toBuilder(completedQueue)
+    final QueueModel unpaidQueue_secondCustomer =
+        QueueModel.toBuilder(unpaidQueue)
             .setCustomerId(secondCustomer.id())
             .setCustomer(secondCustomer)
             .build();
-    final QueueModel uncompletedQueue_secondCustomer =
-        QueueModel.toBuilder(uncompletedQueue)
-            .setCustomerId(secondCustomer.id())
-            .setCustomer(secondCustomer)
-            .build();
+    final Function<QueueModel, QueueModel> notUnpaidQueue_secondCustomer =
+        (notUnpaidQueue) ->
+            QueueModel.toBuilder(notUnpaidQueue)
+                .setCustomerId(secondCustomer.id())
+                .setCustomer(secondCustomer)
+                .build();
 
-    final QueueModel completedQueue_doubleOrder =
-        QueueModel.toBuilder(completedQueue)
+    final QueueModel unpaidQueue_doubleOrder =
+        QueueModel.toBuilder(unpaidQueue)
             .setProductOrders(List.of(this._order, this._order))
             .build();
-    final QueueModel uncompletedQueue_doubleOrder =
-        QueueModel.toBuilder(uncompletedQueue)
-            .setProductOrders(List.of(this._order, this._order))
-            .build();
+    final Function<QueueModel, QueueModel> notUnpaidQueue_doubleOrder =
+        (notUnpaidQueue) ->
+            QueueModel.toBuilder(notUnpaidQueue)
+                .setProductOrders(List.of(this._order, this._order))
+                .build();
 
     assertAll( // spotless:off
         // On made payment.
-        () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnMadePayment(uncompletedQueue), "Add debt when queue uncompleted"),
-        () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnMadePayment(completedQueue), "Keep debt when queue completed"),
-        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnMadePayment(uncompletedQueue), "Keep debt when the customer differs with the one in the queue"),
+        () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnMadePayment(unpaidQueue), "Add debt when queue unpaid"),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, this._customer.debtOnMadePayment(queue), "Keep debt when queue is not unpaid")),
+        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnMadePayment(unpaidQueue), "Keep debt when the customer differs with the one in the queue"),
 
         // On reverted payment.
-        () -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnRevertedPayment(uncompletedQueue), "Revert debt when queue uncompleted"),
-        () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnRevertedPayment(completedQueue), "Keep debt when queue completed"),
-        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnRevertedPayment(uncompletedQueue), "Keep debt when the customer differs with the one in the queue"),
+        () -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnRevertedPayment(unpaidQueue), "Revert debt when queue unpaid"),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, this._customer.debtOnRevertedPayment(queue), "Keep debt when queue is not unpaid")),
+        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnRevertedPayment(unpaidQueue), "Keep debt when the customer differs with the one in the queue"),
 
         // On updated payment.
 
-        () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(completedQueue, completedQueue), "Keep debt when queue unchanged"),
-        () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(completedQueue, uncompletedQueue), "Add debt when queue changed to uncompleted"),
-        () -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnUpdatedPayment(uncompletedQueue, completedQueue), "Revert debt when queue changed to completed"),
-        () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue), "Keep debt when queue unchanged"),
-        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(completedQueue, uncompletedQueue), "Keep debt when both customer differs"),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(queue, queue), "Keep debt when queue unchanged")),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(queue, unpaidQueue), "Add debt when queue changed to unpaid")),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnUpdatedPayment(unpaidQueue, queue), "Revert debt when queue changed to not unpaid")),
+        () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(unpaidQueue, unpaidQueue), "Keep debt when queue unchanged"),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(queue, unpaidQueue), "Keep debt when both customer differs")),
 
         // When the old queue doesn't have customer beforehand.
-        () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(uncompletedQueue_noCustomer, completedQueue), "Keep debt when queue stays completed"),
-        () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(uncompletedQueue_noCustomer, uncompletedQueue), "Add debt when old queue with no customer changed to uncompleted"),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(unpaidQueue_noCustomer, queue), "Keep debt when old queue with no customer changed to not unpaid")),
+        () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(unpaidQueue_noCustomer, unpaidQueue), "Add debt when old queue with no customer changed to unpaid"),
 
         // When the queue has different customer.
-        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(completedQueue, completedQueue_secondCustomer), "Keep debt when queue stays completed"),
-        () -> assertEquals(BigDecimal.valueOf(-1000), secondCustomer.debtOnUpdatedPayment(completedQueue, uncompletedQueue_secondCustomer), "Add debt when queue changed to uncompleted with different customer"),
-        () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(uncompletedQueue, completedQueue_secondCustomer), "Revert debt when queue changed to completed with different customer"),
-        () -> assertEquals(BigDecimal.valueOf(-1000), secondCustomer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue_secondCustomer), "Add debt when queue stays uncompleted with different customer"),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(queue, notUnpaidQueue_secondCustomer.apply(queue)), "Keep debt when queue stays not unpaid with different customer")),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.valueOf(-1000), secondCustomer.debtOnUpdatedPayment(queue, unpaidQueue_secondCustomer), "Add debt when queue changed to unpaid with different customer")),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnUpdatedPayment(unpaidQueue, notUnpaidQueue_secondCustomer.apply(queue)), "Revert debt when queue changed to not unpaid with different customer")),
+        () -> assertEquals(BigDecimal.valueOf(-1000), secondCustomer.debtOnUpdatedPayment(unpaidQueue, unpaidQueue_secondCustomer), "Add debt when queue stays unpaid with different customer"),
 
         // When the queue has more total price of ordered products.
-        () -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(completedQueue, completedQueue_doubleOrder), "Keep debt when queue stays completed"),
-        () -> assertEquals(BigDecimal.valueOf(-2000), this._customer.debtOnUpdatedPayment(completedQueue, uncompletedQueue_doubleOrder), "Add debt when queue changed to uncompleted with different total price"),
-        () -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnUpdatedPayment(uncompletedQueue, completedQueue_doubleOrder), "Revert debt when queue changed to completed with different total price"),
-        () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(uncompletedQueue, uncompletedQueue_doubleOrder), "Add debt when queue stays uncompleted with different total price")
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(queue, notUnpaidQueue_doubleOrder.apply(queue)), "Keep debt when queue stays not unpaid with different total price")),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.valueOf(-2000), this._customer.debtOnUpdatedPayment(queue, unpaidQueue_doubleOrder), "Add debt when queue changed to unpaid with different total price")),
+        () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnUpdatedPayment(unpaidQueue, notUnpaidQueue_doubleOrder.apply(queue)), "Revert debt when queue changed to not unpaid with different total price")),
+        () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(unpaidQueue, unpaidQueue_doubleOrder), "Add debt when queue stays unpaid with different total price")
     ); // spotless:on
   }
 }

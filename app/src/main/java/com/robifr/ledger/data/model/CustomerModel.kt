@@ -33,8 +33,8 @@ import kotlinx.parcelize.Parcelize
  * @param name Product name.
  * @param balance Product balance.
  * @param debt Customer debt is stored as a negative number, by counting
- *   [ProductOrderModel.totalPrice] from queues whose status is other than
- *   [QueueModel.Status.COMPLETED]. Use [CustomerDao.totalDebtById] to count current total debt.
+ *   [ProductOrderModel.totalPrice] from queues whose status is [QueueModel.Status.UNPAID]. Use
+ *   [CustomerDao.totalDebtById] to count current total debt.
  */
 @JvmRecord
 @Parcelize
@@ -176,7 +176,7 @@ data class CustomerModel(
   /** Calculate debt when customer is assigned to pay a queue. */
   @Ignore
   fun debtOnMadePayment(queue: QueueModel): BigDecimal {
-    return if (this.id == queue.customer?.id && queue.status != QueueModel.Status.COMPLETED)
+    return if (this.id == queue.customer?.id && queue.status == QueueModel.Status.UNPAID)
         this.debt - queue.grandTotalPrice()
     else this.debt
   }
@@ -186,14 +186,14 @@ data class CustomerModel(
    */
   @Ignore
   fun debtOnUpdatedPayment(oldQueue: QueueModel, newQueue: QueueModel): BigDecimal {
-    // WARNING: Although debt will always be calculated based on total price of uncompleted queues.
+    // WARNING: Although debt will always be calculated based on total price of unpaid queues.
     //    It does still important to calculate post-transaction debt for UI stuff.
     //    Just think twice before you do something here. You have been warned.
 
     if (this.id != newQueue.customer?.id) return this.debt
 
-    val isStatusCompleted: Boolean = newQueue.status == QueueModel.Status.COMPLETED
-    val isStatusWasCompleted: Boolean = oldQueue.status == QueueModel.Status.COMPLETED
+    val isStatusUnpaid: Boolean = newQueue.status == QueueModel.Status.UNPAID
+    val isStatusWasUnpaid: Boolean = oldQueue.status == QueueModel.Status.UNPAID
     val isTotalPriceChanged: Boolean =
         oldQueue.grandTotalPrice().compareTo(newQueue.grandTotalPrice()) != 0
 
@@ -201,17 +201,17 @@ data class CustomerModel(
     // Don't accept for null to null ID.
     val isCustomerChanged: Boolean = this.id != null && this.id != oldQueue.customerId
 
-    // Revert debt when changing queue status from uncompleted to completed.
-    if (isStatusCompleted && !isStatusWasCompleted && (!isCustomerChanged || isTotalPriceChanged)) {
+    // Revert debt when changing queue status from unpaid to others.
+    if (!isStatusUnpaid && isStatusWasUnpaid && (!isCustomerChanged || isTotalPriceChanged)) {
       return this.debt + oldQueue.grandTotalPrice()
 
-      // Add more debt when changing queue status from uncompleted to completed.
-    } else if (!isStatusCompleted && (isStatusWasCompleted || isCustomerChanged)) {
+      // Add more debt when changing queue status from others to unpaid.
+    } else if (isStatusUnpaid && (!isStatusWasUnpaid || isCustomerChanged)) {
       return this.debt - newQueue.grandTotalPrice()
 
       // Add more debt when queue total price changed by
       // calculating difference between old and new total price.
-    } else if (!isStatusCompleted && isTotalPriceChanged) {
+    } else if (isStatusUnpaid && isTotalPriceChanged) {
       return this.debt + oldQueue.grandTotalPrice() - newQueue.grandTotalPrice()
     }
 
@@ -221,7 +221,7 @@ data class CustomerModel(
   /** Calculate debt when going to revert the payment, like when deleting queue. */
   @Ignore
   fun debtOnRevertedPayment(queue: QueueModel): BigDecimal {
-    return if (this.id == queue.customer?.id && queue.status != QueueModel.Status.COMPLETED)
+    return if (this.id == queue.customer?.id && queue.status == QueueModel.Status.UNPAID)
         this.debt + queue.grandTotalPrice()
     else this.debt
   }

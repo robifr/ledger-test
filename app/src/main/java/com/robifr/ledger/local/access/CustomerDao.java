@@ -162,13 +162,13 @@ public abstract class CustomerDao implements QueryAccessible<CustomerModel> {
   }
 
   /**
-   * @return Current debt by counting all of product orders total price from uncompleted queues.
+   * @return Current debt by counting all of product orders total price from unpaid queues.
    * @noinspection NullableProblems
    */
   @NonNull
   @Transaction
   public BigDecimal totalDebtById(@Nullable Long customerId) {
-    return this._selectUncompletedQueueTotalPrice(customerId).stream()
+    return this._selectUnpaidQueueTotalPrice(customerId).stream()
         .reduce(BigDecimal.ZERO, BigDecimal::subtract);
   }
 
@@ -227,11 +227,11 @@ public abstract class CustomerDao implements QueryAccessible<CustomerModel> {
         SELECT queue.id FROM queue
         WHERE queue.id = product_order.queue_id
             AND queue.customer_id = :customerId
-            AND queue.status != 'COMPLETED'
+            AND queue.status == 'UNPAID'
       )
       """)
   @TypeConverters(BigDecimalConverter.class)
-  protected abstract List<BigDecimal> _selectUncompletedQueueTotalPrice(@Nullable Long customerId);
+  protected abstract List<BigDecimal> _selectUnpaidQueueTotalPrice(@Nullable Long customerId);
 
   /**
    * Delete customer virtual row from FTS table. It should be used before updating or deleting

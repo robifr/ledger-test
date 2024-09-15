@@ -54,7 +54,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
         this.selectCustomerById(
             Objects.requireNonNull(
                 savedStateHandle.get(
-                    EditCustomerFragment.Arguments.INITIAL_CUSTOMER_ID_TO_EDIT.key()))),
+                    EditCustomerFragment.Arguments.INITIAL_CUSTOMER_ID_TO_EDIT_LONG.key()))),
         customer -> {
           this._initialCustomerToEdit = customer;
           this.onNameTextChanged(customer.name());

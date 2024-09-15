@@ -44,7 +44,7 @@ public class EditProductViewModelHandler extends CreateProductViewModelHandler {
     productId.ifPresent(
         id -> {
           final Bundle bundle = new Bundle();
-          bundle.putLong(EditProductFragment.Result.EDITED_PRODUCT_ID.key(), id);
+          bundle.putLong(EditProductFragment.Result.EDITED_PRODUCT_ID_LONG.key(), id);
 
           this._fragment
               .getParentFragmentManager()

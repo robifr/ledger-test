@@ -32,7 +32,7 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class EditCustomerFragment extends CreateCustomerFragment {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_CUSTOMER_ID_TO_EDIT
+    INITIAL_CUSTOMER_ID_TO_EDIT_LONG
   }
 
   public enum Request implements FragmentResultKey {
@@ -40,7 +40,7 @@ public class EditCustomerFragment extends CreateCustomerFragment {
   }
 
   public enum Result implements FragmentResultKey {
-    EDITED_CUSTOMER_ID
+    EDITED_CUSTOMER_ID_LONG
   }
 
   @Override

@@ -55,7 +55,7 @@ public class QueueListMenu implements View.OnClickListener {
         if (queueId == null) return;
 
         final Bundle bundle = new Bundle();
-        bundle.putLong(EditQueueFragment.Arguments.INITIAL_QUEUE_ID_TO_EDIT.key(), queueId);
+        bundle.putLong(EditQueueFragment.Arguments.INITIAL_QUEUE_ID_TO_EDIT_LONG.key(), queueId);
 
         Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
             .navigate(R.id.editQueueFragment, bundle);

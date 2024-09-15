@@ -56,7 +56,7 @@ public class FilterCustomerResultHandler {
         final FilterCustomerViewModel viewModel =
             FilterCustomerResultHandler.this._fragment.filterCustomerViewModel();
         final Long customerId =
-            result.getLong(SearchCustomerFragment.Result.SELECTED_CUSTOMER_ID.key());
+            result.getLong(SearchCustomerFragment.Result.SELECTED_CUSTOMER_ID_LONG.key());
 
         final CustomerModel selectedCustomer =
             !customerId.equals(0L)

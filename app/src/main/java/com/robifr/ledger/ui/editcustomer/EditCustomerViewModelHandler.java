@@ -44,7 +44,7 @@ public class EditCustomerViewModelHandler extends CreateCustomerViewModelHandler
     customerId.ifPresent(
         id -> {
           final Bundle bundle = new Bundle();
-          bundle.putLong(EditCustomerFragment.Result.EDITED_CUSTOMER_ID.key(), id);
+          bundle.putLong(EditCustomerFragment.Result.EDITED_CUSTOMER_ID_LONG.key(), id);
 
           this._fragment
               .getParentFragmentManager()

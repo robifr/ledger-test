@@ -56,7 +56,7 @@ public class QueueResultHandler {
         final List<Long> customerIds =
             Objects.requireNonNullElse(
                 Compats.longArrayListOf(
-                    result, FilterCustomerFragment.Result.FILTERED_CUSTOMER_IDS.key()),
+                    result, FilterCustomerFragment.Result.FILTERED_CUSTOMER_IDS_LONG_ARRAY.key()),
                 new ArrayList<>());
 
         QueueResultHandler.this

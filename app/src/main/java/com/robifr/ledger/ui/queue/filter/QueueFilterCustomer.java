@@ -62,7 +62,7 @@ public class QueueFilterCustomer
 
         final Bundle bundle = new Bundle();
         bundle.putLongArray(
-            FilterCustomerFragment.Arguments.INITIAL_FILTERED_CUSTOMER_IDS.key(),
+            FilterCustomerFragment.Arguments.INITIAL_FILTERED_CUSTOMER_IDS_LONG_ARRAY.key(),
             filteredCustomerIds.stream().mapToLong(Long::longValue).toArray());
 
         Navigation.findNavController(this._fragment.fragmentBinding().getRoot())

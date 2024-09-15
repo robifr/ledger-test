@@ -82,7 +82,7 @@ public class CreateCustomerViewModelHandler {
     customerId.ifPresent(
         id -> {
           final Bundle bundle = new Bundle();
-          bundle.putLong(CreateCustomerFragment.Result.CREATED_CUSTOMER_ID.key(), id);
+          bundle.putLong(CreateCustomerFragment.Result.CREATED_CUSTOMER_ID_LONG.key(), id);
 
           this._fragment
               .getParentFragmentManager()

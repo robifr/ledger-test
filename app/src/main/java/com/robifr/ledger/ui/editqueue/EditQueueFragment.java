@@ -32,7 +32,7 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class EditQueueFragment extends CreateQueueFragment {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_QUEUE_ID_TO_EDIT
+    INITIAL_QUEUE_ID_TO_EDIT_LONG
   }
 
   public enum Request implements FragmentResultKey {
@@ -40,7 +40,7 @@ public class EditQueueFragment extends CreateQueueFragment {
   }
 
   public enum Result implements FragmentResultKey {
-    EDITED_QUEUE_ID
+    EDITED_QUEUE_ID_LONG
   }
 
   @Override

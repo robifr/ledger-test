@@ -65,7 +65,7 @@ public class CreateProductViewModelHandler {
     productId.ifPresent(
         id -> {
           final Bundle bundle = new Bundle();
-          bundle.putLong(CreateProductFragment.Result.CREATED_PRODUCT_ID.key(), id);
+          bundle.putLong(CreateProductFragment.Result.CREATED_PRODUCT_ID_LONG.key(), id);
 
           this._fragment
               .getParentFragmentManager()

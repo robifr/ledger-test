@@ -77,7 +77,8 @@ public class FilterCustomerViewModel extends ViewModel {
           final long[] filteredCustomerIds =
               Objects.requireNonNullElse(
                   savedStateHandle.get(
-                      FilterCustomerFragment.Arguments.INITIAL_FILTERED_CUSTOMER_IDS.key()),
+                      FilterCustomerFragment.Arguments.INITIAL_FILTERED_CUSTOMER_IDS_LONG_ARRAY
+                          .key()),
                   new long[] {});
           final List<CustomerModel> filteredCustomers =
               customers.stream()

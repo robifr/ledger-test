@@ -42,7 +42,7 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class SearchProductFragment extends Fragment implements SearchView.OnQueryTextListener {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_QUERY
+    INITIAL_QUERY_STRING
   }
 
   public enum Request implements FragmentResultKey {
@@ -50,7 +50,7 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
   }
 
   public enum Result implements FragmentResultKey {
-    SELECTED_PRODUCT_ID
+    SELECTED_PRODUCT_ID_LONG
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();

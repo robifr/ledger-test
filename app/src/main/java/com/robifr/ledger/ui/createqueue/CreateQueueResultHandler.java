@@ -63,7 +63,7 @@ public class CreateQueueResultHandler {
         final CreateQueueViewModel viewModel =
             CreateQueueResultHandler.this._fragment.createQueueViewModel();
         final Long customerId =
-            result.getLong(SelectCustomerFragment.Result.SELECTED_CUSTOMER_ID.key());
+            result.getLong(SelectCustomerFragment.Result.SELECTED_CUSTOMER_ID_LONG.key());
 
         if (!customerId.equals(0L)) {
           viewModel
@@ -93,7 +93,7 @@ public class CreateQueueResultHandler {
       case SELECT_PRODUCT -> {
         final CreateQueueFragment fragment = CreateQueueResultHandler.this._fragment;
         final Long productId =
-            result.getLong(SelectProductFragment.Result.SELECTED_PRODUCT_ID.key());
+            result.getLong(SelectProductFragment.Result.SELECTED_PRODUCT_ID_LONG.key());
 
         //noinspection ExtractMethodRecommender
         final CompletableFuture<ProductModel> selectedProduct = new CompletableFuture<>();

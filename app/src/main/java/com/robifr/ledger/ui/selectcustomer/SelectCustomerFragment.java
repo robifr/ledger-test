@@ -41,7 +41,7 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_SELECTED_CUSTOMER
+    INITIAL_SELECTED_CUSTOMER_PARCELABLE
   }
 
   public enum Request implements FragmentResultKey {
@@ -49,7 +49,7 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   }
 
   public enum Result implements FragmentResultKey {
-    SELECTED_CUSTOMER_ID
+    SELECTED_CUSTOMER_ID_LONG
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();

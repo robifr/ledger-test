@@ -55,7 +55,7 @@ public class SelectProductResultHandler {
         final SelectProductViewModel viewModel =
             SelectProductResultHandler.this._fragment.selectProductViewModel();
         final Long productId =
-            result.getLong(SearchProductFragment.Result.SELECTED_PRODUCT_ID.key());
+            result.getLong(SearchProductFragment.Result.SELECTED_PRODUCT_ID_LONG.key());
         final ProductModel selectedProduct =
             !productId.equals(0L)
                 ? viewModel.products().getValue().stream()

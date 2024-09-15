@@ -44,7 +44,7 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
   }
 
   public enum Result implements FragmentResultKey {
-    CREATED_QUEUE_ID
+    CREATED_QUEUE_ID_LONG
   }
 
   @Nullable protected CreateQueueFragmentBinding _fragmentBinding;

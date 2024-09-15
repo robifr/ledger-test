@@ -59,7 +59,7 @@ public class SelectCustomerViewModelHandler {
     final Bundle bundle = new Bundle();
 
     customerId.ifPresent(
-        id -> bundle.putLong(SelectCustomerFragment.Result.SELECTED_CUSTOMER_ID.key(), id));
+        id -> bundle.putLong(SelectCustomerFragment.Result.SELECTED_CUSTOMER_ID_LONG.key(), id));
 
     this._fragment
         .getParentFragmentManager()

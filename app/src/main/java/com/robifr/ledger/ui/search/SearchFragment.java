@@ -117,7 +117,7 @@ public class SearchFragment extends Fragment
         if (view == this._customerListBinding.viewMoreButton) {
           final Bundle bundle = new Bundle();
           bundle.putString(
-              SearchCustomerFragment.Arguments.INITIAL_QUERY.key(),
+              SearchCustomerFragment.Arguments.INITIAL_QUERY_STRING.key(),
               this._fragmentBinding.searchView.getQuery().toString());
 
           Navigation.findNavController(this._fragmentBinding.getRoot())
@@ -126,7 +126,7 @@ public class SearchFragment extends Fragment
         } else if (view == this._productListBinding.viewMoreButton) {
           final Bundle bundle = new Bundle();
           bundle.putString(
-              SearchProductFragment.Arguments.INITIAL_QUERY.key(),
+              SearchProductFragment.Arguments.INITIAL_QUERY_STRING.key(),
               this._fragmentBinding.searchView.getQuery().toString());
 
           Navigation.findNavController(this._fragmentBinding.getRoot())

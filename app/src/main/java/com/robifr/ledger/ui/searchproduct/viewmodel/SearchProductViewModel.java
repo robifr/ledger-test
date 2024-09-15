@@ -61,7 +61,8 @@ public class SearchProductViewModel extends ViewModel {
     this._query =
         new SafeMutableLiveData<>(
             Objects.requireNonNullElse(
-                savedStateHandle.get(SearchProductFragment.Arguments.INITIAL_QUERY.key()), ""));
+                savedStateHandle.get(SearchProductFragment.Arguments.INITIAL_QUERY_STRING.key()),
+                ""));
   }
 
   @NonNull

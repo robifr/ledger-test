@@ -79,7 +79,7 @@ public class CreateQueueMakeProductOrder
       case R.id.product -> {
         final Bundle bundle = new Bundle();
         bundle.putParcelable(
-            SelectProductFragment.Arguments.INITIAL_SELECTED_PRODUCT.key(),
+            SelectProductFragment.Arguments.INITIAL_SELECTED_PRODUCT_PARCELABLE.key(),
             this._fragment
                 .createQueueViewModel()
                 .makeProductOrderView()

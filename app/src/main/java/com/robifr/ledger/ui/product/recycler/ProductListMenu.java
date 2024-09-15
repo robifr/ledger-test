@@ -55,7 +55,8 @@ public class ProductListMenu implements View.OnClickListener {
         if (productId == null) return;
 
         final Bundle bundle = new Bundle();
-        bundle.putLong(EditProductFragment.Arguments.INITIAL_PRODUCT_ID_TO_EDIT.key(), productId);
+        bundle.putLong(
+            EditProductFragment.Arguments.INITIAL_PRODUCT_ID_TO_EDIT_LONG.key(), productId);
 
         Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
             .navigate(R.id.editProductFragment, bundle);

@@ -70,7 +70,8 @@ public class SelectCustomerViewModel extends ViewModel {
 
     this._customerRepository = Objects.requireNonNull(customerRepository);
     this._initialSelectedCustomer =
-        savedStateHandle.get(SelectCustomerFragment.Arguments.INITIAL_SELECTED_CUSTOMER.key());
+        savedStateHandle.get(
+            SelectCustomerFragment.Arguments.INITIAL_SELECTED_CUSTOMER_PARCELABLE.key());
 
     this._sorter.setSortMethod(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
     this._customerRepository.addModelChangedListener(this._customerChangedListener);

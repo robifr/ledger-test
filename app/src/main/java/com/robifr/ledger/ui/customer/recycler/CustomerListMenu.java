@@ -56,7 +56,7 @@ public class CustomerListMenu implements View.OnClickListener {
 
         final Bundle bundle = new Bundle();
         bundle.putLong(
-            EditCustomerFragment.Arguments.INITIAL_CUSTOMER_ID_TO_EDIT.key(), customerId);
+            EditCustomerFragment.Arguments.INITIAL_CUSTOMER_ID_TO_EDIT_LONG.key(), customerId);
 
         Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
             .navigate(R.id.editCustomerFragment, bundle);

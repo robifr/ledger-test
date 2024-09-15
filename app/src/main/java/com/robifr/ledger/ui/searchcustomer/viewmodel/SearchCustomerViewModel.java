@@ -64,7 +64,8 @@ public class SearchCustomerViewModel extends ViewModel {
     this._initializedInitialQuery.setValue(
         new SafeEvent<>(
             Objects.requireNonNullElse(
-                savedStateHandle.get(SearchCustomerFragment.Arguments.INITIAL_QUERY.key()), "")));
+                savedStateHandle.get(SearchCustomerFragment.Arguments.INITIAL_QUERY_STRING.key()),
+                "")));
   }
 
   @NonNull

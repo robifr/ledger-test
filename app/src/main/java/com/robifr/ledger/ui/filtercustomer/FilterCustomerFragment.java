@@ -41,7 +41,7 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_FILTERED_CUSTOMER_IDS
+    INITIAL_FILTERED_CUSTOMER_IDS_LONG_ARRAY
   }
 
   public enum Request implements FragmentResultKey {
@@ -49,7 +49,7 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   }
 
   public enum Result implements FragmentResultKey {
-    FILTERED_CUSTOMER_IDS
+    FILTERED_CUSTOMER_IDS_LONG_ARRAY
   }
 
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();

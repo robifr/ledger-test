@@ -62,7 +62,8 @@ public class EditQueueViewModel extends CreateQueueViewModel {
         // Shouldn't be null when editing data.
         this.selectQueueById(
             Objects.requireNonNull(
-                savedStateHandle.get(EditQueueFragment.Arguments.INITIAL_QUEUE_ID_TO_EDIT.key()))),
+                savedStateHandle.get(
+                    EditQueueFragment.Arguments.INITIAL_QUEUE_ID_TO_EDIT_LONG.key()))),
         queue -> {
           this._initialQueueToEdit = queue;
           this.onCustomerChanged(queue.customer());

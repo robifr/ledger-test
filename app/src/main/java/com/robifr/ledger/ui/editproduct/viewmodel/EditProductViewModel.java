@@ -56,7 +56,7 @@ public class EditProductViewModel extends CreateProductViewModel {
         this.selectProductById(
             Objects.requireNonNull(
                 savedStateHandle.get(
-                    EditProductFragment.Arguments.INITIAL_PRODUCT_ID_TO_EDIT.key()))),
+                    EditProductFragment.Arguments.INITIAL_PRODUCT_ID_TO_EDIT_LONG.key()))),
         product -> {
           this._initialProductToEdit = product;
           this.onNameTextChanged(product.name());

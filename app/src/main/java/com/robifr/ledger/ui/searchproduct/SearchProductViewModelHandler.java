@@ -54,7 +54,7 @@ public class SearchProductViewModelHandler {
     final Bundle bundle = new Bundle();
 
     productId.ifPresent(
-        id -> bundle.putLong(SearchProductFragment.Result.SELECTED_PRODUCT_ID.key(), id));
+        id -> bundle.putLong(SearchProductFragment.Result.SELECTED_PRODUCT_ID_LONG.key(), id));
 
     this._fragment
         .getParentFragmentManager()

@@ -118,7 +118,7 @@ public class CreateQueueViewModelHandler {
     queueId.ifPresent(
         id -> {
           final Bundle bundle = new Bundle();
-          bundle.putLong(CreateQueueFragment.Result.CREATED_QUEUE_ID.key(), id);
+          bundle.putLong(CreateQueueFragment.Result.CREATED_QUEUE_ID_LONG.key(), id);
 
           this._fragment
               .getParentFragmentManager()

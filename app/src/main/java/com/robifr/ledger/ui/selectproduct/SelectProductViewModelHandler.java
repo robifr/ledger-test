@@ -59,7 +59,7 @@ public class SelectProductViewModelHandler {
     final Bundle bundle = new Bundle();
 
     productId.ifPresent(
-        id -> bundle.putLong(SelectProductFragment.Result.SELECTED_PRODUCT_ID.key(), id));
+        id -> bundle.putLong(SelectProductFragment.Result.SELECTED_PRODUCT_ID_LONG.key(), id));
 
     this._fragment
         .getParentFragmentManager()

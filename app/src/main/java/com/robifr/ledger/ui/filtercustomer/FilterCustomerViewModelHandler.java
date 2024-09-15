@@ -64,7 +64,7 @@ public class FilterCustomerViewModelHandler {
 
     final Bundle bundle = new Bundle();
     bundle.putLongArray(
-        FilterCustomerFragment.Result.FILTERED_CUSTOMER_IDS.key(), filteredCustomerIds);
+        FilterCustomerFragment.Result.FILTERED_CUSTOMER_IDS_LONG_ARRAY.key(), filteredCustomerIds);
 
     this._fragment
         .getParentFragmentManager()

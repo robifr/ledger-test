@@ -69,7 +69,8 @@ public class SelectProductViewModel extends ViewModel {
 
     this._productRepository = Objects.requireNonNull(productRepository);
     this._initialSelectedProduct =
-        savedStateHandle.get(SelectProductFragment.Arguments.INITIAL_SELECTED_PRODUCT.key());
+        savedStateHandle.get(
+            SelectProductFragment.Arguments.INITIAL_SELECTED_PRODUCT_PARCELABLE.key());
 
     this._sorter.setSortMethod(new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
     this._productRepository.addModelChangedListener(this._productChangedListener);

@@ -45,7 +45,7 @@ public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   }
 
   public enum Result implements FragmentResultKey {
-    CREATED_CUSTOMER_ID
+    CREATED_CUSTOMER_ID_LONG
   }
 
   @Nullable protected CreateCustomerFragmentBinding _fragmentBinding;

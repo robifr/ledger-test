@@ -58,7 +58,7 @@ public class SearchCustomerViewModelHandler {
     final Bundle bundle = new Bundle();
 
     customerId.ifPresent(
-        id -> bundle.putLong(SearchCustomerFragment.Result.SELECTED_CUSTOMER_ID.key(), id));
+        id -> bundle.putLong(SearchCustomerFragment.Result.SELECTED_CUSTOMER_ID_LONG.key(), id));
 
     this._fragment
         .getParentFragmentManager()

@@ -155,7 +155,6 @@ public class CustomerModelTest {
             .build();
 
     assertAll( // spotless:off
-        // On made payment.
         () -> assertEquals(9000L, this._customer.balanceOnMadePayment(completedQueue_accountBalance), "Deduct balance when queue completed with account balance"),
         () -> assertEquals(10_000L, this._customer.balanceOnMadePayment(completedQueue_cash), "Keep balance when queue completed with cash"),
         () -> assertEquals(10_000L, this._customer.balanceOnMadePayment(uncompletedQueue_cash), "Keep balance when queue uncompleted"),
@@ -163,14 +162,11 @@ public class CustomerModelTest {
         () -> assertEquals(500L, lowBalanceCustomer.balanceOnMadePayment(completedQueue_accountBalance), "Keep balance when the balance low"),
         () -> assertEquals(10_000L, secondCustomer.balanceOnMadePayment(completedQueue_accountBalance), "Keep balance when the customer differs with the one in the queue"),
 
-        // On reverted payment.
         () -> assertEquals(11_000L, this._customer.balanceOnRevertedPayment(completedQueue_accountBalance), "Revert balance when queue completed with account balance"),
         () -> assertEquals(10_000L, this._customer.balanceOnRevertedPayment(completedQueue_cash), "Keep balance when queue completed with cash"),
         () -> assertEquals(10_000L, this._customer.balanceOnRevertedPayment(uncompletedQueue_cash), "Keep balance when queue uncompleted"),
         () -> assertEquals(10_000L, this._customer.balanceOnRevertedPayment(uncompletedQueue_accountBalance), "Keep balance when queue uncompleted"),
         () -> assertEquals(10_000L, secondCustomer.balanceOnRevertedPayment(completedQueue_accountBalance), "Keep balance when the customer differs with the one in the queue"),
-
-        // On updated payment.
 
         () -> assertEquals(10_000L, this._customer.balanceOnUpdatedPayment(completedQueue_accountBalance, completedQueue_accountBalance), "Keep balance when queue unchanged"),
         () -> assertEquals(11_000L, this._customer.balanceOnUpdatedPayment(completedQueue_accountBalance, completedQueue_cash), "Revert balance when queue changed to cash"),
@@ -259,17 +255,13 @@ public class CustomerModelTest {
                 .build();
 
     assertAll( // spotless:off
-        // On made payment.
         () -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnMadePayment(unpaidQueue), "Add debt when queue unpaid"),
         () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, this._customer.debtOnMadePayment(queue), "Keep debt when queue is not unpaid")),
         () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnMadePayment(unpaidQueue), "Keep debt when the customer differs with the one in the queue"),
 
-        // On reverted payment.
         () -> assertEquals(BigDecimal.valueOf(1000), this._customer.debtOnRevertedPayment(unpaidQueue), "Revert debt when queue unpaid"),
         () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, this._customer.debtOnRevertedPayment(queue), "Keep debt when queue is not unpaid")),
         () -> assertEquals(BigDecimal.ZERO, secondCustomer.debtOnRevertedPayment(unpaidQueue), "Keep debt when the customer differs with the one in the queue"),
-
-        // On updated payment.
 
         () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.ZERO, this._customer.debtOnUpdatedPayment(queue, queue), "Keep debt when queue unchanged")),
         () -> notUnpaidQueues.forEach(queue -> assertEquals(BigDecimal.valueOf(-1000), this._customer.debtOnUpdatedPayment(queue, unpaidQueue), "Add debt when queue changed to unpaid")),

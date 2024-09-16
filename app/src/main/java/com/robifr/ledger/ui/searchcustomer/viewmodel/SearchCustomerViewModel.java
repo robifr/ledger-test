@@ -30,6 +30,7 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
 import com.robifr.ledger.util.livedata.SafeEvent;
+import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.List;
@@ -74,7 +75,7 @@ public class SearchCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public SafeMutableLiveData<Optional<List<CustomerModel>>> customers() {
+  public SafeLiveData<Optional<List<CustomerModel>>> customers() {
     return this._customers;
   }
 

@@ -64,7 +64,7 @@ public class CustomerListMenu implements View.OnClickListener {
       }
 
       case R.id.deleteButton -> {
-        this._fragment.customerViewModel().deleteCustomer(this._holder.boundCustomer());
+        this._fragment.customerViewModel().onDeleteCustomer(this._holder.boundCustomer());
         this._dialog.dismiss();
       }
     }

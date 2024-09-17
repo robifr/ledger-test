@@ -142,7 +142,7 @@ public class QueueViewModel extends ViewModel {
     return result;
   }
 
-  public void deleteQueue(@NonNull QueueModel queue) {
+  public void onDeleteQueue(@NonNull QueueModel queue) {
     Objects.requireNonNull(queue);
 
     this._queueRepository

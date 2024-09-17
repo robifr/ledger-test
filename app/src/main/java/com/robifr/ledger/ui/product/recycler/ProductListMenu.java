@@ -64,7 +64,7 @@ public class ProductListMenu implements View.OnClickListener {
       }
 
       case R.id.deleteButton -> {
-        this._fragment.productViewModel().deleteProduct(this._holder.boundProduct());
+        this._fragment.productViewModel().onDeleteProduct(this._holder.boundProduct());
         this._dialog.dismiss();
       }
     }

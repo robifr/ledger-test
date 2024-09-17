@@ -63,7 +63,7 @@ public class QueueListMenu implements View.OnClickListener {
       }
 
       case R.id.deleteButton -> {
-        this._fragment.queueViewModel().deleteQueue(this._holder.boundQueue());
+        this._fragment.queueViewModel().onDeleteQueue(this._holder.boundQueue());
         this._dialog.dismiss();
       }
     }

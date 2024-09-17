@@ -132,7 +132,7 @@ public class ProductViewModel extends ViewModel {
     return result;
   }
 
-  public void deleteProduct(@NonNull ProductModel product) {
+  public void onDeleteProduct(@NonNull ProductModel product) {
     Objects.requireNonNull(product);
 
     this._productRepository

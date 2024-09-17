@@ -134,7 +134,7 @@ public class CustomerViewModel extends ViewModel {
     return result;
   }
 
-  public void deleteCustomer(@NonNull CustomerModel customer) {
+  public void onDeleteCustomer(@NonNull CustomerModel customer) {
     Objects.requireNonNull(customer);
 
     this._customerRepository

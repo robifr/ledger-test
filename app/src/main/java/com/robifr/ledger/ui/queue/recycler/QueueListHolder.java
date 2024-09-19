@@ -24,31 +24,28 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.QueueCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.queue.QueueCardAction;
 import com.robifr.ledger.ui.queue.QueueCardExpandedComponent;
 import com.robifr.ledger.ui.queue.QueueCardNormalComponent;
-import com.robifr.ledger.ui.queue.QueueFragment;
-import java.util.List;
+import com.robifr.ledger.ui.queue.QueueListAction;
 import java.util.Objects;
 
-public class QueueListHolder extends RecyclerViewHolder<QueueModel>
-    implements View.OnClickListener {
-  @NonNull private final QueueFragment _fragment;
+public class QueueListHolder<T extends QueueListAction & QueueCardAction>
+    extends RecyclerViewHolder<QueueModel, T> implements View.OnClickListener {
   @NonNull private final QueueCardWideBinding _cardBinding;
   @NonNull private final QueueCardNormalComponent _normalCard;
   @NonNull private final QueueCardExpandedComponent _expandedCard;
   @NonNull private final QueueListMenu _menu;
   @Nullable private QueueModel _boundQueue;
 
-  public QueueListHolder(@NonNull QueueFragment fragment, @NonNull QueueCardWideBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public QueueListHolder(@NonNull QueueCardWideBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new QueueCardNormalComponent(this._fragment.requireContext(), this._cardBinding.normalCard);
+        new QueueCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
     this._expandedCard =
-        new QueueCardExpandedComponent(
-            this._fragment.requireContext(), this._cardBinding.expandedCard);
-    this._menu = new QueueListMenu(this._fragment, this);
+        new QueueCardExpandedComponent(this.itemView.getContext(), this._cardBinding.expandedCard);
+    this._menu = new QueueListMenu(this);
 
     this._cardBinding.cardView.setOnClickListener(this);
     this._cardBinding.normalCard.menuButton.setOnClickListener(v -> this._menu.openDialog());
@@ -69,11 +66,10 @@ public class QueueListHolder extends RecyclerViewHolder<QueueModel>
 
     // Prevent reused view holder to expand the card
     // if current bound queue is different with selected expanded card.
-    final List<QueueModel> queues = this._fragment.queueViewModel().queues().getValue();
-    final int expandedQueueIndex = this._fragment.queueViewModel().expandedQueueIndex().getValue();
     final boolean shouldCardExpanded =
-        expandedQueueIndex != -1 && this._boundQueue.equals(queues.get(expandedQueueIndex));
-
+        this._action.expandedQueueIndex() != -1
+            && this._boundQueue.equals(
+                this._action.queues().get(this._action.expandedQueueIndex()));
     this.setCardExpanded(shouldCardExpanded);
   }
 
@@ -86,9 +82,9 @@ public class QueueListHolder extends RecyclerViewHolder<QueueModel>
         // Only expand when it shrank.
         final int expandedQueueIndex =
             this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
-                ? this._fragment.queueViewModel().queues().getValue().indexOf(this._boundQueue)
+                ? this._action.queues().indexOf(this._boundQueue)
                 : -1;
-        this._fragment.queueViewModel().onExpandedQueueIndexChanged(expandedQueueIndex);
+        this._action.onExpandedQueueIndexChanged(expandedQueueIndex);
       }
     }
   }

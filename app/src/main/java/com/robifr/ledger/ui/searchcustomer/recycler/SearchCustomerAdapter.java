@@ -20,17 +20,22 @@ package com.robifr.ledger.ui.searchcustomer.recycler;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.customer.CustomerListAction;
+import com.robifr.ledger.ui.searchcustomer.SearchCustomerCardAction;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+    implements CustomerListAction, SearchCustomerCardAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -66,14 +71,14 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
 
     return switch (type) {
       case HEADER ->
-          new SearchCustomerHeaderHolder(
-              this._fragment, ListableListTextBinding.inflate(inflater, parent, false));
+          new SearchCustomerHeaderHolder<>(
+              ListableListTextBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
       default ->
-          new SearchCustomerListHolder(
-              this._fragment,
-              CustomerCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false));
+          new SearchCustomerListHolder<>(
+              CustomerCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false),
+              this);
     };
   }
 
@@ -107,5 +112,16 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
       case 0 -> ViewType.HEADER.value();
       default -> ViewType.LIST.value();
     };
+  }
+
+  @Override
+  @NonNull
+  public List<CustomerModel> customers() {
+    return this._fragment.searchCustomerViewModel().customers().getValue().orElse(List.of());
+  }
+
+  @Override
+  public void onCustomerSelected(@Nullable CustomerModel customer) {
+    this._fragment.searchCustomerViewModel().onCustomerSelected(customer);
   }
 }

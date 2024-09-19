@@ -21,15 +21,19 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.filtercustomer.FilterCustomerAction;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+    implements FilterCustomerAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -65,13 +69,13 @@ public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
 
     return switch (type) {
       case HEADER ->
-          new FilterCustomerHeaderHolder(
-              this._fragment, ListableListSelectedItemBinding.inflate(inflater, parent, false));
+          new FilterCustomerHeaderHolder<>(
+              ListableListSelectedItemBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
       default ->
-          new FilterCustomerListHolder(
-              this._fragment, CustomerCardWideBinding.inflate(inflater, parent, false));
+          new FilterCustomerListHolder<>(
+              CustomerCardWideBinding.inflate(inflater, parent, false), this);
     };
   }
 
@@ -101,5 +105,18 @@ public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
       case 0 -> ViewType.HEADER.value();
       default -> ViewType.LIST.value();
     };
+  }
+
+  @Override
+  @NonNull
+  public List<CustomerModel> filteredCustomers() {
+    return this._fragment.filterCustomerViewModel().filteredCustomers().getValue();
+  }
+
+  @Override
+  public void onFilteredCustomersChanged(@NonNull List<CustomerModel> customers) {
+    Objects.requireNonNull(customers);
+
+    this._fragment.filterCustomerViewModel().onFilteredCustomersChanged(customers);
   }
 }

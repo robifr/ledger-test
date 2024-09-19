@@ -17,6 +17,7 @@
 
 package com.robifr.ledger.ui.selectcustomer.recycler;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -26,33 +27,34 @@ import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
-import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
+import com.robifr.ledger.ui.customer.CustomerListAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<CustomerModel>>
-    implements View.OnClickListener {
-  @NonNull private final SelectCustomerFragment _fragment;
+public class SelectCustomerHeaderHolder<T extends CustomerListAction>
+    extends RecyclerViewHolder<Optional<CustomerModel>, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final CustomerCardWideBinding _selectedCardBinding;
   @NonNull private final CustomerCardNormalComponent _selectedNormalCard;
 
   public SelectCustomerHeaderHolder(
-      @NonNull SelectCustomerFragment fragment, @NonNull ListableListSelectedItemBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+      @NonNull ListableListSelectedItemBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._headerBinding = Objects.requireNonNull(binding);
     this._selectedCardBinding =
         CustomerCardWideBinding.inflate(
-            this._fragment.getLayoutInflater(), this._headerBinding.selectedItemContainer, false);
+            LayoutInflater.from(this.itemView.getContext()),
+            this._headerBinding.selectedItemContainer,
+            false);
     this._selectedNormalCard =
         new CustomerCardNormalComponent(
-            this._fragment.requireContext(), this._selectedCardBinding.normalCard);
+            this.itemView.getContext(), this._selectedCardBinding.normalCard);
 
     this._headerBinding.selectedItemTitle.setText(
-        this._fragment.getString(R.string.text_selected_customer));
+        this.itemView.getContext().getString(R.string.text_selected_customer));
     this._headerBinding.selectedItemContainer.addView(this._selectedCardBinding.getRoot());
-    this._headerBinding.allListTitle.setText(this._fragment.getString(R.string.text_all_customers));
+    this._headerBinding.allListTitle.setText(
+        this.itemView.getContext().getString(R.string.text_all_customers));
     this._headerBinding.newButton.setOnClickListener(this);
     // Don't set to `View.GONE` as the position will be occupied by checkbox.
     this._selectedCardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
@@ -71,7 +73,7 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
     }
 
     final CustomerModel selectedCustomerOnDb =
-        this._fragment.selectCustomerViewModel().customers().getValue().stream()
+        this._action.customers().stream()
             .filter(
                 customer ->
                     customer.id() != null && customer.id().equals(selectedCustomer.get().id()))
@@ -81,13 +83,17 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
     // The original customer on database was deleted.
     if (selectedCustomerOnDb == null) {
       this._headerBinding.selectedItemDescription.setText(
-          this._fragment.getString(R.string.text_originally_selected_customer_was_deleted));
+          this.itemView
+              .getContext()
+              .getString(R.string.text_originally_selected_customer_was_deleted));
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
 
       // The original customer on database was edited.
     } else if (!selectedCustomer.get().equals(selectedCustomerOnDb)) {
       this._headerBinding.selectedItemDescription.setText(
-          this._fragment.getString(R.string.text_originally_selected_customer_was_changed));
+          this.itemView
+              .getContext()
+              .getString(R.string.text_originally_selected_customer_was_changed));
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
 
       // It's the same unchanged customer.
@@ -107,8 +113,7 @@ public class SelectCustomerHeaderHolder extends RecyclerViewHolder<Optional<Cust
 
     switch (view.getId()) {
       case R.id.newButton ->
-          Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
-              .navigate(R.id.createCustomerFragment);
+          Navigation.findNavController(this.itemView).navigate(R.id.createCustomerFragment);
     }
   }
 }

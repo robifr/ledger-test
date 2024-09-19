@@ -22,28 +22,25 @@ import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
-import java.util.List;
+import com.robifr.ledger.ui.customer.CustomerListAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SearchCustomerHeaderHolder extends RecyclerViewHolder<Optional> {
-  @NonNull private final SearchCustomerFragment _fragment;
+public class SearchCustomerHeaderHolder<T extends CustomerListAction>
+    extends RecyclerViewHolder<Optional, T> {
   @NonNull private final ListableListTextBinding _textBinding;
 
-  public SearchCustomerHeaderHolder(
-      @NonNull SearchCustomerFragment fragment, @NonNull ListableListTextBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public SearchCustomerHeaderHolder(@NonNull ListableListTextBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._textBinding = Objects.requireNonNull(binding);
   }
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final int totalCustomers =
-        this._fragment.searchCustomerViewModel().customers().getValue().map(List::size).orElse(0);
+    final int totalCustomers = this._action.customers().size();
     final String text =
-        this._fragment
+        this.itemView
+            .getContext()
             .getResources()
             .getQuantityString(R.plurals.args_found_x_customer, totalCustomers, totalCustomers);
 

@@ -21,14 +21,19 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
+import com.robifr.ledger.ui.product.ProductCardAction;
 import com.robifr.ledger.ui.product.ProductFragment;
+import com.robifr.ledger.ui.product.ProductListAction;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+    implements ProductListAction, ProductCardAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -64,13 +69,11 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     return switch (type) {
       case HEADER ->
-          new ProductHeaderHolder(
-              this._fragment, ListableListTextBinding.inflate(inflater, parent, false));
+          new ProductHeaderHolder<>(ListableListTextBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
       default ->
-          new ProductListHolder(
-              this._fragment, ProductCardWideBinding.inflate(inflater, parent, false));
+          new ProductListHolder<>(ProductCardWideBinding.inflate(inflater, parent, false), this);
     };
   }
 
@@ -99,5 +102,28 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
       case 0 -> ViewType.HEADER.value();
       default -> ViewType.LIST.value();
     };
+  }
+
+  @Override
+  @NonNull
+  public List<ProductModel> products() {
+    return this._fragment.productViewModel().products().getValue();
+  }
+
+  @Override
+  public int expandedProductIndex() {
+    return this._fragment.productViewModel().expandedProductIndex().getValue();
+  }
+
+  @Override
+  public void onExpandedProductIndexChanged(int index) {
+    this._fragment.productViewModel().onExpandedProductIndexChanged(index);
+  }
+
+  @Override
+  public void onDeleteProduct(@NonNull ProductModel product) {
+    Objects.requireNonNull(product);
+
+    this._fragment.productViewModel().onDeleteProduct(product);
   }
 }

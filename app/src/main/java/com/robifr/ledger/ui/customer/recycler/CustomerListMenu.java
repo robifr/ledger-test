@@ -18,6 +18,7 @@
 package com.robifr.ledger.ui.customer.recycler;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -25,22 +26,21 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.CustomerCardDialogMenuBinding;
-import com.robifr.ledger.ui.customer.CustomerFragment;
 import com.robifr.ledger.ui.editcustomer.EditCustomerFragment;
 import java.util.Objects;
 
 public class CustomerListMenu implements View.OnClickListener {
-  @NonNull private final CustomerFragment _fragment;
-  @NonNull private final CustomerListHolder _holder;
+  @NonNull private final CustomerListHolder<?> _holder;
   @NonNull private final CustomerCardDialogMenuBinding _dialogBinding;
   @NonNull private final BottomSheetDialog _dialog;
 
-  public CustomerListMenu(@NonNull CustomerFragment fragment, @NonNull CustomerListHolder holder) {
-    this._fragment = Objects.requireNonNull(fragment);
+  public CustomerListMenu(@NonNull CustomerListHolder<?> holder) {
     this._holder = Objects.requireNonNull(holder);
-    this._dialogBinding = CustomerCardDialogMenuBinding.inflate(this._fragment.getLayoutInflater());
+    this._dialogBinding =
+        CustomerCardDialogMenuBinding.inflate(
+            LayoutInflater.from(this._holder.itemView.getContext()));
     this._dialog =
-        new BottomSheetDialog(this._fragment.requireContext(), R.style.BottomSheetDialog);
+        new BottomSheetDialog(this._holder.itemView.getContext(), R.style.BottomSheetDialog);
 
     this._dialog.setContentView(this._dialogBinding.getRoot());
   }
@@ -58,13 +58,13 @@ public class CustomerListMenu implements View.OnClickListener {
         bundle.putLong(
             EditCustomerFragment.Arguments.INITIAL_CUSTOMER_ID_TO_EDIT_LONG.key(), customerId);
 
-        Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+        Navigation.findNavController(this._holder.itemView)
             .navigate(R.id.editCustomerFragment, bundle);
         this._dialog.dismiss();
       }
 
       case R.id.deleteButton -> {
-        this._fragment.customerViewModel().onDeleteCustomer(this._holder.boundCustomer());
+        this._holder.action().onDeleteCustomer(this._holder.boundCustomer());
         this._dialog.dismiss();
       }
     }

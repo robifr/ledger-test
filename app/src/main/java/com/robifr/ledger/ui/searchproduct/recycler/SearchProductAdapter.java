@@ -20,17 +20,22 @@ package com.robifr.ledger.ui.searchproduct.recycler;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.product.ProductListAction;
+import com.robifr.ledger.ui.searchproduct.SearchProductCardAction;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+    implements ProductListAction, SearchProductCardAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -66,14 +71,14 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
 
     return switch (type) {
       case HEADER ->
-          new SearchProductHeaderHolder(
-              this._fragment, ListableListTextBinding.inflate(inflater, parent, false));
+          new SearchProductHeaderHolder<>(
+              ListableListTextBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
       default ->
-          new SearchProductListHolder(
-              this._fragment,
-              ProductCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false));
+          new SearchProductListHolder<>(
+              ProductCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false),
+              this);
     };
   }
 
@@ -107,5 +112,16 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
       case 0 -> ViewType.HEADER.value();
       default -> ViewType.LIST.value();
     };
+  }
+
+  @Override
+  @NonNull
+  public List<ProductModel> products() {
+    return this._fragment.searchProductViewModel().products().getValue().orElse(List.of());
+  }
+
+  @Override
+  public void onProductSelected(@Nullable ProductModel product) {
+    this._fragment.searchProductViewModel().onProductSelected(product);
   }
 }

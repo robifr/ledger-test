@@ -25,26 +25,21 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
-import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
+import com.robifr.ledger.ui.filtercustomer.FilterCustomerAction;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
-    implements View.OnClickListener {
-  @NonNull private final FilterCustomerFragment _fragment;
+public class FilterCustomerListHolder<T extends FilterCustomerAction>
+    extends RecyclerViewHolder<CustomerModel, T> implements View.OnClickListener {
   @NonNull private final CustomerCardWideBinding _cardBinding;
   @NonNull private final CustomerCardNormalComponent _normalCard;
   @Nullable private CustomerModel _boundCustomer;
 
-  public FilterCustomerListHolder(
-      @NonNull FilterCustomerFragment fragment, @NonNull CustomerCardWideBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public FilterCustomerListHolder(@NonNull CustomerCardWideBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new CustomerCardNormalComponent(
-            this._fragment.requireContext(), this._cardBinding.normalCard);
+        new CustomerCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
 
     this._cardBinding.cardView.setOnClickListener(this);
     // Don't set to `View.GONE` as the position will be occupied by checkbox.
@@ -54,11 +49,10 @@ public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
   @Override
   public void bind(@NonNull CustomerModel customer) {
     this._boundCustomer = Objects.requireNonNull(customer);
-    final List<CustomerModel> filteredCustomers =
-        this._fragment.filterCustomerViewModel().filteredCustomers().getValue();
 
     this._normalCard.setCustomer(this._boundCustomer);
-    this._cardBinding.cardView.setChecked(filteredCustomers.contains(this._boundCustomer));
+    this._cardBinding.cardView.setChecked(
+        this._action.filteredCustomers().contains(this._boundCustomer));
   }
 
   @Override
@@ -69,13 +63,12 @@ public class FilterCustomerListHolder extends RecyclerViewHolder<CustomerModel>
     switch (view.getId()) {
       case R.id.cardView -> {
         final ArrayList<CustomerModel> filteredCustomers =
-            new ArrayList<>(
-                this._fragment.filterCustomerViewModel().filteredCustomers().getValue());
+            new ArrayList<>(this._action.filteredCustomers());
 
         if (this._cardBinding.cardView.isChecked()) filteredCustomers.remove(this._boundCustomer);
         else filteredCustomers.add(this._boundCustomer);
 
-        this._fragment.filterCustomerViewModel().onFilteredCustomersChanged(filteredCustomers);
+        this._action.onFilteredCustomersChanged(filteredCustomers);
       }
     }
   }

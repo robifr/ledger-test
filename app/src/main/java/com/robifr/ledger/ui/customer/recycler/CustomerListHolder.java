@@ -24,33 +24,29 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.customer.CustomerCardAction;
 import com.robifr.ledger.ui.customer.CustomerCardExpandedComponent;
 import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
-import com.robifr.ledger.ui.customer.CustomerFragment;
-import java.util.List;
+import com.robifr.ledger.ui.customer.CustomerListAction;
 import java.util.Objects;
 
-public class CustomerListHolder extends RecyclerViewHolder<CustomerModel>
-    implements View.OnClickListener {
-  @NonNull private final CustomerFragment _fragment;
+public class CustomerListHolder<T extends CustomerListAction & CustomerCardAction>
+    extends RecyclerViewHolder<CustomerModel, T> implements View.OnClickListener {
   @NonNull private final CustomerCardWideBinding _cardBinding;
   @NonNull private final CustomerCardNormalComponent _normalCard;
   @NonNull private final CustomerCardExpandedComponent _expandedCard;
   @NonNull private final CustomerListMenu _menu;
   @Nullable private CustomerModel _boundCustomer;
 
-  public CustomerListHolder(
-      @NonNull CustomerFragment fragment, @NonNull CustomerCardWideBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public CustomerListHolder(@NonNull CustomerCardWideBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new CustomerCardNormalComponent(
-            this._fragment.requireContext(), this._cardBinding.normalCard);
+        new CustomerCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
     this._expandedCard =
         new CustomerCardExpandedComponent(
-            this._fragment.requireContext(), this._cardBinding.expandedCard);
-    this._menu = new CustomerListMenu(this._fragment, this);
+            this.itemView.getContext(), this._cardBinding.expandedCard);
+    this._menu = new CustomerListMenu(this);
 
     this._cardBinding.cardView.setOnClickListener(this);
     this._cardBinding.normalCard.menuButton.setOnClickListener(v -> this._menu.openDialog());
@@ -66,13 +62,10 @@ public class CustomerListHolder extends RecyclerViewHolder<CustomerModel>
 
     // Prevent reused view holder to expand the card
     // if current bound customer is different with selected expanded card.
-    final List<CustomerModel> customers = this._fragment.customerViewModel().customers().getValue();
-    final int expandedCustomerIndex =
-        this._fragment.customerViewModel().expandedCustomerIndex().getValue();
     final boolean shouldCardExpanded =
-        expandedCustomerIndex != -1
-            && this._boundCustomer.equals(customers.get(expandedCustomerIndex));
-
+        this._action.expandedCustomerIndex() != -1
+            && this._boundCustomer.equals(
+                this._action.customers().get(this._action.expandedCustomerIndex()));
     this.setCardExpanded(shouldCardExpanded);
   }
 
@@ -85,13 +78,9 @@ public class CustomerListHolder extends RecyclerViewHolder<CustomerModel>
         // Only expand when it shrank.
         final int expandedCustomerIndex =
             this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
-                ? this._fragment
-                    .customerViewModel()
-                    .customers()
-                    .getValue()
-                    .indexOf(this._boundCustomer)
+                ? this._action.customers().indexOf(this._boundCustomer)
                 : -1;
-        this._fragment.customerViewModel().onExpandedCustomerIndexChanged(expandedCustomerIndex);
+        this._action.onExpandedCustomerIndexChanged(expandedCustomerIndex);
       }
     }
   }

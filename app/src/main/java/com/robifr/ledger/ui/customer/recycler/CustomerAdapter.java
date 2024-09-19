@@ -21,15 +21,20 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.customer.CustomerCardAction;
 import com.robifr.ledger.ui.customer.CustomerFragment;
+import com.robifr.ledger.ui.customer.CustomerListAction;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class CustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+    implements CustomerListAction, CustomerCardAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -65,13 +70,12 @@ public class CustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
     return switch (type) {
       case HEADER ->
-          new CustomerHeaderHolder(
-              this._fragment, ListableListTextBinding.inflate(inflater, parent, false));
+          new CustomerHeaderHolder<>(
+              ListableListTextBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
       default ->
-          new CustomerListHolder(
-              this._fragment, CustomerCardWideBinding.inflate(inflater, parent, false));
+          new CustomerListHolder<>(CustomerCardWideBinding.inflate(inflater, parent, false), this);
     };
   }
 
@@ -100,5 +104,28 @@ public class CustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
       case 0 -> ViewType.HEADER.value();
       default -> ViewType.LIST.value();
     };
+  }
+
+  @Override
+  @NonNull
+  public List<CustomerModel> customers() {
+    return this._fragment.customerViewModel().customers().getValue();
+  }
+
+  @Override
+  public int expandedCustomerIndex() {
+    return this._fragment.customerViewModel().expandedCustomerIndex().getValue();
+  }
+
+  @Override
+  public void onExpandedCustomerIndexChanged(int index) {
+    this._fragment.customerViewModel().onExpandedCustomerIndexChanged(index);
+  }
+
+  @Override
+  public void onDeleteCustomer(@NonNull CustomerModel customer) {
+    Objects.requireNonNull(customer);
+
+    this._fragment.customerViewModel().onDeleteCustomer(customer);
   }
 }

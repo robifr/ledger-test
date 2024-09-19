@@ -24,33 +24,29 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.product.ProductCardAction;
 import com.robifr.ledger.ui.product.ProductCardExpandedComponent;
 import com.robifr.ledger.ui.product.ProductCardNormalComponent;
-import com.robifr.ledger.ui.product.ProductFragment;
-import java.util.List;
+import com.robifr.ledger.ui.product.ProductListAction;
 import java.util.Objects;
 
-public class ProductListHolder extends RecyclerViewHolder<ProductModel>
-    implements View.OnClickListener {
-  @NonNull protected final ProductFragment _fragment;
+public class ProductListHolder<T extends ProductListAction & ProductCardAction>
+    extends RecyclerViewHolder<ProductModel, T> implements View.OnClickListener {
   @NonNull protected final ProductCardWideBinding _cardBinding;
   @NonNull protected final ProductCardNormalComponent _normalCard;
   @NonNull protected final ProductCardExpandedComponent _expandedCard;
   @NonNull protected final ProductListMenu _menu;
   @Nullable protected ProductModel _boundProduct;
 
-  public ProductListHolder(
-      @NonNull ProductFragment fragment, @NonNull ProductCardWideBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public ProductListHolder(@NonNull ProductCardWideBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new ProductCardNormalComponent(
-            this._fragment.requireContext(), this._cardBinding.normalCard);
+        new ProductCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
     this._expandedCard =
         new ProductCardExpandedComponent(
-            this._fragment.requireContext(), this._cardBinding.expandedCard);
-    this._menu = new ProductListMenu(this._fragment, this);
+            this.itemView.getContext(), this._cardBinding.expandedCard);
+    this._menu = new ProductListMenu(this);
 
     this._cardBinding.cardView.setOnClickListener(this);
     this._cardBinding.normalCard.menuButton.setOnClickListener(v -> this._menu.openDialog());
@@ -66,12 +62,10 @@ public class ProductListHolder extends RecyclerViewHolder<ProductModel>
 
     // Prevent reused view holder to expand the card
     // if current bound product is different with selected expanded card.
-    final List<ProductModel> products = this._fragment.productViewModel().products().getValue();
-    final int expandedProductIndex =
-        this._fragment.productViewModel().expandedProductIndex().getValue();
     final boolean shouldCardExpanded =
-        expandedProductIndex != -1 && this._boundProduct.equals(products.get(expandedProductIndex));
-
+        this._action.expandedProductIndex() != -1
+            && this._boundProduct.equals(
+                this._action.products().get(this._action.expandedProductIndex()));
     this.setCardExpanded(shouldCardExpanded);
   }
 
@@ -84,13 +78,9 @@ public class ProductListHolder extends RecyclerViewHolder<ProductModel>
         // Only expand when it shrank.
         final int expandedQueueIndex =
             this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
-                ? this._fragment
-                    .productViewModel()
-                    .products()
-                    .getValue()
-                    .indexOf(this._boundProduct)
+                ? this._action.products().indexOf(this._boundProduct)
                 : -1;
-        this._fragment.productViewModel().onExpandedProductIndexChanged(expandedQueueIndex);
+        this._action.onExpandedProductIndexChanged(expandedQueueIndex);
       }
     }
   }

@@ -21,14 +21,19 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.QueueCardWideBinding;
+import com.robifr.ledger.ui.queue.QueueCardAction;
 import com.robifr.ledger.ui.queue.QueueFragment;
+import com.robifr.ledger.ui.queue.QueueListAction;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+    implements QueueListAction, QueueCardAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -64,13 +69,10 @@ public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     return switch (type) {
       case HEADER ->
-          new QueueHeaderHolder(
-              this._fragment, ListableListTextBinding.inflate(inflater, parent, false));
+          new QueueHeaderHolder<>(ListableListTextBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
-      default ->
-          new QueueListHolder(
-              this._fragment, QueueCardWideBinding.inflate(inflater, parent, false));
+      default -> new QueueListHolder<>(QueueCardWideBinding.inflate(inflater, parent, false), this);
     };
   }
 
@@ -99,5 +101,28 @@ public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
       case 0 -> ViewType.HEADER.value();
       default -> ViewType.LIST.value();
     };
+  }
+
+  @Override
+  @NonNull
+  public List<QueueModel> queues() {
+    return this._fragment.queueViewModel().queues().getValue();
+  }
+
+  @Override
+  public int expandedQueueIndex() {
+    return this._fragment.queueViewModel().expandedQueueIndex().getValue();
+  }
+
+  @Override
+  public void onExpandedQueueIndexChanged(int index) {
+    this._fragment.queueViewModel().onExpandedQueueIndexChanged(index);
+  }
+
+  @Override
+  public void onDeleteQueue(@NonNull QueueModel queue) {
+    Objects.requireNonNull(queue);
+
+    this._fragment.queueViewModel().onDeleteQueue(queue);
   }
 }

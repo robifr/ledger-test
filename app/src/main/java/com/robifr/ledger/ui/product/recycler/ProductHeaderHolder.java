@@ -23,30 +23,29 @@ import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.product.ProductFragment;
+import com.robifr.ledger.ui.product.ProductListAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ProductHeaderHolder extends RecyclerViewHolder<Optional> {
-  @NonNull private final ProductFragment _fragment;
+public class ProductHeaderHolder<T extends ProductListAction>
+    extends RecyclerViewHolder<Optional, T> {
   @NonNull private final ListableListTextBinding _textBinding;
 
-  public ProductHeaderHolder(
-      @NonNull ProductFragment fragment, @NonNull ListableListTextBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public ProductHeaderHolder(@NonNull ListableListTextBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._textBinding = Objects.requireNonNull(binding);
 
     this._textBinding.text.setTextSize(
         TypedValue.COMPLEX_UNIT_PX,
-        this._fragment.requireContext().getResources().getDimension(R.dimen.text_small));
+        this.itemView.getContext().getResources().getDimension(R.dimen.text_small));
   }
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final int totalProducts = this._fragment.productViewModel().products().getValue().size();
+    final int totalProducts = this._action.products().size();
     final String text =
-        this._fragment
+        this.itemView
+            .getContext()
             .getResources()
             .getQuantityString(R.plurals.args_displaying_x_product, totalProducts, totalProducts);
 

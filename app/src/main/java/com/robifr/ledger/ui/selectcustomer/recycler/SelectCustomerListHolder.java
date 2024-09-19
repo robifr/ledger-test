@@ -25,24 +25,20 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
-import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
+import com.robifr.ledger.ui.selectcustomer.SelectCustomerCardAction;
 import java.util.Objects;
 
-public class SelectCustomerListHolder extends RecyclerViewHolder<CustomerModel>
-    implements View.OnClickListener {
-  @NonNull private final SelectCustomerFragment _fragment;
+public class SelectCustomerListHolder<T extends SelectCustomerCardAction>
+    extends RecyclerViewHolder<CustomerModel, T> implements View.OnClickListener {
   @NonNull private final CustomerCardWideBinding _cardBinding;
   @NonNull private final CustomerCardNormalComponent _normalCard;
   @Nullable private CustomerModel _boundCustomer;
 
-  public SelectCustomerListHolder(
-      @NonNull SelectCustomerFragment fragment, @NonNull CustomerCardWideBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public SelectCustomerListHolder(@NonNull CustomerCardWideBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new CustomerCardNormalComponent(
-            this._fragment.requireContext(), this._cardBinding.normalCard);
+        new CustomerCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
 
     this._cardBinding.cardView.setOnClickListener(this);
     // Don't set to `View.GONE` as the position will be occupied by checkbox.
@@ -52,12 +48,10 @@ public class SelectCustomerListHolder extends RecyclerViewHolder<CustomerModel>
   @Override
   public void bind(@NonNull CustomerModel customer) {
     this._boundCustomer = Objects.requireNonNull(customer);
-    final CustomerModel selectedCustomer =
-        this._fragment.selectCustomerViewModel().initialSelectedCustomer();
     final boolean shouldChecked =
-        selectedCustomer != null
-            && selectedCustomer.id() != null
-            && selectedCustomer.id().equals(this._boundCustomer.id());
+        this._action.initialSelectedCustomer() != null
+            && this._action.initialSelectedCustomer().id() != null
+            && this._action.initialSelectedCustomer().id().equals(this._boundCustomer.id());
 
     this._normalCard.setCustomer(this._boundCustomer);
     this._cardBinding.cardView.setChecked(shouldChecked);
@@ -69,8 +63,7 @@ public class SelectCustomerListHolder extends RecyclerViewHolder<CustomerModel>
     Objects.requireNonNull(this._boundCustomer);
 
     switch (view.getId()) {
-      case R.id.cardView ->
-          this._fragment.selectCustomerViewModel().onCustomerSelected(this._boundCustomer);
+      case R.id.cardView -> this._action.onCustomerSelected(this._boundCustomer);
     }
   }
 }

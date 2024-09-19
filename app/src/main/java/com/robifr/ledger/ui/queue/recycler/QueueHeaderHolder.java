@@ -23,30 +23,28 @@ import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.queue.QueueFragment;
+import com.robifr.ledger.ui.queue.QueueListAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class QueueHeaderHolder extends RecyclerViewHolder<Optional> {
-  @NonNull private final QueueFragment _fragment;
+public class QueueHeaderHolder<T extends QueueListAction> extends RecyclerViewHolder<Optional, T> {
   @NonNull private final ListableListTextBinding _textBinding;
 
-  public QueueHeaderHolder(
-      @NonNull QueueFragment fragment, @NonNull ListableListTextBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public QueueHeaderHolder(@NonNull ListableListTextBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._textBinding = Objects.requireNonNull(binding);
 
     this._textBinding.text.setTextSize(
         TypedValue.COMPLEX_UNIT_PX,
-        this._fragment.requireContext().getResources().getDimension(R.dimen.text_small));
+        this.itemView.getContext().getResources().getDimension(R.dimen.text_small));
   }
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final int totalQueues = this._fragment.queueViewModel().queues().getValue().size();
+    final int totalQueues = this._action.queues().size();
     final String text =
-        this._fragment
+        this.itemView
+            .getContext()
             .getResources()
             .getQuantityString(R.plurals.args_displaying_x_queue, totalQueues, totalQueues);
 

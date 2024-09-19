@@ -18,6 +18,7 @@
 package com.robifr.ledger.ui.product.recycler;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -26,21 +27,20 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.ProductCardDialogMenuBinding;
 import com.robifr.ledger.ui.editproduct.EditProductFragment;
-import com.robifr.ledger.ui.product.ProductFragment;
 import java.util.Objects;
 
 public class ProductListMenu implements View.OnClickListener {
-  @NonNull private final ProductFragment _fragment;
-  @NonNull private final ProductListHolder _holder;
+  @NonNull private final ProductListHolder<?> _holder;
   @NonNull private final ProductCardDialogMenuBinding _dialogBinding;
   @NonNull private final BottomSheetDialog _dialog;
 
-  public ProductListMenu(@NonNull ProductFragment fragment, @NonNull ProductListHolder holder) {
-    this._fragment = Objects.requireNonNull(fragment);
+  public ProductListMenu(@NonNull ProductListHolder<?> holder) {
     this._holder = Objects.requireNonNull(holder);
-    this._dialogBinding = ProductCardDialogMenuBinding.inflate(this._fragment.getLayoutInflater());
+    this._dialogBinding =
+        ProductCardDialogMenuBinding.inflate(
+            LayoutInflater.from(this._holder.itemView.getContext()));
     this._dialog =
-        new BottomSheetDialog(this._fragment.requireContext(), R.style.BottomSheetDialog);
+        new BottomSheetDialog(this._holder.itemView.getContext(), R.style.BottomSheetDialog);
 
     this._dialog.setContentView(this._dialogBinding.getRoot());
   }
@@ -58,13 +58,13 @@ public class ProductListMenu implements View.OnClickListener {
         bundle.putLong(
             EditProductFragment.Arguments.INITIAL_PRODUCT_ID_TO_EDIT_LONG.key(), productId);
 
-        Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
+        Navigation.findNavController(this._holder.itemView)
             .navigate(R.id.editProductFragment, bundle);
         this._dialog.dismiss();
       }
 
       case R.id.deleteButton -> {
-        this._fragment.productViewModel().onDeleteProduct(this._holder.boundProduct());
+        this._holder.action().onDeleteProduct(this._holder.boundProduct());
         this._dialog.dismiss();
       }
     }

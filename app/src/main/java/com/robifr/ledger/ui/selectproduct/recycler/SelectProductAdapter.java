@@ -20,17 +20,22 @@ package com.robifr.ledger.ui.selectproduct.recycler;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.product.ProductListAction;
+import com.robifr.ledger.ui.selectproduct.SelectProductCardAction;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+    implements ProductListAction, SelectProductCardAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -66,13 +71,13 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
 
     return switch (type) {
       case HEADER ->
-          new SelectProductHeaderHolder(
-              this._fragment, ListableListSelectedItemBinding.inflate(inflater, parent, false));
+          new SelectProductHeaderHolder<>(
+              ListableListSelectedItemBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
       default ->
-          new SelectProductListHolder(
-              this._fragment, ProductCardWideBinding.inflate(inflater, parent, false));
+          new SelectProductListHolder<>(
+              ProductCardWideBinding.inflate(inflater, parent, false), this);
     };
   }
 
@@ -80,10 +85,9 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
   public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    if (holder instanceof SelectProductHeaderHolder headerHolder) {
-      final Optional<ProductModel> selectedProduct =
-          Optional.ofNullable(this._fragment.selectProductViewModel().initialSelectedProduct());
-      headerHolder.bind(selectedProduct);
+    if (holder instanceof SelectProductHeaderHolder<?> headerHolder) {
+      headerHolder.bind(
+          Optional.ofNullable(this._fragment.selectProductViewModel().initialSelectedProduct()));
 
     } else if (holder instanceof SelectProductListHolder listHolder) {
       // -1 offset because header holder.
@@ -103,5 +107,22 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
       case 0 -> ViewType.HEADER.value();
       default -> ViewType.LIST.value();
     };
+  }
+
+  @Override
+  @NonNull
+  public List<ProductModel> products() {
+    return this._fragment.selectProductViewModel().products().getValue();
+  }
+
+  @Override
+  @Nullable
+  public ProductModel initialSelectedProduct() {
+    return this._fragment.selectProductViewModel().initialSelectedProduct();
+  }
+
+  @Override
+  public void onProductSelected(@Nullable ProductModel product) {
+    this._fragment.selectProductViewModel().onProductSelected(product);
   }
 }

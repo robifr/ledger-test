@@ -17,6 +17,7 @@
 
 package com.robifr.ledger.ui.selectproduct.recycler;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -26,33 +27,34 @@ import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardNormalComponent;
-import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
+import com.robifr.ledger.ui.product.ProductListAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SelectProductHeaderHolder extends RecyclerViewHolder<Optional<ProductModel>>
-    implements View.OnClickListener {
-  @NonNull private final SelectProductFragment _fragment;
+public class SelectProductHeaderHolder<T extends ProductListAction>
+    extends RecyclerViewHolder<Optional<ProductModel>, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final ProductCardWideBinding _selectedCardBinding;
   @NonNull private final ProductCardNormalComponent _selectedNormalCard;
 
   public SelectProductHeaderHolder(
-      @NonNull SelectProductFragment fragment, @NonNull ListableListSelectedItemBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+      @NonNull ListableListSelectedItemBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._headerBinding = Objects.requireNonNull(binding);
     this._selectedCardBinding =
         ProductCardWideBinding.inflate(
-            this._fragment.getLayoutInflater(), this._headerBinding.selectedItemContainer, false);
+            LayoutInflater.from(this.itemView.getContext()),
+            this._headerBinding.selectedItemContainer,
+            false);
     this._selectedNormalCard =
         new ProductCardNormalComponent(
-            this._fragment.requireContext(), this._selectedCardBinding.normalCard);
+            this.itemView.getContext(), this._selectedCardBinding.normalCard);
 
     this._headerBinding.selectedItemTitle.setText(
-        this._fragment.getString(R.string.text_selected_product));
+        this.itemView.getContext().getString(R.string.text_selected_product));
     this._headerBinding.selectedItemContainer.addView(this._selectedCardBinding.getRoot());
-    this._headerBinding.allListTitle.setText(this._fragment.getString(R.string.text_all_products));
+    this._headerBinding.allListTitle.setText(
+        this.itemView.getContext().getString(R.string.text_all_products));
     this._headerBinding.newButton.setOnClickListener(this);
     // Don't set to `View.GONE` as the position will be occupied by checkbox.
     this._selectedCardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
@@ -69,7 +71,7 @@ public class SelectProductHeaderHolder extends RecyclerViewHolder<Optional<Produ
     }
 
     final ProductModel selectedProductOnDb =
-        this._fragment.selectProductViewModel().products().getValue().stream()
+        this._action.products().stream()
             .filter(
                 product -> product.id() != null && product.id().equals(selectedProduct.get().id()))
             .findFirst()
@@ -78,13 +80,17 @@ public class SelectProductHeaderHolder extends RecyclerViewHolder<Optional<Produ
     // The original product on database was deleted.
     if (selectedProductOnDb == null) {
       this._headerBinding.selectedItemDescription.setText(
-          this._fragment.getString(R.string.text_originally_selected_product_was_deleted));
+          this.itemView
+              .getContext()
+              .getString(R.string.text_originally_selected_product_was_deleted));
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
 
       // The original product on database was edited.
     } else if (!selectedProduct.get().equals(selectedProductOnDb)) {
       this._headerBinding.selectedItemDescription.setText(
-          this._fragment.getString(R.string.text_originally_selected_product_was_changed));
+          this.itemView
+              .getContext()
+              .getString(R.string.text_originally_selected_product_was_changed));
       this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
 
       // It's the same unchanged product.
@@ -104,8 +110,7 @@ public class SelectProductHeaderHolder extends RecyclerViewHolder<Optional<Produ
 
     switch (view.getId()) {
       case R.id.newButton ->
-          Navigation.findNavController(this._fragment.fragmentBinding().getRoot())
-              .navigate(R.id.createProductFragment);
+          Navigation.findNavController(this.itemView).navigate(R.id.createProductFragment);
     }
   }
 }

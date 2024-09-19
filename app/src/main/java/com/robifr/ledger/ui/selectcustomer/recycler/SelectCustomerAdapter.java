@@ -20,17 +20,22 @@ package com.robifr.ledger.ui.selectcustomer.recycler;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.customer.CustomerListAction;
+import com.robifr.ledger.ui.selectcustomer.SelectCustomerCardAction;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+    implements CustomerListAction, SelectCustomerCardAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -66,13 +71,13 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
 
     return switch (type) {
       case HEADER ->
-          new SelectCustomerHeaderHolder(
-              this._fragment, ListableListSelectedItemBinding.inflate(inflater, parent, false));
+          new SelectCustomerHeaderHolder<>(
+              ListableListSelectedItemBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
       default ->
-          new SelectCustomerListHolder(
-              this._fragment, CustomerCardWideBinding.inflate(inflater, parent, false));
+          new SelectCustomerListHolder<>(
+              CustomerCardWideBinding.inflate(inflater, parent, false), this);
     };
   }
 
@@ -80,10 +85,9 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    if (holder instanceof SelectCustomerHeaderHolder headerHolder) {
-      final Optional<CustomerModel> selectedCustomer =
-          Optional.ofNullable(this._fragment.selectCustomerViewModel().initialSelectedCustomer());
-      headerHolder.bind(selectedCustomer);
+    if (holder instanceof SelectCustomerHeaderHolder<?> headerHolder) {
+      headerHolder.bind(
+          Optional.ofNullable(this._fragment.selectCustomerViewModel().initialSelectedCustomer()));
 
     } else if (holder instanceof SelectCustomerListHolder listHolder) {
       // -1 offset because header holder.
@@ -104,5 +108,22 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
       case 0 -> ViewType.HEADER.value();
       default -> ViewType.LIST.value();
     };
+  }
+
+  @Override
+  @NonNull
+  public List<CustomerModel> customers() {
+    return this._fragment.selectCustomerViewModel().customers().getValue();
+  }
+
+  @Override
+  @Nullable
+  public CustomerModel initialSelectedCustomer() {
+    return this._fragment.selectCustomerViewModel().initialSelectedCustomer();
+  }
+
+  @Override
+  public void onCustomerSelected(@Nullable CustomerModel customer) {
+    this._fragment.selectCustomerViewModel().onCustomerSelected(customer);
   }
 }

@@ -25,24 +25,20 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardNormalComponent;
-import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
+import com.robifr.ledger.ui.selectproduct.SelectProductCardAction;
 import java.util.Objects;
 
-public class SelectProductListHolder extends RecyclerViewHolder<ProductModel>
-    implements View.OnClickListener {
-  @NonNull private final SelectProductFragment _fragment;
+public class SelectProductListHolder<T extends SelectProductCardAction>
+    extends RecyclerViewHolder<ProductModel, T> implements View.OnClickListener {
   @NonNull private final ProductCardWideBinding _cardBinding;
   @NonNull private final ProductCardNormalComponent _normalCard;
   @Nullable private ProductModel _boundProduct;
 
-  public SelectProductListHolder(
-      @NonNull SelectProductFragment fragment, @NonNull ProductCardWideBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public SelectProductListHolder(@NonNull ProductCardWideBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new ProductCardNormalComponent(
-            this._fragment.requireContext(), this._cardBinding.normalCard);
+        new ProductCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
 
     this._cardBinding.cardView.setOnClickListener(this);
     // Don't set to `View.GONE` as the position will be occupied by checkbox.
@@ -52,12 +48,10 @@ public class SelectProductListHolder extends RecyclerViewHolder<ProductModel>
   @Override
   public void bind(@NonNull ProductModel product) {
     this._boundProduct = Objects.requireNonNull(product);
-    final ProductModel selectedProduct =
-        this._fragment.selectProductViewModel().initialSelectedProduct();
     final boolean shouldChecked =
-        selectedProduct != null
-            && selectedProduct.id() != null
-            && selectedProduct.id().equals(this._boundProduct.id());
+        this._action.initialSelectedProduct() != null
+            && this._action.initialSelectedProduct().id() != null
+            && this._action.initialSelectedProduct().id().equals(this._boundProduct.id());
 
     this._normalCard.setProduct(this._boundProduct);
     this._cardBinding.cardView.setChecked(shouldChecked);
@@ -69,8 +63,7 @@ public class SelectProductListHolder extends RecyclerViewHolder<ProductModel>
     Objects.requireNonNull(this._boundProduct);
 
     switch (view.getId()) {
-      case R.id.cardView ->
-          this._fragment.selectProductViewModel().onProductSelected(this._boundProduct);
+      case R.id.cardView -> this._action.onProductSelected(this._boundProduct);
     }
   }
 }

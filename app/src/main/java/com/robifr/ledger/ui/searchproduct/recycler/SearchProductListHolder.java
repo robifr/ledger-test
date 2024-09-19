@@ -25,24 +25,20 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardNormalComponent;
-import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
+import com.robifr.ledger.ui.searchproduct.SearchProductCardAction;
 import java.util.Objects;
 
-public class SearchProductListHolder extends RecyclerViewHolder<ProductModel>
-    implements View.OnClickListener {
-  @NonNull private final SearchProductFragment _fragment;
+public class SearchProductListHolder<T extends SearchProductCardAction>
+    extends RecyclerViewHolder<ProductModel, T> implements View.OnClickListener {
   @NonNull private final ProductCardWideBinding _cardBinding;
   @NonNull private final ProductCardNormalComponent _normalCard;
   @Nullable private ProductModel _boundProduct;
 
-  public SearchProductListHolder(
-      @NonNull SearchProductFragment fragment, @NonNull ProductCardWideBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public SearchProductListHolder(@NonNull ProductCardWideBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new ProductCardNormalComponent(
-            this._fragment.requireContext(), this._cardBinding.normalCard);
+        new ProductCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
 
     this._cardBinding.cardView.setOnClickListener(this);
     this._cardBinding.normalCard.menuButton.setVisibility(View.GONE);
@@ -57,8 +53,7 @@ public class SearchProductListHolder extends RecyclerViewHolder<ProductModel>
   @Override
   public void onClick(View view) {
     switch (view.getId()) {
-      case R.id.cardView ->
-          this._fragment.searchProductViewModel().onProductSelected(this._boundProduct);
+      case R.id.cardView -> this._action.onProductSelected(this._boundProduct);
     }
   }
 }

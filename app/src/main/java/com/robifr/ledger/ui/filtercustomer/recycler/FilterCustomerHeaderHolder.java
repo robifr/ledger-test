@@ -17,6 +17,7 @@
 
 package com.robifr.ledger.ui.filtercustomer.recycler;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.NonNull;
 import com.google.android.material.chip.Chip;
@@ -26,28 +27,26 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.databinding.ReusableChipInputBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
+import com.robifr.ledger.ui.filtercustomer.FilterCustomerAction;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
-    implements View.OnClickListener {
-  @NonNull private final FilterCustomerFragment _fragment;
+public class FilterCustomerHeaderHolder<T extends FilterCustomerAction>
+    extends RecyclerViewHolder<Optional, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final ChipGroup _chipGroup;
 
   public FilterCustomerHeaderHolder(
-      @NonNull FilterCustomerFragment fragment, @NonNull ListableListSelectedItemBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+      @NonNull ListableListSelectedItemBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._headerBinding = Objects.requireNonNull(binding);
-    this._chipGroup = new ChipGroup(this._fragment.requireContext());
+    this._chipGroup = new ChipGroup(this.itemView.getContext());
 
-    final int chipSpacing = (int) this._fragment.getResources().getDimension(R.dimen.chip_spacing);
+    final int chipSpacing =
+        (int) this.itemView.getContext().getResources().getDimension(R.dimen.chip_spacing);
     final int chipGroupPaddingTop =
-        (int) this._fragment.getResources().getDimension(R.dimen.cardlist_margin);
+        (int) this.itemView.getContext().getResources().getDimension(R.dimen.cardlist_margin);
 
     this._chipGroup.setLayoutParams(
         new ChipGroup.LayoutParams(
@@ -58,28 +57,27 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
     this._chipGroup.setChipSpacingHorizontal(chipSpacing);
     this._headerBinding.selectedItemContainer.addView(this._chipGroup);
     this._headerBinding.selectedItemTitle.setText(
-        this._fragment.getString(R.string.text_filtered_customers));
+        this.itemView.getContext().getString(R.string.text_filtered_customers));
     this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
-    this._headerBinding.allListTitle.setText(this._fragment.getString(R.string.text_all_customers));
+    this._headerBinding.allListTitle.setText(
+        this.itemView.getContext().getString(R.string.text_all_customers));
     this._headerBinding.newButton.setVisibility(View.GONE);
   }
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final List<CustomerModel> filteredCustomers =
-        this._fragment.filterCustomerViewModel().filteredCustomers().getValue();
     final int filteredCustomersViewsVisibility =
-        !filteredCustomers.isEmpty() ? View.VISIBLE : View.GONE;
+        !this._action.filteredCustomers().isEmpty() ? View.VISIBLE : View.GONE;
 
     this._headerBinding.selectedItemTitle.setVisibility(filteredCustomersViewsVisibility);
     this._headerBinding.selectedItemContainer.setVisibility(filteredCustomersViewsVisibility);
 
-    for (int i = 0; i < filteredCustomers.size(); i++) {
-      final CustomerModel filteredCustomer = filteredCustomers.get(i);
+    for (int i = 0; i < this._action.filteredCustomers().size(); i++) {
+      final CustomerModel filteredCustomer = this._action.filteredCustomers().get(i);
       final ReusableChipInputBinding chipBinding =
           i >= this._chipGroup.getChildCount()
               ? ReusableChipInputBinding.inflate(
-                  this._fragment.getLayoutInflater(), this._chipGroup, false)
+                  LayoutInflater.from(this.itemView.getContext()), this._chipGroup, false)
               : ReusableChipInputBinding.bind(this._chipGroup.getChildAt(i));
 
       // Set chip ID based on the customer index to make them easier to find.
@@ -91,9 +89,9 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
     }
 
     // Delete old unused chips those are previously used by old customer.
-    if (this._chipGroup.getChildCount() > filteredCustomers.size()) {
-      final int size = this._chipGroup.getChildCount() - filteredCustomers.size();
-      this._chipGroup.removeViews(filteredCustomers.size(), size);
+    if (this._chipGroup.getChildCount() > this._action.filteredCustomers().size()) {
+      final int size = this._chipGroup.getChildCount() - this._action.filteredCustomers().size();
+      this._chipGroup.removeViews(this._action.filteredCustomers().size(), size);
     }
   }
 
@@ -103,7 +101,7 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
 
     if (view instanceof Chip) {
       final ArrayList<CustomerModel> filteredCustomers =
-          new ArrayList<>(this._fragment.filterCustomerViewModel().filteredCustomers().getValue());
+          new ArrayList<>(this._action.filteredCustomers());
 
       for (int i = filteredCustomers.size(); i-- > 0; ) {
         if (view.getId() == i) {
@@ -114,7 +112,7 @@ public class FilterCustomerHeaderHolder extends RecyclerViewHolder<Optional>
         }
       }
 
-      this._fragment.filterCustomerViewModel().onFilteredCustomersChanged(filteredCustomers);
+      this._action.onFilteredCustomersChanged(filteredCustomers);
     }
   }
 }

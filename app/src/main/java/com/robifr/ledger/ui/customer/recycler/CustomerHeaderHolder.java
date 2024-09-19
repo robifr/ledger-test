@@ -23,30 +23,29 @@ import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerFragment;
+import com.robifr.ledger.ui.customer.CustomerListAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CustomerHeaderHolder extends RecyclerViewHolder<Optional> {
-  @NonNull private final CustomerFragment _fragment;
+public class CustomerHeaderHolder<T extends CustomerListAction>
+    extends RecyclerViewHolder<Optional, T> {
   @NonNull private final ListableListTextBinding _textBinding;
 
-  public CustomerHeaderHolder(
-      @NonNull CustomerFragment fragment, @NonNull ListableListTextBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public CustomerHeaderHolder(@NonNull ListableListTextBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._textBinding = Objects.requireNonNull(binding);
 
     this._textBinding.text.setTextSize(
         TypedValue.COMPLEX_UNIT_PX,
-        this._fragment.requireContext().getResources().getDimension(R.dimen.text_small));
+        this.itemView.getContext().getResources().getDimension(R.dimen.text_small));
   }
 
   @Override
   public void bind(@NonNull Optional ignore) {
-    final int totalCustomers = this._fragment.customerViewModel().customers().getValue().size();
+    final int totalCustomers = this._action.customers().size();
     final String text =
-        this._fragment
+        this.itemView
+            .getContext()
             .getResources()
             .getQuantityString(
                 R.plurals.args_displaying_x_customer, totalCustomers, totalCustomers);

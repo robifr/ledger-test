@@ -25,24 +25,20 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
-import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
+import com.robifr.ledger.ui.searchcustomer.SearchCustomerCardAction;
 import java.util.Objects;
 
-public class SearchCustomerListHolder extends RecyclerViewHolder<CustomerModel>
-    implements View.OnClickListener {
-  @NonNull private final SearchCustomerFragment _fragment;
+public class SearchCustomerListHolder<T extends SearchCustomerCardAction>
+    extends RecyclerViewHolder<CustomerModel, T> implements View.OnClickListener {
   @NonNull private final CustomerCardWideBinding _cardBinding;
   @NonNull private final CustomerCardNormalComponent _normalCard;
   @Nullable private CustomerModel _boundCustomer;
 
-  public SearchCustomerListHolder(
-      @NonNull SearchCustomerFragment fragment, @NonNull CustomerCardWideBinding binding) {
-    super(binding.getRoot());
-    this._fragment = Objects.requireNonNull(fragment);
+  public SearchCustomerListHolder(@NonNull CustomerCardWideBinding binding, @NonNull T action) {
+    super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
     this._normalCard =
-        new CustomerCardNormalComponent(
-            this._fragment.requireContext(), this._cardBinding.normalCard);
+        new CustomerCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
 
     this._cardBinding.cardView.setOnClickListener(this);
     this._cardBinding.normalCard.menuButton.setVisibility(View.GONE);
@@ -57,8 +53,7 @@ public class SearchCustomerListHolder extends RecyclerViewHolder<CustomerModel>
   @Override
   public void onClick(View view) {
     switch (view.getId()) {
-      case R.id.cardView ->
-          this._fragment.searchCustomerViewModel().onCustomerSelected(this._boundCustomer);
+      case R.id.cardView -> this._action.onCustomerSelected(this._boundCustomer);
     }
   }
 }

@@ -20,14 +20,24 @@ package com.robifr.ledger.ui;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.Objects;
 
 /**
- * @param <T> Item to bind.
+ * @param <I> Item to bind.
+ * @param <A> Possible action.
  */
-public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
-  public RecyclerViewHolder(@NonNull View itemView) {
+public abstract class RecyclerViewHolder<I, A> extends RecyclerView.ViewHolder {
+  @NonNull protected final A _action;
+
+  public RecyclerViewHolder(@NonNull View itemView, @NonNull A action) {
     super(itemView);
+    this._action = Objects.requireNonNull(action);
   }
 
-  public abstract void bind(@NonNull T item);
+  @NonNull
+  public A action() {
+    return this._action;
+  }
+
+  public abstract void bind(@NonNull I item);
 }

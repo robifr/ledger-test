@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
+import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
 import com.robifr.ledger.ui.selectcustomer.recycler.SelectCustomerAdapter;
 import com.robifr.ledger.ui.selectcustomer.viewmodel.SelectCustomerViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -114,8 +115,12 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
 
     return switch (item.getItemId()) {
       case R.id.search -> {
+        final Bundle bundle = new Bundle();
+        bundle.putBoolean(
+            SearchCustomerFragment.Arguments.IS_SELECTION_ENABLED_BOOLEAN.key(), true);
+
         Navigation.findNavController(this._fragmentBinding.getRoot())
-            .navigate(R.id.searchCustomerFragment);
+            .navigate(R.id.searchCustomerFragment, bundle);
         yield true;
       }
 

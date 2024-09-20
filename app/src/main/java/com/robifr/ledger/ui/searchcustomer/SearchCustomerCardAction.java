@@ -21,5 +21,7 @@ import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.CustomerModel;
 
 public interface SearchCustomerCardAction {
+  public boolean isSelectionEnabled();
+
   public void onCustomerSelected(@Nullable CustomerModel customer);
 }

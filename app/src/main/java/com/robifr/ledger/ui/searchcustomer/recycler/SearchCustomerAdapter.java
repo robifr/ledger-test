@@ -26,6 +26,7 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.customer.CustomerCardAction;
 import com.robifr.ledger.ui.customer.CustomerListAction;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerCardAction;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
@@ -35,7 +36,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
-    implements CustomerListAction, SearchCustomerCardAction {
+    implements CustomerListAction, CustomerCardAction, SearchCustomerCardAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -118,6 +119,28 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   @NonNull
   public List<CustomerModel> customers() {
     return this._fragment.searchCustomerViewModel().customers().getValue().orElse(List.of());
+  }
+
+  @Override
+  public int expandedCustomerIndex() {
+    return this._fragment.searchCustomerViewModel().expandedCustomerIndex().getValue();
+  }
+
+  @Override
+  public void onExpandedCustomerIndexChanged(int index) {
+    this._fragment.searchCustomerViewModel().onExpandedCustomerIndexChanged(index);
+  }
+
+  @Override
+  public void onDeleteCustomer(@NonNull CustomerModel customer) {
+    Objects.requireNonNull(customer);
+
+    this._fragment.searchCustomerViewModel().onDeleteCustomer(customer);
+  }
+
+  @Override
+  public boolean isSelectionEnabled() {
+    return this._fragment.searchCustomerViewModel().isSelectionEnabled().getValue();
   }
 
   @Override

@@ -20,7 +20,11 @@ package com.robifr.ledger.ui.searchcustomer;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.CustomerModel;
+import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.ui.searchcustomer.recycler.SearchCustomerListHolder;
 import com.robifr.ledger.ui.searchcustomer.viewmodel.SearchCustomerViewModel;
 import com.robifr.ledger.util.Compats;
 import java.util.List;
@@ -42,11 +46,19 @@ public class SearchCustomerViewModelHandler {
             this._fragment.getViewLifecycleOwner(),
             event -> event.handleIfNotHandled(this::_onResultSelectedCustomerId));
     this._viewModel
+        .snackbarMessage()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            event -> event.handleIfNotHandled(this::_onSnackbarMessage));
+    this._viewModel
         .initializedInitialQuery()
         .observe(
             this._fragment.getViewLifecycleOwner(),
             event -> event.handleIfNotHandled(this::_onInitializedInitialQuery));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
+    this._viewModel
+        .expandedCustomerIndex()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onExpandedCustomerIndex);
   }
 
   /**
@@ -64,6 +76,16 @@ public class SearchCustomerViewModelHandler {
         .getParentFragmentManager()
         .setFragmentResult(SearchCustomerFragment.Request.SELECT_CUSTOMER.key(), bundle);
     this._fragment.finish();
+  }
+
+  private void _onSnackbarMessage(@NonNull StringResources stringRes) {
+    Objects.requireNonNull(stringRes);
+
+    Snackbar.make(
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   private void _onInitializedInitialQuery(@NonNull String query) {
@@ -94,5 +116,27 @@ public class SearchCustomerViewModelHandler {
     this._fragment.fragmentBinding().horizontalListContainer.setVisibility(noResultsVisibility);
     this._fragment.fragmentBinding().noResultsImage.getRoot().setVisibility(noResultsVisibility);
     this._fragment.fragmentBinding().recyclerView.setVisibility(recyclerVisibility);
+  }
+
+  private void _onExpandedCustomerIndex(int index) {
+    // Shrink all cards.
+    for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
+      final RecyclerView.ViewHolder viewHolder =
+          this._fragment
+              .fragmentBinding()
+              .recyclerView
+              .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
+
+      if (viewHolder instanceof SearchCustomerListHolder holder) holder.setCardExpanded(false);
+    }
+
+    // Expand the selected card.
+    if (index != -1) {
+      final RecyclerView.ViewHolder viewHolder =
+          // +1 offset because header holder.
+          this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
+
+      if (viewHolder instanceof SearchCustomerListHolder holder) holder.setCardExpanded(true);
+    }
   }
 }

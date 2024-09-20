@@ -32,11 +32,11 @@ import java.util.Objects;
 
 public class CustomerListHolder<T extends CustomerListAction & CustomerCardAction>
     extends RecyclerViewHolder<CustomerModel, T> implements View.OnClickListener {
-  @NonNull private final CustomerCardWideBinding _cardBinding;
-  @NonNull private final CustomerCardNormalComponent _normalCard;
-  @NonNull private final CustomerCardExpandedComponent _expandedCard;
-  @NonNull private final CustomerListMenu _menu;
-  @Nullable private CustomerModel _boundCustomer;
+  @NonNull protected final CustomerCardWideBinding _cardBinding;
+  @NonNull protected final CustomerCardNormalComponent _normalCard;
+  @NonNull protected final CustomerCardExpandedComponent _expandedCard;
+  @NonNull protected final CustomerListMenu _menu;
+  @Nullable protected CustomerModel _boundCustomer;
 
   public CustomerListHolder(@NonNull CustomerCardWideBinding binding, @NonNull T action) {
     super(binding.getRoot(), action);

@@ -42,7 +42,8 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class SearchCustomerFragment extends Fragment implements SearchView.OnQueryTextListener {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_QUERY_STRING
+    INITIAL_QUERY_STRING,
+    IS_SELECTION_ENABLED_BOOLEAN
   }
 
   public enum Request implements FragmentResultKey {
@@ -147,7 +148,11 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
 
     @Override
     public void handleOnBackPressed() {
-      SearchCustomerFragment.this.searchCustomerViewModel().onCustomerSelected(null);
+      if (SearchCustomerFragment.this.searchCustomerViewModel().isSelectionEnabled().getValue()) {
+        SearchCustomerFragment.this.searchCustomerViewModel().onCustomerSelected(null);
+      } else {
+        SearchCustomerFragment.this.finish();
+      }
     }
   }
 }

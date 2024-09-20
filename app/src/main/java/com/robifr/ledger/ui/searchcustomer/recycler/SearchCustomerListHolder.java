@@ -19,41 +19,48 @@ package com.robifr.ledger.ui.searchcustomer.recycler;
 
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
-import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
+import com.robifr.ledger.ui.customer.CustomerCardAction;
+import com.robifr.ledger.ui.customer.CustomerListAction;
+import com.robifr.ledger.ui.customer.recycler.CustomerListHolder;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerCardAction;
 import java.util.Objects;
 
-public class SearchCustomerListHolder<T extends SearchCustomerCardAction>
-    extends RecyclerViewHolder<CustomerModel, T> implements View.OnClickListener {
-  @NonNull private final CustomerCardWideBinding _cardBinding;
-  @NonNull private final CustomerCardNormalComponent _normalCard;
-  @Nullable private CustomerModel _boundCustomer;
-
+public class SearchCustomerListHolder<
+        T extends CustomerListAction & CustomerCardAction & SearchCustomerCardAction>
+    extends CustomerListHolder<T> implements View.OnClickListener {
   public SearchCustomerListHolder(@NonNull CustomerCardWideBinding binding, @NonNull T action) {
-    super(binding.getRoot(), action);
-    this._cardBinding = Objects.requireNonNull(binding);
-    this._normalCard =
-        new CustomerCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
+    super(binding, action);
 
-    this._cardBinding.cardView.setOnClickListener(this);
-    this._cardBinding.normalCard.menuButton.setVisibility(View.GONE);
+    if (this._action.isSelectionEnabled()) {
+      this._cardBinding.normalCard.menuButton.setVisibility(View.GONE);
+    }
   }
 
   @Override
   public void bind(@NonNull CustomerModel customer) {
     this._boundCustomer = Objects.requireNonNull(customer);
-    this._normalCard.setCustomer(this._boundCustomer);
+
+    if (this._action.isSelectionEnabled()) {
+      this._normalCard.setCustomer(customer);
+      this.setCardExpanded(false);
+    } else {
+      super.bind(customer);
+    }
   }
 
   @Override
-  public void onClick(View view) {
-    switch (view.getId()) {
-      case R.id.cardView -> this._action.onCustomerSelected(this._boundCustomer);
+  public void onClick(@NonNull View view) {
+    Objects.requireNonNull(view);
+
+    if (this._action.isSelectionEnabled()) {
+      switch (view.getId()) {
+        case R.id.cardView -> this._action.onCustomerSelected(this._boundCustomer);
+      }
+    } else {
+      super.onClick(view);
     }
   }
 }

@@ -26,13 +26,16 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.repository.CustomerRepository;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
 import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -44,12 +47,34 @@ public class SearchCustomerViewModel extends ViewModel {
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
 
   @NonNull
+  private final CustomerChangedListener _customerChangedListener =
+      new CustomerChangedListener(this);
+
+  @NonNull
+  private final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
+      new MutableLiveData<>();
+
+  @NonNull
   private final MutableLiveData<SafeEvent<String>> _initializedInitialQuery =
       new MediatorLiveData<>();
+
+  /**
+   * Whether the fragment should return {@link SearchCustomerFragment.Request#SELECT_CUSTOMER} on
+   * back navigation.
+   */
+  @NonNull
+  private final SafeMutableLiveData<Boolean> _isSelectionEnabled = new SafeMutableLiveData<>(false);
 
   @NonNull
   private final SafeMutableLiveData<Optional<List<CustomerModel>>> _customers =
       new SafeMutableLiveData<>(Optional.empty());
+
+  /**
+   * Currently expanded customer index from {@link SearchCustomerViewModel#_customers customers}. -1
+   * to represent none being expanded.
+   */
+  @NonNull
+  private final SafeMutableLiveData<Integer> _expandedCustomerIndex = new SafeMutableLiveData<>(-1);
 
   @NonNull
   private final MutableLiveData<SafeEvent<Optional<Long>>> _resultSelectedCustomerId =
@@ -62,11 +87,27 @@ public class SearchCustomerViewModel extends ViewModel {
 
     this._customerRepository = Objects.requireNonNull(customerRepository);
 
+    this._customerRepository.addModelChangedListener(this._customerChangedListener);
     this._initializedInitialQuery.setValue(
         new SafeEvent<>(
             Objects.requireNonNullElse(
                 savedStateHandle.get(SearchCustomerFragment.Arguments.INITIAL_QUERY_STRING.key()),
                 "")));
+    this._isSelectionEnabled.setValue(
+        Objects.requireNonNullElse(
+            savedStateHandle.get(
+                SearchCustomerFragment.Arguments.IS_SELECTION_ENABLED_BOOLEAN.key()),
+            false));
+  }
+
+  @Override
+  public void onCleared() {
+    this._customerRepository.removeModelChangedListener(this._customerChangedListener);
+  }
+
+  @NonNull
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
+    return this._snackbarMessage;
   }
 
   @NonNull
@@ -74,9 +115,24 @@ public class SearchCustomerViewModel extends ViewModel {
     return this._initializedInitialQuery;
   }
 
+  /**
+   * @see SearchCustomerViewModel#_isSelectionEnabled
+   */
+  @NonNull
+  public SafeLiveData<Boolean> isSelectionEnabled() {
+    return this._isSelectionEnabled;
+  }
+
   @NonNull
   public SafeLiveData<Optional<List<CustomerModel>>> customers() {
     return this._customers;
+  }
+
+  /**
+   * @see SearchCustomerViewModel#_expandedCustomerIndex
+   */
+  public SafeLiveData<Integer> expandedCustomerIndex() {
+    return this._expandedCustomerIndex;
   }
 
   @NonNull
@@ -104,8 +160,34 @@ public class SearchCustomerViewModel extends ViewModel {
         300);
   }
 
+  public void onDeleteCustomer(@NonNull CustomerModel customer) {
+    Objects.requireNonNull(customer);
+
+    this._customerRepository
+        .delete(customer)
+        .thenAcceptAsync(
+            effected -> {
+              final StringResources stringRes =
+                  effected > 0
+                      ? new StringResources.Plurals(
+                          R.plurals.args_deleted_x_customer, effected, effected)
+                      : new StringResources.Strings(R.string.text_error_failed_to_delete_customer);
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
+            });
+  }
+
   public void onCustomerSelected(@Nullable CustomerModel customer) {
     this._resultSelectedCustomerId.setValue(
         new SafeEvent<>(Optional.ofNullable(customer).map(CustomerModel::id)));
+  }
+
+  public void onExpandedCustomerIndexChanged(int index) {
+    this._expandedCustomerIndex.setValue(index);
+  }
+
+  void _onCustomersChanged(@NonNull List<CustomerModel> customers) {
+    Objects.requireNonNull(customers);
+
+    this._customers.setValue(Optional.of(Collections.unmodifiableList(customers)));
   }
 }

@@ -77,7 +77,7 @@ public class SelectCustomerViewModel extends ViewModel {
     this._customerRepository.addModelChangedListener(this._customerChangedListener);
 
     // Setting up initial values inside a fragment is painful. See commit d5604599.
-    SafeEvent.observeOnce(this.selectAllCustomers(), this::onCustomersChanged, Objects::nonNull);
+    SafeEvent.observeOnce(this._selectAllCustomers(), this::_onCustomersChanged, Objects::nonNull);
   }
 
   @Override
@@ -105,19 +105,13 @@ public class SelectCustomerViewModel extends ViewModel {
     return this._resultSelectedCustomerId;
   }
 
-  public void onCustomersChanged(@NonNull List<CustomerModel> customers) {
-    Objects.requireNonNull(customers);
-
-    this._customers.setValue(Collections.unmodifiableList(this._sorter.sort(customers)));
-  }
-
   public void onCustomerSelected(@Nullable CustomerModel customer) {
     this._resultSelectedCustomerId.setValue(
         new SafeEvent<>(Optional.ofNullable(customer).map(CustomerModel::id)));
   }
 
   @NonNull
-  public LiveData<List<CustomerModel>> selectAllCustomers() {
+  private LiveData<List<CustomerModel>> _selectAllCustomers() {
     final MutableLiveData<List<CustomerModel>> result = new MutableLiveData<>();
 
     this._customerRepository
@@ -134,5 +128,11 @@ public class SelectCustomerViewModel extends ViewModel {
               result.postValue(customers);
             });
     return result;
+  }
+
+  void _onCustomersChanged(@NonNull List<CustomerModel> customers) {
+    Objects.requireNonNull(customers);
+
+    this._customers.setValue(Collections.unmodifiableList(this._sorter.sort(customers)));
   }
 }

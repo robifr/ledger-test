@@ -72,7 +72,7 @@ class CustomerChangedListener implements ModelChangedListener<CustomerModel> {
     Objects.requireNonNull(customers);
     Objects.requireNonNull(updater);
 
-    this._viewModel.onCustomersChanged(
+    this._viewModel._onCustomersChanged(
         updater.apply(this._viewModel.customers().getValue(), customers));
   }
 }

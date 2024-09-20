@@ -76,7 +76,7 @@ public class SelectProductViewModel extends ViewModel {
     this._productRepository.addModelChangedListener(this._productChangedListener);
 
     // Setting up initial values inside a fragment is painful. See commit d5604599.
-    SafeEvent.observeOnce(this.selectAllProducts(), this::onProductsChanged, Objects::nonNull);
+    SafeEvent.observeOnce(this._selectAllProducts(), this::_onProductsChanged, Objects::nonNull);
   }
 
   @Override
@@ -104,19 +104,13 @@ public class SelectProductViewModel extends ViewModel {
     return this._resultSelectedProductId;
   }
 
-  public void onProductsChanged(@NonNull List<ProductModel> products) {
-    Objects.requireNonNull(products);
-
-    this._products.setValue(Collections.unmodifiableList(this._sorter.sort(products)));
-  }
-
   public void onProductSelected(@Nullable ProductModel product) {
     this._resultSelectedProductId.setValue(
         new SafeEvent<>(Optional.ofNullable(product).map(ProductModel::id)));
   }
 
   @NonNull
-  public LiveData<List<ProductModel>> selectAllProducts() {
+  private LiveData<List<ProductModel>> _selectAllProducts() {
     final MutableLiveData<List<ProductModel>> result = new MutableLiveData<>();
 
     this._productRepository
@@ -133,5 +127,11 @@ public class SelectProductViewModel extends ViewModel {
               result.postValue(products);
             });
     return result;
+  }
+
+  void _onProductsChanged(@NonNull List<ProductModel> products) {
+    Objects.requireNonNull(products);
+
+    this._products.setValue(Collections.unmodifiableList(this._sorter.sort(products)));
   }
 }

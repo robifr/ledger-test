@@ -72,7 +72,7 @@ class ProductChangedListener implements ModelChangedListener<ProductModel> {
     Objects.requireNonNull(products);
     Objects.requireNonNull(updater);
 
-    this._viewModel.onProductsChanged(
+    this._viewModel._onProductsChanged(
         updater.apply(this._viewModel.products().getValue(), products));
   }
 }

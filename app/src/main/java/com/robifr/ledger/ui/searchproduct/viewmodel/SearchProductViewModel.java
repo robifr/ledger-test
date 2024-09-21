@@ -41,8 +41,7 @@ import javax.inject.Inject;
 public class SearchProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
-
-  @NonNull private final SafeMutableLiveData<String> _query;
+  @NonNull private final String _initialQuery;
 
   @NonNull
   private final SafeMutableLiveData<Optional<List<ProductModel>>> _products =
@@ -58,16 +57,14 @@ public class SearchProductViewModel extends ViewModel {
     Objects.requireNonNull(savedStateHandle);
 
     this._productRepository = Objects.requireNonNull(productRepository);
-    this._query =
-        new SafeMutableLiveData<>(
-            Objects.requireNonNullElse(
-                savedStateHandle.get(SearchProductFragment.Arguments.INITIAL_QUERY_STRING.key()),
-                ""));
+    this._initialQuery =
+        Objects.requireNonNullElse(
+            savedStateHandle.get(SearchProductFragment.Arguments.INITIAL_QUERY_STRING.key()), "");
   }
 
   @NonNull
-  public SafeLiveData<String> query() {
-    return this._query;
+  public String initialQuery() {
+    return this._initialQuery;
   }
 
   @NonNull
@@ -83,7 +80,6 @@ public class SearchProductViewModel extends ViewModel {
   public void onSearch(@NonNull String query) {
     Objects.requireNonNull(query);
 
-    this._query.setValue(query);
     // Remove old runnable to ensure old query result wouldn't appear in future.
     this._handler.removeCallbacksAndMessages(null);
     this._handler.postDelayed(

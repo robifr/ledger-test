@@ -22,7 +22,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.ui.searchproduct.viewmodel.SearchProductViewModel;
-import com.robifr.ledger.util.Compats;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,7 +40,6 @@ public class SearchProductViewModelHandler {
         .observe(
             this._fragment.getViewLifecycleOwner(),
             event -> event.handleIfNotHandled(this::_onResultSelectedProductId));
-    this._viewModel.query().observe(this._fragment.getViewLifecycleOwner(), this::_onQuery);
     this._viewModel.products().observe(this._fragment.getViewLifecycleOwner(), this::_onProducts);
   }
 
@@ -60,17 +58,6 @@ public class SearchProductViewModelHandler {
         .getParentFragmentManager()
         .setFragmentResult(SearchProductFragment.Request.SELECT_PRODUCT.key(), bundle);
     this._fragment.finish();
-  }
-
-  private void _onQuery(@NonNull String query) {
-    Objects.requireNonNull(query);
-
-    if (!query.isEmpty()) {
-      this._fragment.fragmentBinding().searchView.setQuery(query, true);
-    } else {
-      Compats.showKeyboard(
-          this._fragment.requireContext(), this._fragment.fragmentBinding().searchView);
-    }
   }
 
   /**

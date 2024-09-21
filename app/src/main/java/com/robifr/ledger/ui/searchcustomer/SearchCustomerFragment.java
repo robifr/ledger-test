@@ -103,6 +103,12 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+
+    if (!this._searchCustomerViewModel.initialQuery().isEmpty()) {
+      this._fragmentBinding.searchView.setQuery(this._searchCustomerViewModel.initialQuery(), true);
+    } else {
+      Compats.showKeyboard(this.requireContext(), this.fragmentBinding().searchView);
+    }
   }
 
   @Override
@@ -148,7 +154,7 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
 
     @Override
     public void handleOnBackPressed() {
-      if (SearchCustomerFragment.this.searchCustomerViewModel().isSelectionEnabled().getValue()) {
+      if (SearchCustomerFragment.this.searchCustomerViewModel().isSelectionEnabled()) {
         SearchCustomerFragment.this.searchCustomerViewModel().onCustomerSelected(null);
       } else {
         SearchCustomerFragment.this.finish();

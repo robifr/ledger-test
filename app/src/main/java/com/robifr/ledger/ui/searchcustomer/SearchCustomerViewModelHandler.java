@@ -26,7 +26,6 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.searchcustomer.recycler.SearchCustomerListHolder;
 import com.robifr.ledger.ui.searchcustomer.viewmodel.SearchCustomerViewModel;
-import com.robifr.ledger.util.Compats;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,11 +49,6 @@ public class SearchCustomerViewModelHandler {
         .observe(
             this._fragment.getViewLifecycleOwner(),
             event -> event.handleIfNotHandled(this::_onSnackbarMessage));
-    this._viewModel
-        .initializedInitialQuery()
-        .observe(
-            this._fragment.getViewLifecycleOwner(),
-            event -> event.handleIfNotHandled(this::_onInitializedInitialQuery));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
     this._viewModel
         .expandedCustomerIndex()
@@ -86,17 +80,6 @@ public class SearchCustomerViewModelHandler {
             StringResources.stringOf(this._fragment.requireContext(), stringRes),
             Snackbar.LENGTH_LONG)
         .show();
-  }
-
-  private void _onInitializedInitialQuery(@NonNull String query) {
-    Objects.requireNonNull(query);
-
-    if (!query.isEmpty()) {
-      this._fragment.fragmentBinding().searchView.setQuery(query, true);
-    } else {
-      Compats.showKeyboard(
-          this._fragment.requireContext(), this._fragment.fragmentBinding().searchView);
-    }
   }
 
   /**

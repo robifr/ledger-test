@@ -140,7 +140,7 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
 
   @Override
   public boolean isSelectionEnabled() {
-    return this._fragment.searchCustomerViewModel().isSelectionEnabled().getValue();
+    return this._fragment.searchCustomerViewModel().isSelectionEnabled();
   }
 
   @Override

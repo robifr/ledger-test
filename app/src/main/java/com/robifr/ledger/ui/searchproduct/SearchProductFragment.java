@@ -101,6 +101,12 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);
     this._fragmentBinding.recyclerView.setItemViewCacheSize(0);
+
+    if (!this._searchProductViewModel.initialQuery().isEmpty()) {
+      this._fragmentBinding.searchView.setQuery(this._searchProductViewModel.initialQuery(), true);
+    } else {
+      Compats.showKeyboard(this.requireContext(), this.fragmentBinding().searchView);
+    }
   }
 
   @Override

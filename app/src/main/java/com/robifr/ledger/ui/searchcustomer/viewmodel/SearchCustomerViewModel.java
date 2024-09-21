@@ -22,7 +22,6 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
@@ -45,6 +44,13 @@ import javax.inject.Inject;
 public class SearchCustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
+  @NonNull private final String _initialQuery;
+
+  /**
+   * Whether the fragment should return {@link SearchCustomerFragment.Request#SELECT_CUSTOMER} on
+   * back navigation.
+   */
+  private final boolean _isSelectionEnabled;
 
   @NonNull
   private final CustomerChangedListener _customerChangedListener =
@@ -53,17 +59,6 @@ public class SearchCustomerViewModel extends ViewModel {
   @NonNull
   private final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
       new MutableLiveData<>();
-
-  @NonNull
-  private final MutableLiveData<SafeEvent<String>> _initializedInitialQuery =
-      new MediatorLiveData<>();
-
-  /**
-   * Whether the fragment should return {@link SearchCustomerFragment.Request#SELECT_CUSTOMER} on
-   * back navigation.
-   */
-  @NonNull
-  private final SafeMutableLiveData<Boolean> _isSelectionEnabled = new SafeMutableLiveData<>(false);
 
   @NonNull
   private final SafeMutableLiveData<Optional<List<CustomerModel>>> _customers =
@@ -86,18 +81,16 @@ public class SearchCustomerViewModel extends ViewModel {
     Objects.requireNonNull(savedStateHandle);
 
     this._customerRepository = Objects.requireNonNull(customerRepository);
-
-    this._customerRepository.addModelChangedListener(this._customerChangedListener);
-    this._initializedInitialQuery.setValue(
-        new SafeEvent<>(
-            Objects.requireNonNullElse(
-                savedStateHandle.get(SearchCustomerFragment.Arguments.INITIAL_QUERY_STRING.key()),
-                "")));
-    this._isSelectionEnabled.setValue(
+    this._initialQuery =
+        Objects.requireNonNullElse(
+            savedStateHandle.get(SearchCustomerFragment.Arguments.INITIAL_QUERY_STRING.key()), "");
+    this._isSelectionEnabled =
         Objects.requireNonNullElse(
             savedStateHandle.get(
                 SearchCustomerFragment.Arguments.IS_SELECTION_ENABLED_BOOLEAN.key()),
-            false));
+            false);
+
+    this._customerRepository.addModelChangedListener(this._customerChangedListener);
   }
 
   @Override
@@ -106,21 +99,20 @@ public class SearchCustomerViewModel extends ViewModel {
   }
 
   @NonNull
-  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
-    return this._snackbarMessage;
-  }
-
-  @NonNull
-  public LiveData<SafeEvent<String>> initializedInitialQuery() {
-    return this._initializedInitialQuery;
+  public String initialQuery() {
+    return this._initialQuery;
   }
 
   /**
    * @see SearchCustomerViewModel#_isSelectionEnabled
    */
-  @NonNull
-  public SafeLiveData<Boolean> isSelectionEnabled() {
+  public boolean isSelectionEnabled() {
     return this._isSelectionEnabled;
+  }
+
+  @NonNull
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
+    return this._snackbarMessage;
   }
 
   @NonNull

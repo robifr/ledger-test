@@ -94,7 +94,6 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
         v -> this._onBackPressed.handleOnBackPressed());
     this._fragmentBinding.searchView.setQueryHint(this.getString(R.string.text_search_customers));
     this._fragmentBinding.searchView.setOnQueryTextListener(this);
-    this._fragmentBinding.searchView.requestFocus();
     this._fragmentBinding.noResultsImage.image.setImageResource(R.drawable.image_noresultsfound);
     this._fragmentBinding.noResultsImage.title.setText(R.string.text_no_results_found);
     this._fragmentBinding.noResultsImage.description.setText(
@@ -107,6 +106,7 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
     if (!this._searchCustomerViewModel.initialQuery().isEmpty()) {
       this._fragmentBinding.searchView.setQuery(this._searchCustomerViewModel.initialQuery(), true);
     } else {
+      this._fragmentBinding.searchView.requestFocus();
       Compats.showKeyboard(this.requireContext(), this.fragmentBinding().searchView);
     }
   }

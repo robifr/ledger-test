@@ -85,7 +85,6 @@ public class SearchFragment extends Fragment
     this._fragmentBinding.searchView.setQueryHint(
         this.getString(R.string.text_search_customers_and_products));
     this._fragmentBinding.searchView.setOnQueryTextListener(this);
-    this._fragmentBinding.searchView.requestFocus();
     this._fragmentBinding.noResultsImage.image.setImageResource(R.drawable.image_noresultsfound);
     this._fragmentBinding.noResultsImage.title.setText(R.string.text_no_results_found);
     this._fragmentBinding.noResultsImage.description.setText(
@@ -101,6 +100,7 @@ public class SearchFragment extends Fragment
     this._productListBinding.getRoot().setVisibility(View.GONE);
 
     if (this._searchViewModel.query().isEmpty()) {
+      this._fragmentBinding.searchView.requestFocus();
       Compats.showKeyboard(this.requireContext(), this._fragmentBinding.searchView);
     }
   }

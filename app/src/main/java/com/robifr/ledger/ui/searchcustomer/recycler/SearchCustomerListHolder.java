@@ -44,7 +44,7 @@ public class SearchCustomerListHolder<
     this._boundCustomer = Objects.requireNonNull(customer);
 
     if (this._action.isSelectionEnabled()) {
-      this._normalCard.setCustomer(customer);
+      this._card.setNormalCardCustomer(customer);
       this.setCardExpanded(false);
     } else {
       super.bind(customer);

@@ -26,7 +26,7 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerCardNormalComponent;
+import com.robifr.ledger.ui.customer.CustomerCardWideComponent;
 import com.robifr.ledger.ui.customer.CustomerListAction;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,7 +35,7 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction>
     extends RecyclerViewHolder<Optional<CustomerModel>, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final CustomerCardWideBinding _selectedCardBinding;
-  @NonNull private final CustomerCardNormalComponent _selectedNormalCard;
+  @NonNull private final CustomerCardWideComponent _selectedCard;
 
   public SelectCustomerHeaderHolder(
       @NonNull ListableListSelectedItemBinding binding, @NonNull T action) {
@@ -46,9 +46,8 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction>
             LayoutInflater.from(this.itemView.getContext()),
             this._headerBinding.selectedItemContainer,
             false);
-    this._selectedNormalCard =
-        new CustomerCardNormalComponent(
-            this.itemView.getContext(), this._selectedCardBinding.normalCard);
+    this._selectedCard =
+        new CustomerCardWideComponent(this.itemView.getContext(), this._selectedCardBinding);
 
     this._headerBinding.selectedItemTitle.setText(
         this.itemView.getContext().getString(R.string.text_selected_customer));
@@ -101,8 +100,8 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction>
       this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
     }
 
+    selectedCustomer.ifPresent(this._selectedCard::setNormalCardCustomer);
     this._selectedCardBinding.cardView.setChecked(true);
-    this._selectedNormalCard.setCustomer(selectedCustomer.orElse(null));
     this._headerBinding.selectedItemTitle.setVisibility(View.VISIBLE);
     this._headerBinding.selectedItemContainer.setVisibility(View.VISIBLE);
   }

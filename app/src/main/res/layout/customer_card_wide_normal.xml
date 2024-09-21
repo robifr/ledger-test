@@ -56,17 +56,21 @@
       app:layout_constraintTop_toTopOf="parent"
       app:rippleColor="?android:colorControlHighlight" />
 
-  <CheckBox
-      android:id="@+id/checkbox"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:background="?android:listChoiceIndicatorMultiple"
-      android:button="@null"
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/expandButton"
+      style="@style/Widget.Material3.Button.IconButton"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
       android:visibility="gone"
+      app:icon="@drawable/icon_arrow_dropdown"
+      app:iconGravity="textEnd"
+      app:iconSize="@dimen/icon_medium"
+      app:iconTint="?colorControlNormal"
       app:layout_constraintBottom_toBottomOf="@id/menuButton"
       app:layout_constraintEnd_toEndOf="@id/menuButton"
       app:layout_constraintStart_toStartOf="@id/menuButton"
-      app:layout_constraintTop_toTopOf="@id/menuButton" />
+      app:layout_constraintTop_toTopOf="@id/menuButton"
+      app:rippleColor="?android:colorControlHighlight" />
 
   <TextView
       android:id="@+id/uniqueIdTitle"

@@ -43,4 +43,20 @@
       app:layout_constraintEnd_toEndOf="@id/shapeableImage"
       app:layout_constraintStart_toStartOf="@id/shapeableImage"
       app:layout_constraintTop_toTopOf="@id/shapeableImage" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/icon"
+      style="@style/Widget.Material3.Button.IconButton"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:clickable="false"
+      android:enabled="false"
+      android:visibility="gone"
+      app:icon="@drawable/icon_check"
+      app:iconGravity="textEnd"
+      app:iconTint="@color/text_enabled"
+      app:layout_constraintBottom_toBottomOf="@id/shapeableImage"
+      app:layout_constraintEnd_toEndOf="@id/shapeableImage"
+      app:layout_constraintStart_toStartOf="@id/shapeableImage"
+      app:layout_constraintTop_toTopOf="@id/shapeableImage" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -74,6 +74,17 @@ public class CustomerCardWideComponent {
     this._binding.expandedCard.getRoot().setVisibility(expandedCardVisibility);
   }
 
+  public void setCardChecked(boolean isChecked) {
+    final int textVisibility = isChecked ? View.GONE : View.VISIBLE;
+    final int iconVisibility = isChecked ? View.VISIBLE : View.GONE;
+
+    this._binding.cardView.setChecked(isChecked);
+    this._binding.normalCard.image.text.setVisibility(textVisibility);
+    this._binding.normalCard.image.icon.setVisibility(iconVisibility);
+    this._binding.expandedCard.image.text.setVisibility(textVisibility);
+    this._binding.expandedCard.image.icon.setVisibility(iconVisibility);
+  }
+
   public void reset() {
     this._binding.normalCard.uniqueId.setText(null);
     this._binding.normalCard.uniqueId.setEnabled(false);
@@ -82,8 +93,10 @@ public class CustomerCardWideComponent {
 
     this._binding.normalCard.name.setText(null);
     this._binding.normalCard.image.text.setText(null);
+    this._binding.normalCard.image.icon.setVisibility(View.GONE);
     this._binding.expandedCard.name.setText(null);
     this._binding.expandedCard.image.text.setText(null);
+    this._binding.expandedCard.image.icon.setVisibility(View.GONE);
 
     this._binding.normalCard.balance.setText(null);
     this._binding.expandedCard.balance.setText(null);

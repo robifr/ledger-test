@@ -57,6 +57,13 @@ public class FilterCustomerViewModel extends ViewModel {
   private final SafeMutableLiveData<List<CustomerModel>> _customers =
       new SafeMutableLiveData<>(List.of());
 
+  /**
+   * Currently expanded customer index from {@link FilterCustomerViewModel#_customers customers}. -1
+   * to represent none being expanded.
+   */
+  @NonNull
+  private final SafeMutableLiveData<Integer> _expandedCustomerIndex = new SafeMutableLiveData<>(-1);
+
   @NonNull
   private final MutableLiveData<SafeEvent<List<Long>>> _resultFilteredCustomerIds =
       new MutableLiveData<>();
@@ -110,6 +117,13 @@ public class FilterCustomerViewModel extends ViewModel {
     return this._customers;
   }
 
+  /**
+   * @see FilterCustomerViewModel#_expandedCustomerIndex
+   */
+  public SafeLiveData<Integer> expandedCustomerIndex() {
+    return this._expandedCustomerIndex;
+  }
+
   @NonNull
   public LiveData<SafeEvent<List<Long>>> resultFilteredCustomerIds() {
     return this._resultFilteredCustomerIds;
@@ -119,6 +133,10 @@ public class FilterCustomerViewModel extends ViewModel {
     Objects.requireNonNull(customers);
 
     this._customers.setValue(Collections.unmodifiableList(this._sorter.sort(customers)));
+  }
+
+  public void onExpandedCustomerIndexChanged(int index) {
+    this._expandedCustomerIndex.setValue(index);
   }
 
   public void onFilteredCustomersChanged(@NonNull List<CustomerModel> customers) {

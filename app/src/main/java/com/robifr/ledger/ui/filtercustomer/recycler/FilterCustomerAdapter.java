@@ -25,6 +25,7 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.customer.CustomerListAction;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerAction;
 import com.robifr.ledger.ui.filtercustomer.FilterCustomerFragment;
 import java.util.Arrays;
@@ -33,7 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
-    implements FilterCustomerAction {
+    implements CustomerListAction, FilterCustomerAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -105,6 +106,22 @@ public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
       case 0 -> ViewType.HEADER.value();
       default -> ViewType.LIST.value();
     };
+  }
+
+  @Override
+  @NonNull
+  public List<CustomerModel> customers() {
+    return this._fragment.filterCustomerViewModel().customers().getValue();
+  }
+
+  @Override
+  public int expandedCustomerIndex() {
+    return this._fragment.filterCustomerViewModel().expandedCustomerIndex().getValue();
+  }
+
+  @Override
+  public void onExpandedCustomerIndexChanged(int index) {
+    this._fragment.filterCustomerViewModel().onExpandedCustomerIndexChanged(index);
   }
 
   @Override

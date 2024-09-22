@@ -50,6 +50,9 @@ public class FilterCustomerViewModelHandler {
             event -> event.handleIfNotHandled(this::_onSnackbarMessage));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
     this._viewModel
+        .expandedCustomerIndex()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onExpandedCustomerIndex);
+    this._viewModel
         .filteredCustomers()
         .observe(this._fragment.getViewLifecycleOwner(), this::_onFilteredCustomers);
   }
@@ -88,6 +91,28 @@ public class FilterCustomerViewModelHandler {
     this._fragment.adapter().notifyDataSetChanged();
   }
 
+  private void _onExpandedCustomerIndex(int index) {
+    // Shrink all cards.
+    for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
+      final RecyclerView.ViewHolder viewHolder =
+          this._fragment
+              .fragmentBinding()
+              .recyclerView
+              .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
+
+      if (viewHolder instanceof FilterCustomerListHolder holder) holder.setCardExpanded(false);
+    }
+
+    // Expand the selected card.
+    if (index != -1) {
+      final RecyclerView.ViewHolder viewHolder =
+          // +1 offset because header holder.
+          this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
+
+      if (viewHolder instanceof FilterCustomerListHolder holder) holder.setCardExpanded(true);
+    }
+  }
+
   private void _onFilteredCustomers(@NonNull List<CustomerModel> customers) {
     Objects.requireNonNull(customers);
 
@@ -99,7 +124,7 @@ public class FilterCustomerViewModelHandler {
               .recyclerView
               .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
 
-      if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setChecked(false);
+      if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setCardChecked(false);
     }
 
     // Check the selected card.
@@ -112,7 +137,7 @@ public class FilterCustomerViewModelHandler {
               .recyclerView
               .findViewHolderForLayoutPosition(customerIndex + 1);
 
-      if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setChecked(true);
+      if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setCardChecked(true);
     }
 
     this._fragment.adapter().notifyItemChanged(0); // Notify header holder.

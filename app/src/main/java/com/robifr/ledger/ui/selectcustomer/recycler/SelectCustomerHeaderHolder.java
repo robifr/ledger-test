@@ -56,7 +56,7 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction & SelectedC
     this._headerBinding.allListTitle.setText(
         this.itemView.getContext().getString(R.string.text_all_customers));
     this._headerBinding.newButton.setOnClickListener(this);
-    // Don't set to `View.GONE` as the position will be occupied by expand button.
+    // Don't set menu button to `View.GONE` as the position will be occupied by expand button.
     this._selectedCardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
     this._selectedCardBinding.normalCard.expandButton.setVisibility(View.VISIBLE);
     this._selectedCardBinding.normalCard.expandButton.setOnClickListener(this);
@@ -124,7 +124,6 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction & SelectedC
           Navigation.findNavController(this.itemView).navigate(R.id.createCustomerFragment);
 
       case R.id.expandButton -> {
-        // Only expand when it shrank.
         final boolean isExpanded =
             this._selectedCardBinding.expandedCard.getRoot().getVisibility() == View.VISIBLE;
 

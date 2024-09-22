@@ -56,8 +56,7 @@ public class QueueListHolder<T extends QueueListAction & QueueCardAction>
     this._cardBinding.expandedCard.paymentMethodTitle.setVisibility(paymentMethodVisibility);
     this._cardBinding.expandedCard.paymentMethod.setVisibility(paymentMethodVisibility);
 
-    // Prevent reused view holder to expand the card
-    // if current bound queue is different with selected expanded card.
+    // Prevent reused view holder card from being expanded.
     final boolean shouldCardExpanded =
         this._action.expandedQueueIndex() != -1
             && this._boundQueue.equals(
@@ -74,7 +73,6 @@ public class QueueListHolder<T extends QueueListAction & QueueCardAction>
 
     switch (view.getId()) {
       case R.id.cardView -> {
-        // Only expand when it shrank.
         final int expandedQueueIndex =
             this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
                 ? this._action.queues().indexOf(this._boundQueue)

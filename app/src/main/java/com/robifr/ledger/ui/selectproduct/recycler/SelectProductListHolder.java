@@ -41,13 +41,14 @@ public class SelectProductListHolder<T extends SelectProductCardAction>
         new ProductCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
 
     this._cardBinding.cardView.setOnClickListener(this);
-    // Don't set to `View.GONE` as the position will be occupied by checkbox.
+    // Don't set menu button to `View.GONE` as the position will be occupied by expand button.
     this._cardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
   }
 
   @Override
   public void bind(@NonNull ProductModel product) {
     this._boundProduct = Objects.requireNonNull(product);
+    // Prevent reused view holder card from being expanded.
     final boolean shouldChecked =
         this._action.initialSelectedProduct() != null
             && this._action.initialSelectedProduct().id() != null

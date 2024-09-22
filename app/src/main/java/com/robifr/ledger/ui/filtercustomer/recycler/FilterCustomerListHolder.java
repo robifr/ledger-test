@@ -42,7 +42,7 @@ public class FilterCustomerListHolder<T extends CustomerListAction & FilterCusto
     this._card = new CustomerCardWideComponent(this.itemView.getContext(), this._cardBinding);
 
     this._cardBinding.cardView.setOnClickListener(this);
-    // Don't set to `View.GONE` as the position will be occupied by expand button.
+    // Don't set menu button to `View.GONE` as the position will be occupied by expand button.
     this._cardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
     this._cardBinding.normalCard.expandButton.setVisibility(View.VISIBLE);
     this._cardBinding.normalCard.expandButton.setOnClickListener(this);
@@ -62,8 +62,7 @@ public class FilterCustomerListHolder<T extends CustomerListAction & FilterCusto
 
     this._card.reset();
     this._card.setNormalCardCustomer(this._boundCustomer);
-    // Prevent reused view holder card to be expanded or checked
-    // if current bound customer is different.
+    // Prevent reused view holder card from being expanded or checked.
     this.setCardChecked(this._action.filteredCustomers().contains(this._boundCustomer));
     this.setCardExpanded(shouldCardExpanded);
   }

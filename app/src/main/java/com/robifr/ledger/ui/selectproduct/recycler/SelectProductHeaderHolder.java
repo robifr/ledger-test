@@ -56,7 +56,7 @@ public class SelectProductHeaderHolder<T extends ProductListAction>
     this._headerBinding.allListTitle.setText(
         this.itemView.getContext().getString(R.string.text_all_products));
     this._headerBinding.newButton.setOnClickListener(this);
-    // Don't set to `View.GONE` as the position will be occupied by checkbox.
+    // Don't set menu button to `View.GONE` as the position will be occupied by expand button.
     this._selectedCardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
   }
 

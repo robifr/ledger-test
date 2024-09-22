@@ -60,8 +60,7 @@ public class ProductListHolder<T extends ProductListAction & ProductCardAction>
     this._normalCard.setProduct(this._boundProduct);
     this._expandedCard.reset();
 
-    // Prevent reused view holder to expand the card
-    // if current bound product is different with selected expanded card.
+    // Prevent reused view holder card from being expanded.
     final boolean shouldCardExpanded =
         this._action.expandedProductIndex() != -1
             && this._boundProduct.equals(
@@ -75,7 +74,6 @@ public class ProductListHolder<T extends ProductListAction & ProductCardAction>
 
     switch (view.getId()) {
       case R.id.cardView -> {
-        // Only expand when it shrank.
         final int expandedQueueIndex =
             this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
                 ? this._action.products().indexOf(this._boundProduct)

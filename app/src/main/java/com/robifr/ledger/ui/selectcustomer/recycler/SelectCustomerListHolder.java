@@ -41,7 +41,7 @@ public class SelectCustomerListHolder<T extends CustomerListAction & SelectCusto
     this._card = new CustomerCardWideComponent(this.itemView.getContext(), this._cardBinding);
 
     this._cardBinding.cardView.setOnClickListener(this);
-    // Don't set to `View.GONE` as the position will be occupied by expand button.
+    // Don't set menu button to `View.GONE` as the position will be occupied by expand button.
     this._cardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
     this._cardBinding.normalCard.expandButton.setVisibility(View.VISIBLE);
     this._cardBinding.normalCard.expandButton.setOnClickListener(this);
@@ -53,9 +53,7 @@ public class SelectCustomerListHolder<T extends CustomerListAction & SelectCusto
   @Override
   public void bind(@NonNull CustomerModel customer) {
     this._boundCustomer = Objects.requireNonNull(customer);
-
-    // Prevent reused view holder card to be expanded or checked
-    // if current bound customer is different.
+    // Prevent reused view holder card from being expanded or checked.
     final boolean shouldCardExpanded =
         this._action.expandedCustomerIndex() != -1
             && this._boundCustomer.equals(
@@ -80,7 +78,6 @@ public class SelectCustomerListHolder<T extends CustomerListAction & SelectCusto
       case R.id.expandButton -> {
         final boolean isExpanded =
             this._cardBinding.expandedCard.getRoot().getVisibility() == View.VISIBLE;
-        // Only expand when it shrank.
         final int expandedCustomerIndex =
             !isExpanded ? this._action.customers().indexOf(this._boundCustomer) : -1;
 

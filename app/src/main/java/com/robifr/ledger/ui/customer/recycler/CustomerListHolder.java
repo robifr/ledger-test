@@ -50,8 +50,7 @@ public class CustomerListHolder<T extends CustomerListAction & CustomerAction>
   @Override
   public void bind(@NonNull CustomerModel customer) {
     this._boundCustomer = Objects.requireNonNull(customer);
-    // Prevent reused view holder to expand the card
-    // if current bound customer is different with selected expanded card.
+    // Prevent reused view holder card from being expanded.
     final boolean shouldCardExpanded =
         this._action.expandedCustomerIndex() != -1
             && this._boundCustomer.equals(
@@ -68,7 +67,6 @@ public class CustomerListHolder<T extends CustomerListAction & CustomerAction>
 
     switch (view.getId()) {
       case R.id.cardView -> {
-        // Only expand when it shrank.
         final int expandedCustomerIndex =
             this._cardBinding.expandedCard.getRoot().getVisibility() != View.VISIBLE
                 ? this._action.customers().indexOf(this._boundCustomer)

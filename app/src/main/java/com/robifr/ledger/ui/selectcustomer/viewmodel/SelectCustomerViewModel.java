@@ -59,6 +59,18 @@ public class SelectCustomerViewModel extends ViewModel {
   private final SafeMutableLiveData<List<CustomerModel>> _customers =
       new SafeMutableLiveData<>(List.of());
 
+  /** Whether the preview of selected customer is expanded or not. */
+  @NonNull
+  private final SafeMutableLiveData<Boolean> _isSelectedCustomerExpanded =
+      new SafeMutableLiveData<>(false);
+
+  /**
+   * Currently expanded customer index from {@link SelectCustomerViewModel#_customers customers}. -1
+   * to represent none being expanded.
+   */
+  @NonNull
+  private final SafeMutableLiveData<Integer> _expandedCustomerIndex = new SafeMutableLiveData<>(-1);
+
   @NonNull
   private final MutableLiveData<SafeEvent<Optional<Long>>> _resultSelectedCustomerId =
       new MutableLiveData<>();
@@ -100,6 +112,20 @@ public class SelectCustomerViewModel extends ViewModel {
     return this._customers;
   }
 
+  /**
+   * @see SelectCustomerViewModel#_isSelectedCustomerExpanded
+   */
+  public SafeLiveData<Boolean> isSelectedCustomerExpanded() {
+    return this._isSelectedCustomerExpanded;
+  }
+
+  /**
+   * @see SelectCustomerViewModel#_expandedCustomerIndex
+   */
+  public SafeLiveData<Integer> expandedCustomerIndex() {
+    return this._expandedCustomerIndex;
+  }
+
   @NonNull
   public LiveData<SafeEvent<Optional<Long>>> resultSelectedCustomerId() {
     return this._resultSelectedCustomerId;
@@ -108,6 +134,14 @@ public class SelectCustomerViewModel extends ViewModel {
   public void onCustomerSelected(@Nullable CustomerModel customer) {
     this._resultSelectedCustomerId.setValue(
         new SafeEvent<>(Optional.ofNullable(customer).map(CustomerModel::id)));
+  }
+
+  public void onSelectedCustomerExpanded(boolean isExpanded) {
+    this._isSelectedCustomerExpanded.setValue(isExpanded);
+  }
+
+  public void onExpandedCustomerIndexChanged(int index) {
+    this._expandedCustomerIndex.setValue(index);
   }
 
   @NonNull

@@ -26,16 +26,21 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.customer.CustomerCardAction;
 import com.robifr.ledger.ui.customer.CustomerListAction;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerCardAction;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
+import com.robifr.ledger.ui.selectcustomer.SelectedCustomerAction;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
-    implements CustomerListAction, SelectCustomerCardAction {
+    implements CustomerListAction,
+        CustomerCardAction,
+        SelectCustomerCardAction,
+        SelectedCustomerAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -117,6 +122,21 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   }
 
   @Override
+  public int expandedCustomerIndex() {
+    return this._fragment.selectCustomerViewModel().expandedCustomerIndex().getValue();
+  }
+
+  @Override
+  public void onExpandedCustomerIndexChanged(int index) {
+    this._fragment.selectCustomerViewModel().onExpandedCustomerIndexChanged(index);
+  }
+
+  @Override
+  public void onDeleteCustomer(@NonNull CustomerModel customer) {
+    // Delete feature is not allowed/available.
+  }
+
+  @Override
   @Nullable
   public CustomerModel initialSelectedCustomer() {
     return this._fragment.selectCustomerViewModel().initialSelectedCustomer();
@@ -125,5 +145,15 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   @Override
   public void onCustomerSelected(@Nullable CustomerModel customer) {
     this._fragment.selectCustomerViewModel().onCustomerSelected(customer);
+  }
+
+  @Override
+  public boolean isSelectedCustomerExpanded() {
+    return this._fragment.selectCustomerViewModel().isSelectedCustomerExpanded().getValue();
+  }
+
+  @Override
+  public void onSelectedCustomerExpanded(boolean isExpanded) {
+    this._fragment.selectCustomerViewModel().onSelectedCustomerExpanded(isExpanded);
   }
 }

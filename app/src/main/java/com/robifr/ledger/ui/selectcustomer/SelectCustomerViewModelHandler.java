@@ -20,9 +20,12 @@ package com.robifr.ledger.ui.selectcustomer;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.StringResources;
+import com.robifr.ledger.ui.selectcustomer.recycler.SelectCustomerHeaderHolder;
+import com.robifr.ledger.ui.selectcustomer.recycler.SelectCustomerListHolder;
 import com.robifr.ledger.ui.selectcustomer.viewmodel.SelectCustomerViewModel;
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +51,12 @@ public class SelectCustomerViewModelHandler {
             this._fragment.getViewLifecycleOwner(),
             event -> event.handleIfNotHandled(this::_onSnackbarMessage));
     this._viewModel.customers().observe(this._fragment.getViewLifecycleOwner(), this::_onCustomers);
+    this._viewModel
+        .isSelectedCustomerExpanded()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onSelectedCustomerExpanded);
+    this._viewModel
+        .expandedCustomerIndex()
+        .observe(this._fragment.getViewLifecycleOwner(), this::_onExpandedCustomerIndex);
   }
 
   /**
@@ -81,5 +90,36 @@ public class SelectCustomerViewModelHandler {
     Objects.requireNonNull(customers);
 
     this._fragment.adapter().notifyDataSetChanged();
+  }
+
+  private void _onSelectedCustomerExpanded(boolean isExpanded) {
+    final RecyclerView.ViewHolder viewHolder =
+        this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(0);
+
+    if (viewHolder instanceof SelectCustomerHeaderHolder<?> headerHolder) {
+      headerHolder.setCardExpanded(isExpanded);
+    }
+  }
+
+  private void _onExpandedCustomerIndex(int index) {
+    // Shrink all cards.
+    for (int i = 0; i < this._fragment.fragmentBinding().recyclerView.getChildCount(); i++) {
+      final RecyclerView.ViewHolder viewHolder =
+          this._fragment
+              .fragmentBinding()
+              .recyclerView
+              .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
+
+      if (viewHolder instanceof SelectCustomerListHolder holder) holder.setCardExpanded(false);
+    }
+
+    // Expand the selected card.
+    if (index != -1) {
+      final RecyclerView.ViewHolder viewHolder =
+          // +1 offset because header holder.
+          this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
+
+      if (viewHolder instanceof SelectCustomerListHolder holder) holder.setCardExpanded(true);
+    }
   }
 }

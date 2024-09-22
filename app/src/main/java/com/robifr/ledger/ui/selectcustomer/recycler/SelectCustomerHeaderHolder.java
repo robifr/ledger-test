@@ -28,10 +28,11 @@ import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardWideComponent;
 import com.robifr.ledger.ui.customer.CustomerListAction;
+import com.robifr.ledger.ui.selectcustomer.SelectedCustomerAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SelectCustomerHeaderHolder<T extends CustomerListAction>
+public class SelectCustomerHeaderHolder<T extends CustomerListAction & SelectedCustomerAction>
     extends RecyclerViewHolder<Optional<CustomerModel>, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final CustomerCardWideBinding _selectedCardBinding;
@@ -55,8 +56,13 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction>
     this._headerBinding.allListTitle.setText(
         this.itemView.getContext().getString(R.string.text_all_customers));
     this._headerBinding.newButton.setOnClickListener(this);
-    // Don't set to `View.GONE` as the position will be occupied by checkbox.
+    // Don't set to `View.GONE` as the position will be occupied by expand button.
     this._selectedCardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
+    this._selectedCardBinding.normalCard.expandButton.setVisibility(View.VISIBLE);
+    this._selectedCardBinding.normalCard.expandButton.setOnClickListener(this);
+    this._selectedCardBinding.expandedCard.menuButton.setVisibility(View.INVISIBLE);
+    this._selectedCardBinding.expandedCard.expandButton.setVisibility(View.VISIBLE);
+    this._selectedCardBinding.expandedCard.expandButton.setOnClickListener(this);
   }
 
   @Override
@@ -64,7 +70,7 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction>
     Objects.requireNonNull(selectedCustomer);
 
     if (!selectedCustomer.isPresent()) {
-      this._selectedCardBinding.cardView.setChecked(false);
+      this._selectedCard.reset();
       this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
       this._headerBinding.selectedItemTitle.setVisibility(View.GONE);
       this._headerBinding.selectedItemContainer.setVisibility(View.GONE);
@@ -100,10 +106,13 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction>
       this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
     }
 
-    selectedCustomer.ifPresent(this._selectedCard::setNormalCardCustomer);
-    this._selectedCardBinding.cardView.setChecked(true);
+    this._selectedCard.reset();
+    this._selectedCard.setNormalCardCustomer(selectedCustomer.get());
+    this._selectedCard.setExpandedCardCustomer(selectedCustomer.get());
+    this._selectedCard.setCardChecked(true);
     this._headerBinding.selectedItemTitle.setVisibility(View.VISIBLE);
     this._headerBinding.selectedItemContainer.setVisibility(View.VISIBLE);
+    this.setCardExpanded(this._action.isSelectedCustomerExpanded());
   }
 
   @Override
@@ -113,6 +122,27 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction>
     switch (view.getId()) {
       case R.id.newButton ->
           Navigation.findNavController(this.itemView).navigate(R.id.createCustomerFragment);
+
+      case R.id.expandButton -> {
+        // Only expand when it shrank.
+        final boolean isExpanded =
+            this._selectedCardBinding.expandedCard.getRoot().getVisibility() == View.VISIBLE;
+
+        this._action.onSelectedCustomerExpanded(!isExpanded);
+        // Display ripple effect. The effect is gone due to the clicked view
+        // set to `View.GONE` when the card expand/collapse.
+        if (isExpanded) {
+          this._selectedCardBinding.normalCard.expandButton.setPressed(true);
+          this._selectedCardBinding.normalCard.expandButton.setPressed(false);
+        } else {
+          this._selectedCardBinding.expandedCard.expandButton.setPressed(true);
+          this._selectedCardBinding.expandedCard.expandButton.setPressed(false);
+        }
+      }
     }
+  }
+
+  public void setCardExpanded(boolean isExpanded) {
+    this._selectedCard.setCardExpanded(isExpanded);
   }
 }

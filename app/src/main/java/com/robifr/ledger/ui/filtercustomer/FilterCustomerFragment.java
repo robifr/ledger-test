@@ -31,6 +31,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.filtercustomer.recycler.FilterCustomerAdapter;
@@ -119,6 +120,12 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
         final Bundle bundle = new Bundle();
         bundle.putBoolean(
             SearchCustomerFragment.Arguments.IS_SELECTION_ENABLED_BOOLEAN.key(), true);
+        bundle.putLongArray(
+            SearchCustomerFragment.Arguments.INITIAL_SELECTED_CUSTOMER_IDS_LONG_ARRAY.key(),
+            this._filterCustomerViewModel.filteredCustomers().getValue().stream()
+                .map(CustomerModel::id)
+                .mapToLong(Long::longValue)
+                .toArray());
 
         Navigation.findNavController(this._fragmentBinding.getRoot())
             .navigate(R.id.searchCustomerFragment, bundle);

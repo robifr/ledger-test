@@ -43,7 +43,8 @@ import java.util.Objects;
 public class SearchCustomerFragment extends Fragment implements SearchView.OnQueryTextListener {
   public enum Arguments implements FragmentResultKey {
     INITIAL_QUERY_STRING,
-    IS_SELECTION_ENABLED_BOOLEAN
+    IS_SELECTION_ENABLED_BOOLEAN,
+    INITIAL_SELECTED_CUSTOMER_IDS_LONG_ARRAY
   }
 
   public enum Request implements FragmentResultKey {

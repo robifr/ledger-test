@@ -28,9 +28,11 @@ import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerAction;
 import com.robifr.ledger.ui.customer.CustomerListAction;
+import com.robifr.ledger.ui.customer.recycler.CustomerListHolder;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerAction;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerAction;
+import com.robifr.ledger.ui.selectcustomer.recycler.SelectCustomerListHolder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -77,10 +79,16 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
               ListableListTextBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
-      default ->
-          new SearchCustomerListHolder<>(
-              CustomerCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false),
-              this);
+      default -> {
+        final CustomerCardWideBinding cardBinding =
+            CustomerCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false);
+
+        if (this._fragment.searchCustomerViewModel().isSelectionEnabled()) {
+          yield new SelectCustomerListHolder<>(cardBinding, this);
+        } else {
+          yield new CustomerListHolder<>(cardBinding, this);
+        }
+      }
     };
   }
 
@@ -91,7 +99,15 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
     if (holder instanceof SearchCustomerHeaderHolder headerHolder) {
       headerHolder.bind(Optional.empty());
 
-    } else if (holder instanceof SearchCustomerListHolder listHolder) {
+    } else if (holder instanceof CustomerListHolder listHolder) {
+      this._fragment
+          .searchCustomerViewModel()
+          .customers()
+          .getValue()
+          .map(customers -> customers.get(index - 1)) // -1 offset because header holder.
+          .ifPresent(listHolder::bind);
+
+    } else if (holder instanceof SelectCustomerListHolder listHolder) {
       this._fragment
           .searchCustomerViewModel()
           .customers()
@@ -145,12 +161,9 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   }
 
   @Override
-  @Nullable
-  public CustomerModel initialSelectedCustomer() {
-     // TODO: Implements initial selected customer. Especially when navigating from
-     //   `SelectCustomerFragment` to `SearchCustomerFragment`, the selected customer should also
-     //   be selected on both fragments.
-    return null;
+  @NonNull
+  public List<Long> initialSelectedCustomerIds() {
+    return this._fragment.searchCustomerViewModel().initialSelectedCustomerIds();
   }
 
   @Override

@@ -31,6 +31,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
@@ -38,6 +39,7 @@ import com.robifr.ledger.ui.selectcustomer.recycler.SelectCustomerAdapter;
 import com.robifr.ledger.ui.selectcustomer.viewmodel.SelectCustomerViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
+import java.util.Optional;
 
 @AndroidEntryPoint
 public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
@@ -112,12 +114,19 @@ public class SelectCustomerFragment extends Fragment implements Toolbar.OnMenuIt
   public boolean onMenuItemClick(@NonNull MenuItem item) {
     Objects.requireNonNull(item);
     Objects.requireNonNull(this._fragmentBinding);
+    Objects.requireNonNull(this._selectCustomerViewModel);
 
     return switch (item.getItemId()) {
       case R.id.search -> {
         final Bundle bundle = new Bundle();
         bundle.putBoolean(
             SearchCustomerFragment.Arguments.IS_SELECTION_ENABLED_BOOLEAN.key(), true);
+        bundle.putLongArray(
+            SearchCustomerFragment.Arguments.INITIAL_SELECTED_CUSTOMER_IDS_LONG_ARRAY.key(),
+            Optional.ofNullable(this._selectCustomerViewModel.initialSelectedCustomer())
+                .map(CustomerModel::id)
+                .map(id -> new long[] {id})
+                .orElse(new long[] {}));
 
         Navigation.findNavController(this._fragmentBinding.getRoot())
             .navigate(R.id.searchCustomerFragment, bundle);

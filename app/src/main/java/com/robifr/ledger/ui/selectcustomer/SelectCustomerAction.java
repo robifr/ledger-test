@@ -17,12 +17,14 @@
 
 package com.robifr.ledger.ui.selectcustomer;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.CustomerModel;
+import java.util.List;
 
 public interface SelectCustomerAction {
-  @Nullable
-  public CustomerModel initialSelectedCustomer();
+  @NonNull
+  public List<Long> initialSelectedCustomerIds();
 
   public void onCustomerSelected(@Nullable CustomerModel customer);
 }

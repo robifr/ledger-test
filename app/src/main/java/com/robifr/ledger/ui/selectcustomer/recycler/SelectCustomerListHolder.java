@@ -61,9 +61,7 @@ public class SelectCustomerListHolder<T extends CustomerListAction & SelectCusto
             && this._boundCustomer.equals(
                 this._action.customers().get(this._action.expandedCustomerIndex()));
     final boolean shouldChecked =
-        this._action.initialSelectedCustomer() != null
-            && this._action.initialSelectedCustomer().id() != null
-            && this._action.initialSelectedCustomer().id().equals(this._boundCustomer.id());
+        this._action.initialSelectedCustomerIds().contains(this._boundCustomer.id());
 
     this._card.reset();
     this._card.setNormalCardCustomer(this._boundCustomer);

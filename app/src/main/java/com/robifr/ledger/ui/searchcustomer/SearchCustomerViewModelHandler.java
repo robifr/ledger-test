@@ -24,8 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.ui.StringResources;
-import com.robifr.ledger.ui.searchcustomer.recycler.SearchCustomerListHolder;
+import com.robifr.ledger.ui.customer.recycler.CustomerListHolder;
 import com.robifr.ledger.ui.searchcustomer.viewmodel.SearchCustomerViewModel;
+import com.robifr.ledger.ui.selectcustomer.recycler.SelectCustomerListHolder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -110,7 +111,8 @@ public class SearchCustomerViewModelHandler {
               .recyclerView
               .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
 
-      if (viewHolder instanceof SearchCustomerListHolder holder) holder.setCardExpanded(false);
+      if (viewHolder instanceof CustomerListHolder holder) holder.setCardExpanded(false);
+      else if (viewHolder instanceof SelectCustomerListHolder holder) holder.setCardExpanded(false);
     }
 
     // Expand the selected card.
@@ -119,7 +121,8 @@ public class SearchCustomerViewModelHandler {
           // +1 offset because header holder.
           this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
 
-      if (viewHolder instanceof SearchCustomerListHolder holder) holder.setCardExpanded(true);
+      if (viewHolder instanceof CustomerListHolder holder) holder.setCardExpanded(true);
+      else if (viewHolder instanceof SelectCustomerListHolder holder) holder.setCardExpanded(true);
     }
   }
 }

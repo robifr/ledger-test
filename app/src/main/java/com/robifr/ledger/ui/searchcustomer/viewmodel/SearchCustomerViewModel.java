@@ -34,10 +34,12 @@ import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -45,6 +47,7 @@ public class SearchCustomerViewModel extends ViewModel {
   @NonNull private final CustomerRepository _customerRepository;
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
   @NonNull private final String _initialQuery;
+  @NonNull private final List<Long> _initialSelectedCustomerIds;
 
   /**
    * Whether the fragment should return {@link SearchCustomerFragment.Request#SELECT_CUSTOMER} on
@@ -84,6 +87,15 @@ public class SearchCustomerViewModel extends ViewModel {
     this._initialQuery =
         Objects.requireNonNullElse(
             savedStateHandle.get(SearchCustomerFragment.Arguments.INITIAL_QUERY_STRING.key()), "");
+    this._initialSelectedCustomerIds =
+        Arrays.stream(
+                Objects.requireNonNullElse(
+                    savedStateHandle.get(
+                        SearchCustomerFragment.Arguments.INITIAL_SELECTED_CUSTOMER_IDS_LONG_ARRAY
+                            .key()),
+                    new long[] {}))
+            .boxed()
+            .collect(Collectors.toList());
     this._isSelectionEnabled =
         Objects.requireNonNullElse(
             savedStateHandle.get(
@@ -101,6 +113,11 @@ public class SearchCustomerViewModel extends ViewModel {
   @NonNull
   public String initialQuery() {
     return this._initialQuery;
+  }
+
+  @NonNull
+  public List<Long> initialSelectedCustomerIds() {
+    return this._initialSelectedCustomerIds;
   }
 
   /**

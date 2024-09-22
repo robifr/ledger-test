@@ -128,9 +128,13 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   }
 
   @Override
-  @Nullable
-  public CustomerModel initialSelectedCustomer() {
-    return this._fragment.selectCustomerViewModel().initialSelectedCustomer();
+  @NonNull
+  public List<Long> initialSelectedCustomerIds() {
+    final CustomerModel initialSelectedCustomer =
+        this._fragment.selectCustomerViewModel().initialSelectedCustomer();
+    return initialSelectedCustomer != null && initialSelectedCustomer.id() != null
+        ? List.of(initialSelectedCustomer.id())
+        : List.of();
   }
 
   @Override

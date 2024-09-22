@@ -111,8 +111,11 @@ public class SearchCustomerViewModelHandler {
               .recyclerView
               .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
 
-      if (viewHolder instanceof CustomerListHolder holder) holder.setCardExpanded(false);
-      else if (viewHolder instanceof SelectCustomerListHolder holder) holder.setCardExpanded(false);
+      if (viewHolder instanceof CustomerListHolder<?> holder) {
+        holder.setCardExpanded(false);
+      } else if (viewHolder instanceof SelectCustomerListHolder<?> holder) {
+        holder.setCardExpanded(false);
+      }
     }
 
     // Expand the selected card.
@@ -121,8 +124,11 @@ public class SearchCustomerViewModelHandler {
           // +1 offset because header holder.
           this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
 
-      if (viewHolder instanceof CustomerListHolder holder) holder.setCardExpanded(true);
-      else if (viewHolder instanceof SelectCustomerListHolder holder) holder.setCardExpanded(true);
+      if (viewHolder instanceof CustomerListHolder<?> holder) {
+        holder.setCardExpanded(true);
+      } else if (viewHolder instanceof SelectCustomerListHolder<?> holder) {
+        holder.setCardExpanded(true);
+      }
     }
   }
 }

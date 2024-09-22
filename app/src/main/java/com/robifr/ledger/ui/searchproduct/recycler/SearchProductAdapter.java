@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
     implements ProductListAction, SearchProductCardAction {
   private enum ViewType {
     HEADER(0),
@@ -59,7 +59,7 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
 
   @Override
   @NonNull
-  public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public RecyclerViewHolder<?, ?> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     Objects.requireNonNull(parent);
 
     final ViewType type =
@@ -86,10 +86,10 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
   public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    if (holder instanceof SearchProductHeaderHolder headerHolder) {
+    if (holder instanceof SearchProductHeaderHolder<?> headerHolder) {
       headerHolder.bind(Optional.empty());
 
-    } else if (holder instanceof SearchProductListHolder listHolder) {
+    } else if (holder instanceof SearchProductListHolder<?> listHolder) {
       this._fragment
           .searchProductViewModel()
           .products()

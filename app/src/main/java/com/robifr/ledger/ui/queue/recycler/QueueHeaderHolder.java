@@ -27,7 +27,8 @@ import com.robifr.ledger.ui.queue.QueueListAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class QueueHeaderHolder<T extends QueueListAction> extends RecyclerViewHolder<Optional, T> {
+public class QueueHeaderHolder<T extends QueueListAction>
+    extends RecyclerViewHolder<Optional<Void>, T> {
   @NonNull private final ListableListTextBinding _textBinding;
 
   public QueueHeaderHolder(@NonNull ListableListTextBinding binding, @NonNull T action) {
@@ -40,7 +41,7 @@ public class QueueHeaderHolder<T extends QueueListAction> extends RecyclerViewHo
   }
 
   @Override
-  public void bind(@NonNull Optional ignore) {
+  public void bind(@NonNull Optional<Void> ignore) {
     final int totalQueues = this._action.queues().size();
     final String text =
         this.itemView

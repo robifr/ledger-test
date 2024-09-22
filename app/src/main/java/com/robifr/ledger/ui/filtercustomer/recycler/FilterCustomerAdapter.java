@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
     implements CustomerListAction, FilterCustomerAction {
   private enum ViewType {
     HEADER(0),
@@ -58,7 +58,7 @@ public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
 
   @Override
   @NonNull
-  public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public RecyclerViewHolder<?, ?> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     Objects.requireNonNull(parent);
 
     final ViewType type =
@@ -84,10 +84,10 @@ public class FilterCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    if (holder instanceof FilterCustomerHeaderHolder headerHolder) {
+    if (holder instanceof FilterCustomerHeaderHolder<?> headerHolder) {
       headerHolder.bind(Optional.empty());
 
-    } else if (holder instanceof FilterCustomerListHolder listHolder) {
+    } else if (holder instanceof FilterCustomerListHolder<?> listHolder) {
       // -1 offset because header holder.
       listHolder.bind(
           this._fragment.filterCustomerViewModel().customers().getValue().get(index - 1));

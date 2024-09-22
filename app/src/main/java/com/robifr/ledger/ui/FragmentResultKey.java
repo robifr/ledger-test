@@ -78,6 +78,6 @@ public interface FragmentResultKey {
   /** Generated key from {@link Tag#fullName(Class)} to transfer data between fragments. */
   @NonNull
   public default String key() {
-    return this instanceof Enum e ? Tag.fullName(e) : Tag.fullName(this.getClass());
+    return this instanceof Enum<?> e ? Tag.fullName(e) : Tag.fullName(this.getClass());
   }
 }

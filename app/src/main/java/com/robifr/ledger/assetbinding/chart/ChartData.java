@@ -46,7 +46,7 @@ public interface ChartData {
         } else if (fieldValue.getClass().isArray()) {
           json.put(field.getName(), new JSONArray(fieldValue));
 
-        } else if (fieldValue instanceof Collection collection) {
+        } else if (fieldValue instanceof Collection<?> collection) {
           json.put(field.getName(), new JSONArray(collection));
 
         } else {

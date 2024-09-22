@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class FilterCustomerHeaderHolder<T extends FilterCustomerAction>
-    extends RecyclerViewHolder<Optional, T> implements View.OnClickListener {
+    extends RecyclerViewHolder<Optional<Void>, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final ChipGroup _chipGroup;
 
@@ -65,7 +65,7 @@ public class FilterCustomerHeaderHolder<T extends FilterCustomerAction>
   }
 
   @Override
-  public void bind(@NonNull Optional ignore) {
+  public void bind(@NonNull Optional<Void> ignore) {
     final int filteredCustomersViewsVisibility =
         !this._action.filteredCustomers().isEmpty() ? View.VISIBLE : View.GONE;
 

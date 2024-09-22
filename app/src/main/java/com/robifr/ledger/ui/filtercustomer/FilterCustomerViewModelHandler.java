@@ -100,7 +100,7 @@ public class FilterCustomerViewModelHandler {
               .recyclerView
               .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
 
-      if (viewHolder instanceof FilterCustomerListHolder holder) holder.setCardExpanded(false);
+      if (viewHolder instanceof FilterCustomerListHolder<?> holder) holder.setCardExpanded(false);
     }
 
     // Expand the selected card.
@@ -109,7 +109,7 @@ public class FilterCustomerViewModelHandler {
           // +1 offset because header holder.
           this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
 
-      if (viewHolder instanceof FilterCustomerListHolder holder) holder.setCardExpanded(true);
+      if (viewHolder instanceof FilterCustomerListHolder<?> holder) holder.setCardExpanded(true);
     }
   }
 
@@ -124,7 +124,9 @@ public class FilterCustomerViewModelHandler {
               .recyclerView
               .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
 
-      if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setCardChecked(false);
+      if (holder instanceof FilterCustomerListHolder<?> listHolder) {
+        listHolder.setCardChecked(false);
+      }
     }
 
     // Check the selected card.
@@ -137,7 +139,7 @@ public class FilterCustomerViewModelHandler {
               .recyclerView
               .findViewHolderForLayoutPosition(customerIndex + 1);
 
-      if (holder instanceof FilterCustomerListHolder listHolder) listHolder.setCardChecked(true);
+      if (holder instanceof FilterCustomerListHolder<?> listHolder) listHolder.setCardChecked(true);
     }
 
     this._fragment.adapter().notifyItemChanged(0); // Notify header holder.

@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
     implements ProductListAction, SelectProductCardAction {
   private enum ViewType {
     HEADER(0),
@@ -59,7 +59,7 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
 
   @Override
   @NonNull
-  public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public RecyclerViewHolder<?, ?> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     Objects.requireNonNull(parent);
 
     final ViewType type =
@@ -89,7 +89,7 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
       headerHolder.bind(
           Optional.ofNullable(this._fragment.selectProductViewModel().initialSelectedProduct()));
 
-    } else if (holder instanceof SelectProductListHolder listHolder) {
+    } else if (holder instanceof SelectProductListHolder<?> listHolder) {
       // -1 offset because header holder.
       listHolder.bind(this._fragment.selectProductViewModel().products().getValue().get(index - 1));
     }

@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
     implements CustomerListAction, CustomerAction, SelectCustomerAction, SearchCustomerAction {
   private enum ViewType {
     HEADER(0),
@@ -63,7 +63,7 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
 
   @Override
   @NonNull
-  public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public RecyclerViewHolder<?, ?> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     Objects.requireNonNull(parent);
 
     final ViewType type =
@@ -96,10 +96,10 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    if (holder instanceof SearchCustomerHeaderHolder headerHolder) {
+    if (holder instanceof SearchCustomerHeaderHolder<?> headerHolder) {
       headerHolder.bind(Optional.empty());
 
-    } else if (holder instanceof CustomerListHolder listHolder) {
+    } else if (holder instanceof CustomerListHolder<?> listHolder) {
       this._fragment
           .searchCustomerViewModel()
           .customers()
@@ -107,7 +107,7 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
           .map(customers -> customers.get(index - 1)) // -1 offset because header holder.
           .ifPresent(listHolder::bind);
 
-    } else if (holder instanceof SelectCustomerListHolder listHolder) {
+    } else if (holder instanceof SelectCustomerListHolder<?> listHolder) {
       this._fragment
           .searchCustomerViewModel()
           .customers()

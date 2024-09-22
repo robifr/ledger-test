@@ -80,10 +80,10 @@ public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
   public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
-    if (holder instanceof QueueHeaderHolder headerHolder) {
+    if (holder instanceof QueueHeaderHolder<?> headerHolder) {
       headerHolder.bind(Optional.empty());
 
-    } else if (holder instanceof QueueListHolder listHolder) {
+    } else if (holder instanceof QueueListHolder<?> listHolder) {
       // -1 offset because header holder.
       listHolder.bind(this._fragment.queueViewModel().queues().getValue().get(index - 1));
     }

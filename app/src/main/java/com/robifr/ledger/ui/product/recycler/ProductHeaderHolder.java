@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class ProductHeaderHolder<T extends ProductListAction>
-    extends RecyclerViewHolder<Optional, T> {
+    extends RecyclerViewHolder<Optional<Void>, T> {
   @NonNull private final ListableListTextBinding _textBinding;
 
   public ProductHeaderHolder(@NonNull ListableListTextBinding binding, @NonNull T action) {
@@ -41,7 +41,7 @@ public class ProductHeaderHolder<T extends ProductListAction>
   }
 
   @Override
-  public void bind(@NonNull Optional ignore) {
+  public void bind(@NonNull Optional<Void> ignore) {
     final int totalProducts = this._action.products().size();
     final String text =
         this.itemView

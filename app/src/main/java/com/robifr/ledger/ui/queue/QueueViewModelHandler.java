@@ -95,7 +95,7 @@ public class QueueViewModelHandler {
               .recyclerView
               .getChildViewHolder(this._fragment.fragmentBinding().recyclerView.getChildAt(i));
 
-      if (viewHolder instanceof QueueListHolder holder) holder.setCardExpanded(false);
+      if (viewHolder instanceof QueueListHolder<?> holder) holder.setCardExpanded(false);
     }
 
     // Expand the selected card.
@@ -104,7 +104,7 @@ public class QueueViewModelHandler {
           // +1 offset because header holder.
           this._fragment.fragmentBinding().recyclerView.findViewHolderForLayoutPosition(index + 1);
 
-      if (viewHolder instanceof QueueListHolder holder) holder.setCardExpanded(true);
+      if (viewHolder instanceof QueueListHolder<?> holder) holder.setCardExpanded(true);
     }
   }
 

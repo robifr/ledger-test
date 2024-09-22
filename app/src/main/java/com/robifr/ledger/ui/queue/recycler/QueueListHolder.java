@@ -25,26 +25,21 @@ import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.QueueCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.queue.QueueCardAction;
-import com.robifr.ledger.ui.queue.QueueCardExpandedComponent;
-import com.robifr.ledger.ui.queue.QueueCardNormalComponent;
+import com.robifr.ledger.ui.queue.QueueCardWideComponent;
 import com.robifr.ledger.ui.queue.QueueListAction;
 import java.util.Objects;
 
 public class QueueListHolder<T extends QueueListAction & QueueCardAction>
     extends RecyclerViewHolder<QueueModel, T> implements View.OnClickListener {
   @NonNull private final QueueCardWideBinding _cardBinding;
-  @NonNull private final QueueCardNormalComponent _normalCard;
-  @NonNull private final QueueCardExpandedComponent _expandedCard;
+  @NonNull private final QueueCardWideComponent _card;
   @NonNull private final QueueListMenu _menu;
   @Nullable private QueueModel _boundQueue;
 
   public QueueListHolder(@NonNull QueueCardWideBinding binding, @NonNull T action) {
     super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
-    this._normalCard =
-        new QueueCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
-    this._expandedCard =
-        new QueueCardExpandedComponent(this.itemView.getContext(), this._cardBinding.expandedCard);
+    this._card = new QueueCardWideComponent(this.itemView.getContext(), this._cardBinding);
     this._menu = new QueueListMenu(this);
 
     this._cardBinding.cardView.setOnClickListener(this);
@@ -55,9 +50,6 @@ public class QueueListHolder<T extends QueueListAction & QueueCardAction>
   @Override
   public void bind(@NonNull QueueModel queue) {
     this._boundQueue = Objects.requireNonNull(queue);
-
-    this._normalCard.setQueue(this._boundQueue);
-    this._expandedCard.reset();
 
     final int paymentMethodVisibility =
         this._boundQueue.status() == QueueModel.Status.COMPLETED ? View.VISIBLE : View.GONE;
@@ -70,6 +62,9 @@ public class QueueListHolder<T extends QueueListAction & QueueCardAction>
         this._action.expandedQueueIndex() != -1
             && this._boundQueue.equals(
                 this._action.queues().get(this._action.expandedQueueIndex()));
+
+    this._card.reset();
+    this._card.setNormalCardQueue(this._boundQueue);
     this.setCardExpanded(shouldCardExpanded);
   }
 
@@ -97,13 +92,8 @@ public class QueueListHolder<T extends QueueListAction & QueueCardAction>
   public void setCardExpanded(boolean isExpanded) {
     Objects.requireNonNull(this._boundQueue);
 
-    final int normalCardVisibility = isExpanded ? View.GONE : View.VISIBLE;
-    final int expandedCardVisibility = isExpanded ? View.VISIBLE : View.GONE;
-
-    this._cardBinding.normalCard.getRoot().setVisibility(normalCardVisibility);
-    this._cardBinding.expandedCard.getRoot().setVisibility(expandedCardVisibility);
-
+    this._card.setCardExpanded(isExpanded);
     // Only fill the view when it's shown on screen.
-    if (isExpanded) this._expandedCard.setQueue(this._boundQueue);
+    if (isExpanded) this._card.setExpandedCardQueue(this._boundQueue);
   }
 }

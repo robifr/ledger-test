@@ -24,14 +24,12 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerCardAction;
 import com.robifr.ledger.ui.customer.CustomerCardWideComponent;
 import com.robifr.ledger.ui.customer.CustomerListAction;
-import com.robifr.ledger.ui.selectcustomer.SelectCustomerCardAction;
+import com.robifr.ledger.ui.selectcustomer.SelectCustomerAction;
 import java.util.Objects;
 
-public class SelectCustomerListHolder<
-        T extends CustomerListAction & CustomerCardAction & SelectCustomerCardAction>
+public class SelectCustomerListHolder<T extends CustomerListAction & SelectCustomerAction>
     extends RecyclerViewHolder<CustomerModel, T> implements View.OnClickListener {
   @NonNull private final CustomerCardWideBinding _cardBinding;
   @NonNull private final CustomerCardWideComponent _card;

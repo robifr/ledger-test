@@ -24,4 +24,8 @@ import java.util.List;
 public interface CustomerListAction {
   @NonNull
   public List<CustomerModel> customers();
+
+  public int expandedCustomerIndex();
+
+  public void onExpandedCustomerIndexChanged(int index);
 }

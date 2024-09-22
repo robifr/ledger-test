@@ -22,14 +22,15 @@ import androidx.annotation.NonNull;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
-import com.robifr.ledger.ui.customer.CustomerCardAction;
+import com.robifr.ledger.ui.customer.CustomerAction;
 import com.robifr.ledger.ui.customer.CustomerListAction;
 import com.robifr.ledger.ui.customer.recycler.CustomerListHolder;
-import com.robifr.ledger.ui.searchcustomer.SearchCustomerCardAction;
+import com.robifr.ledger.ui.searchcustomer.SearchCustomerAction;
+import com.robifr.ledger.ui.selectcustomer.SelectCustomerAction;
 import java.util.Objects;
 
 public class SearchCustomerListHolder<
-        T extends CustomerListAction & CustomerCardAction & SearchCustomerCardAction>
+        T extends CustomerListAction & CustomerAction & SelectCustomerAction & SearchCustomerAction>
     extends CustomerListHolder<T> implements View.OnClickListener {
   public SearchCustomerListHolder(@NonNull CustomerCardWideBinding binding, @NonNull T action) {
     super(binding, action);

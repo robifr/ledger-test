@@ -26,17 +26,18 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerCardAction;
+import com.robifr.ledger.ui.customer.CustomerAction;
 import com.robifr.ledger.ui.customer.CustomerListAction;
-import com.robifr.ledger.ui.searchcustomer.SearchCustomerCardAction;
+import com.robifr.ledger.ui.searchcustomer.SearchCustomerAction;
 import com.robifr.ledger.ui.searchcustomer.SearchCustomerFragment;
+import com.robifr.ledger.ui.selectcustomer.SelectCustomerAction;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
-    implements CustomerListAction, CustomerCardAction, SearchCustomerCardAction {
+    implements CustomerListAction, CustomerAction, SelectCustomerAction, SearchCustomerAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -141,6 +142,15 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   @Override
   public boolean isSelectionEnabled() {
     return this._fragment.searchCustomerViewModel().isSelectionEnabled();
+  }
+
+  @Override
+  @Nullable
+  public CustomerModel initialSelectedCustomer() {
+     // TODO: Implements initial selected customer. Especially when navigating from
+     //   `SelectCustomerFragment` to `SearchCustomerFragment`, the selected customer should also
+     //   be selected on both fragments.
+    return null;
   }
 
   @Override

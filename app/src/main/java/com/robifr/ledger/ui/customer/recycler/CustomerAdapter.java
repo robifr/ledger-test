@@ -25,7 +25,7 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerCardAction;
+import com.robifr.ledger.ui.customer.CustomerAction;
 import com.robifr.ledger.ui.customer.CustomerFragment;
 import com.robifr.ledger.ui.customer.CustomerListAction;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class CustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
-    implements CustomerListAction, CustomerCardAction {
+    implements CustomerListAction, CustomerAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);

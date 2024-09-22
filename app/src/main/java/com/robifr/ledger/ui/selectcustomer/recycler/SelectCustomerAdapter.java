@@ -26,9 +26,8 @@ import com.robifr.ledger.data.model.CustomerModel;
 import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.customer.CustomerCardAction;
 import com.robifr.ledger.ui.customer.CustomerListAction;
-import com.robifr.ledger.ui.selectcustomer.SelectCustomerCardAction;
+import com.robifr.ledger.ui.selectcustomer.SelectCustomerAction;
 import com.robifr.ledger.ui.selectcustomer.SelectCustomerFragment;
 import com.robifr.ledger.ui.selectcustomer.SelectedCustomerAction;
 import java.util.Arrays;
@@ -37,10 +36,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
-    implements CustomerListAction,
-        CustomerCardAction,
-        SelectCustomerCardAction,
-        SelectedCustomerAction {
+    implements CustomerListAction, SelectCustomerAction, SelectedCustomerAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -129,11 +125,6 @@ public class SelectCustomerAdapter extends RecyclerView.Adapter<RecyclerViewHold
   @Override
   public void onExpandedCustomerIndexChanged(int index) {
     this._fragment.selectCustomerViewModel().onExpandedCustomerIndexChanged(index);
-  }
-
-  @Override
-  public void onDeleteCustomer(@NonNull CustomerModel customer) {
-    // Delete feature is not allowed/available.
   }
 
   @Override

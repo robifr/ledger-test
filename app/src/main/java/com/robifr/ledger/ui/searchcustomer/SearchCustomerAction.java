@@ -17,11 +17,6 @@
 
 package com.robifr.ledger.ui.searchcustomer;
 
-import androidx.annotation.Nullable;
-import com.robifr.ledger.data.model.CustomerModel;
-
-public interface SearchCustomerCardAction {
+public interface SearchCustomerAction {
   public boolean isSelectionEnabled();
-
-  public void onCustomerSelected(@Nullable CustomerModel customer);
 }

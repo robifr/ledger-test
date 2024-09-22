@@ -15,15 +15,14 @@
  * along with Ledger. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.robifr.ledger.ui.customer;
+package com.robifr.ledger.ui.selectcustomer;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.CustomerModel;
 
-public interface CustomerCardAction {
-  public int expandedCustomerIndex();
+public interface SelectCustomerAction {
+  @Nullable
+  public CustomerModel initialSelectedCustomer();
 
-  public void onExpandedCustomerIndexChanged(int index);
-
-  public void onDeleteCustomer(@NonNull CustomerModel customer);
+  public void onCustomerSelected(@Nullable CustomerModel customer);
 }

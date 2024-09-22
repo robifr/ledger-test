@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.QueueCardWideBinding;
+import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.queue.QueueCardAction;
 import com.robifr.ledger.ui.queue.QueueFragment;
 import com.robifr.ledger.ui.queue.QueueListAction;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class QueueAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
     implements QueueListAction, QueueCardAction {
   private enum ViewType {
     HEADER(0),
@@ -57,7 +58,7 @@ public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
   @Override
   @NonNull
-  public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public RecyclerViewHolder<?, ?> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     Objects.requireNonNull(parent);
 
     final ViewType type =
@@ -77,7 +78,7 @@ public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
   }
 
   @Override
-  public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int index) {
+  public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
     if (holder instanceof QueueHeaderHolder<?> headerHolder) {

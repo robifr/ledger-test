@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
+import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardAction;
 import com.robifr.ledger.ui.product.ProductFragment;
 import com.robifr.ledger.ui.product.ProductListAction;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class ProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
     implements ProductListAction, ProductCardAction {
   private enum ViewType {
     HEADER(0),
@@ -57,7 +58,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
   @Override
   @NonNull
-  public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public RecyclerViewHolder<?, ?> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     Objects.requireNonNull(parent);
 
     final ViewType type =
@@ -78,7 +79,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   }
 
   @Override
-  public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int index) {
+  public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int index) {
     Objects.requireNonNull(holder);
 
     if (holder instanceof ProductHeaderHolder<?> headerHolder) {

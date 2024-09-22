@@ -110,14 +110,13 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
     picker.show(
         this._fragment.requireActivity().getSupportFragmentManager(), this.getClass().toString());
     picker.addOnPositiveButtonClickListener(
-        date -> {
-          this._fragment
-              .queueViewModel()
-              .filterView()
-              .onDateChanged(
-                  QueueDate.withCustomRange(
-                      Instant.ofEpochMilli(date.first).atZone(ZoneId.systemDefault()),
-                      Instant.ofEpochMilli(date.second).atZone(ZoneId.systemDefault())));
-        });
+        date ->
+            this._fragment
+                .queueViewModel()
+                .filterView()
+                .onDateChanged(
+                    QueueDate.withCustomRange(
+                        Instant.ofEpochMilli(date.first).atZone(ZoneId.systemDefault()),
+                        Instant.ofEpochMilli(date.second).atZone(ZoneId.systemDefault()))));
   }
 }

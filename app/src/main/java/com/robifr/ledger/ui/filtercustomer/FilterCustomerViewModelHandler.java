@@ -60,14 +60,10 @@ public class FilterCustomerViewModelHandler {
   private void _onResultFilteredCustomerIds(@NonNull List<Long> customerIds) {
     Objects.requireNonNull(customerIds);
 
-    final long[] filteredCustomerIds =
-        customerIds != null
-            ? customerIds.stream().mapToLong(Long::longValue).toArray()
-            : new long[0];
-
     final Bundle bundle = new Bundle();
     bundle.putLongArray(
-        FilterCustomerFragment.Result.FILTERED_CUSTOMER_IDS_LONG_ARRAY.key(), filteredCustomerIds);
+        FilterCustomerFragment.Result.FILTERED_CUSTOMER_IDS_LONG_ARRAY.key(),
+        customerIds.stream().mapToLong(Long::longValue).toArray());
 
     this._fragment
         .getParentFragmentManager()

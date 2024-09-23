@@ -1,0 +1,41 @@
+[versions]
+androidGradlePlugin = "8.5.2"
+androidxAppCompat = "1.7.0"
+androidxConstraintlayout = "2.1.4"
+androidxCore = "1.13.1"
+androidxNavigation = "2.7.7"
+androidxRoom = "2.6.1"
+androidxWebkit = "1.11.0"
+hilt = "2.51.1"
+junit = "5.10.3"
+kotlin = "1.9.23"
+leakcanary = "2.14"
+materialComponents = "1.12.0"
+spotless = "6.25.0"
+
+[libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppCompat" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidxConstraintlayout" }
+androidx-core = { module = "androidx.core:core", version.ref = "androidxCore" }
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "androidxNavigation" }
+androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "androidxNavigation" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidxRoom" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidxRoom" }
+androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "androidxWebkit" }
+google-android-material = { module = "com.google.android.material:material", version.ref = "materialComponents" }
+google-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+google-dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+jetbrains-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+jetbrains-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+jetbrains-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+diffplug-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android" } # kotlin("android")
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+jetbrains-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize" } # id("kotlin-parcelize")

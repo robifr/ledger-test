@@ -15,6 +15,7 @@
  */
 
 import com.diffplug.gradle.spotless.SpotlessExtension
+import com.diffplug.gradle.spotless.SpotlessPlugin
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
@@ -24,20 +25,20 @@ buildscript {
     mavenCentral()
   }
 
-  dependencies { classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23") }
+  dependencies { classpath(libs.jetbrains.kotlin.gradle.plugin) }
 }
 
 plugins {
-  id("com.android.application") version "8.5.2" apply false
-  id("com.android.library") version "8.5.2" apply false
-  id("com.diffplug.spotless") version "6.25.0" apply false
-  id("com.google.dagger.hilt.android") version "2.51.1" apply false
-  kotlin("jvm") version "1.9.23"
+  alias(libs.plugins.android.application) apply false
+  alias(libs.plugins.android.library) apply false
+  alias(libs.plugins.diffplug.spotless) apply false
+  alias(libs.plugins.google.dagger.hilt.android) apply false
+  alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
 allprojects {
-  apply(plugin = "com.diffplug.spotless")
-  configure<SpotlessExtension> {
+  apply<SpotlessPlugin>()
+  extensions.configure<SpotlessExtension> {
     java {
       target("**/*.java")
       targetExclude("$layout.buildDirectory/**/*.java")

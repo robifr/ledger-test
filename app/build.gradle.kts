@@ -18,10 +18,10 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
-  kotlin("android")
-  id("com.android.application")
-  id("com.google.dagger.hilt.android")
-  id("kotlin-parcelize")
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.google.dagger.hilt.android)
+  id(libs.plugins.jetbrains.kotlin.android.get().pluginId)
+  id(libs.plugins.jetbrains.kotlin.parcelize.get().pluginId)
 }
 
 android {
@@ -35,7 +35,6 @@ android {
     targetSdk = 34
     versionCode = 1
     versionName = "1.0"
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     multiDexEnabled = true
 
     javaCompileOptions {
@@ -87,32 +86,26 @@ android {
 }
 
 dependencies {
-  implementation("androidx.appcompat:appcompat:1.7.0")
-  implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-  implementation("androidx.webkit:webkit:1.11.0")
+  implementation(libs.androidx.appcompat)
+  implementation(libs.androidx.constraintlayout)
+  implementation(libs.androidx.core)
+  implementation(libs.androidx.navigation.fragment)
+  implementation(libs.androidx.navigation.ui)
+  implementation(libs.androidx.webkit)
+  implementation(libs.google.android.material)
 
-  implementation("androidx.room:room-runtime:2.6.1")
-  annotationProcessor("androidx.room:room-compiler:2.6.1")
+  implementation(libs.androidx.room.runtime)
+  annotationProcessor(libs.androidx.room.compiler)
 
-  implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-  implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+  implementation(libs.google.dagger.hilt.android)
+  annotationProcessor(libs.google.dagger.hilt.android.compiler)
 
-  implementation("com.google.android.material:material:1.12.0")
+  implementation(libs.jetbrains.kotlin.stdlib)
+  implementation(libs.jetbrains.kotlin.test)
 
-  implementation("com.google.dagger:hilt-android:2.51.1")
-  annotationProcessor("com.google.dagger:hilt-android-compiler:2.51.1")
+  testImplementation(libs.junit.jupiter)
 
-  implementation("androidx.core:core-ktx:1.13.1")
-  implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.23")
-  implementation("org.jetbrains.kotlin:kotlin-test")
-
-  testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
-  testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.3")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
-
-  androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
-  debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
+  debugImplementation(libs.squareup.leakcanary.android)
 }
 
 tasks.register<Exec>("npmClean") {

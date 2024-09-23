@@ -16,8 +16,8 @@
 
 "use strict";
 
-import * as d3 from "../libs/d3.js";
-import { Android } from "./typedefs.js";
+// @ts-ignore
+import { Android, d3 } from "libs";
 
 /**
  * @typedef {ReturnType<typeof import("./scale.js").createLinearScale>} linearScale

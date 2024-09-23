@@ -13,6 +13,9 @@ leakcanary = "2.14"
 materialComponents = "1.12.0"
 spotless = "6.25.0"
 
+# JavaScript assets
+d3 = "7.9.0"
+
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppCompat" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidxConstraintlayout" }

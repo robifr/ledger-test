@@ -16,27 +16,21 @@
 
 "use strict";
 
-import path from "path";
-import { fileURLToPath } from "url";
+/**
+ * @typedef {Object} AndroidInterface
+ * @property {(colorName: string) => string} colorHex
+ * @property {(
+ *      amount: number,
+ *      language: string,
+ *      country: string,
+ *      symbol: string) => string} formatCurrencyWithUnit
+ */
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+/**
+ * @type {AndroidInterface}
+ */
+// @ts-ignore
+export let Android = window.Android;
 
-export default {
-  mode: "production",
-  entry: {
-    d3: "./node_modules/d3/src/index.js",
-  },
-  output: {
-    filename: "[name].js",
-    path: path.resolve(__dirname, "./src/main/assets/libs/"),
-    library: {
-      type: "module",
-    },
-  },
-  experiments: {
-    outputModule: true,
-  },
-  resolve: {
-    extensions: [".js"],
-  },
-};
+// @ts-ignore
+export let d3 = window.d3;

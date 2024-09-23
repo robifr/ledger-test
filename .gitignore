@@ -41,5 +41,5 @@ google-services.json
 *.hprof
 
 # JavaScript asset libraries
-**/node_modules/
-**/assets/libs/
+**/assets/libs/*
+!**/assets/libs/index.js

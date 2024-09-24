@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+# Get a list of modified, added, and files that have been renamed.
+# Excluding removed and old-renamed files.
+filesToFormat=$(git status --porcelain | awk '/^[AM]/ {print $2} /^R/ {print $4}')
+if [ -z "$filesToFormat" ]; then
+  echo "PRE-COMMIT HOOK SUCCESS: No files needed formatting."
+  exit 0
+fi
+
+echo "Running pre-commit hook to format files..."
+./gradlew spotlessApply --quiet
+git add . # Add the formatted file back to the commit.
+
+# Abort commit if no files changed after formatting.
+if git diff --cached --quiet; then
+  echo "PRE-COMMIT HOOK FAILED: No files were modified after formatting," \
+    "as all changes were reverted. Commit aborted."
+  exit 1
+fi
+
+echo "PRE-COMMIT HOOK SUCCESS: $(echo "$filesToFormat" | wc -l) files formatted."

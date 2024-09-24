@@ -59,7 +59,7 @@ allprojects {
     }
 
     kotlinGradle {
-      target("*.gradle.kts")
+      target("**/*.gradle.kts")
       targetExclude("$layout.buildDirectory/**/*.gradle.kts")
       ktfmt()
       licenseHeaderFile(file("${project.rootDir}/gradle/spotless/license_header.txt"), "^\\w+")
@@ -153,3 +153,10 @@ allprojects {
     }
   }
 }
+
+tasks.register<Copy>("installGitHooks") {
+  from(file("${projectDir}/.githooks/pre-commit"))
+  into(file("${projectDir}/.git/hooks"))
+}
+
+tasks.named("assemble") { dependsOn("installGitHooks") }

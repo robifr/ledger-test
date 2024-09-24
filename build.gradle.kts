@@ -17,7 +17,6 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 buildscript {
   repositories {
@@ -100,52 +99,12 @@ allprojects {
 
       withType<Test>() {
         configureEach { useJUnitPlatform() }
-
-        // https://stackoverflow.com/a/36130467
         testLogging {
-          testLogging {
-            // Set options for log level LIFECYCLE.
-            events(
-                TestLogEvent.FAILED,
-                TestLogEvent.PASSED,
-                TestLogEvent.SKIPPED,
-                TestLogEvent.STANDARD_OUT)
-
-            exceptionFormat = TestExceptionFormat.FULL
-            showExceptions = true
-            showCauses = true
-            showStackTraces = true
-
-            // Set options for log level DEBUG and INFO.
-            debug {
-              events(
-                  TestLogEvent.STARTED,
-                  TestLogEvent.FAILED,
-                  TestLogEvent.PASSED,
-                  TestLogEvent.SKIPPED,
-                  TestLogEvent.STANDARD_ERROR,
-                  TestLogEvent.STANDARD_OUT)
-
-              exceptionFormat = TestExceptionFormat.FULL
-            }
-
-            info.events = debug.events
-            info.exceptionFormat = debug.exceptionFormat
-
-            afterSuite(
-                KotlinClosure2({ description: TestDescriptor, result: TestResult ->
-                  if (description.parent != null) {
-                    val output: String =
-                        "Results: ${result.resultType} (${result.testCount} tests, " +
-                            "${result.successfulTestCount} passed, " +
-                            "${result.failedTestCount} failed, " +
-                            "${result.skippedTestCount} skipped)"
-                    val repeatedMinusSign: String = "-".repeat(output.length)
-
-                    println("${repeatedMinusSign}\n${output}\n")
-                  }
-                }))
-          }
+          showStandardStreams = true
+          showExceptions = true
+          showCauses = true
+          showStackTraces = true
+          exceptionFormat = TestExceptionFormat.FULL
         }
       }
 

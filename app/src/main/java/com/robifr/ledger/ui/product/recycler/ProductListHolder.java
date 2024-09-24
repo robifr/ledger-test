@@ -23,12 +23,12 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.product.ProductCardAction;
+import com.robifr.ledger.ui.product.ProductAction;
 import com.robifr.ledger.ui.product.ProductCardWideComponent;
 import com.robifr.ledger.ui.product.ProductListAction;
 import java.util.Objects;
 
-public class ProductListHolder<T extends ProductListAction & ProductCardAction>
+public class ProductListHolder<T extends ProductListAction & ProductAction>
     extends RecyclerViewHolder<ProductModel, T> implements View.OnClickListener {
   @NonNull protected final ProductCardWideBinding _cardBinding;
   @NonNull protected final ProductCardWideComponent _card;

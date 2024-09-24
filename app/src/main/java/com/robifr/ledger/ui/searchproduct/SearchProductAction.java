@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package com.robifr.ledger.ui.product;
+package com.robifr.ledger.ui.searchproduct;
 
-import androidx.annotation.NonNull;
-import com.robifr.ledger.data.model.ProductModel;
-
-public interface ProductCardAction {
-  public int expandedProductIndex();
-
-  public void onExpandedProductIndexChanged(int index);
-
-  public void onDeleteProduct(@NonNull ProductModel product);
+public interface SearchProductAction {
+  public boolean isSelectionEnabled();
 }

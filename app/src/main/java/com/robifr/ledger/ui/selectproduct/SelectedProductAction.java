@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package com.robifr.ledger.ui.product;
+package com.robifr.ledger.ui.selectproduct;
 
-import androidx.annotation.NonNull;
-import com.robifr.ledger.data.model.ProductModel;
-import java.util.List;
+public interface SelectedProductAction {
+  public boolean isSelectedProductExpanded();
 
-public interface ProductListAction {
-  @NonNull
-  public List<ProductModel> products();
-
-  public int expandedProductIndex();
-
-  public void onExpandedProductIndexChanged(int index);
+  public void onSelectedProductExpanded(boolean isExpanded);
 }

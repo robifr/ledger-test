@@ -24,10 +24,10 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardWideComponent;
-import com.robifr.ledger.ui.selectproduct.SelectProductCardAction;
+import com.robifr.ledger.ui.selectproduct.SelectProductAction;
 import java.util.Objects;
 
-public class SelectProductListHolder<T extends SelectProductCardAction>
+public class SelectProductListHolder<T extends SelectProductAction>
     extends RecyclerViewHolder<ProductModel, T> implements View.OnClickListener {
   @NonNull private final ProductCardWideBinding _cardBinding;
   @NonNull private final ProductCardWideComponent _card;
@@ -46,11 +46,9 @@ public class SelectProductListHolder<T extends SelectProductCardAction>
   @Override
   public void bind(@NonNull ProductModel product) {
     this._boundProduct = Objects.requireNonNull(product);
-    // Prevent reused view holder card from being expanded.
+    // Prevent reused view holder card from being expanded or checked.
     final boolean shouldChecked =
-        this._action.initialSelectedProduct() != null
-            && this._action.initialSelectedProduct().id() != null
-            && this._action.initialSelectedProduct().id().equals(this._boundProduct.id());
+        this._action.initialSelectedProductIds().contains(this._boundProduct.id());
 
     this._card.setNormalCardProduct(this._boundProduct);
     this._cardBinding.cardView.setChecked(shouldChecked);

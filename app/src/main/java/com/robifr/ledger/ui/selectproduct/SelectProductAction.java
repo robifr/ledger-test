@@ -16,12 +16,14 @@
 
 package com.robifr.ledger.ui.selectproduct;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.robifr.ledger.data.model.ProductModel;
+import java.util.List;
 
-public interface SelectProductCardAction {
-  @Nullable
-  public ProductModel initialSelectedProduct();
+public interface SelectProductAction {
+  @NonNull
+  public List<Long> initialSelectedProductIds();
 
   public void onProductSelected(@Nullable ProductModel product);
 }

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.robifr.ledger.ui.searchproduct;
+package com.robifr.ledger.ui.product;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import com.robifr.ledger.data.model.ProductModel;
 
-public interface SearchProductCardAction {
-  public void onProductSelected(@Nullable ProductModel product);
+public interface ProductAction {
+  public void onDeleteProduct(@NonNull ProductModel product);
 }

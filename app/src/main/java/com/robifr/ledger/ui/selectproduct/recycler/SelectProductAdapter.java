@@ -26,7 +26,7 @@ import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductListAction;
-import com.robifr.ledger.ui.selectproduct.SelectProductCardAction;
+import com.robifr.ledger.ui.selectproduct.SelectProductAction;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
-    implements ProductListAction, SelectProductCardAction {
+    implements ProductListAction, SelectProductAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -115,9 +115,21 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
   }
 
   @Override
-  @Nullable
-  public ProductModel initialSelectedProduct() {
-    return this._fragment.selectProductViewModel().initialSelectedProduct();
+  public int expandedProductIndex() {
+    return 0;
+  }
+
+  @Override
+  public void onExpandedProductIndexChanged(int index) {}
+
+  @NonNull
+  @Override
+  public List<Long> initialSelectedProductIds() {
+    final ProductModel initialSelectedProduct =
+        this._fragment.selectProductViewModel().initialSelectedProduct();
+    return initialSelectedProduct != null && initialSelectedProduct.id() != null
+        ? List.of(initialSelectedProduct.id())
+        : List.of();
   }
 
   @Override

@@ -24,7 +24,7 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.product.ProductCardAction;
+import com.robifr.ledger.ui.product.ProductAction;
 import com.robifr.ledger.ui.product.ProductFragment;
 import com.robifr.ledger.ui.product.ProductListAction;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class ProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
-    implements ProductListAction, ProductCardAction {
+    implements ProductListAction, ProductAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);

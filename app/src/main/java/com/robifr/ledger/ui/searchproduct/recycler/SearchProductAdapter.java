@@ -26,15 +26,16 @@ import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductListAction;
-import com.robifr.ledger.ui.searchproduct.SearchProductCardAction;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
+import com.robifr.ledger.ui.selectproduct.SelectProductAction;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
-    implements ProductListAction, SearchProductCardAction {
+    implements ProductListAction, SelectProductAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -117,6 +118,20 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
   @NonNull
   public List<ProductModel> products() {
     return this._fragment.searchProductViewModel().products().getValue().orElse(List.of());
+  }
+
+  @Override
+  public int expandedProductIndex() {
+    return 0;
+  }
+
+  @Override
+  public void onExpandedProductIndexChanged(int index) {}
+
+  @NonNull
+  @Override
+  public List<Long> initialSelectedProductIds() {
+    return Collections.emptyList();
   }
 
   @Override

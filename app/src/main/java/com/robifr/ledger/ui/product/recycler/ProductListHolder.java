@@ -24,27 +24,21 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardAction;
-import com.robifr.ledger.ui.product.ProductCardExpandedComponent;
-import com.robifr.ledger.ui.product.ProductCardNormalComponent;
+import com.robifr.ledger.ui.product.ProductCardWideComponent;
 import com.robifr.ledger.ui.product.ProductListAction;
 import java.util.Objects;
 
 public class ProductListHolder<T extends ProductListAction & ProductCardAction>
     extends RecyclerViewHolder<ProductModel, T> implements View.OnClickListener {
   @NonNull protected final ProductCardWideBinding _cardBinding;
-  @NonNull protected final ProductCardNormalComponent _normalCard;
-  @NonNull protected final ProductCardExpandedComponent _expandedCard;
+  @NonNull protected final ProductCardWideComponent _card;
   @NonNull protected final ProductListMenu _menu;
   @Nullable protected ProductModel _boundProduct;
 
   public ProductListHolder(@NonNull ProductCardWideBinding binding, @NonNull T action) {
     super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
-    this._normalCard =
-        new ProductCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
-    this._expandedCard =
-        new ProductCardExpandedComponent(
-            this.itemView.getContext(), this._cardBinding.expandedCard);
+    this._card = new ProductCardWideComponent(this.itemView.getContext(), this._cardBinding);
     this._menu = new ProductListMenu(this);
 
     this._cardBinding.cardView.setOnClickListener(this);
@@ -55,15 +49,14 @@ public class ProductListHolder<T extends ProductListAction & ProductCardAction>
   @Override
   public void bind(@NonNull ProductModel product) {
     this._boundProduct = Objects.requireNonNull(product);
-
-    this._normalCard.setProduct(this._boundProduct);
-    this._expandedCard.reset();
-
     // Prevent reused view holder card from being expanded.
     final boolean shouldCardExpanded =
         this._action.expandedProductIndex() != -1
             && this._boundProduct.equals(
                 this._action.products().get(this._action.expandedProductIndex()));
+
+    this._card.reset();
+    this._card.setNormalCardProduct(this._boundProduct);
     this.setCardExpanded(shouldCardExpanded);
   }
 
@@ -90,13 +83,8 @@ public class ProductListHolder<T extends ProductListAction & ProductCardAction>
   public void setCardExpanded(boolean isExpanded) {
     Objects.requireNonNull(this._boundProduct);
 
-    final int normalCardVisibility = isExpanded ? View.GONE : View.VISIBLE;
-    final int expandedCardVisibility = isExpanded ? View.VISIBLE : View.GONE;
-
-    this._cardBinding.normalCard.getRoot().setVisibility(normalCardVisibility);
-    this._cardBinding.expandedCard.getRoot().setVisibility(expandedCardVisibility);
-
+    this._card.setCardExpanded(isExpanded);
     // Only fill the view when it's shown on screen.
-    if (isExpanded) this._expandedCard.setProduct(this._boundProduct);
+    if (isExpanded) this._card.setExpandedCardProduct(this._boundProduct);
   }
 }

@@ -25,7 +25,7 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.product.ProductCardNormalComponent;
+import com.robifr.ledger.ui.product.ProductCardWideComponent;
 import com.robifr.ledger.ui.product.ProductListAction;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +34,7 @@ public class SelectProductHeaderHolder<T extends ProductListAction>
     extends RecyclerViewHolder<Optional<ProductModel>, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final ProductCardWideBinding _selectedCardBinding;
-  @NonNull private final ProductCardNormalComponent _selectedNormalCard;
+  @NonNull private final ProductCardWideComponent _selectedCard;
 
   public SelectProductHeaderHolder(
       @NonNull ListableListSelectedItemBinding binding, @NonNull T action) {
@@ -45,9 +45,8 @@ public class SelectProductHeaderHolder<T extends ProductListAction>
             LayoutInflater.from(this.itemView.getContext()),
             this._headerBinding.selectedItemContainer,
             false);
-    this._selectedNormalCard =
-        new ProductCardNormalComponent(
-            this.itemView.getContext(), this._selectedCardBinding.normalCard);
+    this._selectedCard =
+        new ProductCardWideComponent(this.itemView.getContext(), this._selectedCardBinding);
 
     this._headerBinding.selectedItemTitle.setText(
         this.itemView.getContext().getString(R.string.text_selected_product));
@@ -61,6 +60,8 @@ public class SelectProductHeaderHolder<T extends ProductListAction>
 
   @Override
   public void bind(@NonNull Optional<ProductModel> selectedProduct) {
+    Objects.requireNonNull(selectedProduct);
+
     if (!selectedProduct.isPresent()) {
       this._selectedCardBinding.cardView.setChecked(false);
       this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
@@ -98,7 +99,7 @@ public class SelectProductHeaderHolder<T extends ProductListAction>
     }
 
     this._selectedCardBinding.cardView.setChecked(true);
-    this._selectedNormalCard.setProduct(selectedProduct.orElse(null));
+    this._selectedCard.setNormalCardProduct(selectedProduct.orElse(null));
     this._headerBinding.selectedItemTitle.setVisibility(View.VISIBLE);
     this._headerBinding.selectedItemContainer.setVisibility(View.VISIBLE);
   }

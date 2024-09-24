@@ -23,21 +23,20 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.product.ProductCardNormalComponent;
+import com.robifr.ledger.ui.product.ProductCardWideComponent;
 import com.robifr.ledger.ui.searchproduct.SearchProductCardAction;
 import java.util.Objects;
 
 public class SearchProductListHolder<T extends SearchProductCardAction>
     extends RecyclerViewHolder<ProductModel, T> implements View.OnClickListener {
   @NonNull private final ProductCardWideBinding _cardBinding;
-  @NonNull private final ProductCardNormalComponent _normalCard;
+  @NonNull private final ProductCardWideComponent _card;
   @Nullable private ProductModel _boundProduct;
 
   public SearchProductListHolder(@NonNull ProductCardWideBinding binding, @NonNull T action) {
     super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
-    this._normalCard =
-        new ProductCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
+    this._card = new ProductCardWideComponent(this.itemView.getContext(), this._cardBinding);
 
     this._cardBinding.cardView.setOnClickListener(this);
     this._cardBinding.normalCard.menuButton.setVisibility(View.GONE);
@@ -46,7 +45,7 @@ public class SearchProductListHolder<T extends SearchProductCardAction>
   @Override
   public void bind(@NonNull ProductModel product) {
     this._boundProduct = Objects.requireNonNull(product);
-    this._normalCard.setProduct(this._boundProduct);
+    this._card.setNormalCardProduct(this._boundProduct);
   }
 
   @Override

@@ -23,21 +23,20 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.product.ProductCardNormalComponent;
+import com.robifr.ledger.ui.product.ProductCardWideComponent;
 import com.robifr.ledger.ui.selectproduct.SelectProductCardAction;
 import java.util.Objects;
 
 public class SelectProductListHolder<T extends SelectProductCardAction>
     extends RecyclerViewHolder<ProductModel, T> implements View.OnClickListener {
   @NonNull private final ProductCardWideBinding _cardBinding;
-  @NonNull private final ProductCardNormalComponent _normalCard;
+  @NonNull private final ProductCardWideComponent _card;
   @Nullable private ProductModel _boundProduct;
 
   public SelectProductListHolder(@NonNull ProductCardWideBinding binding, @NonNull T action) {
     super(binding.getRoot(), action);
     this._cardBinding = Objects.requireNonNull(binding);
-    this._normalCard =
-        new ProductCardNormalComponent(this.itemView.getContext(), this._cardBinding.normalCard);
+    this._card = new ProductCardWideComponent(this.itemView.getContext(), this._cardBinding);
 
     this._cardBinding.cardView.setOnClickListener(this);
     // Don't set menu button to `View.GONE` as the position will be occupied by expand button.
@@ -53,7 +52,7 @@ public class SelectProductListHolder<T extends SelectProductCardAction>
             && this._action.initialSelectedProduct().id() != null
             && this._action.initialSelectedProduct().id().equals(this._boundProduct.id());
 
-    this._normalCard.setProduct(this._boundProduct);
+    this._card.setNormalCardProduct(this._boundProduct);
     this._cardBinding.cardView.setChecked(shouldChecked);
   }
 

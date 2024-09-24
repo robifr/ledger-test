@@ -23,12 +23,12 @@ import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.QueueCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.queue.QueueCardAction;
+import com.robifr.ledger.ui.queue.QueueAction;
 import com.robifr.ledger.ui.queue.QueueCardWideComponent;
 import com.robifr.ledger.ui.queue.QueueListAction;
 import java.util.Objects;
 
-public class QueueListHolder<T extends QueueListAction & QueueCardAction>
+public class QueueListHolder<T extends QueueListAction & QueueAction>
     extends RecyclerViewHolder<QueueModel, T> implements View.OnClickListener {
   @NonNull private final QueueCardWideBinding _cardBinding;
   @NonNull private final QueueCardWideComponent _card;

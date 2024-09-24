@@ -24,7 +24,7 @@ import com.robifr.ledger.data.model.QueueModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.QueueCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
-import com.robifr.ledger.ui.queue.QueueCardAction;
+import com.robifr.ledger.ui.queue.QueueAction;
 import com.robifr.ledger.ui.queue.QueueFragment;
 import com.robifr.ledger.ui.queue.QueueListAction;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class QueueAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
-    implements QueueListAction, QueueCardAction {
+    implements QueueListAction, QueueAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);

@@ -19,10 +19,6 @@ package com.robifr.ledger.ui.queue;
 import androidx.annotation.NonNull;
 import com.robifr.ledger.data.model.QueueModel;
 
-public interface QueueCardAction {
-  public int expandedQueueIndex();
-
-  public void onExpandedQueueIndexChanged(int index);
-
+public interface QueueAction {
   public void onDeleteQueue(@NonNull QueueModel queue);
 }

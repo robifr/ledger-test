@@ -23,4 +23,8 @@ import java.util.List;
 public interface QueueListAction {
   @NonNull
   public List<QueueModel> queues();
+
+  public int expandedQueueIndex();
+
+  public void onExpandedQueueIndexChanged(int index);
 }

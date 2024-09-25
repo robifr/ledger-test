@@ -40,7 +40,7 @@ allprojects {
   extensions.configure<SpotlessExtension> {
     java {
       target("**/*.java")
-      targetExclude("$layout.buildDirectory/**/*.java")
+      targetExclude("${layout.buildDirectory}/**")
       googleJavaFormat()
       toggleOffOn()
       trimTrailingWhitespace()
@@ -50,7 +50,7 @@ allprojects {
 
     kotlin {
       target("**/*.kt")
-      targetExclude("$layout.buildDirectory/**/*.kt")
+      targetExclude("${layout.buildDirectory}/**")
       ktfmt()
       toggleOffOn()
       trimTrailingWhitespace()
@@ -59,14 +59,14 @@ allprojects {
 
     kotlinGradle {
       target("**/*.gradle.kts")
-      targetExclude("$layout.buildDirectory/**/*.gradle.kts")
+      targetExclude("${layout.buildDirectory}/**")
       ktfmt()
       licenseHeaderFile(file("${project.rootDir}/gradle/spotless/license_header.txt"), "^\\w+")
     }
 
     javascript {
-      target("**/*.js")
-      targetExclude("**/assets/libs/**/*.js", "**/node_modules/**/*.js")
+      target("**/assets/**/*.js")
+      targetExclude("**/assets/libs/**/*.js", "${layout.buildDirectory}/**")
       prettier().config(mapOf("tabWidth" to 2, "useTabs" to false, "printWidth" to 100))
       licenseHeaderFile(
           file("${project.rootDir}/gradle/spotless/license_header.txt"), "\"use strict\"|^\\w+")
@@ -74,7 +74,7 @@ allprojects {
 
     format("xml") {
       target("**/src/**/*.xml")
-      targetExclude("$layout.buildDirectory/**/*.xml")
+      targetExclude("${layout.buildDirectory}/**")
 
       // Set delimiter to match either xml tag or comment, to prevent comment being removed when
       // placed below xml header tag.
@@ -85,6 +85,7 @@ allprojects {
 
     format("html") {
       target("**/src/main/assets/**/*.html")
+      targetExclude("${layout.buildDirectory}/**")
       prettier()
       licenseHeaderFile(
           file("${project.rootDir}/gradle/spotless/license_header_html.txt"), "<!DOCTYPE")

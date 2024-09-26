@@ -23,7 +23,7 @@
     android:layout_marginBottom="@dimen/cardlist_margin"
     android:checkable="true"
     android:clickable="true"
-    app:checkedIcon="@drawable/icon_check"
+    app:checkedIcon="@null"
     app:strokeWidth="0dp">
 
   <include

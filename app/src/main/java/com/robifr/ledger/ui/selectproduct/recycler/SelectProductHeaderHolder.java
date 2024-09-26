@@ -27,10 +27,11 @@ import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardWideComponent;
 import com.robifr.ledger.ui.product.ProductListAction;
+import com.robifr.ledger.ui.selectproduct.SelectedProductAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SelectProductHeaderHolder<T extends ProductListAction>
+public class SelectProductHeaderHolder<T extends ProductListAction & SelectedProductAction>
     extends RecyclerViewHolder<Optional<ProductModel>, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final ProductCardWideBinding _selectedCardBinding;
@@ -56,6 +57,11 @@ public class SelectProductHeaderHolder<T extends ProductListAction>
     this._headerBinding.newButton.setOnClickListener(this);
     // Don't set menu button to `View.GONE` as the position will be occupied by expand button.
     this._selectedCardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
+    this._selectedCardBinding.normalCard.expandButton.setVisibility(View.VISIBLE);
+    this._selectedCardBinding.normalCard.expandButton.setOnClickListener(this);
+    this._selectedCardBinding.expandedCard.menuButton.setVisibility(View.INVISIBLE);
+    this._selectedCardBinding.expandedCard.expandButton.setVisibility(View.VISIBLE);
+    this._selectedCardBinding.expandedCard.expandButton.setOnClickListener(this);
   }
 
   @Override
@@ -63,7 +69,7 @@ public class SelectProductHeaderHolder<T extends ProductListAction>
     Objects.requireNonNull(selectedProduct);
 
     if (!selectedProduct.isPresent()) {
-      this._selectedCardBinding.cardView.setChecked(false);
+      this._selectedCard.reset();
       this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
       this._headerBinding.selectedItemTitle.setVisibility(View.GONE);
       this._headerBinding.selectedItemContainer.setVisibility(View.GONE);
@@ -98,10 +104,13 @@ public class SelectProductHeaderHolder<T extends ProductListAction>
       this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
     }
 
-    this._selectedCardBinding.cardView.setChecked(true);
-    this._selectedCard.setNormalCardProduct(selectedProduct.orElse(null));
+    this._selectedCard.reset();
+    this._selectedCard.setNormalCardProduct(selectedProduct.get());
+    this._selectedCard.setExpandedCardProduct(selectedProduct.get());
+    this._selectedCard.setCardChecked(true);
     this._headerBinding.selectedItemTitle.setVisibility(View.VISIBLE);
     this._headerBinding.selectedItemContainer.setVisibility(View.VISIBLE);
+    this.setCardExpanded(this._action.isSelectedProductExpanded());
   }
 
   @Override
@@ -111,6 +120,26 @@ public class SelectProductHeaderHolder<T extends ProductListAction>
     switch (view.getId()) {
       case R.id.newButton ->
           Navigation.findNavController(this.itemView).navigate(R.id.createProductFragment);
+
+      case R.id.expandButton -> {
+        final boolean isExpanded =
+            this._selectedCardBinding.expandedCard.getRoot().getVisibility() == View.VISIBLE;
+
+        this._action.onSelectedProductExpanded(!isExpanded);
+        // Display ripple effect. The effect is gone due to the clicked view
+        // set to `View.GONE` when the card expand/collapse.
+        if (isExpanded) {
+          this._selectedCardBinding.normalCard.expandButton.setPressed(true);
+          this._selectedCardBinding.normalCard.expandButton.setPressed(false);
+        } else {
+          this._selectedCardBinding.expandedCard.expandButton.setPressed(true);
+          this._selectedCardBinding.expandedCard.expandButton.setPressed(false);
+        }
+      }
     }
+  }
+
+  public void setCardExpanded(boolean isExpanded) {
+    this._selectedCard.setCardExpanded(isExpanded);
   }
 }

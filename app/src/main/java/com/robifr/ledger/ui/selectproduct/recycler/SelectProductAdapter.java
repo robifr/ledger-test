@@ -28,13 +28,14 @@ import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductListAction;
 import com.robifr.ledger.ui.selectproduct.SelectProductAction;
 import com.robifr.ledger.ui.selectproduct.SelectProductFragment;
+import com.robifr.ledger.ui.selectproduct.SelectedProductAction;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
-    implements ProductListAction, SelectProductAction {
+    implements ProductListAction, SelectProductAction, SelectedProductAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -116,11 +117,13 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
 
   @Override
   public int expandedProductIndex() {
-    return 0;
+    return this._fragment.selectProductViewModel().expandedProductIndex().getValue();
   }
 
   @Override
-  public void onExpandedProductIndexChanged(int index) {}
+  public void onExpandedProductIndexChanged(int index) {
+    this._fragment.selectProductViewModel().onExpandedProductIndexChanged(index);
+  }
 
   @NonNull
   @Override
@@ -135,5 +138,15 @@ public class SelectProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
   @Override
   public void onProductSelected(@Nullable ProductModel product) {
     this._fragment.selectProductViewModel().onProductSelected(product);
+  }
+
+  @Override
+  public boolean isSelectedProductExpanded() {
+    return this._fragment.selectProductViewModel().isSelectedProductExpanded().getValue();
+  }
+
+  @Override
+  public void onSelectedProductExpanded(boolean isExpanded) {
+    this._fragment.selectProductViewModel().onSelectedProductExpanded(isExpanded);
   }
 }

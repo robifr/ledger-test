@@ -88,6 +88,7 @@ public class ProductCardWideComponent {
     this._binding.expandedCard.uniqueId.setText(null);
     this._binding.expandedCard.uniqueId.setEnabled(false);
 
+    this._binding.cardView.setChecked(false);
     this._binding.normalCard.name.setText(null);
     this._binding.normalCard.image.text.setText(null);
     this._binding.normalCard.image.icon.setVisibility(View.GONE);

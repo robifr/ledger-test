@@ -24,10 +24,11 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardWideComponent;
+import com.robifr.ledger.ui.product.ProductListAction;
 import com.robifr.ledger.ui.selectproduct.SelectProductAction;
 import java.util.Objects;
 
-public class SelectProductListHolder<T extends SelectProductAction>
+public class SelectProductListHolder<T extends ProductListAction & SelectProductAction>
     extends RecyclerViewHolder<ProductModel, T> implements View.OnClickListener {
   @NonNull private final ProductCardWideBinding _cardBinding;
   @NonNull private final ProductCardWideComponent _card;
@@ -41,17 +42,28 @@ public class SelectProductListHolder<T extends SelectProductAction>
     this._cardBinding.cardView.setOnClickListener(this);
     // Don't set menu button to `View.GONE` as the position will be occupied by expand button.
     this._cardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);
+    this._cardBinding.normalCard.expandButton.setVisibility(View.VISIBLE);
+    this._cardBinding.normalCard.expandButton.setOnClickListener(this);
+    this._cardBinding.expandedCard.menuButton.setVisibility(View.INVISIBLE);
+    this._cardBinding.expandedCard.expandButton.setVisibility(View.VISIBLE);
+    this._cardBinding.expandedCard.expandButton.setOnClickListener(this);
   }
 
   @Override
   public void bind(@NonNull ProductModel product) {
     this._boundProduct = Objects.requireNonNull(product);
     // Prevent reused view holder card from being expanded or checked.
+    final boolean shouldCardExpanded =
+        this._action.expandedProductIndex() != -1
+            && this._boundProduct.equals(
+                this._action.products().get(this._action.expandedProductIndex()));
     final boolean shouldChecked =
         this._action.initialSelectedProductIds().contains(this._boundProduct.id());
 
+    this._card.reset();
     this._card.setNormalCardProduct(this._boundProduct);
-    this._cardBinding.cardView.setChecked(shouldChecked);
+    this._card.setCardChecked(shouldChecked);
+    this.setCardExpanded(shouldCardExpanded);
   }
 
   @Override
@@ -61,6 +73,33 @@ public class SelectProductListHolder<T extends SelectProductAction>
 
     switch (view.getId()) {
       case R.id.cardView -> this._action.onProductSelected(this._boundProduct);
+
+      case R.id.expandButton -> {
+        final boolean isExpanded =
+            this._cardBinding.expandedCard.getRoot().getVisibility() == View.VISIBLE;
+        final int expandedCustomerIndex =
+            !isExpanded ? this._action.products().indexOf(this._boundProduct) : -1;
+
+        this._action.onExpandedProductIndexChanged(expandedCustomerIndex);
+
+        // Display ripple effect. The effect is gone due to the clicked view
+        // set to `View.GONE` when the card expand/collapse.
+        if (isExpanded) {
+          this._cardBinding.normalCard.expandButton.setPressed(true);
+          this._cardBinding.normalCard.expandButton.setPressed(false);
+        } else {
+          this._cardBinding.expandedCard.expandButton.setPressed(true);
+          this._cardBinding.expandedCard.expandButton.setPressed(false);
+        }
+      }
     }
+  }
+
+  public void setCardExpanded(boolean isExpanded) {
+    Objects.requireNonNull(this._boundProduct);
+
+    this._card.setCardExpanded(isExpanded);
+    // Only fill the view when it's shown on screen.
+    if (isExpanded) this._card.setExpandedCardProduct(this._boundProduct);
   }
 }

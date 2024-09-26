@@ -57,6 +57,18 @@ public class SelectProductViewModel extends ViewModel {
   private final SafeMutableLiveData<List<ProductModel>> _products =
       new SafeMutableLiveData<>(List.of());
 
+  /** Whether the preview of selected product is expanded or not. */
+  @NonNull
+  private final SafeMutableLiveData<Boolean> _isSelectedProductExpanded =
+      new SafeMutableLiveData<>(false);
+
+  /**
+   * Currently expanded product index from {@link SelectProductViewModel#_products}. -1 to represent
+   * none being expanded.
+   */
+  @NonNull
+  private final SafeMutableLiveData<Integer> _expandedProductIndex = new SafeMutableLiveData<>(-1);
+
   @NonNull
   private final MutableLiveData<SafeEvent<Optional<Long>>> _resultSelectedProductId =
       new MutableLiveData<>();
@@ -98,6 +110,20 @@ public class SelectProductViewModel extends ViewModel {
     return this._products;
   }
 
+  /**
+   * @see SelectProductViewModel#_isSelectedProductExpanded
+   */
+  public SafeLiveData<Boolean> isSelectedProductExpanded() {
+    return this._isSelectedProductExpanded;
+  }
+
+  /**
+   * @see SelectProductViewModel#_expandedProductIndex
+   */
+  public SafeLiveData<Integer> expandedProductIndex() {
+    return this._expandedProductIndex;
+  }
+
   @NonNull
   public LiveData<SafeEvent<Optional<Long>>> resultSelectedProductId() {
     return this._resultSelectedProductId;
@@ -106,6 +132,14 @@ public class SelectProductViewModel extends ViewModel {
   public void onProductSelected(@Nullable ProductModel product) {
     this._resultSelectedProductId.setValue(
         new SafeEvent<>(Optional.ofNullable(product).map(ProductModel::id)));
+  }
+
+  public void onSelectedProductExpanded(boolean isExpanded) {
+    this._isSelectedProductExpanded.setValue(isExpanded);
+  }
+
+  public void onExpandedProductIndexChanged(int index) {
+    this._expandedProductIndex.setValue(index);
   }
 
   @NonNull

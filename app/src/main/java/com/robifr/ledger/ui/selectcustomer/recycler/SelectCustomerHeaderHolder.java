@@ -84,6 +84,12 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction & SelectedC
             .findFirst()
             .orElse(null);
 
+    // Actually all these "if" checks should never happen, which causes
+    // `_headerBinding.selectedItemDescription` to always be set to `View.GONE`, because selecting
+    // a customer can only occur during queue creation or editing. Unlike `ProductModel`,
+    // the referenced customer in the `QueueModel` is never stored, only its ID.
+    // This means the customer will always be up to date.
+
     // The original customer on database was deleted.
     if (selectedCustomerOnDb == null) {
       this._headerBinding.selectedItemDescription.setText(

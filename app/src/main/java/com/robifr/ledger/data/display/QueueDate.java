@@ -38,9 +38,9 @@ public record QueueDate(
   }
 
   /**
-   * @apiNote Use {@link QueueDate#withCustomRange(ZonedDateTime, ZonedDateTime)} specifically for
-   *     {@link Range#CUSTOM} enum. Otherwise, the initial epoch time will be set for both {@link
-   *     QueueDate#dateStart} and {@link QueueDate#dateEnd}.
+   * @apiNote Use {@link #withCustomRange(ZonedDateTime, ZonedDateTime)} specifically for {@link
+   *     Range#CUSTOM} enum. Otherwise, the initial epoch time will be set for both {@link
+   *     #dateStart} and {@link #dateEnd}.
    */
   @NonNull
   public static QueueDate withRange(@NonNull Range range) {
@@ -80,8 +80,8 @@ public record QueueDate(
 
     /**
      * @return Pair of start (first) and end (second) date.
-     * @apiNote For {@link Range#CUSTOM} enum, you have to manually specify the value, otherwise
-     *     initial epoch time will be set.
+     * @apiNote For {@link #CUSTOM} enum, you have to manually specify the value, otherwise initial
+     *     epoch time will be set.
      */
     @NonNull
     private Pair<ZonedDateTime, ZonedDateTime> _dateStartEnd() {
@@ -132,7 +132,7 @@ public record QueueDate(
                 Instant.EPOCH.atZone(ZoneId.systemDefault()),
                 Instant.EPOCH.atZone(ZoneId.systemDefault()));
 
-          // Defaults to `DateRange#ALL_TIME`.
+          // Defaults to `Range#ALL_TIME`.
         default ->
             new Pair<>(
                 Instant.EPOCH.atZone(ZoneId.systemDefault()),

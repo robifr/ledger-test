@@ -60,8 +60,8 @@ public class CustomerViewModel extends ViewModel {
       new SafeMutableLiveData<>(new CustomerSortMethod(CustomerSortMethod.SortBy.NAME, true));
 
   /**
-   * Currently expanded customer index from {@link CustomerViewModel#_customers customers}. -1 to
-   * represent none being expanded.
+   * Currently expanded customer index from {@link #_customers}. -1 to represent none being
+   * expanded.
    */
   @NonNull
   private final SafeMutableLiveData<Integer> _expandedCustomerIndex = new SafeMutableLiveData<>(-1);
@@ -107,7 +107,7 @@ public class CustomerViewModel extends ViewModel {
   }
 
   /**
-   * @see CustomerViewModel#_expandedCustomerIndex
+   * @see #_expandedCustomerIndex
    */
   public SafeLiveData<Integer> expandedCustomerIndex() {
     return this._expandedCustomerIndex;
@@ -170,17 +170,16 @@ public class CustomerViewModel extends ViewModel {
   }
 
   /**
-   * @see CustomerViewModel#onSortMethodChanged(CustomerSortMethod.SortBy, List)
+   * @see #onSortMethodChanged(CustomerSortMethod.SortBy, List)
    */
   public void onSortMethodChanged(@NonNull CustomerSortMethod.SortBy sortBy) {
     this.onSortMethodChanged(sortBy, this._customers.getValue());
   }
 
   /**
-   * Sort {@link CustomerViewModel#customers() customers} based on specified {@link
-   * CustomerSortMethod.SortBy} type. Doing so will reverse the order — Ascending becomes descending
-   * and vice versa. Use {@link CustomerViewModel#onSortMethodChanged(CustomerSortMethod)} if you
-   * want to apply the order by yourself.
+   * Sort {@link #_customers} based on specified {@link CustomerSortMethod.SortBy} type. Doing so
+   * will reverse the order — Ascending becomes descending and vice versa. Use {@link
+   * #onSortMethodChanged(CustomerSortMethod)} if you want to apply the order by yourself.
    */
   public void onSortMethodChanged(
       @NonNull CustomerSortMethod.SortBy sortBy, @NonNull List<CustomerModel> customers) {

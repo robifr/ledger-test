@@ -229,7 +229,7 @@ public final class CustomerRepository
   }
 
   /**
-   * @see CustomerRepository#_mapFields(CustomerModel)
+   * @see #_mapFields(CustomerModel)
    */
   @NonNull
   private CompletableFuture<List<CustomerModel>> _mapFields(

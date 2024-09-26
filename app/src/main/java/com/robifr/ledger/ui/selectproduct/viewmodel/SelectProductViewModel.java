@@ -63,8 +63,7 @@ public class SelectProductViewModel extends ViewModel {
       new SafeMutableLiveData<>(false);
 
   /**
-   * Currently expanded product index from {@link SelectProductViewModel#_products}. -1 to represent
-   * none being expanded.
+   * Currently expanded product index from {@link #_products}. -1 to represent none being expanded.
    */
   @NonNull
   private final SafeMutableLiveData<Integer> _expandedProductIndex = new SafeMutableLiveData<>(-1);
@@ -111,14 +110,14 @@ public class SelectProductViewModel extends ViewModel {
   }
 
   /**
-   * @see SelectProductViewModel#_isSelectedProductExpanded
+   * @see #_isSelectedProductExpanded
    */
   public SafeLiveData<Boolean> isSelectedProductExpanded() {
     return this._isSelectedProductExpanded;
   }
 
   /**
-   * @see SelectProductViewModel#_expandedProductIndex
+   * @see #_expandedProductIndex
    */
   public SafeLiveData<Integer> expandedProductIndex() {
     return this._expandedProductIndex;

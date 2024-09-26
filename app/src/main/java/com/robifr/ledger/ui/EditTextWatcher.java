@@ -25,15 +25,15 @@ import java.util.Objects;
 /**
  * Let's say the full string is {@code "$123"}. User made a change from {@code "2"} to {@code "6"}.
  * <br>
- * {@link EditTextWatcher#_changedTextBefore} is {@code "2"} <br>
- * {@link EditTextWatcher#_changedTextAfter} is {@code "6"} <br>
- * {@link EditTextWatcher#_unchangedTextLeft} is {@code "$1"} <br>
- * {@link EditTextWatcher#_unchangedTextRight} is {@code "3"} <br>
+ * {@link #_changedTextBefore} is {@code "2"} <br>
+ * {@link #_changedTextAfter} is {@code "6"} <br>
+ * {@link #_unchangedTextLeft} is {@code "$1"} <br>
+ * {@link #_unchangedTextRight} is {@code "3"} <br>
  * <br>
  * Now combine into a new text, <br>
- * {@link EditTextWatcher#_unchangedTextLeft} <br>
- * + {@link EditTextWatcher#_changedTextAfter} <br>
- * + {@link EditTextWatcher#_unchangedTextRight}. <br>
+ * {@link #_unchangedTextLeft} <br>
+ * + {@link #_changedTextAfter} <br>
+ * + {@link #_unchangedTextRight}. <br>
  * Which becomes {@code "$163"}.
  */
 public class EditTextWatcher implements TextWatcher {

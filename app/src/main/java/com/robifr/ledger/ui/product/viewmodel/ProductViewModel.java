@@ -59,8 +59,7 @@ public class ProductViewModel extends ViewModel {
       new SafeMutableLiveData<>(new ProductSortMethod(ProductSortMethod.SortBy.NAME, true));
 
   /**
-   * Currently expanded product index from {@link ProductViewModel#_products products}. -1 to
-   * represent none being expanded.
+   * Currently expanded product index from {@link #_products}. -1 to represent none being expanded.
    */
   @NonNull
   private final SafeMutableLiveData<Integer> _expandedProductIndex = new SafeMutableLiveData<>(-1);
@@ -105,7 +104,7 @@ public class ProductViewModel extends ViewModel {
   }
 
   /**
-   * @see ProductViewModel#_expandedProductIndex
+   * @see #_expandedProductIndex
    */
   public SafeLiveData<Integer> expandedProductIndex() {
     return this._expandedProductIndex;
@@ -168,17 +167,16 @@ public class ProductViewModel extends ViewModel {
   }
 
   /**
-   * @see ProductViewModel#onSortMethodChanged(ProductSortMethod.SortBy, List)
+   * @see #onSortMethodChanged(ProductSortMethod.SortBy, List)
    */
   public void onSortMethodChanged(@NonNull ProductSortMethod.SortBy sortBy) {
     this.onSortMethodChanged(sortBy, this._products.getValue());
   }
 
   /**
-   * Sort {@link ProductViewModel#products() products} based on specified {@link
-   * ProductSortMethod.SortBy} type. Doing so will reverse the order — Ascending becomes descending
-   * and vice versa. Use {@link ProductViewModel#onSortMethodChanged(ProductSortMethod)} if you want
-   * to apply the order by yourself.
+   * Sort {@link #_products} based on specified {@link ProductSortMethod.SortBy} type. Doing so will
+   * reverse the order — Ascending becomes descending and vice versa. Use {@link
+   * #onSortMethodChanged(ProductSortMethod)} if you want to apply the order by yourself.
    */
   public void onSortMethodChanged(
       @NonNull ProductSortMethod.SortBy sortBy, @NonNull List<ProductModel> products) {

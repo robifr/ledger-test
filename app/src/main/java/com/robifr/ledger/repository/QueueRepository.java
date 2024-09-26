@@ -366,7 +366,7 @@ public final class QueueRepository
   }
 
   /**
-   * @see QueueRepository#_mapFields(QueueModel)
+   * @see #_mapFields(QueueModel)
    */
   @NonNull
   private CompletableFuture<List<QueueModel>> _mapFields(@Nullable List<QueueModel> queues) {

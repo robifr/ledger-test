@@ -142,7 +142,7 @@ public class DashboardSummaryViewModel {
   }
 
   /**
-   * @see DashboardSummaryViewModel#_mostActiveCustomers
+   * @see #_mostActiveCustomers
    */
   @NonNull
   public SafeLiveData<Map<CustomerModel, Integer>> mostActiveCustomers() {
@@ -155,7 +155,7 @@ public class DashboardSummaryViewModel {
   }
 
   /**
-   * @see DashboardSummaryViewModel#_mostProductsSold
+   * @see #_mostProductsSold
    */
   @NonNull
   public SafeLiveData<Map<ProductModel, BigDecimal>> mostProductsSold() {

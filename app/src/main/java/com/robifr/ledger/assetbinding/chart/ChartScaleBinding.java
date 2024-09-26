@@ -55,8 +55,8 @@ public class ChartScaleBinding {
   }
 
   /**
-   * Same as a {@link ChartScaleBinding#createLinearScale} but with support for larger numbers by
-   * using percentage. Each domain (0-100) will be presented with the provided domain strings.
+   * Same as a {@link #createLinearScale} but with support for larger numbers by using percentage.
+   * Each domain (0-100) will be presented with the provided domain strings.
    *
    * @param axisPosition Position for the axis.
    * @param domain List of 101 strings representing the percentage values.

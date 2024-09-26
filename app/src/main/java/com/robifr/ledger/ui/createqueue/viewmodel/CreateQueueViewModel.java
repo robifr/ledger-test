@@ -131,7 +131,7 @@ public class CreateQueueViewModel extends ViewModel {
   }
 
   /**
-   * @see CreateQueueViewModel#_temporalInputtedCustomer
+   * @see #_temporalInputtedCustomer
    */
   @NonNull
   public SafeLiveData<Optional<CustomerModel>> temporalInputtedCustomer() {

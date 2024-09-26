@@ -64,7 +64,7 @@ public class CurrencyFormat {
     return format.format(amount);
   }
 
-  /** {@link CurrencyFormat#formatWithUnit(BigDecimal, String, String, String)} */
+  /** {@link #formatWithUnit(BigDecimal, String, String, String)} */
   @NonNull
   public static String formatWithUnit(
       @NonNull BigDecimal amount, @NonNull String language, @NonNull String country) {

@@ -64,10 +64,7 @@ public class QueueViewModel extends ViewModel {
   private final SafeMutableLiveData<QueueSortMethod> _sortMethod =
       new SafeMutableLiveData<>(new QueueSortMethod(QueueSortMethod.SortBy.CUSTOMER_NAME, true));
 
-  /**
-   * Currently expanded queue index from {@link QueueViewModel#_queues queues}. -1 to represent none
-   * being expanded.
-   */
+  /** Currently expanded queue index from {@link #_queues}. -1 to represent none being expanded. */
   @NonNull
   private final SafeMutableLiveData<Integer> _expandedQueueIndex = new SafeMutableLiveData<>(-1);
 
@@ -115,7 +112,7 @@ public class QueueViewModel extends ViewModel {
   }
 
   /**
-   * @see QueueViewModel#_expandedQueueIndex
+   * @see #_expandedQueueIndex
    */
   public SafeLiveData<Integer> expandedQueueIndex() {
     return this._expandedQueueIndex;
@@ -195,17 +192,16 @@ public class QueueViewModel extends ViewModel {
   }
 
   /**
-   * @see QueueViewModel#onSortMethodChanged(QueueSortMethod.SortBy, List)
+   * @see #onSortMethodChanged(QueueSortMethod.SortBy, List)
    */
   public void onSortMethodChanged(@NonNull QueueSortMethod.SortBy sortBy) {
     this.onSortMethodChanged(sortBy, this._queues.getValue());
   }
 
   /**
-   * Sort {@link QueueViewModel#queues() queues} based on specified {@link QueueSortMethod.SortBy}
-   * type. Doing so will reverse the order — Ascending becomes descending and vice versa. Use {@link
-   * QueueViewModel#onSortMethodChanged(QueueSortMethod)} if you want to apply the order by
-   * yourself.
+   * Sort {@link #_queues} based on specified {@link QueueSortMethod.SortBy} type. Doing so will
+   * reverse the order — Ascending becomes descending and vice versa. Use {@link
+   * #onSortMethodChanged(QueueSortMethod)} if you want to apply the order by yourself.
    */
   public void onSortMethodChanged(
       @NonNull QueueSortMethod.SortBy sortBy, @NonNull List<QueueModel> queues) {

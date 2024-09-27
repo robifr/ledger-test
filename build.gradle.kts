@@ -113,10 +113,3 @@ allprojects {
     }
   }
 }
-
-tasks.register<Copy>("installGitHooks") {
-  from(file("${projectDir}/.githooks/pre-commit"))
-  into(file("${projectDir}/.git/hooks"))
-}
-
-tasks.named("assemble") { dependsOn("installGitHooks") }

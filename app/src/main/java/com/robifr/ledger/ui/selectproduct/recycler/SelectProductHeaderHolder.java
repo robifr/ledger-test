@@ -19,6 +19,7 @@ package com.robifr.ledger.ui.selectproduct.recycler;
 import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
@@ -26,12 +27,11 @@ import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.product.ProductCardWideComponent;
-import com.robifr.ledger.ui.product.ProductListAction;
 import com.robifr.ledger.ui.selectproduct.SelectedProductAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SelectProductHeaderHolder<T extends ProductListAction & SelectedProductAction>
+public class SelectProductHeaderHolder<T extends SelectedProductAction>
     extends RecyclerViewHolder<Optional<ProductModel>, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final ProductCardWideBinding _selectedCardBinding;
@@ -76,34 +76,6 @@ public class SelectProductHeaderHolder<T extends ProductListAction & SelectedPro
       return;
     }
 
-    final ProductModel selectedProductOnDb =
-        this._action.products().stream()
-            .filter(
-                product -> product.id() != null && product.id().equals(selectedProduct.get().id()))
-            .findFirst()
-            .orElse(null);
-
-    // The original product on database was deleted.
-    if (selectedProductOnDb == null) {
-      this._headerBinding.selectedItemDescription.setText(
-          this.itemView
-              .getContext()
-              .getString(R.string.text_originally_selected_product_was_deleted));
-      this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
-
-      // The original product on database was edited.
-    } else if (!selectedProduct.get().equals(selectedProductOnDb)) {
-      this._headerBinding.selectedItemDescription.setText(
-          this.itemView
-              .getContext()
-              .getString(R.string.text_originally_selected_product_was_changed));
-      this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
-
-      // It's the same unchanged product.
-    } else {
-      this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
-    }
-
     this._selectedCard.reset();
     this._selectedCard.setNormalCardProduct(selectedProduct.get());
     this._selectedCard.setExpandedCardProduct(selectedProduct.get());
@@ -141,5 +113,14 @@ public class SelectProductHeaderHolder<T extends ProductListAction & SelectedPro
 
   public void setCardExpanded(boolean isExpanded) {
     this._selectedCard.setCardExpanded(isExpanded);
+  }
+
+  public void setSelectedItemDescriptionText(@Nullable String text) {
+    this._headerBinding.selectedItemDescription.setText(text);
+  }
+
+  public void setSelectedItemDescriptionVisible(boolean isVisible) {
+    final int visibility = isVisible ? View.VISIBLE : View.GONE;
+    this._headerBinding.selectedItemDescription.setVisibility(visibility);
   }
 }

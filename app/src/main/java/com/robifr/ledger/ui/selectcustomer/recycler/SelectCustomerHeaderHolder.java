@@ -19,6 +19,7 @@ package com.robifr.ledger.ui.selectcustomer.recycler;
 import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -26,12 +27,11 @@ import com.robifr.ledger.databinding.CustomerCardWideBinding;
 import com.robifr.ledger.databinding.ListableListSelectedItemBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
 import com.robifr.ledger.ui.customer.CustomerCardWideComponent;
-import com.robifr.ledger.ui.customer.CustomerListAction;
 import com.robifr.ledger.ui.selectcustomer.SelectedCustomerAction;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SelectCustomerHeaderHolder<T extends CustomerListAction & SelectedCustomerAction>
+public class SelectCustomerHeaderHolder<T extends SelectedCustomerAction>
     extends RecyclerViewHolder<Optional<CustomerModel>, T> implements View.OnClickListener {
   @NonNull private final ListableListSelectedItemBinding _headerBinding;
   @NonNull private final CustomerCardWideBinding _selectedCardBinding;
@@ -76,41 +76,6 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction & SelectedC
       return;
     }
 
-    final CustomerModel selectedCustomerOnDb =
-        this._action.customers().stream()
-            .filter(
-                customer ->
-                    customer.id() != null && customer.id().equals(selectedCustomer.get().id()))
-            .findFirst()
-            .orElse(null);
-
-    // Actually all these "if" checks should never happen, which causes
-    // `_headerBinding.selectedItemDescription` to always be set to `View.GONE`, because selecting
-    // a customer can only occur during queue creation or editing. Unlike `ProductModel`,
-    // the referenced customer in the `QueueModel` is never stored, only its ID.
-    // This means the customer will always be up to date.
-
-    // The original customer on database was deleted.
-    if (selectedCustomerOnDb == null) {
-      this._headerBinding.selectedItemDescription.setText(
-          this.itemView
-              .getContext()
-              .getString(R.string.text_originally_selected_customer_was_deleted));
-      this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
-
-      // The original customer on database was edited.
-    } else if (!selectedCustomer.get().equals(selectedCustomerOnDb)) {
-      this._headerBinding.selectedItemDescription.setText(
-          this.itemView
-              .getContext()
-              .getString(R.string.text_originally_selected_customer_was_changed));
-      this._headerBinding.selectedItemDescription.setVisibility(View.VISIBLE);
-
-      // It's the same unchanged customer.
-    } else {
-      this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
-    }
-
     this._selectedCard.reset();
     this._selectedCard.setNormalCardCustomer(selectedCustomer.get());
     this._selectedCard.setExpandedCardCustomer(selectedCustomer.get());
@@ -148,5 +113,14 @@ public class SelectCustomerHeaderHolder<T extends CustomerListAction & SelectedC
 
   public void setCardExpanded(boolean isExpanded) {
     this._selectedCard.setCardExpanded(isExpanded);
+  }
+
+  public void setSelectedItemDescriptionText(@Nullable String text) {
+    this._headerBinding.selectedItemDescription.setText(text);
+  }
+
+  public void setSelectedItemDescriptionVisible(boolean isVisible) {
+    final int visibility = isVisible ? View.VISIBLE : View.GONE;
+    this._headerBinding.selectedItemDescription.setVisibility(visibility);
   }
 }

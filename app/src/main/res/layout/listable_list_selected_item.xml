@@ -47,6 +47,7 @@
       android:text="@string/text_originally_selected_customer_was_changed"
       android:textSize="@dimen/text_small"
       android:textStyle="italic"
+      android:visibility="gone"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/selectedItemContainer" />
 

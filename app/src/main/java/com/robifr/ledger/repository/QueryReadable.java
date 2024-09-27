@@ -29,12 +29,21 @@ import java.util.concurrent.CompletableFuture;
  *     QueueModel#customerId()}.
  */
 interface QueryReadable<M extends Model> {
+  /**
+   * @return List of selected models. Empty list for a failed operation.
+   */
   @NonNull
   public CompletableFuture<List<M>> selectAll();
 
+  /**
+   * @return Selected model. Null for a failed operation.
+   */
   @NonNull
   public CompletableFuture<M> selectById(@Nullable Long id);
 
+  /**
+   * @return List of selected models. Empty list for a failed operation.
+   */
   @NonNull
   public CompletableFuture<List<M>> selectById(@NonNull List<Long> ids);
 

@@ -67,8 +67,8 @@ public class SearchCustomerViewModel extends ViewModel {
       new SafeMutableLiveData<>(Optional.empty());
 
   /**
-   * Currently expanded customer index from {@link SearchCustomerViewModel#_customers customers}. -1
-   * to represent none being expanded.
+   * Currently expanded customer index from {@link #_customers}. -1 to represent none being
+   * expanded.
    */
   @NonNull
   private final SafeMutableLiveData<Integer> _expandedCustomerIndex = new SafeMutableLiveData<>(-1);
@@ -120,7 +120,7 @@ public class SearchCustomerViewModel extends ViewModel {
   }
 
   /**
-   * @see SearchCustomerViewModel#_isSelectionEnabled
+   * @see #_isSelectionEnabled
    */
   public boolean isSelectionEnabled() {
     return this._isSelectionEnabled;
@@ -137,7 +137,7 @@ public class SearchCustomerViewModel extends ViewModel {
   }
 
   /**
-   * @see SearchCustomerViewModel#_expandedCustomerIndex
+   * @see #_expandedCustomerIndex
    */
   public SafeLiveData<Integer> expandedCustomerIndex() {
     return this._expandedCustomerIndex;

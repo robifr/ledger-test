@@ -57,8 +57,8 @@ public class FilterCustomerViewModel extends ViewModel {
       new SafeMutableLiveData<>(List.of());
 
   /**
-   * Currently expanded customer index from {@link FilterCustomerViewModel#_customers customers}. -1
-   * to represent none being expanded.
+   * Currently expanded customer index from {@link #_customers customers}. -1 to represent none
+   * being expanded.
    */
   @NonNull
   private final SafeMutableLiveData<Integer> _expandedCustomerIndex = new SafeMutableLiveData<>(-1);
@@ -117,7 +117,7 @@ public class FilterCustomerViewModel extends ViewModel {
   }
 
   /**
-   * @see FilterCustomerViewModel#_expandedCustomerIndex
+   * @see #_expandedCustomerIndex
    */
   public SafeLiveData<Integer> expandedCustomerIndex() {
     return this._expandedCustomerIndex;

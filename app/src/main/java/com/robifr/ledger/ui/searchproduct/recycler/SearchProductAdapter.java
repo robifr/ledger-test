@@ -148,7 +148,11 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
   }
 
   @Override
-  public void onDeleteProduct(@NonNull ProductModel product) {}
+  public void onDeleteProduct(@NonNull ProductModel product) {
+    Objects.requireNonNull(product);
+
+    this._fragment.searchProductViewModel().onDeleteProduct(product);
+  }
 
   @Override
   public boolean isSelectionEnabled() {

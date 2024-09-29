@@ -20,7 +20,9 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.model.ProductModel;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.product.recycler.ProductListHolder;
 import com.robifr.ledger.ui.searchproduct.viewmodel.SearchProductViewModel;
 import com.robifr.ledger.ui.selectproduct.recycler.SelectProductListHolder;
@@ -42,6 +44,11 @@ public class SearchProductViewModelHandler {
         .observe(
             this._fragment.getViewLifecycleOwner(),
             event -> event.handleIfNotHandled(this::_onResultSelectedProductId));
+    this._viewModel
+        .snackbarMessage()
+        .observe(
+            this._fragment.getViewLifecycleOwner(),
+            event -> event.handleIfNotHandled(this::_onSnackbarMessage));
     this._viewModel.products().observe(this._fragment.getViewLifecycleOwner(), this::_onProducts);
     this._viewModel
         .expandedProductIndex()
@@ -63,6 +70,16 @@ public class SearchProductViewModelHandler {
         .getParentFragmentManager()
         .setFragmentResult(SearchProductFragment.Request.SELECT_PRODUCT.key(), bundle);
     this._fragment.finish();
+  }
+
+  private void _onSnackbarMessage(@NonNull StringResources stringRes) {
+    Objects.requireNonNull(stringRes);
+
+    Snackbar.make(
+            (View) this._fragment.fragmentBinding().getRoot().getParent(),
+            StringResources.stringOf(this._fragment.requireContext(), stringRes),
+            Snackbar.LENGTH_LONG)
+        .show();
   }
 
   /**

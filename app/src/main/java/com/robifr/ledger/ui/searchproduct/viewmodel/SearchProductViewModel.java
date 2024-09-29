@@ -24,14 +24,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
+import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.repository.ProductRepository;
+import com.robifr.ledger.ui.StringResources;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
 import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,6 +53,13 @@ public class SearchProductViewModel extends ViewModel {
    * navigation.
    */
   private final boolean _isSelectionEnabled;
+
+  @NonNull
+  private final ProductChangedListener _productChangedListener = new ProductChangedListener(this);
+
+  @NonNull
+  private final MutableLiveData<SafeEvent<StringResources>> _snackbarMessage =
+      new MutableLiveData<>();
 
   @NonNull
   private final SafeMutableLiveData<Optional<List<ProductModel>>> _products =
@@ -88,6 +98,13 @@ public class SearchProductViewModel extends ViewModel {
             savedStateHandle.get(
                 SearchProductFragment.Arguments.IS_SELECTION_ENABLED_BOOLEAN.key()),
             false);
+
+    this._productRepository.addModelChangedListener(this._productChangedListener);
+  }
+
+  @Override
+  public void onCleared() {
+    this._productRepository.removeModelChangedListener(this._productChangedListener);
   }
 
   @NonNull
@@ -105,6 +122,11 @@ public class SearchProductViewModel extends ViewModel {
    */
   public boolean isSelectionEnabled() {
     return this._isSelectionEnabled;
+  }
+
+  @NonNull
+  public LiveData<SafeEvent<StringResources>> snackbarMessage() {
+    return this._snackbarMessage;
   }
 
   @NonNull
@@ -144,6 +166,22 @@ public class SearchProductViewModel extends ViewModel {
         300);
   }
 
+  public void onDeleteProduct(@NonNull ProductModel product) {
+    Objects.requireNonNull(product);
+
+    this._productRepository
+        .delete(product)
+        .thenAcceptAsync(
+            effected -> {
+              final StringResources stringRes =
+                  effected > 0
+                      ? new StringResources.Plurals(
+                          R.plurals.args_deleted_x_product, effected, effected)
+                      : new StringResources.Strings(R.string.text_error_failed_to_delete_product);
+              this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
+            });
+  }
+
   public void onExpandedProductIndexChanged(int index) {
     this._expandedProductIndex.setValue(index);
   }
@@ -151,5 +189,11 @@ public class SearchProductViewModel extends ViewModel {
   public void onProductSelected(@Nullable ProductModel product) {
     this._resultSelectedProductId.setValue(
         new SafeEvent<>(Optional.ofNullable(product).map(ProductModel::id)));
+  }
+
+  void _onProductsChanged(@NonNull List<ProductModel> products) {
+    Objects.requireNonNull(products);
+
+    this._products.setValue(Optional.of(Collections.unmodifiableList(products)));
   }
 }

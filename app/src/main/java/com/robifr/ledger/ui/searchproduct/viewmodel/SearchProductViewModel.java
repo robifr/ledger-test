@@ -55,6 +55,12 @@ public class SearchProductViewModel extends ViewModel {
   private final SafeMutableLiveData<Optional<List<ProductModel>>> _products =
       new SafeMutableLiveData<>(Optional.empty());
 
+  /**
+   * Currently expanded product index from {@link #_products}. -1 to represent none being expanded.
+   */
+  @NonNull
+  private final SafeMutableLiveData<Integer> _expandedProductIndex = new SafeMutableLiveData<>(-1);
+
   @NonNull
   private final MutableLiveData<SafeEvent<Optional<Long>>> _resultSelectedProductId =
       new MutableLiveData<>();
@@ -106,6 +112,13 @@ public class SearchProductViewModel extends ViewModel {
     return this._products;
   }
 
+  /**
+   * @see #_expandedProductIndex
+   */
+  public SafeLiveData<Integer> expandedProductIndex() {
+    return this._expandedProductIndex;
+  }
+
   @NonNull
   public LiveData<SafeEvent<Optional<Long>>> resultSelectedProductId() {
     return this._resultSelectedProductId;
@@ -129,6 +142,10 @@ public class SearchProductViewModel extends ViewModel {
           }
         },
         300);
+  }
+
+  public void onExpandedProductIndexChanged(int index) {
+    this._expandedProductIndex.setValue(index);
   }
 
   public void onProductSelected(@Nullable ProductModel product) {

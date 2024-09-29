@@ -139,11 +139,13 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
 
   @Override
   public int expandedProductIndex() {
-    return 0;
+    return this._fragment.searchProductViewModel().expandedProductIndex().getValue();
   }
 
   @Override
-  public void onExpandedProductIndexChanged(int index) {}
+  public void onExpandedProductIndexChanged(int index) {
+    this._fragment.searchProductViewModel().onExpandedProductIndexChanged(index);
+  }
 
   @Override
   public void onDeleteProduct(@NonNull ProductModel product) {}

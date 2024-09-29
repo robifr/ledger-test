@@ -30,12 +30,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.robifr.ledger.R;
+import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableFragmentBinding;
 import com.robifr.ledger.ui.FragmentResultKey;
+import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
 import com.robifr.ledger.ui.selectproduct.recycler.SelectProductAdapter;
 import com.robifr.ledger.ui.selectproduct.viewmodel.SelectProductViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
+import java.util.Optional;
 
 @AndroidEntryPoint
 public class SelectProductFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
@@ -110,11 +113,21 @@ public class SelectProductFragment extends Fragment implements Toolbar.OnMenuIte
   public boolean onMenuItemClick(@NonNull MenuItem item) {
     Objects.requireNonNull(item);
     Objects.requireNonNull(this._fragmentBinding);
+    Objects.requireNonNull(this._selectProductViewModel);
 
     return switch (item.getItemId()) {
       case R.id.search -> {
+        final Bundle bundle = new Bundle();
+        bundle.putBoolean(SearchProductFragment.Arguments.IS_SELECTION_ENABLED_BOOLEAN.key(), true);
+        bundle.putLongArray(
+            SearchProductFragment.Arguments.INITIAL_SELECTED_PRODUCT_IDS_LONG_ARRAY.key(),
+            Optional.ofNullable(this._selectProductViewModel.initialSelectedProduct())
+                .map(ProductModel::id)
+                .map(id -> new long[] {id})
+                .orElse(new long[] {}));
+
         Navigation.findNavController(this._fragmentBinding.getRoot())
-            .navigate(R.id.searchProductFragment);
+            .navigate(R.id.searchProductFragment, bundle);
         yield true;
       }
 

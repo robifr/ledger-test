@@ -31,9 +31,11 @@ import com.robifr.ledger.util.livedata.SafeEvent;
 import com.robifr.ledger.util.livedata.SafeLiveData;
 import com.robifr.ledger.util.livedata.SafeMutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 @HiltViewModel
@@ -41,6 +43,13 @@ public class SearchProductViewModel extends ViewModel {
   @NonNull private final ProductRepository _productRepository;
   @NonNull private final Handler _handler = new Handler(Looper.getMainLooper());
   @NonNull private final String _initialQuery;
+  @NonNull private final List<Long> _initialSelectedProductIds;
+
+  /**
+   * Whether the fragment should return {@link SearchProductFragment.Request#SELECT_PRODUCT} on back
+   * navigation.
+   */
+  private final boolean _isSelectionEnabled;
 
   @NonNull
   private final SafeMutableLiveData<Optional<List<ProductModel>>> _products =
@@ -59,11 +68,37 @@ public class SearchProductViewModel extends ViewModel {
     this._initialQuery =
         Objects.requireNonNullElse(
             savedStateHandle.get(SearchProductFragment.Arguments.INITIAL_QUERY_STRING.key()), "");
+    this._initialSelectedProductIds =
+        Arrays.stream(
+                Objects.requireNonNullElse(
+                    savedStateHandle.get(
+                        SearchProductFragment.Arguments.INITIAL_SELECTED_PRODUCT_IDS_LONG_ARRAY
+                            .key()),
+                    new long[] {}))
+            .boxed()
+            .collect(Collectors.toList());
+    this._isSelectionEnabled =
+        Objects.requireNonNullElse(
+            savedStateHandle.get(
+                SearchProductFragment.Arguments.IS_SELECTION_ENABLED_BOOLEAN.key()),
+            false);
   }
 
   @NonNull
   public String initialQuery() {
     return this._initialQuery;
+  }
+
+  @NonNull
+  public List<Long> initialSelectedProductIds() {
+    return this._initialSelectedProductIds;
+  }
+
+  /**
+   * @see #_isSelectionEnabled
+   */
+  public boolean isSelectionEnabled() {
+    return this._isSelectionEnabled;
   }
 
   @NonNull

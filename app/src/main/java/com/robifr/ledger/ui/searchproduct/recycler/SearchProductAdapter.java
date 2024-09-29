@@ -25,17 +25,20 @@ import com.robifr.ledger.data.model.ProductModel;
 import com.robifr.ledger.databinding.ListableListTextBinding;
 import com.robifr.ledger.databinding.ProductCardWideBinding;
 import com.robifr.ledger.ui.RecyclerViewHolder;
+import com.robifr.ledger.ui.product.ProductAction;
 import com.robifr.ledger.ui.product.ProductListAction;
+import com.robifr.ledger.ui.product.recycler.ProductListHolder;
+import com.robifr.ledger.ui.searchproduct.SearchProductAction;
 import com.robifr.ledger.ui.searchproduct.SearchProductFragment;
 import com.robifr.ledger.ui.selectproduct.SelectProductAction;
+import com.robifr.ledger.ui.selectproduct.recycler.SelectProductListHolder;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolder<?, ?>>
-    implements ProductListAction, SelectProductAction {
+    implements ProductListAction, ProductAction, SelectProductAction, SearchProductAction {
   private enum ViewType {
     HEADER(0),
     LIST(1);
@@ -75,10 +78,16 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
               ListableListTextBinding.inflate(inflater, parent, false), this);
 
         // Defaults to `ViewType#LIST`.
-      default ->
-          new SearchProductListHolder<>(
-              ProductCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false),
-              this);
+      default -> {
+        final ProductCardWideBinding cardBinding =
+            ProductCardWideBinding.inflate(this._fragment.getLayoutInflater(), parent, false);
+
+        if (this._fragment.searchProductViewModel().isSelectionEnabled()) {
+          yield new SelectProductListHolder<>(cardBinding, this);
+        } else {
+          yield new ProductListHolder<>(cardBinding, this);
+        }
+      }
     };
   }
 
@@ -89,7 +98,15 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
     if (holder instanceof SearchProductHeaderHolder<?> headerHolder) {
       headerHolder.bind(Optional.empty());
 
-    } else if (holder instanceof SearchProductListHolder<?> listHolder) {
+    } else if (holder instanceof ProductListHolder<?> listHolder) {
+      this._fragment
+          .searchProductViewModel()
+          .products()
+          .getValue()
+          .map(products -> products.get(index - 1)) // -1 offset because header holder.
+          .ifPresent(listHolder::bind);
+
+    } else if (holder instanceof SelectProductListHolder<?> listHolder) {
       this._fragment
           .searchProductViewModel()
           .products()
@@ -128,10 +145,18 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerViewHolde
   @Override
   public void onExpandedProductIndexChanged(int index) {}
 
+  @Override
+  public void onDeleteProduct(@NonNull ProductModel product) {}
+
+  @Override
+  public boolean isSelectionEnabled() {
+    return this._fragment.searchProductViewModel().isSelectionEnabled();
+  }
+
   @NonNull
   @Override
   public List<Long> initialSelectedProductIds() {
-    return Collections.emptyList();
+    return this._fragment.searchProductViewModel().initialSelectedProductIds();
   }
 
   @Override

@@ -41,7 +41,9 @@ import java.util.Objects;
 @AndroidEntryPoint
 public class SearchProductFragment extends Fragment implements SearchView.OnQueryTextListener {
   public enum Arguments implements FragmentResultKey {
-    INITIAL_QUERY_STRING
+    INITIAL_QUERY_STRING,
+    IS_SELECTION_ENABLED_BOOLEAN,
+    INITIAL_SELECTED_PRODUCT_IDS_LONG_ARRAY
   }
 
   public enum Request implements FragmentResultKey {

@@ -223,36 +223,26 @@ function _drawBarChart(svg, layout, xScale, yScale, data, color) {
   // Set the corner radius to 20% of the bar width.
   const barCornerRadius = Math.min(5, Math.max(2, xScale.scale.bandwidth() * 0.2));
 
-  // Draw bar with rounded corners.
   svg
-    .selectAll(".bar-top")
+    .selectAll(".bar")
     .data(data)
     .enter()
-    .append("rect")
+    .append("path")
     .style("fill", color)
     .attr("x", (d) => xScale.scale(d.key) ?? null)
     .attr("y", (d) => yScale.scale(d.value))
     .attr("width", xScale.scale.bandwidth())
     .attr("height", (d) => layout.height - layout.marginBottom - yScale.scale(d.value))
-    .attr("rx", barCornerRadius)
-    .attr("ry", barCornerRadius);
-  // Draw bottom bar to cover the bottom corners.
-  svg
-    .selectAll(".bar-bottom")
-    .data(data)
-    .enter()
-    .append("rect")
-    .style("fill", color)
-    .attr("x", (d) => xScale.scale(d.key) ?? null)
     .attr(
-      "y",
-      (d) => yScale.scale(d.value) + (yScale.scale(0) - yScale.scale(d.value) - barCornerRadius)
-    )
-    .attr("width", xScale.scale.bandwidth())
-    .attr("height", (d) =>
-      layout.height - layout.marginBottom - yScale.scale(d.value) > barCornerRadius
-        ? barCornerRadius
-        : 0
+      "d",
+      (item) => `
+        M${xScale.scale(item.key)},${yScale.scale(item.value) + barCornerRadius}
+        a${barCornerRadius},${barCornerRadius} 0 0 1 ${barCornerRadius},${-barCornerRadius}
+        h${xScale.scale.bandwidth() - 2 * barCornerRadius}
+        a${barCornerRadius},${barCornerRadius} 0 0 1 ${barCornerRadius},${barCornerRadius}
+        v${layout.height - layout.marginBottom - yScale.scale(item.value) - barCornerRadius}
+        h${-xScale.scale.bandwidth()}Z
+      `
     );
 }
 

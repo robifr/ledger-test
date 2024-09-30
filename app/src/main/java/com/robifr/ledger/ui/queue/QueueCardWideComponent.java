@@ -46,7 +46,8 @@ public class QueueCardWideComponent {
   public QueueCardWideComponent(@NonNull Context context, @NonNull QueueCardWideBinding binding) {
     this._context = Objects.requireNonNull(context);
     this._binding = Objects.requireNonNull(binding);
-    this._productOrderBinding = QueueCardWideExpandedOrderBinding.bind(this._binding.getRoot());
+    this._productOrderBinding =
+        QueueCardWideExpandedOrderBinding.bind(this._binding.expandedCard.getRoot());
 
     final ShapeAppearanceModel imageShape =
         ShapeAppearanceModel.builder(

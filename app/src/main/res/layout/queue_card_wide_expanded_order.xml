@@ -87,6 +87,7 @@
       android:enabled="false"
       android:gravity="end"
       android:text="@string/text_grand_total_price"
+      android:textStyle="bold"
       app:layout_constraintTop_toTopOf="@id/grandTotalPrice"
       app:layout_constraintWidth_percent="0.55" />
 
@@ -98,6 +99,7 @@
       android:layout_marginEnd="@dimen/cardlist_padding"
       android:gravity="end"
       android:paddingStart="@dimen/table_column_padding"
+      android:textStyle="bold"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/grandTotalPriceTitle"
       app:layout_constraintTop_toBottomOf="@id/dividerForTable" />

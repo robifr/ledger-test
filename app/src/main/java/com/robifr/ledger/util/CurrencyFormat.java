@@ -16,7 +16,9 @@
 
 package com.robifr.ledger.util;
 
+import android.content.Context;
 import androidx.annotation.NonNull;
+import com.robifr.ledger.R;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -59,11 +61,13 @@ public class CurrencyFormat {
   }
 
   /**
-   * @see #formatWithUnit(BigDecimal, String, String)
+   * @see #formatWithUnit(Context, BigDecimal, String, String)
    */
   @NonNull
-  public static String formatWithUnit(@NonNull BigDecimal amount, @NonNull String languageTag) {
-    return CurrencyFormat.formatWithUnit(amount, languageTag, CurrencyFormat.symbol(languageTag));
+  public static String formatWithUnit(
+      @NonNull Context context, @NonNull BigDecimal amount, @NonNull String languageTag) {
+    return CurrencyFormat.formatWithUnit(
+        context, amount, languageTag, CurrencyFormat.symbol(languageTag));
   }
 
   /**
@@ -72,7 +76,11 @@ public class CurrencyFormat {
    */
   @NonNull
   public static String formatWithUnit(
-      @NonNull BigDecimal amount, @NonNull String languageTag, @NonNull String symbol) {
+      @NonNull Context context,
+      @NonNull BigDecimal amount,
+      @NonNull String languageTag,
+      @NonNull String symbol) {
+    Objects.requireNonNull(context);
     Objects.requireNonNull(amount);
     Objects.requireNonNull(languageTag);
     Objects.requireNonNull(symbol);
@@ -94,25 +102,25 @@ public class CurrencyFormat {
       return negativePrefix
           + CurrencyFormat.format(
               positiveAmount.divide(thousand, 1, RoundingMode.DOWN), languageTag, symbol)
-          + "K";
+          + context.getString(R.string.symbol_thousand);
 
     } else if (positiveAmount.compareTo(billion) < 0) {
       return negativePrefix
           + CurrencyFormat.format(
               positiveAmount.divide(million, 1, RoundingMode.DOWN), languageTag, symbol)
-          + "M";
+          + context.getString(R.string.symbol_million);
 
     } else if (positiveAmount.compareTo(trillion) < 0) {
       return negativePrefix
           + CurrencyFormat.format(
               positiveAmount.divide(billion, 1, RoundingMode.DOWN), languageTag, symbol)
-          + "B";
+          + context.getString(R.string.symbol_billion);
     }
 
     return negativePrefix
         + CurrencyFormat.format(
             positiveAmount.divide(trillion, 1, RoundingMode.DOWN), languageTag, symbol)
-        + "T";
+        + context.getString(R.string.symbol_trillion);
   }
 
   /**

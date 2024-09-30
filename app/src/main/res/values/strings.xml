@@ -247,6 +247,10 @@
   <string name="productordercard_discount_title">%s%% off</string>
   <string name="productordercard_productpriceandquantity_title">%s x %s</string>
 
-  <string name="symbol_notavailable">n/a</string>
+  <string name="symbol_billion">B</string>
   <string name="symbol_mdash">—</string>
+  <string name="symbol_million">M</string>
+  <string name="symbol_notavailable">n/a</string>
+  <string name="symbol_thousand">K</string>
+  <string name="symbol_trillion">T</string>
 </resources>

@@ -32,10 +32,8 @@ public class CurrencyFormat {
 
   private CurrencyFormat() {}
 
-  public static String format(
-      @NonNull BigDecimal amount, @NonNull String language, @NonNull String country) {
-    return CurrencyFormat.format(
-        amount, language, country, CurrencyFormat.symbol(language, country));
+  public static String format(@NonNull BigDecimal amount, @NonNull String languageTag) {
+    return CurrencyFormat.format(amount, languageTag, CurrencyFormat.symbol(languageTag));
   }
 
   /**
@@ -43,17 +41,13 @@ public class CurrencyFormat {
    */
   @NonNull
   public static String format(
-      @NonNull BigDecimal amount,
-      @NonNull String language,
-      @NonNull String country,
-      @NonNull String symbol) {
+      @NonNull BigDecimal amount, @NonNull String languageTag, @NonNull String symbol) {
     Objects.requireNonNull(amount);
-    Objects.requireNonNull(language);
-    Objects.requireNonNull(country);
+    Objects.requireNonNull(languageTag);
     Objects.requireNonNull(symbol);
 
     final DecimalFormat format =
-        (DecimalFormat) NumberFormat.getCurrencyInstance(new Locale(language, country));
+        (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.forLanguageTag(languageTag));
     final DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
 
     symbols.setCurrencySymbol(symbol);
@@ -64,12 +58,12 @@ public class CurrencyFormat {
     return format.format(amount);
   }
 
-  /** {@link #formatWithUnit(BigDecimal, String, String, String)} */
+  /**
+   * @see #formatWithUnit(BigDecimal, String, String)
+   */
   @NonNull
-  public static String formatWithUnit(
-      @NonNull BigDecimal amount, @NonNull String language, @NonNull String country) {
-    return CurrencyFormat.formatWithUnit(
-        amount, language, country, CurrencyFormat.symbol(language, country));
+  public static String formatWithUnit(@NonNull BigDecimal amount, @NonNull String languageTag) {
+    return CurrencyFormat.formatWithUnit(amount, languageTag, CurrencyFormat.symbol(languageTag));
   }
 
   /**
@@ -78,13 +72,9 @@ public class CurrencyFormat {
    */
   @NonNull
   public static String formatWithUnit(
-      @NonNull BigDecimal amount,
-      @NonNull String language,
-      @NonNull String country,
-      @NonNull String symbol) {
+      @NonNull BigDecimal amount, @NonNull String languageTag, @NonNull String symbol) {
     Objects.requireNonNull(amount);
-    Objects.requireNonNull(language);
-    Objects.requireNonNull(country);
+    Objects.requireNonNull(languageTag);
     Objects.requireNonNull(symbol);
 
     final BigDecimal thousand = BigDecimal.valueOf(1000);
@@ -98,30 +88,30 @@ public class CurrencyFormat {
     final BigDecimal positiveAmount = amount.abs();
 
     if (positiveAmount.compareTo(thousand) < 0) {
-      return negativePrefix + CurrencyFormat.format(positiveAmount, language, country, symbol);
+      return negativePrefix + CurrencyFormat.format(positiveAmount, languageTag, symbol);
 
     } else if (positiveAmount.compareTo(million) < 0) {
       return negativePrefix
           + CurrencyFormat.format(
-              positiveAmount.divide(thousand, 1, RoundingMode.DOWN), language, country, symbol)
+              positiveAmount.divide(thousand, 1, RoundingMode.DOWN), languageTag, symbol)
           + "K";
 
     } else if (positiveAmount.compareTo(billion) < 0) {
       return negativePrefix
           + CurrencyFormat.format(
-              positiveAmount.divide(million, 1, RoundingMode.DOWN), language, country, symbol)
+              positiveAmount.divide(million, 1, RoundingMode.DOWN), languageTag, symbol)
           + "M";
 
     } else if (positiveAmount.compareTo(trillion) < 0) {
       return negativePrefix
           + CurrencyFormat.format(
-              positiveAmount.divide(billion, 1, RoundingMode.DOWN), language, country, symbol)
+              positiveAmount.divide(billion, 1, RoundingMode.DOWN), languageTag, symbol)
           + "B";
     }
 
     return negativePrefix
         + CurrencyFormat.format(
-            positiveAmount.divide(trillion, 1, RoundingMode.DOWN), language, country, symbol)
+            positiveAmount.divide(trillion, 1, RoundingMode.DOWN), languageTag, symbol)
         + "T";
   }
 
@@ -129,18 +119,16 @@ public class CurrencyFormat {
    * @return Parsed amount from local specific currency.
    */
   @NonNull
-  public static BigDecimal parse(
-      @NonNull String amount, @NonNull String language, @NonNull String country)
+  public static BigDecimal parse(@NonNull String amount, @NonNull String languageTag)
       throws ParseException {
     Objects.requireNonNull(amount);
-    Objects.requireNonNull(language);
-    Objects.requireNonNull(country);
+    Objects.requireNonNull(languageTag);
 
     final DecimalFormat format =
-        (DecimalFormat) NumberFormat.getNumberInstance(new Locale(language, country));
+        (DecimalFormat) NumberFormat.getNumberInstance(Locale.forLanguageTag(languageTag));
     format.setParseBigDecimal(true);
 
-    final String decimalSeparator = CurrencyFormat.decimalSeparator(language, country);
+    final String decimalSeparator = CurrencyFormat.decimalSeparator(languageTag);
     String amountToParse = amount.replaceAll("[^\\d\\-\\" + decimalSeparator + "]", "");
 
     // Edge case.
@@ -156,30 +144,27 @@ public class CurrencyFormat {
   }
 
   @NonNull
-  public static String symbol(@NonNull String language, @NonNull String country) {
-    Objects.requireNonNull(language);
-    Objects.requireNonNull(country);
+  public static String symbol(@NonNull String languageTag) {
+    Objects.requireNonNull(languageTag);
 
-    return new DecimalFormatSymbols(new Locale(language, country)).getCurrencySymbol();
+    return new DecimalFormatSymbols(Locale.forLanguageTag(languageTag)).getCurrencySymbol();
   }
 
   @NonNull
-  public static String groupingSeparator(@NonNull String language, @NonNull String country) {
-    Objects.requireNonNull(language);
-    Objects.requireNonNull(country);
+  public static String groupingSeparator(@NonNull String languageTag) {
+    Objects.requireNonNull(languageTag);
 
     final char separator =
-        new DecimalFormatSymbols(new Locale(language, country)).getGroupingSeparator();
+        new DecimalFormatSymbols(Locale.forLanguageTag(languageTag)).getGroupingSeparator();
     return Character.toString(separator);
   }
 
   @NonNull
-  public static String decimalSeparator(@NonNull String language, @NonNull String country) {
-    Objects.requireNonNull(language);
-    Objects.requireNonNull(country);
+  public static String decimalSeparator(@NonNull String languageTag) {
+    Objects.requireNonNull(languageTag);
 
     final char separator =
-        new DecimalFormatSymbols(new Locale(language, country)).getDecimalSeparator();
+        new DecimalFormatSymbols(Locale.forLanguageTag(languageTag)).getDecimalSeparator();
     return Character.toString(separator);
   }
 
@@ -189,12 +174,11 @@ public class CurrencyFormat {
     return Math.max(0, amount.stripTrailingZeros().scale());
   }
 
-  public static boolean isSymbolAtStart(@NonNull String language, @NonNull String country) {
-    Objects.requireNonNull(language);
-    Objects.requireNonNull(country);
+  public static boolean isSymbolAtStart(@NonNull String languageTag) {
+    Objects.requireNonNull(languageTag);
 
     final DecimalFormat format =
-        (DecimalFormat) NumberFormat.getCurrencyInstance(new Locale(language, country));
+        (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.forLanguageTag(languageTag));
     return format.toLocalizedPattern().indexOf('\u00A4') == 0;
   }
 }

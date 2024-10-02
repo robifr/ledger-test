@@ -21,6 +21,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.text.HtmlCompat;
 import androidx.transition.ChangeBounds;
 import androidx.transition.TransitionManager;
@@ -170,7 +171,9 @@ public class DashboardSummary implements View.OnClickListener {
                 .oldestDate()
                 .format(
                     DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-                        .withLocale(new Locale("id", "ID")))
+                        .withLocale(
+                            Locale.forLanguageTag(
+                                AppCompatDelegate.getApplicationLocales().toLanguageTags())))
             : null;
     final String textInCenter =
         model.oldestDate() != null
@@ -258,7 +261,9 @@ public class DashboardSummary implements View.OnClickListener {
         .summary
         .productsSoldCard
         .amount
-        .setText(CurrencyFormat.format(amount, "id", "ID", ""));
+        .setText(
+            CurrencyFormat.format(
+                amount, AppCompatDelegate.getApplicationLocales().toLanguageTags(), ""));
   }
 
   /**
@@ -281,7 +286,10 @@ public class DashboardSummary implements View.OnClickListener {
               .getQuantityString(
                   R.plurals.args_x_item,
                   product.getValue().intValue(),
-                  CurrencyFormat.format(product.getValue(), "id", "ID", ""));
+                  CurrencyFormat.format(
+                      product.getValue(),
+                      AppCompatDelegate.getApplicationLocales().toLanguageTags(),
+                      ""));
 
       final DashboardCardSummaryListItemBinding listItemBinding =
           DashboardCardSummaryListItemBinding.inflate(

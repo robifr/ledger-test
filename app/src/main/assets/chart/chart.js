@@ -323,7 +323,9 @@ function _drawDonutChart(svg, layout, data, colors, svgTextInCenter = "") {
   legend
     .append("text")
     .text((d) =>
-      d.data.key !== NO_DATA_KEY ? Android.formatCurrencyWithUnit(d.value, "id", "ID", "") : ""
+      d.data.key !== NO_DATA_KEY
+        ? Android.formatCurrencyWithUnit(d.value, Android.localeLanguageTag(), "")
+        : ""
     )
     .style("font-size", 14)
     .style("font-weight", "bold")

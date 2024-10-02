@@ -66,7 +66,7 @@ export function createLinearScale(axisPosition, domain) {
     .axis(scale)
     .tickValues(d3.range(domain[0], domain[1] + tickStep, tickStep))
     .tickSizeOuter(0)
-    .tickFormat((d) => Android.formatCurrencyWithUnit(d, "id", "ID", ""));
+    .tickFormat((d) => Android.formatCurrencyWithUnit(d, Android.localeLanguageTag(), ""));
 
   return { scale: scale, axis: axis, axisPosition: axisPos };
 }

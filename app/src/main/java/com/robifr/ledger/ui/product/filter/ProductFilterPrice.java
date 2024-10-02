@@ -45,8 +45,8 @@ public class ProductFilterPrice {
 
     final TextInputEditText minPrice = this._dialogBinding.filterPrice.minimumPrice;
     final TextInputEditText maxPrice = this._dialogBinding.filterPrice.maximumPrice;
-    this._minPriceTextWatcher = new PriceTextWatcher(minPrice, "id", "ID");
-    this._maxPriceTextWatcher = new PriceTextWatcher(maxPrice, "id", "ID");
+    this._minPriceTextWatcher = new PriceTextWatcher(minPrice);
+    this._maxPriceTextWatcher = new PriceTextWatcher(maxPrice);
 
     minPrice.addTextChangedListener(this._minPriceTextWatcher);
     maxPrice.addTextChangedListener(this._maxPriceTextWatcher);
@@ -85,9 +85,8 @@ public class ProductFilterPrice {
   }
 
   private class PriceTextWatcher extends CurrencyTextWatcher {
-    public PriceTextWatcher(
-        @NonNull EditText view, @NonNull String language, @NonNull String country) {
-      super(view, language, country);
+    public PriceTextWatcher(@NonNull EditText view) {
+      super(view);
     }
 
     @Override

@@ -17,6 +17,7 @@
 package com.robifr.ledger.ui.createcustomer;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.robifr.ledger.R;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
@@ -38,7 +39,12 @@ public class CreateCustomerDebt {
             ? this._fragment.requireContext().getColor(R.color.red)
             : this._fragment.requireContext().getColor(R.color.text_disabled);
 
-    this._fragment.fragmentBinding().debt.setText(CurrencyFormat.format(debt, "id", "ID"));
+    this._fragment
+        .fragmentBinding()
+        .debt
+        .setText(
+            CurrencyFormat.format(
+                debt, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
     this._fragment.fragmentBinding().debt.setTextColor(textColor);
   }
 }

@@ -45,8 +45,8 @@ public class CustomerFilterBalance {
 
     final TextInputEditText minBalance = this._dialogBinding.filterBalance.minimumBalance;
     final TextInputEditText maxBalance = this._dialogBinding.filterBalance.maximumBalance;
-    this._minBalanceTextWatcher = new BalanceTextWatcher(minBalance, "id", "ID");
-    this._maxBalanceTextWatcher = new BalanceTextWatcher(maxBalance, "id", "ID");
+    this._minBalanceTextWatcher = new BalanceTextWatcher(minBalance);
+    this._maxBalanceTextWatcher = new BalanceTextWatcher(maxBalance);
 
     minBalance.addTextChangedListener(this._minBalanceTextWatcher);
     maxBalance.addTextChangedListener(this._maxBalanceTextWatcher);
@@ -89,9 +89,8 @@ public class CustomerFilterBalance {
   }
 
   private class BalanceTextWatcher extends CurrencyTextWatcher {
-    public BalanceTextWatcher(
-        @NonNull EditText view, @NonNull String language, @NonNull String country) {
-      super(view, language, country);
+    public BalanceTextWatcher(@NonNull EditText view) {
+      super(view);
     }
 
     @Override

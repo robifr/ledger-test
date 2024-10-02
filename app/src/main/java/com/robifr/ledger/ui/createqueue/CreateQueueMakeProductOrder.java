@@ -29,6 +29,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.Navigation;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.robifr.ledger.R;
@@ -60,8 +61,8 @@ public class CreateQueueMakeProductOrder
             .setNegativeButton(this._fragment.getString(R.string.text_cancel), this)
             .setPositiveButton(this._fragment.getString(R.string.text_add), this)
             .create();
-    this._quantityTextWatcher = new QuantityTextWatcher(this._dialogBinding.quantity, "id", "ID");
-    this._discountTextWatcher = new DiscountTextWatcher(this._dialogBinding.discount, "id", "ID");
+    this._quantityTextWatcher = new QuantityTextWatcher(this._dialogBinding.quantity);
+    this._discountTextWatcher = new DiscountTextWatcher(this._dialogBinding.discount);
 
     this._dialog.setContentView(this._dialogBinding.getRoot());
     this._dialog.setOnDismissListener(this);
@@ -120,7 +121,9 @@ public class CreateQueueMakeProductOrder
     if (product != null) {
       final String productName = product.name() + "\n";
       final String productPrice =
-          CurrencyFormat.format(BigDecimal.valueOf(product.price()), "id", "ID");
+          CurrencyFormat.format(
+              BigDecimal.valueOf(product.price()),
+              AppCompatDelegate.getApplicationLocales().toLanguageTags());
 
       text = new SpannableString(productName + productPrice);
       // Set product price text smaller than its name.
@@ -170,7 +173,9 @@ public class CreateQueueMakeProductOrder
   public void setInputtedTotalPrice(@NonNull BigDecimal totalPrice) {
     Objects.requireNonNull(totalPrice);
 
-    this._dialogBinding.totalPrice.setText(CurrencyFormat.format(totalPrice, "id", "ID"));
+    this._dialogBinding.totalPrice.setText(
+        CurrencyFormat.format(
+            totalPrice, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 
   public void openCreateDialog() {
@@ -201,9 +206,8 @@ public class CreateQueueMakeProductOrder
   }
 
   private class QuantityTextWatcher extends CurrencyTextWatcher {
-    public QuantityTextWatcher(
-        @NonNull EditText view, @NonNull String language, @NonNull String country) {
-      super(view, language, country);
+    public QuantityTextWatcher(@NonNull EditText view) {
+      super(view);
       this._isSymbolHidden = true;
       this._maximumAmount = BigDecimal.valueOf(10_000L);
     }
@@ -220,9 +224,8 @@ public class CreateQueueMakeProductOrder
   }
 
   private class DiscountTextWatcher extends CurrencyTextWatcher {
-    public DiscountTextWatcher(
-        @NonNull EditText view, @NonNull String language, @NonNull String country) {
-      super(view, language, country);
+    public DiscountTextWatcher(@NonNull EditText view) {
+      super(view);
     }
 
     @Override

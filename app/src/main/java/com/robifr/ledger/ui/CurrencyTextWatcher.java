@@ -19,6 +19,7 @@ package com.robifr.ledger.ui;
 import android.text.Editable;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.robifr.ledger.util.CurrencyFormat;
 import com.robifr.ledger.util.Strings;
 import java.math.BigDecimal;
@@ -27,16 +28,11 @@ import java.text.ParseException;
 import java.util.Objects;
 
 public class CurrencyTextWatcher extends EditTextWatcher {
-  @NonNull protected final String _language;
-  @NonNull protected final String _country;
   @NonNull protected BigDecimal _maximumAmount = BigDecimal.valueOf(Integer.MAX_VALUE);
   protected boolean _isSymbolHidden = false;
 
-  public CurrencyTextWatcher(
-      @NonNull EditText view, @NonNull String language, @NonNull String country) {
+  public CurrencyTextWatcher(@NonNull EditText view) {
     super(view);
-    this._language = Objects.requireNonNull(language);
-    this._country = Objects.requireNonNull(country);
   }
 
   public void afterTextChanged(@NonNull Editable editable) {
@@ -49,12 +45,17 @@ public class CurrencyTextWatcher extends EditTextWatcher {
     this._isEditing = true;
 
     final String groupingSeparator =
-        CurrencyFormat.groupingSeparator(this._language, this._country);
-    final String decimalSeparator = CurrencyFormat.decimalSeparator(this._language, this._country);
+        CurrencyFormat.groupingSeparator(
+            AppCompatDelegate.getApplicationLocales().toLanguageTags());
+    final String decimalSeparator =
+        CurrencyFormat.decimalSeparator(AppCompatDelegate.getApplicationLocales().toLanguageTags());
     final String symbol =
-        this._isSymbolHidden ? "" : CurrencyFormat.symbol(this._language, this._country);
+        this._isSymbolHidden
+            ? ""
+            : CurrencyFormat.symbol(AppCompatDelegate.getApplicationLocales().toLanguageTags());
 
-    final boolean isSymbolAtStart = CurrencyFormat.isSymbolAtStart(this._language, this._country);
+    final boolean isSymbolAtStart =
+        CurrencyFormat.isSymbolAtStart(AppCompatDelegate.getApplicationLocales().toLanguageTags());
     final boolean isDeletingGrouping =
         this._isBackspaceClicked && this._changedTextBefore.equals(groupingSeparator);
 
@@ -74,11 +75,15 @@ public class CurrencyTextWatcher extends EditTextWatcher {
 
     try {
       if (!oldText.isBlank()) {
-        oldAmount = CurrencyFormat.parse(oldText, this._language, this._country);
+        oldAmount =
+            CurrencyFormat.parse(
+                oldText, AppCompatDelegate.getApplicationLocales().toLanguageTags());
       }
 
       if (!unformattedText.isBlank()) {
-        newAmount = CurrencyFormat.parse(unformattedText, this._language, this._country);
+        newAmount =
+            CurrencyFormat.parse(
+                unformattedText, AppCompatDelegate.getApplicationLocales().toLanguageTags());
       }
 
     } catch (ParseException e) {
@@ -90,7 +95,8 @@ public class CurrencyTextWatcher extends EditTextWatcher {
     }
 
     final String newTextFormatted =
-        CurrencyFormat.format(newAmount, this._language, this._country, symbol);
+        CurrencyFormat.format(
+            newAmount, AppCompatDelegate.getApplicationLocales().toLanguageTags(), symbol);
     // Clear field when unformatted text doesn't have any digit on it.
     String newText =
         Strings.countOccurrenceRegex(unformattedText, "\\d") == 0 ? "" : newTextFormatted;

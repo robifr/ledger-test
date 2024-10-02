@@ -17,6 +17,7 @@
 package com.robifr.ledger.ui.createcustomer.viewmodel;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import com.robifr.ledger.util.CurrencyFormat;
@@ -75,7 +76,10 @@ public class CustomerBalanceViewModel {
 
     try {
       inputtedAmount =
-          CurrencyFormat.parse(this._inputtedBalanceAmountText.getValue(), "id", "ID").longValue();
+          CurrencyFormat.parse(
+                  this._inputtedBalanceAmountText.getValue(),
+                  AppCompatDelegate.getApplicationLocales().toLanguageTags())
+              .longValue();
 
     } catch (ParseException ignore) {
     }
@@ -94,7 +98,10 @@ public class CustomerBalanceViewModel {
 
     try {
       inputtedAmount =
-          CurrencyFormat.parse(this._inputtedWithdrawAmountText.getValue(), "id", "ID").longValue();
+          CurrencyFormat.parse(
+                  this._inputtedWithdrawAmountText.getValue(),
+                  AppCompatDelegate.getApplicationLocales().toLanguageTags())
+              .longValue();
 
     } catch (ParseException ignore) {
     }
@@ -108,7 +115,8 @@ public class CustomerBalanceViewModel {
     BigDecimal amountToAdd = BigDecimal.ZERO;
 
     try {
-      amountToAdd = CurrencyFormat.parse(amount, "id", "ID");
+      amountToAdd =
+          CurrencyFormat.parse(amount, AppCompatDelegate.getApplicationLocales().toLanguageTags());
 
     } catch (ParseException ignore) {
     }
@@ -131,7 +139,8 @@ public class CustomerBalanceViewModel {
     BigDecimal amountToWithdraw = BigDecimal.ZERO;
 
     try {
-      amountToWithdraw = CurrencyFormat.parse(amount, "id", "ID");
+      amountToWithdraw =
+          CurrencyFormat.parse(amount, AppCompatDelegate.getApplicationLocales().toLanguageTags());
 
     } catch (ParseException ignore) {
     }

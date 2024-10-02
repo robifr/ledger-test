@@ -17,6 +17,7 @@
 package com.robifr.ledger.data.display;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.robifr.ledger.data.model.QueueModel;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -54,7 +55,9 @@ public class QueueSorter {
   private List<QueueModel> _sortByCustomerName(@NonNull List<QueueModel> queues) {
     Objects.requireNonNull(queues);
 
-    final Collator collator = Collator.getInstance(new Locale("id", "ID"));
+    final Collator collator =
+        Collator.getInstance(
+            Locale.forLanguageTag(AppCompatDelegate.getApplicationLocales().toLanguageTags()));
     collator.setStrength(Collator.SECONDARY);
 
     final Comparator<String> compare = Comparator.nullsLast(collator);

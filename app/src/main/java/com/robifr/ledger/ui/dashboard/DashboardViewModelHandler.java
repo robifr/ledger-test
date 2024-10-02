@@ -18,6 +18,7 @@ package com.robifr.ledger.ui.dashboard;
 
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.snackbar.Snackbar;
 import com.robifr.ledger.data.display.QueueDate;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -141,7 +142,9 @@ public class DashboardViewModelHandler {
     Objects.requireNonNull(date);
 
     final DateTimeFormatter format =
-        DateTimeFormatter.ofPattern("d MMM yyyy", new Locale("id", "ID"));
+        DateTimeFormatter.ofPattern(
+            "d MMM yyyy",
+            Locale.forLanguageTag(AppCompatDelegate.getApplicationLocales().toLanguageTags()));
     final String text =
         date.range() == QueueDate.Range.CUSTOM
             ? this._fragment.getString(

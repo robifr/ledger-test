@@ -17,6 +17,7 @@
 package com.robifr.ledger.ui.product.viewmodel;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -72,7 +73,10 @@ public class ProductFilterViewModel {
     try {
       if (!this._inputtedMinPriceText.getValue().isBlank()) {
         minPrice =
-            CurrencyFormat.parse(this._inputtedMinPriceText.getValue(), "id", "ID").longValue();
+            CurrencyFormat.parse(
+                    this._inputtedMinPriceText.getValue(),
+                    AppCompatDelegate.getApplicationLocales().toLanguageTags())
+                .longValue();
       }
 
     } catch (ParseException ignore) {
@@ -81,7 +85,10 @@ public class ProductFilterViewModel {
     try {
       if (!this._inputtedMaxPriceText.getValue().isBlank()) {
         maxPrice =
-            CurrencyFormat.parse(this._inputtedMaxPriceText.getValue(), "id", "ID").longValue();
+            CurrencyFormat.parse(
+                    this._inputtedMaxPriceText.getValue(),
+                    AppCompatDelegate.getApplicationLocales().toLanguageTags())
+                .longValue();
       }
 
     } catch (ParseException ignore) {
@@ -113,11 +120,15 @@ public class ProductFilterViewModel {
 
     final String minTotalPrice =
         filters.filteredPrice().first != null
-            ? CurrencyFormat.format(BigDecimal.valueOf(filters.filteredPrice().first), "id", "ID")
+            ? CurrencyFormat.format(
+                BigDecimal.valueOf(filters.filteredPrice().first),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
             : "";
     final String maxTotalPrice =
         filters.filteredPrice().second != null
-            ? CurrencyFormat.format(BigDecimal.valueOf(filters.filteredPrice().second), "id", "ID")
+            ? CurrencyFormat.format(
+                BigDecimal.valueOf(filters.filteredPrice().second),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
             : "";
 
     this.onMinPriceTextChanged(minTotalPrice);

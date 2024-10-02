@@ -28,8 +28,7 @@ public class CreateProductPrice {
 
   public CreateProductPrice(@NonNull CreateProductFragment fragment) {
     this._fragment = Objects.requireNonNull(fragment);
-    this._priceTextWatcher =
-        new PriceTextWatcher(this._fragment.fragmentBinding().price, "id", "ID");
+    this._priceTextWatcher = new PriceTextWatcher(this._fragment.fragmentBinding().price);
 
     this._fragment.fragmentBinding().price.addTextChangedListener(this._priceTextWatcher);
   }
@@ -48,9 +47,8 @@ public class CreateProductPrice {
   }
 
   private class PriceTextWatcher extends CurrencyTextWatcher {
-    public PriceTextWatcher(
-        @NonNull EditText view, @NonNull String language, @NonNull String country) {
-      super(view, language, country);
+    public PriceTextWatcher(@NonNull EditText view) {
+      super(view);
     }
 
     @Override

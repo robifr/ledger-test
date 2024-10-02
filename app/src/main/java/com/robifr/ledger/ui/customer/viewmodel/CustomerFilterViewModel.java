@@ -17,6 +17,7 @@
 package com.robifr.ledger.ui.customer.viewmodel;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -90,7 +91,10 @@ public class CustomerFilterViewModel {
     try {
       if (!this._inputtedMinBalanceText.getValue().isBlank()) {
         minBalance =
-            CurrencyFormat.parse(this._inputtedMinBalanceText.getValue(), "id", "ID").longValue();
+            CurrencyFormat.parse(
+                    this._inputtedMinBalanceText.getValue(),
+                    AppCompatDelegate.getApplicationLocales().toLanguageTags())
+                .longValue();
       }
 
     } catch (ParseException ignore) {
@@ -99,7 +103,10 @@ public class CustomerFilterViewModel {
     try {
       if (!this._inputtedMaxBalanceText.getValue().isBlank()) {
         maxBalance =
-            CurrencyFormat.parse(this._inputtedMaxBalanceText.getValue(), "id", "ID").longValue();
+            CurrencyFormat.parse(
+                    this._inputtedMaxBalanceText.getValue(),
+                    AppCompatDelegate.getApplicationLocales().toLanguageTags())
+                .longValue();
       }
 
     } catch (ParseException ignore) {
@@ -107,7 +114,10 @@ public class CustomerFilterViewModel {
 
     try {
       if (!this._inputtedMinDebtText.getValue().isBlank()) {
-        minDebt = CurrencyFormat.parse(this._inputtedMinDebtText.getValue(), "id", "ID");
+        minDebt =
+            CurrencyFormat.parse(
+                this._inputtedMinDebtText.getValue(),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags());
       }
 
     } catch (ParseException ignore) {
@@ -115,7 +125,10 @@ public class CustomerFilterViewModel {
 
     try {
       if (!this._inputtedMaxDebtText.getValue().isBlank()) {
-        maxDebt = CurrencyFormat.parse(this._inputtedMaxDebtText.getValue(), "id", "ID");
+        maxDebt =
+            CurrencyFormat.parse(
+                this._inputtedMaxDebtText.getValue(),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags());
       }
 
     } catch (ParseException ignore) {
@@ -162,20 +175,27 @@ public class CustomerFilterViewModel {
 
     final String minBalance =
         filters.filteredBalance().first != null
-            ? CurrencyFormat.format(BigDecimal.valueOf(filters.filteredBalance().first), "id", "ID")
+            ? CurrencyFormat.format(
+                BigDecimal.valueOf(filters.filteredBalance().first),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
             : "";
     final String maxBalance =
         filters.filteredBalance().second != null
             ? CurrencyFormat.format(
-                BigDecimal.valueOf(filters.filteredBalance().second), "id", "ID")
+                BigDecimal.valueOf(filters.filteredBalance().second),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
             : "";
     final String minDebt =
         filters.filteredDebt().first != null
-            ? CurrencyFormat.format(filters.filteredDebt().first, "id", "ID")
+            ? CurrencyFormat.format(
+                filters.filteredDebt().first,
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
             : "";
     final String maxDebt =
         filters.filteredDebt().second != null
-            ? CurrencyFormat.format(filters.filteredDebt().second, "id", "ID")
+            ? CurrencyFormat.format(
+                filters.filteredDebt().second,
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
             : "";
 
     this.onMinBalanceTextChanged(minBalance);

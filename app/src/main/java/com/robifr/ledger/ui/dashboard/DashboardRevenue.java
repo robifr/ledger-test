@@ -16,12 +16,14 @@
 
 package com.robifr.ledger.ui.dashboard;
 
+import android.content.Context;
 import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
 import com.robifr.ledger.R;
@@ -126,7 +128,9 @@ public class DashboardRevenue implements View.OnClickListener {
         .revenue
         .projectedIncomeCard
         .amount
-        .setText(CurrencyFormat.format(amount, "id", "ID"));
+        .setText(
+            CurrencyFormat.format(
+                amount, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 
   public void setTotalReceivedIncome(@NonNull BigDecimal amount) {
@@ -137,7 +141,9 @@ public class DashboardRevenue implements View.OnClickListener {
         .revenue
         .receivedIncomeCard
         .amount
-        .setText(CurrencyFormat.format(amount, "id", "ID"));
+        .setText(
+            CurrencyFormat.format(
+                amount, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 
   public void displayRevenueChart(@NonNull DashboardRevenueViewModel.IncomeChartModel model) {
@@ -180,12 +186,13 @@ public class DashboardRevenue implements View.OnClickListener {
       Objects.requireNonNull(view);
       Objects.requireNonNull(url);
 
+      final Context context = DashboardRevenue.this._fragment.requireContext();
       final DashboardRevenueViewModel revenueViewModel =
           DashboardRevenue.this._fragment.dashboardViewModel().revenueView();
 
       switch (revenueViewModel.displayedChart().getValue()) {
-        case PROJECTED_INCOME -> revenueViewModel.onDisplayProjectedIncomeChart();
-        case RECEIVED_INCOME -> revenueViewModel.onDisplayReceivedIncomeChart();
+        case PROJECTED_INCOME -> revenueViewModel.onDisplayProjectedIncomeChart(context);
+        case RECEIVED_INCOME -> revenueViewModel.onDisplayReceivedIncomeChart(context);
       }
     }
   }

@@ -41,7 +41,6 @@ import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -167,13 +166,7 @@ public class DashboardSummary implements View.OnClickListener {
             this._fragment.getResources().getDimensionPixelSize(R.dimen.text_mediumlarge));
     final String oldestDate =
         model.oldestDate() != null
-            ? model
-                .oldestDate()
-                .format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-                        .withLocale(
-                            Locale.forLanguageTag(
-                                AppCompatDelegate.getApplicationLocales().toLanguageTags())))
+            ? model.oldestDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
             : null;
     final String textInCenter =
         model.oldestDate() != null

@@ -18,7 +18,6 @@ package com.robifr.ledger.ui.queue.filter;
 
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.util.Pair;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
@@ -33,7 +32,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
@@ -83,10 +81,7 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
         .setChecked(true);
     this._dialogBinding.filterDate.chipGroup.setOnCheckedStateChangeListener(this);
 
-    final DateTimeFormatter format =
-        DateTimeFormatter.ofPattern(
-            "d MMM yyyy",
-            Locale.forLanguageTag(AppCompatDelegate.getApplicationLocales().toLanguageTags()));
+    final DateTimeFormatter format = DateTimeFormatter.ofPattern("d MMM yyyy");
     final Chip customRangeChip =
         this._dialogBinding.filterDate.chipGroup.findViewWithTag(QueueDate.Range.CUSTOM.toString());
     final int customRangeVisibility =

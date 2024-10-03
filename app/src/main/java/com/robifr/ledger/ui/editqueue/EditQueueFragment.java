@@ -51,6 +51,6 @@ public class EditQueueFragment extends CreateQueueFragment {
     this._viewModelHandler =
         new EditQueueViewModelHandler(this, (EditQueueViewModel) this._createQueueViewModel);
 
-    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.editQueue));
+    this._fragmentBinding.toolbar.setTitle(R.string.editQueue);
   }
 }

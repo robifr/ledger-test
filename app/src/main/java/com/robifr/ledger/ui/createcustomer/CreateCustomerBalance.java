@@ -53,8 +53,8 @@ public class CreateCustomerBalance
     this._withdrawDialog =
         new MaterialAlertDialogBuilder(this._fragment.requireContext())
             .setView(this._withdrawDialogBinding.getRoot())
-            .setNegativeButton(this._fragment.getString(R.string.action_cancel), this)
-            .setPositiveButton(this._fragment.getString(R.string.action_withdraw), this)
+            .setNegativeButton(R.string.action_cancel, this)
+            .setPositiveButton(R.string.action_withdraw, this)
             .create();
     this._withdrawTextWatcher =
         new BalanceTextWatcher(this._withdrawDialogBinding.amount, "id", "ID");
@@ -64,22 +64,20 @@ public class CreateCustomerBalance
     this._addBalanceDialog =
         new MaterialAlertDialogBuilder(this._fragment.requireContext())
             .setView(this._addBalanceDialogBinding.getRoot())
-            .setNegativeButton(this._fragment.getString(R.string.action_cancel), this)
-            .setPositiveButton(this._fragment.getString(R.string.action_add), this)
+            .setNegativeButton(R.string.action_cancel, this)
+            .setPositiveButton(R.string.action_add, this)
             .create();
     this._addBalanceTextWatcher =
         new BalanceTextWatcher(this._addBalanceDialogBinding.amount, "id", "ID");
 
     this._fragment.fragmentBinding().withdrawButton.setOnClickListener(this);
     this._withdrawDialog.setOnDismissListener(this);
-    this._withdrawDialogBinding.title.setText(
-        this._fragment.getString(R.string.createCustomer_balance_withdraw));
+    this._withdrawDialogBinding.title.setText(R.string.createCustomer_balance_withdraw);
     this._withdrawDialogBinding.amount.addTextChangedListener(this._withdrawTextWatcher);
 
     this._fragment.fragmentBinding().addBalanceButton.setOnClickListener(this);
     this._addBalanceDialog.setOnDismissListener(this);
-    this._addBalanceDialogBinding.title.setText(
-        this._fragment.getString(R.string.createCustomer_balance_add));
+    this._addBalanceDialogBinding.title.setText(R.string.createCustomer_balance_add);
     this._addBalanceDialogBinding.amount.addTextChangedListener(this._addBalanceTextWatcher);
   }
 

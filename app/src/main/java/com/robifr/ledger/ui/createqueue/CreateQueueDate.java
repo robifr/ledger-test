@@ -47,7 +47,7 @@ public class CreateQueueDate implements View.OnClickListener {
             MaterialDatePicker.Builder.datePicker()
                 .setTheme(
                     com.google.android.material.R.style.ThemeOverlay_Material3_MaterialCalendar)
-                .setTitleText(this._fragment.getString(R.string.createQueue_date_selectDate))
+                .setTitleText(R.string.createQueue_date_selectDate)
                 .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
                 .setCalendarConstraints(
                     new CalendarConstraints.Builder()

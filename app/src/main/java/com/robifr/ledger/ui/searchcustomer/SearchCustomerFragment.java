@@ -97,7 +97,7 @@ public class SearchCustomerFragment extends Fragment implements SearchView.OnQue
     this._fragmentBinding.noResultsImage.image.setImageResource(R.drawable.image_noresultsfound);
     this._fragmentBinding.noResultsImage.title.setText(R.string.searchCustomer_noResultsFound);
     this._fragmentBinding.noResultsImage.description.setText(
-        this.getString(R.string.searchCustomer_noResultsFound_description));
+        R.string.searchCustomer_noResultsFound_description);
     this._fragmentBinding.recyclerView.setLayoutManager(
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);

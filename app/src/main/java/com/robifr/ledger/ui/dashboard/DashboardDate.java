@@ -81,7 +81,7 @@ public class DashboardDate implements RadioGroup.OnCheckedChangeListener {
     final MaterialDatePicker<Pair<Long, Long>> picker =
         MaterialDatePicker.Builder.dateRangePicker()
             .setTheme(com.google.android.material.R.style.ThemeOverlay_Material3_MaterialCalendar)
-            .setTitleText(this._fragment.getString(R.string.dashboard_date_selectDateRange))
+            .setTitleText(R.string.dashboard_date_selectDateRange)
             .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
             .build();
 

@@ -55,11 +55,9 @@ public class FilterCustomerHeaderHolder<T extends FilterCustomerAction>
     this._chipGroup.setChipSpacingVertical(chipSpacing);
     this._chipGroup.setChipSpacingHorizontal(chipSpacing);
     this._headerBinding.selectedItemContainer.addView(this._chipGroup);
-    this._headerBinding.selectedItemTitle.setText(
-        this.itemView.getContext().getString(R.string.filterCustomer_filteredCustomers));
+    this._headerBinding.selectedItemTitle.setText(R.string.filterCustomer_filteredCustomers);
     this._headerBinding.selectedItemDescription.setVisibility(View.GONE);
-    this._headerBinding.allListTitle.setText(
-        this.itemView.getContext().getString(R.string.filterCustomer_allCustomers));
+    this._headerBinding.allListTitle.setText(R.string.filterCustomer_allCustomers);
     this._headerBinding.newButton.setVisibility(View.GONE);
   }
 

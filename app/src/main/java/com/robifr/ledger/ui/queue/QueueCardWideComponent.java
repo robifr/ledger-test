@@ -160,18 +160,18 @@ public class QueueCardWideComponent {
   private void _setStatus(@NonNull QueueModel.Status status, boolean isNormalCard) {
     Objects.requireNonNull(status);
 
-    final String statusText = this._context.getString(status.resourceString());
+    final int statusResource = status.resourceString();
     final int statusTextColor = this._context.getColor(status.resourceTextColor());
     final int statusBackground = this._context.getColor(status.resourceBackgroundColor());
 
     if (isNormalCard) {
-      this._binding.normalCard.statusChip.setText(statusText);
+      this._binding.normalCard.statusChip.setText(statusResource);
       this._binding.normalCard.statusChip.setTextColor(statusTextColor);
       this._binding.normalCard.statusChip.setChipBackgroundColor(
           ColorStateList.valueOf(statusBackground));
       this._binding.normalCard.coloredSideline.setBackgroundColor(statusBackground);
     } else {
-      this._binding.expandedCard.statusChip.setText(statusText);
+      this._binding.expandedCard.statusChip.setText(statusResource);
       this._binding.expandedCard.statusChip.setTextColor(statusTextColor);
       this._binding.expandedCard.statusChip.setChipBackgroundColor(
           ColorStateList.valueOf(statusBackground));
@@ -182,8 +182,7 @@ public class QueueCardWideComponent {
   private void _setPaymentMethod(@NonNull QueueModel.PaymentMethod paymentMethod) {
     Objects.requireNonNull(paymentMethod);
 
-    this._binding.expandedCard.paymentMethod.setText(
-        this._context.getString(paymentMethod.resourceString()));
+    this._binding.expandedCard.paymentMethod.setText(paymentMethod.resourceString());
   }
 
   private void _setTotalDiscount(@NonNull BigDecimal totalDiscount) {

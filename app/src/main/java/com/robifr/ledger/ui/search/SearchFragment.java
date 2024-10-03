@@ -88,7 +88,7 @@ public class SearchFragment extends Fragment
     this._fragmentBinding.noResultsImage.title.setText(
         R.string.searchCustomersAndProducts_noResultsFound);
     this._fragmentBinding.noResultsImage.description.setText(
-        this.getString(R.string.searchCustomersAndProducts_noResultsFound_description));
+        R.string.searchCustomersAndProducts_noResultsFound_description);
     this._fragmentBinding.recyclerView.setVisibility(View.GONE);
     this._fragmentBinding.horizontalListContainer.addView(this._customerListBinding.getRoot());
     this._fragmentBinding.horizontalListContainer.addView(this._productListBinding.getRoot());

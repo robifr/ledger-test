@@ -87,7 +87,7 @@ public class FilterCustomerFragment extends Fragment implements Toolbar.OnMenuIt
         .addCallback(this.getViewLifecycleOwner(), this._onBackPressed);
     this._fragmentBinding.toolbar.getMenu().clear();
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_select_multiple);
-    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.filterCustomer));
+    this._fragmentBinding.toolbar.setTitle(R.string.filterCustomer);
     this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());

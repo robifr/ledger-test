@@ -174,8 +174,8 @@ public class DashboardSummary implements View.OnClickListener {
             : null;
     final String textInCenter =
         model.oldestDate() != null
-            ? String.format(
-                this._fragment.getString(R.string.dashboard_uncompletedQueues_oldestQueue_x),
+            ? this._fragment.getString(
+                R.string.dashboard_uncompletedQueues_oldestQueue_x,
                 titleFontSize,
                 oldestDateFontSize,
                 oldestDate)

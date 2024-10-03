@@ -158,15 +158,15 @@ public class MainActivity extends AppCompatActivity
             Uri.fromParts("package", this.getPackageName(), null));
 
     new MaterialAlertDialogBuilder(this)
-        .setTitle(this.getString(R.string.text_storage_access_permission_required))
+        .setTitle(this.getString(R.string.main_storageAccessPermission))
         .setMessage(
             HtmlCompat.fromHtml(
-                this.getString(R.string.maindialog_manageexternalstorage_permission_description),
+                this.getString(R.string.main_storageAccessPermission_description),
                 HtmlCompat.FROM_HTML_MODE_LEGACY))
         .setNegativeButton(
-            this.getString(R.string.text_deny_and_quit), (dialog, type) -> this.finish())
+            this.getString(R.string.action_denyAndQuit), (dialog, type) -> this.finish())
         .setPositiveButton(
-            this.getString(R.string.text_grant),
+            this.getString(R.string.action_grant),
             (dialog, type) -> this._resultHandler.permissionLauncher().launch(intent))
         .setCancelable(false)
         .show();

@@ -31,7 +31,7 @@
       style="@style/BottomSheetDialog.Title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_create_new" />
+      android:text="@string/main_createNew" />
 
   <com.google.android.material.divider.MaterialDivider
       style="@style/Divider"
@@ -43,7 +43,7 @@
       style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_queue"
+      android:text="@string/main_createNew_queue"
       app:icon="@drawable/icon_assignment" />
 
   <com.google.android.material.button.MaterialButton
@@ -51,7 +51,7 @@
       style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_customer"
+      android:text="@string/main_createNew_customer"
       app:icon="@drawable/icon_person" />
 
   <com.google.android.material.button.MaterialButton
@@ -59,6 +59,6 @@
       style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_product"
+      android:text="@string/main_createNew_product"
       app:icon="@drawable/icon_sell" />
 </LinearLayout>

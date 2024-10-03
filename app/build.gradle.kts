@@ -48,14 +48,14 @@ android {
   buildTypes {
     release {
       isMinifyEnabled = true
-      manifestPlaceholders["app_name"] = "@string/app_name"
+      manifestPlaceholders["app_name"] = "@string/appName"
       proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
     }
 
     debug {
       applicationIdSuffix = ".debug"
       isDebuggable = true
-      manifestPlaceholders["app_name"] = "@string/app_name_debug"
+      manifestPlaceholders["app_name"] = "@string/appName_debug"
     }
   }
 

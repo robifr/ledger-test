@@ -178,8 +178,8 @@ public class SearchCustomerViewModel extends ViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_deleted_x_customer, effected, effected)
-                      : new StringResources.Strings(R.string.text_error_failed_to_delete_customer);
+                          R.plurals.searchCustomer_deleted_n_customer, effected, effected)
+                      : new StringResources.Strings(R.string.searchCustomer_deleteCustomerError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

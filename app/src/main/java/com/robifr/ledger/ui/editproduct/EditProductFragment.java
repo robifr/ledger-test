@@ -51,6 +51,6 @@ public class EditProductFragment extends CreateProductFragment {
     this._viewModelHandler =
         new EditProductViewModelHandler(this, (EditProductViewModel) this._createProductViewModel);
 
-    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_product));
+    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.editProduct));
   }
 }

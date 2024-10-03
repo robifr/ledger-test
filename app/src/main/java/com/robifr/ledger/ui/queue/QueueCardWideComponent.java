@@ -137,7 +137,7 @@ public class QueueCardWideComponent {
   private void _setId(@Nullable Long id, boolean isNormalCard) {
     final boolean isIdExists = id != null;
     final String queueId =
-        id != null ? id.toString() : this._context.getString(R.string.symbol_notavailable);
+        id != null ? id.toString() : this._context.getString(R.string.symbol_notAvailable);
 
     if (isNormalCard) {
       this._binding.normalCard.uniqueId.setText(queueId);
@@ -204,7 +204,7 @@ public class QueueCardWideComponent {
 
   private void _setCustomer(@Nullable CustomerModel customer, boolean isNormalCard) {
     if (customer == null) {
-      final String notAvailableText = this._context.getString(R.string.symbol_notavailable);
+      final String notAvailableText = this._context.getString(R.string.symbol_notAvailable);
 
       if (isNormalCard) {
         this._binding.normalCard.customerImage.text.setText(null);
@@ -243,15 +243,13 @@ public class QueueCardWideComponent {
       this._binding.expandedCard.customerName.setEnabled(true);
       // Displaying customer data on the product orders detail.
       this._productOrderBinding.customerBalanceTitle.setText(
-          this._context.getString(
-              R.string.productordercard_customerbalance_title, croppedCustomerName));
+          this._context.getString(R.string.queue_card_x_balance, croppedCustomerName));
       this._productOrderBinding.customerBalanceTitle.setVisibility(View.VISIBLE);
       this._productOrderBinding.customerBalance.setText(
           CurrencyFormat.format(BigDecimal.valueOf(customer.balance()), "id", "ID"));
       this._productOrderBinding.customerBalance.setVisibility(View.VISIBLE);
       this._productOrderBinding.customerDebtTitle.setText(
-          this._context.getString(
-              R.string.productordercard_customerdebt_title, croppedCustomerName));
+          this._context.getString(R.string.queue_card_x_debt, croppedCustomerName));
       this._productOrderBinding.customerDebtTitle.setVisibility(View.VISIBLE);
       this._productOrderBinding.customerDebt.setText(
           CurrencyFormat.format(customer.debt(), "id", "ID"));
@@ -274,11 +272,11 @@ public class QueueCardWideComponent {
       final String productName =
           productOrder.productName() != null
               ? productOrder.productName()
-              : this._context.getString(R.string.symbol_notavailable);
+              : this._context.getString(R.string.symbol_notAvailable);
       final String productPrice =
           productOrder.productPrice() != null
               ? CurrencyFormat.format(BigDecimal.valueOf(productOrder.productPrice()), "id", "ID")
-              : this._context.getString(R.string.symbol_notavailable);
+              : this._context.getString(R.string.symbol_notAvailable);
       final int discountVisibility =
           productOrder.discountPercent().compareTo(BigDecimal.ZERO) == 0 ? View.GONE : View.VISIBLE;
 
@@ -291,7 +289,7 @@ public class QueueCardWideComponent {
           CurrencyFormat.format(productOrder.totalPrice(), "id", "ID"));
       dataRowBinding.discount.setText(
           this._context.getString(
-              R.string.productordercard_discount_title,
+              R.string.queue_card_productOrders_n_off,
               productOrder.discountPercent().toPlainString()));
       dataRowBinding.discount.setVisibility(discountVisibility);
       this._productOrderBinding.table.addView(dataRowBinding.getRoot());

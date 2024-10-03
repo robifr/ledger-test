@@ -44,7 +44,7 @@ public class DashboardBalance {
     final String totalText =
         this._fragment
             .getResources()
-            .getQuantityString(R.plurals.args_from_x_customers, amount, amount);
+            .getQuantityString(R.plurals.dashboard_balance_from_n_customer, amount, amount);
 
     this._fragment
         .fragmentBinding()
@@ -74,7 +74,7 @@ public class DashboardBalance {
     final String totalText =
         this._fragment
             .getResources()
-            .getQuantityString(R.plurals.args_from_x_customers, amount, amount);
+            .getQuantityString(R.plurals.dashboard_balance_from_n_customer, amount, amount);
 
     this._fragment
         .fragmentBinding()

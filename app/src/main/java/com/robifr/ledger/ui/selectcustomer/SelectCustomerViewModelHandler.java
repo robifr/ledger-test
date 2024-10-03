@@ -115,7 +115,7 @@ public class SelectCustomerViewModelHandler {
         headerHolder.setSelectedItemDescriptionText(
             this._fragment
                 .requireContext()
-                .getString(R.string.text_originally_selected_customer_was_deleted));
+                .getString(R.string.selectCustomer_originalCustomerDeleted));
         headerHolder.setSelectedItemDescriptionVisible(true);
 
         // The original customer on database was edited.
@@ -123,7 +123,7 @@ public class SelectCustomerViewModelHandler {
         headerHolder.setSelectedItemDescriptionText(
             this._fragment
                 .requireContext()
-                .getString(R.string.text_originally_selected_customer_was_changed));
+                .getString(R.string.selectCustomer_originalCustomerChanged));
         headerHolder.setSelectedItemDescriptionVisible(true);
 
         // It's the same unchanged customer.

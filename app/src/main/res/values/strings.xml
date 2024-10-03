@@ -15,217 +15,58 @@
  -->
 
 <resources>
-  <string name="app_name">Ledger</string>
-  <string name="app_name_debug">Ledger (Debug)</string>
+  <string name="appName">Ledger</string>
+  <string name="appName_debug">Ledger (Debug)</string>
 
-  <string name="text_account_balance">Account balance</string>
-  <string name="text_active_customers">Active customers</string>
-  <string name="text_add">Add</string>
-  <string name="text_add_balance">Add balance</string>
-  <string name="text_add_product_order">Add product order</string>
-  <string name="text_all_customers">All customers</string>
-  <string name="text_all_products">All products</string>
-  <string name="text_all_time">All time</string>
-  <string name="text_amount">Amount</string>
-  <string name="text_average">Average</string>
-  <string name="text_balance">Balance</string>
-  <string name="text_cancel">Cancel</string>
-  <string name="text_cant_find_any_matching_customers">Can\'t find any matching customers</string>
-  <string name="text_cant_find_any_matching_customers_nor_products">Can\'t find any matching customers nor products</string>
-  <string name="text_cant_find_any_matching_products">Can\'t find any matching products</string>
-  <string name="text_cash">Cash</string>
-  <string name="text_completed">Completed</string>
-  <string name="text_create_customer">Create customer</string>
-  <string name="text_create_new">Create new</string>
-  <string name="text_create_product">Create product</string>
-  <string name="text_create_queue">Create queue</string>
-  <string name="text_custom_range">Custom range</string>
-  <string name="text_customer">Customer</string>
-  <string name="text_customer_id">Customer ID</string>
-  <string name="text_customer_name">Customer name</string>
-  <string name="text_customer_name_is_required">Customer name is required</string>
-  <string name="text_customers">Customers</string>
-  <string name="text_dashboard">Dashboard</string>
-  <string name="text_date">Date</string>
-  <string name="text_debt">Debt</string>
-  <string name="text_delete">Delete</string>
-  <string name="text_deny_and_quit">Deny and quit</string>
-  <string name="text_discard">Discard</string>
-  <string name="text_discard_this_unsaved_task">Discard this unsaved task?</string>
-  <string name="text_discount">Discount</string>
-  <string name="text_edit">Edit</string>
-  <string name="text_edit_customer">Edit customer</string>
-  <string name="text_edit_product">Edit product</string>
-  <string name="text_edit_product_order">Edit product order</string>
-  <string name="text_edit_queue">Edit queue</string>
-  <string name="text_error_failed_to_add_customer">Error! Failed to add customer</string>
-  <string name="text_error_failed_to_add_product">Error! Failed to add product</string>
-  <string name="text_error_failed_to_add_queue">Error! Failed to add queue</string>
-  <string name="text_error_failed_to_delete_customer">Error! Failed to delete customer</string>
-  <string name="text_error_failed_to_delete_product">Error! Failed to delete product</string>
-  <string name="text_error_failed_to_delete_queue">Error! Failed to delete queue</string>
-  <string name="text_error_failed_to_find_related_customer">Error! Failed to find related customer</string>
-  <string name="text_error_failed_to_find_related_product">Error! Failed to find related product</string>
-  <string name="text_error_failed_to_find_related_queue">Error! Failed to find related queue</string>
-  <string name="text_error_failed_to_update_customer">Error! Failed to update customer</string>
-  <string name="text_error_failed_to_update_product">Error! Failed to update product</string>
-  <string name="text_error_failed_to_update_queue">Error! Failed to update queue</string>
-  <string name="text_error_unable_to_retrieve_all_customers">Error! Unable to retrieve all customers</string>
-  <string name="text_error_unable_to_retrieve_all_products">Error! Unable to retrieve all products</string>
-  <string name="text_error_unable_to_retrieve_all_queues">Error! Unable to retrieve all queues</string>
-  <string name="text_filter_customers">Filter customers</string>
-  <string name="text_filtered_customers">Filtered customers</string>
-  <string name="text_filters">Filters</string>
-  <string name="text_from_any_queues">From any queues</string>
-  <string name="text_from_completed_queues">From completed queues</string>
-  <string name="text_grand_total_price">Grand total price</string>
-  <string name="text_grant">Grant</string>
-  <string name="text_in_process">In process</string>
-  <string name="text_in_queue">In queue</string>
-  <string name="text_max">Max</string>
-  <string name="text_min">Min</string>
-  <string name="text_name">Name</string>
-  <string name="text_new">New</string>
-  <string name="text_no_results_found">No results found</string>
-  <string name="text_originally_selected_customer_was_changed">Originally selected customer was changed</string>
-  <string name="text_originally_selected_customer_was_deleted">Originally selected customer was deleted</string>
-  <string name="text_originally_selected_product_was_changed">Originally selected product was changed</string>
-  <string name="text_originally_selected_product_was_deleted">Originally selected product was deleted</string>
-  <string name="text_payment_method">Payment method</string>
-  <string name="text_payment_methods">Payment methods</string>
-  <string name="text_per_day">per day</string>
-  <string name="text_performance">Performance</string>
-  <string name="text_please_to_include_at_least_one_product_order">Please to include at least one product order</string>
-  <string name="text_price">Price</string>
-  <string name="text_product">Product</string>
-  <string name="text_product_id">Product ID</string>
-  <string name="text_product_name_is_required">Product name is required</string>
-  <string name="text_product_orders">Product orders</string>
-  <string name="text_products">Products</string>
-  <string name="text_products_sold">Products sold</string>
-  <string name="text_projected_income">Projected income</string>
-  <string name="text_quantity">Quantity</string>
-  <string name="text_queue">Queue</string>
-  <string name="text_queue_id">Queue ID</string>
-  <string name="text_received_income">Received income</string>
-  <string name="text_revenue">Revenue</string>
-  <string name="text_save">Save</string>
-  <string name="text_search_customers">Search customers</string>
-  <string name="text_search_customers_and_products">Search customers &amp; products</string>
-  <string name="text_search_products">Search products</string>
-  <string name="text_select_customer">Select customer</string>
-  <string name="text_select_date">Select date</string>
-  <string name="text_select_date_range">Select date range</string>
-  <string name="text_select_product">Select product</string>
-  <string name="text_select_status">Select status</string>
-  <string name="text_selected_customer">Selected customer</string>
-  <string name="text_selected_product">Selected product</string>
-  <string name="text_show_queue_with_no_customer">Show queue with no customer</string>
-  <string name="text_sort_by">Sort by</string>
-  <string name="text_status">Status</string>
-  <string name="text_storage_access_permission_required">Storage access permission required</string>
-  <string name="text_summary">Summary</string>
-  <string name="text_this_month">This month</string>
-  <string name="text_this_week">This week</string>
-  <string name="text_this_year">This year</string>
-  <string name="text_today">Today</string>
-  <string name="text_total">Total</string>
-  <string name="text_total_balance">Total balance</string>
-  <string name="text_total_debt">Total debt</string>
-  <string name="text_total_discount">Total discount</string>
-  <string name="text_total_price">Total price</string>
-  <string name="text_total_queues">Total queues</string>
-  <string name="text_uncompleted_queues">Uncompleted queues</string>
-  <string name="text_unpaid">Unpaid</string>
-  <string name="text_withdraw">Withdraw</string>
-  <string name="text_withdraw_balance">Withdraw balance</string>
-  <string name="text_yesterday">Yesterday</string>
+  <!-- Enum. -->
+  <!-- `QueueSortMethod#SortBy`. -->
+  <string name="enum_queueSort_customerName">Customer name</string>
+  <string name="enum_queueSort_date">Date</string>
+  <string name="enum_queueSort_totalPrice">Total price</string>
+  <!-- `CustomerSortMethod#SortBy`. -->
+  <string name="enum_customerSort_name">Name</string>
+  <string name="enum_customerSort_balance">Balance</string>
+  <!-- `ProductSortMethod#SortBy`. -->
+  <string name="enum_productSort_name">Name</string>
+  <string name="enum_productSort_price">Price</string>
+  <!-- `QueueDate#Range`. -->
+  <string name="enum_queueDate_allTime">All time</string>
+  <string name="enum_queueDate_today">Today</string>
+  <string name="enum_queueDate_yesterday">Yesterday</string>
+  <string name="enum_queueDate_thisWeek">This week</string>
+  <string name="enum_queueDate_thisMonth">This month</string>
+  <string name="enum_queueDate_thisYear">This year</string>
+  <string name="enum_queueDate_custom" translatable="false">%s — %s</string>
+  <!-- `QueueModel#Status`. -->
+  <string name="enum_queueStatus_inQueue">In queue</string>
+  <string name="enum_queueStatus_inProcess">In process</string>
+  <string name="enum_queueStatus_unpaid">Unpaid</string>
+  <string name="enum_queueStatus_completed">Completed</string>
+  <!-- `QueueModel#PaymentMethod`. -->
+  <string name="enum_queuePaymentMethod_cash">Cash</string>
+  <string name="enum_queuePaymentMethod_accountBalance">Account balance</string>
 
-  <string name="args_svg_oldest_queue_x">
-    <![CDATA[
-      <text>
-        <tspan x=\"0\" dy=\"-0.5em\" style=\"font-size: %d;\">Oldest queue:</tspan>
-        <tspan x=\"0\" dy=\"1.2em\" style=\"font-size: %d; \"font-weight: bold;\">%s</tspan>
-      </text>
-    ]]>
-  </string>
+  <!-- Action button. -->
+  <string name="action_add">Add</string>
+  <string name="action_cancel">Cancel</string>
+  <string name="action_delete">Delete</string>
+  <string name="action_denyAndQuit">Deny and quit</string>
+  <string name="action_discardAndLeave">Discard and leave</string>
+  <string name="action_edit">Edit</string>
+  <string name="action_grant">Grant</string>
+  <string name="action_new">New</string>
+  <string name="action_ok">Ok</string>
+  <string name="action_save">Save</string>
+  <string name="action_withdraw">Withdraw</string>
 
-  <plurals name="args_x_item">
-    <item quantity="one"><![CDATA[<b>%s</b> item]]></item>
-    <item quantity="other"><![CDATA[<b>%s</b> items]]></item>
-  </plurals>
-  <plurals name="args_x_queue">
-    <item quantity="one"><![CDATA[<b>%d</b> queue]]></item>
-    <item quantity="other"><![CDATA[<b>%d</b> queues]]></item>
-  </plurals>
+  <!-- Symbol. -->
+  <string name="symbol_notAvailable">n/a</string>
+  <string name="symbol_mDash" translatable="false">—</string>
 
-  <plurals name="args_added_x_customer">
-    <item quantity="one">Added %d customer</item>
-    <item quantity="other">Added %d customers</item>
-  </plurals>
-  <plurals name="args_deleted_x_customer">
-    <item quantity="one">Deleted %d customer</item>
-    <item quantity="other">Deleted %d customers</item>
-  </plurals>
-  <plurals name="args_updated_x_customer">
-    <item quantity="one">Updated %d customer</item>
-    <item quantity="other">Updated %d customers</item>
-  </plurals>
-
-  <plurals name="args_added_x_product">
-    <item quantity="one">Added %d product</item>
-    <item quantity="other">Added %d products</item>
-  </plurals>
-  <plurals name="args_deleted_x_product">
-    <item quantity="one">Deleted %d product</item>
-    <item quantity="other">Deleted %d products</item>
-  </plurals>
-  <plurals name="args_updated_x_product">
-    <item quantity="one">Updated %d product</item>
-    <item quantity="other">Updated %d products</item>
-  </plurals>
-
-  <plurals name="args_added_x_queue">
-    <item quantity="one">Added %d queue</item>
-    <item quantity="other">Added %d queues</item>
-  </plurals>
-  <plurals name="args_deleted_x_queue">
-    <item quantity="one">Deleted %d queue</item>
-    <item quantity="other">Deleted %d queues</item>
-  </plurals>
-  <plurals name="args_updated_x_queue">
-    <item quantity="one">Updated %d queue</item>
-    <item quantity="other">Updated %d queues</item>
-  </plurals>
-
-  <plurals name="args_displaying_x_queue">
-    <item quantity="one"><![CDATA[Displaying <b>%d</b> queue]]></item>
-    <item quantity="other"><![CDATA[Displaying <b>%d</b> queues]]></item>
-  </plurals>
-  <plurals name="args_displaying_x_customer">
-    <item quantity="one"><![CDATA[Displaying <b>%d</b> customer]]></item>
-    <item quantity="other"><![CDATA[Displaying <b>%d</b> customers]]></item>
-  </plurals>
-  <plurals name="args_displaying_x_product">
-    <item quantity="one"><![CDATA[Displaying <b>%d</b> product]]></item>
-    <item quantity="other"><![CDATA[Displaying <b>%d</b> products]]></item>
-  </plurals>
-
-  <plurals name="args_found_x_customer">
-    <item quantity="one"><![CDATA[Found <b>%d</b> customer]]></item>
-    <item quantity="other"><![CDATA[Found <b>%d</b> customers]]></item>
-  </plurals>
-  <plurals name="args_found_x_product">
-    <item quantity="one"><![CDATA[Found <b>%d</b> product]]></item>
-    <item quantity="other"><![CDATA[Found <b>%d</b> products]]></item>
-  </plurals>
-
-  <plurals name="args_from_x_customers">
-    <item quantity="one"><![CDATA[From <b>%d</b> customer]]></item>
-    <item quantity="other"><![CDATA[From <b>%d</b> customers]]></item>
-  </plurals>
-
-  <string name="maindialog_manageexternalstorage_permission_description">
+  <!-- Main activity. -->
+  <!-- Permission. -->
+  <string name="main_storageAccessPermission">Storage access permission required</string>
+  <string name="main_storageAccessPermission_description">
     <![CDATA[
       <p>
         This permission is required to ensure data persistence.
@@ -235,18 +76,313 @@
       </p>
     ]]>
   </string>
+  <!-- Navigation. -->
+  <string name="main_navigation_dashboard">Dashboard</string>
+  <string name="main_navigation_queue">Queue</string>
+  <string name="main_navigation_customer">Customer</string>
+  <string name="main_navigation_product">Product</string>
+  <!-- Create. -->
+  <string name="main_createNew">Create new</string>
+  <string name="main_createNew_queue">Queue</string>
+  <string name="main_createNew_customer">Customer</string>
+  <string name="main_createNew_product">Product</string>
 
-  <string name="dashboardbalance_note">*\u0020\u0020 Date filters have no effect on this balance overview.</string>
+  <!-- Dashboard fragment. -->
+  <string name="dashboard_date_selectDate">Select date</string>
+  <string name="dashboard_date_selectDateRange">Select date range</string>
+  <string name="dashboard_date_customRange">Custom range</string>
+  <!-- Summary. -->
+  <string name="dashboard_summary">Summary</string>
+  <string name="dashboard_totalQueues">Total queues</string>
+  <string name="dashboard_uncompletedQueues">Uncompleted queues</string>
+  <string name="dashboard_uncompletedQueues_oldestQueue_x">
+    <![CDATA[
+      <text>
+        <tspan x=\"0\" dy=\"-0.5em\" style=\"font-size: %d;\">Oldest queue:</tspan>
+        <tspan x=\"0\" dy=\"1.2em\" style=\"font-size: %d; \"font-weight: bold;\">%s</tspan>
+      </text>
+    ]]>
+  </string>
+  <string name="dashboard_activeCustomers">Active customers</string>
+  <plurals name="dashboard_activeCustomers_n_queue">
+    <item quantity="one"><![CDATA[<b>%d</b> queue]]></item>
+    <item quantity="other"><![CDATA[<b>%d</b> queues]]></item>
+  </plurals>
+  <string name="dashboard_productsSold">Products sold</string>
+  <plurals name="dashboard_productsSold_n_item">
+    <item quantity="one"><![CDATA[<b>%s</b> item]]></item>
+    <item quantity="other"><![CDATA[<b>%s</b> items]]></item>
+  </plurals>
+  <!-- Revenue. -->
+  <string name="dashboard_revenue">Revenue</string>
+  <string name="dashboard_receivedIncome">Received income</string>
+  <string name="dashboard_receivedIncome_description">From completed queues</string>
+  <string name="dashboard_projectedIncome">Projected income</string>
+  <string name="dashboard_projectedIncome_description">From any queues</string>
+  <!-- Balance. -->
+  <string name="dashboard_balance">Balance</string>
+  <plurals name="dashboard_balance_from_n_customer">
+    <item quantity="one"><![CDATA[From <b>%d</b> customer]]></item>
+    <item quantity="other"><![CDATA[From <b>%d</b> customers]]></item>
+  </plurals>
+  <string name="dashboard_balance_note">*\u0020\u0020 Date filters have no effect on this balance overview.</string>
+  <string name="dashboard_totalBalance">Total balance</string>
+  <string name="dashboard_totalDebt">Total debt</string>
+  <!-- Snackbar. -->
+  <string name="dashboard_fetchAllQueueError" translatable="false">@string/queue_fetchAllQueueError</string>
+  <string name="dashboard_fetchAllCustomerError" translatable="false">@string/customer_fetchAllCustomerError</string>
+  <string name="dashboard_fetchAllProductError" translatable="false">@string/product_fetchAllProductError</string>
 
-  <string name="createcustomerdialog_balanceavailable_helper">%s available</string>
+  <!-- Queue fragment. -->
+  <plurals name="queue_displaying_n_queue">
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> queue]]></item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> queues]]></item>
+  </plurals>
+  <string name="queue_sortBy">Sort by</string>
+  <!-- Filters. -->
+  <string name="queue_filters">Filters</string>
+  <string name="queue_filters_min">Min</string>
+  <string name="queue_filters_max">Max</string>
+  <string name="queue_filterCustomer">Customer</string>
+  <string name="queue_filterCustomer_showQueueWithNoCustomer">Show queue with no customer</string>
+  <string name="queue_filterCustomer_filterCustomers">Filter customers</string>
+  <string name="queue_filterDate">Date</string>
+  <string name="queue_filterDate_customRange">Custom range</string>
+  <string name="queue_filterDate_selectDateRange">Select date range</string>
+  <string name="queue_filterStatus">Status</string>
+  <string name="queue_filterTotalPrice">Total price</string>
+  <!-- Card. -->
+  <string name="queue_card_customer">Customer</string>
+  <string name="queue_card_queueId">Queue ID</string>
+  <string name="queue_card_date">Date</string>
+  <string name="queue_card_status">Status</string>
+  <string name="queue_card_paymentMethod">Payment method</string>
+  <string name="queue_card_productOrders_product">Product</string>
+  <string name="queue_card_productOrders_quantity">Quantity</string>
+  <string name="queue_card_productOrders_totalPrice">Total price</string>
+  <string name="queue_card_productOrders_n_off" translatable="false">@string/createQueue_productOrders_n_off</string>
+  <string name="queue_card_grandTotalPrice" translatable="false">@string/createQueue_productOrders_grandTotalPrice</string>
+  <string name="queue_card_totalDiscount" translatable="false">@string/createQueue_productOrders_totalDiscount</string>
+  <string name="queue_card_x_balance" translatable="false">@string/createQueue_productOrders_x_balance</string>
+  <string name="queue_card_x_debt" translatable="false">@string/createQueue_productOrders_x_debt</string>
+  <!-- Card menu. -->
+  <string name="queue_cardMenu_edit" translatable="false">@string/action_edit</string>
+  <string name="queue_cardMenu_delete" translatable="false">@string/action_delete</string>
+  <!-- Snackbar. -->
+  <string name="queue_deleteQueueError">Error! Failed to delete queue</string>
+  <string name="queue_fetchAllQueueError">Error! Unable to retrieve all queues</string>
+  <plurals name="queue_deleted_n_queue">
+    <item quantity="one">Deleted %d queue</item>
+    <item quantity="other">Deleted %d queues</item>
+  </plurals>
 
-  <string name="queuefilter_date_selecteddate_chip">%s — %s</string>
+  <!-- Customer fragment. -->
+  <plurals name="customer_displaying_n_customer">
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> customer]]></item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> customers]]></item>
+  </plurals>
+  <string name="customer_sortBy" translatable="false">@string/queue_sortBy</string>
+  <!-- Filters. -->
+  <string name="customer_filters" translatable="false">@string/queue_filters</string>
+  <string name="customer_filters_min" translatable="false">@string/queue_filters_min</string>
+  <string name="customer_filters_max" translatable="false">@string/queue_filters_max</string>
+  <string name="customer_filterBalance">Balance</string>
+  <string name="customer_filterDebt">Debt</string>
+  <!-- Card. -->
+  <string name="customer_card_name">Name</string>
+  <string name="customer_card_customerId">Customer ID</string>
+  <string name="customer_card_balance">Balance</string>
+  <string name="customer_card_debt">Debt</string>
+  <!-- Card menu. -->
+  <string name="customer_cardMenu_edit" translatable="false">@string/action_edit</string>
+  <string name="customer_cardMenu_delete" translatable="false">@string/action_delete</string>
+  <!-- Snackbar. -->
+  <string name="customer_deleteCustomerError">Error! Failed to delete customer</string>
+  <string name="customer_fetchAllCustomerError">Error! Unable to retrieve all customers</string>
+  <plurals name="customer_deleted_n_customer" translatable="false">
+    <item quantity="one">@string/_customer_deleted_n_customer_one</item>
+    <item quantity="other">@string/_customer_deleted_n_customer_other</item>
+  </plurals>
+  <string name="_customer_deleted_n_customer_one">Deleted %d customer</string>
+  <string name="_customer_deleted_n_customer_other">Deleted %d customers</string>
 
-  <string name="productordercard_customerbalance_title">%s\'s balance</string>
-  <string name="productordercard_customerdebt_title">%s\'s debt</string>
-  <string name="productordercard_discount_title">%s%% off</string>
-  <string name="productordercard_productpriceandquantity_title">%s x %s</string>
+  <!-- Product fragment. -->
+  <plurals name="product_displaying_n_product">
+    <item quantity="one"><![CDATA[Displaying <b>%d</b> product]]></item>
+    <item quantity="other"><![CDATA[Displaying <b>%d</b> products]]></item>
+  </plurals>
+  <string name="product_sortBy" translatable="false">@string/queue_sortBy</string>
+  <!-- Filters. -->
+  <string name="product_filters" translatable="false">@string/queue_filters</string>
+  <string name="product_filters_min" translatable="false">@string/queue_filters_min</string>
+  <string name="product_filters_max" translatable="false">@string/queue_filters_max</string>
+  <string name="product_filterPrice">Price</string>
+  <!-- Card. -->
+  <string name="product_card_name">Name</string>
+  <string name="product_card_productId">Product ID</string>
+  <string name="product_card_price">Price</string>
+  <!-- Card menu. -->
+  <string name="product_cardMenu_edit" translatable="false">@string/action_edit</string>
+  <string name="product_cardMenu_delete" translatable="false">@string/action_delete</string>
+  <!-- Snackbar. -->
+  <string name="product_deleteProductError">Error! Failed to delete product</string>
+  <string name="product_fetchAllProductError">Error! Unable to retrieve all products</string>
+  <plurals name="product_deleted_n_product" translatable="false">
+    <item quantity="one">@string/_product_deleted_n_product_one</item>
+    <item quantity="other">@string/_product_deleted_n_product_other</item>
+  </plurals>
+  <string name="_product_deleted_n_product_one">Deleted %d product</string>
+  <string name="_product_deleted_n_product_other">Deleted %d products</string>
 
-  <string name="symbol_notavailable">n/a</string>
-  <string name="symbol_mdash">—</string>
+  <!-- Create/edit queue fragment. -->
+  <string name="createQueue">Create queue</string>
+  <string name="createQueue_customer">Customer</string>
+  <string name="createQueue_date">Date</string>
+  <string name="createQueue_date_selectDate">Select date</string>
+  <string name="createQueue_status">Status</string>
+  <string name="createQueue_status_selectStatus">Select status</string>
+  <string name="createQueue_paymentMethods">Payment methods</string>
+  <string name="createQueue_unsavedChangesWarning">You have unsaved changes. Do you want to discard them?</string>
+  <string name="editQueue">Edit queue</string>
+  <!-- Product orders. -->
+  <string name="createQueue_productOrders">Product orders</string>
+  <string name="createQueue_productOrders_grandTotalPrice">Grand total price</string>
+  <string name="createQueue_productOrders_totalDiscount">Total discount</string>
+  <string name="createQueue_productOrders_x_balance">%s\'s balance</string>
+  <string name="createQueue_productOrders_x_debt">%s\'s debt</string>
+  <string name="createQueue_productOrders_n_off">%s%% off</string>
+  <string name="createQueue_productOrders_n_multiply_n" translatable="false">%s x %s</string>
+  <!-- Make product orders. -->
+  <string name="createQueue_productOrders_addNew" translatable="false">@string/action_add</string>
+  <string name="createQueue_productOrders_makeProductOrders">Make product orders</string>
+  <string name="createQueue_productOrders_editProductOrders">Edit product orders</string>
+  <string name="createQueue_productOrders_product">Product</string>
+  <string name="createQueue_productOrders_quantity">Quantity</string>
+  <string name="createQueue_productOrders_discount">Discount</string>
+  <string name="createQueue_productOrders_totalPrice">Total price</string>
+  <!-- Snackbar. -->
+  <string name="createQueue_addQueueError">Error! Failed to add queue</string>
+  <string name="createQueue_updateQueueError">Error! Failed to update queue</string>
+  <string name="createQueue_fetchQueueError">Error! Failed to retrieve related queue</string>
+  <string name="createQueue_fetchCustomerError" translatable="false">@string/createCustomer_fetchCustomerError</string>
+  <string name="createQueue_fetchProductError" translatable="false">@string/createProduct_fetchProductError</string>
+  <string name="createQueue_includeOneProductOrderError">Please to include at least one product order</string>
+  <plurals name="createQueue_added_n_queue">
+    <item quantity="one">Added %d queue</item>
+    <item quantity="other">Added %d queues</item>
+  </plurals>
+  <plurals name="createQueue_updated_n_queue">
+    <item quantity="one">Updated %d queue</item>
+    <item quantity="other">Updated %d queues</item>
+  </plurals>
+
+  <!-- Create/edit customer fragment. -->
+  <string name="createCustomer">Create customer</string>
+  <string name="createCustomer_name">Name</string>
+  <string name="createCustomer_name_emptyError">Customer name is required</string>
+  <string name="createCustomer_debt">Debt</string>
+  <string name="createCustomer_unsavedChangesWarning" translatable="false">@string/createQueue_unsavedChangesWarning</string>
+  <string name="editCustomer">Edit customer</string>
+  <!-- Balance. -->
+  <string name="createCustomer_balance">Balance</string>
+  <string name="createCustomer_balance_amount">Amount</string>
+  <string name="createCustomer_balance_add">Add balance</string>
+  <string name="createCustomer_balance_withdraw">Withdraw balance</string>
+  <string name="createCustomer_balance_withdraw_n_available">%s available</string>
+  <!-- Snackbar. -->
+  <string name="createCustomer_addCustomerError">Error! Failed to add customer</string>
+  <string name="createCustomer_updateCustomerError">Error! Failed to update customer</string>
+  <string name="createCustomer_fetchCustomerError">Error! Failed to receive related customer</string>
+  <plurals name="createCustomer_added_n_customer">
+    <item quantity="one">Added %d customer</item>
+    <item quantity="other">Added %d customers</item>
+  </plurals>
+  <plurals name="createCustomer_updated_n_customer">
+    <item quantity="one">Updated %d customer</item>
+    <item quantity="other">Updated %d customers</item>
+  </plurals>
+
+  <!-- Create/edit product fragment. -->
+  <string name="createProduct">Create product</string>
+  <string name="createProduct_name">Name</string>
+  <string name="createProduct_name_emptyError">Product name is required</string>
+  <string name="createProduct_price">Price</string>
+  <string name="createProduct_unsavedChangesWarning" translatable="false">@string/createQueue_unsavedChangesWarning</string>
+  <string name="editProduct">Edit product</string>
+  <!-- Snackbar. -->
+  <string name="createProduct_addProductError">Error! Failed to add product</string>
+  <string name="createProduct_updateProductError">Error! Failed to update product</string>
+  <string name="createProduct_fetchProductError">Error! Failed to receive related product</string>
+  <plurals name="createProduct_added_n_product">
+    <item quantity="one">Added %d product</item>
+    <item quantity="other">Added %d products</item>
+  </plurals>
+  <plurals name="createProduct_updated_n_product">
+    <item quantity="one">Updated %d product</item>
+    <item quantity="other">Updated %d products</item>
+  </plurals>
+
+  <!-- Select customer fragment. -->
+  <string name="selectCustomer">Select customer</string>
+  <string name="selectCustomer_createNew" translatable="false">@string/action_new</string>
+  <string name="selectCustomer_selectedCustomer">Selected customer</string>
+  <string name="selectCustomer_allCustomers">All customers</string>
+  <string name="selectCustomer_originalCustomerChanged">Originally selected customer was changed</string>
+  <string name="selectCustomer_originalCustomerDeleted">Originally selected customer was deleted</string>
+  <!-- Snackbar. -->
+  <string name="selectCustomer_fetchAllCustomerError" translatable="false">@string/customer_fetchAllCustomerError</string>
+
+  <!-- Select product fragment. -->
+  <string name="selectProduct">Select product</string>
+  <string name="selectProduct_createNew" translatable="false">@string/action_new</string>
+  <string name="selectProduct_selectedProduct">Selected product</string>
+  <string name="selectProduct_allProducts">All products</string>
+  <string name="selectProduct_originalProductChanged">Originally selected product was changed</string>
+  <string name="selectProduct_originalProductDeleted">Originally selected product was deleted</string>
+  <!-- Snackbar. -->
+  <string name="selectProduct_fetchAllProductError" translatable="false">@string/product_fetchAllProductError</string>
+
+  <!-- Filter customer fragment. -->
+  <string name="filterCustomer">Filter customer</string>
+  <string name="filterCustomer_filteredCustomers">Filtered customers</string>
+  <string name="filterCustomer_allCustomers">All customers</string>
+  <!-- Snackbar. -->
+  <string name="filterCustomer_fetchAllCustomerError" translatable="false">@string/customer_fetchAllCustomerError</string>
+
+  <!-- Search fragment. -->
+  <string name="searchCustomersAndProducts">Search customers &amp; products</string>
+  <string name="searchCustomersAndProducts_customersFound">Customers</string>
+  <string name="searchCustomersAndProducts_productsFound">Products</string>
+  <string name="searchCustomersAndProducts_noResultsFound">No results found</string>
+  <string name="searchCustomersAndProducts_noResultsFound_description">Can\'t find any matching customers nor products</string>
+
+  <!-- Search customer fragment. -->
+  <string name="searchCustomer">Search customers</string>
+  <plurals name="searchCustomer_found_x_customer">
+    <item quantity="one"><![CDATA[Found <b>%d</b> customer]]></item>
+    <item quantity="other"><![CDATA[Found <b>%d</b> customers]]></item>
+  </plurals>
+  <string name="searchCustomer_noResultsFound" translatable="false">@string/searchCustomersAndProducts_noResultsFound</string>
+  <string name="searchCustomer_noResultsFound_description">Can\'t find any matching customers</string>
+  <!-- Snackbar. -->
+  <string name="searchCustomer_deleteCustomerError" translatable="false">@string/customer_deleteCustomerError</string>
+  <plurals name="searchCustomer_deleted_n_customer" translatable="false">
+    <item quantity="one">@string/_customer_deleted_n_customer_one</item>
+    <item quantity="other">@string/_customer_deleted_n_customer_other</item>
+  </plurals>
+
+  <!-- Search product fragment. -->
+  <string name="searchProduct">Search products</string>
+  <plurals name="searchProduct_found_x_product">
+    <item quantity="one"><![CDATA[Found <b>%d</b> product]]></item>
+    <item quantity="other"><![CDATA[Found <b>%d</b> products]]></item>
+  </plurals>
+  <string name="searchProduct_noResultsFound" translatable="false">@string/searchCustomersAndProducts_noResultsFound</string>
+  <string name="searchProduct_noResultsFound_description">Can\'t find any matching products</string>
+  <!-- Snackbar. -->
+  <string name="searchProduct_deleteProductError" translatable="false">@string/product_deleteProductError</string>
+  <plurals name="searchProduct_deleted_n_product" translatable="false">
+    <item quantity="one">@string/_product_deleted_n_product_one</item>
+    <item quantity="other">@string/_product_deleted_n_product_other</item>
+  </plurals>
 </resources>

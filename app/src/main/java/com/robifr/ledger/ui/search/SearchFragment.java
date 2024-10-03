@@ -82,19 +82,20 @@ public class SearchFragment extends Fragment
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
     this._fragmentBinding.searchView.setQueryHint(
-        this.getString(R.string.text_search_customers_and_products));
+        this.getString(R.string.searchCustomersAndProducts));
     this._fragmentBinding.searchView.setOnQueryTextListener(this);
     this._fragmentBinding.noResultsImage.image.setImageResource(R.drawable.image_noresultsfound);
-    this._fragmentBinding.noResultsImage.title.setText(R.string.text_no_results_found);
+    this._fragmentBinding.noResultsImage.title.setText(
+        R.string.searchCustomersAndProducts_noResultsFound);
     this._fragmentBinding.noResultsImage.description.setText(
-        this.getString(R.string.text_cant_find_any_matching_customers_nor_products));
+        this.getString(R.string.searchCustomersAndProducts_noResultsFound_description));
     this._fragmentBinding.recyclerView.setVisibility(View.GONE);
     this._fragmentBinding.horizontalListContainer.addView(this._customerListBinding.getRoot());
     this._fragmentBinding.horizontalListContainer.addView(this._productListBinding.getRoot());
-    this._customerListBinding.title.setText(R.string.text_customers);
+    this._customerListBinding.title.setText(R.string.searchCustomersAndProducts_customersFound);
     this._customerListBinding.viewMoreButton.setOnClickListener(this);
     this._customerListBinding.getRoot().setVisibility(View.GONE);
-    this._productListBinding.title.setText(R.string.text_products);
+    this._productListBinding.title.setText(R.string.searchCustomersAndProducts_productsFound);
     this._productListBinding.viewMoreButton.setOnClickListener(this);
     this._productListBinding.getRoot().setVisibility(View.GONE);
 

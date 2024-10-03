@@ -19,20 +19,20 @@
       android:id="@+id/dashboardFragment"
       android:icon="@drawable/icon_dashboard_checkable"
       android:menuCategory="secondary"
-      android:title="@string/text_dashboard" />
+      android:title="@string/main_navigation_dashboard" />
   <item
       android:id="@+id/queueFragment"
       android:icon="@drawable/icon_assignment_checkable"
       android:menuCategory="secondary"
-      android:title="@string/text_queue" />
+      android:title="@string/main_navigation_queue" />
   <item
       android:id="@+id/customerFragment"
       android:icon="@drawable/icon_person_checkable"
       android:menuCategory="secondary"
-      android:title="@string/text_customer" />
+      android:title="@string/main_navigation_customer" />
   <item
       android:id="@+id/productFragment"
       android:icon="@drawable/icon_sell_checkable"
       android:menuCategory="secondary"
-      android:title="@string/text_product" />
+      android:title="@string/main_navigation_product" />
 </menu>

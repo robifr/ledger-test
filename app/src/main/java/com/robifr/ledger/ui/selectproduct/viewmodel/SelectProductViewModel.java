@@ -152,8 +152,7 @@ public class SelectProductViewModel extends ViewModel {
               if (products == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_products)));
+                        new StringResources.Strings(R.string.selectProduct_fetchAllProductError)));
               }
 
               result.postValue(products);

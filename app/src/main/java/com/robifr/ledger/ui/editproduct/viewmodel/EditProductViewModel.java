@@ -79,7 +79,7 @@ public class EditProductViewModel extends CreateProductViewModel {
   public void onSave() {
     if (this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
-          Optional.of(new StringResources.Strings(R.string.text_product_name_is_required)));
+          Optional.of(new StringResources.Strings(R.string.createProduct_name_emptyError)));
       return;
     }
 
@@ -102,8 +102,7 @@ public class EditProductViewModel extends CreateProductViewModel {
               if (product == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_failed_to_find_related_product)));
+                        new StringResources.Strings(R.string.createProduct_fetchProductError)));
               }
 
               result.postValue(product);
@@ -126,8 +125,8 @@ public class EditProductViewModel extends CreateProductViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_updated_x_product, effected, effected)
-                      : new StringResources.Strings(R.string.text_error_failed_to_update_product);
+                          R.plurals.createProduct_updated_n_product, effected, effected)
+                      : new StringResources.Strings(R.string.createProduct_updateProductError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

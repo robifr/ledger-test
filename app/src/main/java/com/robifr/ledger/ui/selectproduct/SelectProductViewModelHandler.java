@@ -108,7 +108,7 @@ public class SelectProductViewModelHandler {
         headerHolder.setSelectedItemDescriptionText(
             this._fragment
                 .requireContext()
-                .getString(R.string.text_originally_selected_product_was_deleted));
+                .getString(R.string.selectProduct_originalProductDeleted));
         headerHolder.setSelectedItemDescriptionVisible(true);
 
         // The original product on database was edited.
@@ -116,7 +116,7 @@ public class SelectProductViewModelHandler {
         headerHolder.setSelectedItemDescriptionText(
             this._fragment
                 .requireContext()
-                .getString(R.string.text_originally_selected_product_was_changed));
+                .getString(R.string.selectProduct_originalProductChanged));
         headerHolder.setSelectedItemDescriptionVisible(true);
 
         // It's the same unchanged product.

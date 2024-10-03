@@ -153,12 +153,11 @@ public class CreateQueueViewModelHandler {
       this._fragment
           .inputProductOrder()
           .setCustomerBalanceAfterPaymentTitle(
-              this._fragment.getString(
-                  R.string.productordercard_customerbalance_title, croppedName));
+              this._fragment.getString(R.string.createQueue_productOrders_x_balance, croppedName));
       this._fragment
           .inputProductOrder()
           .setCustomerDebtAfterPaymentTitle(
-              this._fragment.getString(R.string.productordercard_customerdebt_title, croppedName));
+              this._fragment.getString(R.string.createQueue_productOrders_x_debt, croppedName));
 
     } else {
       this._fragment.inputProductOrder().setCustomerBalanceAfterPaymentTitle(null);

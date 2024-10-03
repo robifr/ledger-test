@@ -28,7 +28,7 @@
       android:id="@+id/title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_add_balance"
+      android:text="@string/createCustomer_balance_add"
       android:textStyle="bold" />
 
   <com.google.android.material.textfield.TextInputLayout
@@ -36,7 +36,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/textinput_margintop"
-      android:hint="@string/text_amount">
+      android:hint="@string/createCustomer_balance_amount">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/amount"

@@ -46,7 +46,7 @@ public class QueueHeaderHolder<T extends QueueListAction>
         this.itemView
             .getContext()
             .getResources()
-            .getQuantityString(R.plurals.args_displaying_x_queue, totalQueues, totalQueues);
+            .getQuantityString(R.plurals.queue_displaying_n_queue, totalQueues, totalQueues);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

@@ -57,8 +57,8 @@ public class CreateQueueMakeProductOrder
     this._dialog =
         new MaterialAlertDialogBuilder(this._fragment.requireContext())
             .setView(this._dialogBinding.getRoot())
-            .setNegativeButton(this._fragment.getString(R.string.text_cancel), this)
-            .setPositiveButton(this._fragment.getString(R.string.text_add), this)
+            .setNegativeButton(this._fragment.getString(R.string.action_cancel), this)
+            .setPositiveButton(this._fragment.getString(R.string.action_add), this)
             .create();
     this._quantityTextWatcher = new QuantityTextWatcher(this._dialogBinding.quantity, "id", "ID");
     this._discountTextWatcher = new DiscountTextWatcher(this._dialogBinding.discount, "id", "ID");
@@ -174,7 +174,8 @@ public class CreateQueueMakeProductOrder
   }
 
   public void openCreateDialog() {
-    this._dialogBinding.title.setText(this._fragment.getString(R.string.text_add_product_order));
+    this._dialogBinding.title.setText(
+        this._fragment.getString(R.string.createQueue_productOrders_makeProductOrders));
     this._dialog.show();
 
     final boolean isProductInputted =
@@ -187,17 +188,18 @@ public class CreateQueueMakeProductOrder
 
     // Only invoke `AlertDialog#getButton()` after `AlertDialog.show()` called, otherwise NPE.
     final Button positiveButton = this._dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-    positiveButton.setText(this._fragment.getString(R.string.text_add));
+    positiveButton.setText(this._fragment.getString(R.string.action_add));
     positiveButton.setEnabled(isProductInputted);
   }
 
   public void openEditDialog() {
     this.openCreateDialog();
-    this._dialogBinding.title.setText(this._fragment.getString(R.string.text_edit_product_order));
+    this._dialogBinding.title.setText(
+        this._fragment.getString(R.string.createQueue_productOrders_editProductOrders));
 
     // Only invoke `AlertDialog#getButton()` after `AlertDialog.show()` called, otherwise NPE.
     final Button positiveButton = this._dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-    positiveButton.setText(this._fragment.getString(R.string.text_save));
+    positiveButton.setText(this._fragment.getString(R.string.action_save));
   }
 
   private class QuantityTextWatcher extends CurrencyTextWatcher {

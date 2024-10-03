@@ -176,8 +176,8 @@ public class SearchProductViewModel extends ViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_deleted_x_product, effected, effected)
-                      : new StringResources.Strings(R.string.text_error_failed_to_delete_product);
+                          R.plurals.searchProduct_deleted_n_product, effected, effected)
+                      : new StringResources.Strings(R.string.searchProduct_deleteProductError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

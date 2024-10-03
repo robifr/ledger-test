@@ -74,9 +74,11 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
     this._fragmentBinding.toolbar.getMenu().clear();
     this._fragmentBinding.toolbar.inflateMenu(R.menu.reusable_toolbar_main);
     this._fragmentBinding.toolbar.setNavigationIcon(null);
-    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.app_name));
+    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.appName));
     this._fragmentBinding.toolbar.setOnMenuItemClickListener(this);
+    this._fragmentBinding.sortByChip.setText(R.string.queue_sortBy);
     this._fragmentBinding.sortByChip.setOnClickListener(chip -> this._sort.openDialog());
+    this._fragmentBinding.filtersChip.setText(R.string.queue_filters);
     this._fragmentBinding.filtersChip.setOnClickListener(chip -> this._filter.openDialog());
     this._fragmentBinding.recyclerView.setLayoutManager(
         new LinearLayoutManager(this.requireContext()));

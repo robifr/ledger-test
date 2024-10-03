@@ -124,8 +124,7 @@ public class CustomerViewModel extends ViewModel {
               if (customers == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_customers)));
+                        new StringResources.Strings(R.string.customer_fetchAllCustomerError)));
               }
 
               result.postValue(customers);
@@ -143,8 +142,8 @@ public class CustomerViewModel extends ViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_deleted_x_customer, effected, effected)
-                      : new StringResources.Strings(R.string.text_error_failed_to_delete_customer);
+                          R.plurals.customer_deleted_n_customer, effected, effected)
+                      : new StringResources.Strings(R.string.customer_deleteCustomerError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

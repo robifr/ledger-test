@@ -46,7 +46,8 @@ public class ProductHeaderHolder<T extends ProductListAction>
         this.itemView
             .getContext()
             .getResources()
-            .getQuantityString(R.plurals.args_displaying_x_product, totalProducts, totalProducts);
+            .getQuantityString(
+                R.plurals.product_displaying_n_product, totalProducts, totalProducts);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

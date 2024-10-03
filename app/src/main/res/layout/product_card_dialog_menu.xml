@@ -30,7 +30,7 @@
       style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_edit"
+      android:text="@string/product_cardMenu_edit"
       app:icon="@drawable/icon_edit" />
 
   <com.google.android.material.button.MaterialButton
@@ -38,6 +38,6 @@
       style="@style/BottomSheetDialog.Button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_delete"
+      android:text="@string/product_cardMenu_delete"
       app:icon="@drawable/icon_delete" />
 </LinearLayout>

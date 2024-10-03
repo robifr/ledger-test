@@ -47,7 +47,7 @@ public class CustomerHeaderHolder<T extends CustomerListAction>
             .getContext()
             .getResources()
             .getQuantityString(
-                R.plurals.args_displaying_x_customer, totalCustomers, totalCustomers);
+                R.plurals.customer_displaying_n_customer, totalCustomers, totalCustomers);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

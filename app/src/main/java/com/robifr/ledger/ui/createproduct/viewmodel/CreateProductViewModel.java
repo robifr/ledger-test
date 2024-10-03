@@ -127,7 +127,7 @@ public class CreateProductViewModel extends ViewModel {
   public void onSave() {
     if (this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
-          Optional.of(new StringResources.Strings(R.string.text_product_name_is_required)));
+          Optional.of(new StringResources.Strings(R.string.createProduct_name_emptyError)));
       return;
     }
 
@@ -147,8 +147,8 @@ public class CreateProductViewModel extends ViewModel {
 
               final StringResources stringRes =
                   id != 0L
-                      ? new StringResources.Plurals(R.plurals.args_added_x_product, 1, 1)
-                      : new StringResources.Strings(R.string.text_error_failed_to_add_product);
+                      ? new StringResources.Plurals(R.plurals.createProduct_added_n_product, 1, 1)
+                      : new StringResources.Strings(R.string.createProduct_addProductError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

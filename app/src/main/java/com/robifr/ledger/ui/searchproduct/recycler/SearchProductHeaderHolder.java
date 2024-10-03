@@ -41,7 +41,8 @@ public class SearchProductHeaderHolder<T extends ProductListAction>
         this.itemView
             .getContext()
             .getResources()
-            .getQuantityString(R.plurals.args_found_x_product, totalProducts, totalProducts);
+            .getQuantityString(
+                R.plurals.searchProduct_found_x_product, totalProducts, totalProducts);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

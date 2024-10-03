@@ -139,7 +139,7 @@ public class CreateCustomerViewModel extends ViewModel {
   public void onSave() {
     if (this._inputtedNameText.getValue().isBlank()) {
       this._inputtedNameError.setValue(
-          Optional.of(new StringResources.Strings(R.string.text_customer_name_is_required)));
+          Optional.of(new StringResources.Strings(R.string.createCustomer_name_emptyError)));
       return;
     }
 
@@ -159,8 +159,8 @@ public class CreateCustomerViewModel extends ViewModel {
 
               final StringResources stringRes =
                   id != 0L
-                      ? new StringResources.Plurals(R.plurals.args_added_x_customer, 1, 1)
-                      : new StringResources.Strings(R.string.text_error_failed_to_add_customer);
+                      ? new StringResources.Plurals(R.plurals.createCustomer_added_n_customer, 1, 1)
+                      : new StringResources.Strings(R.string.createCustomer_addCustomerError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

@@ -26,7 +26,7 @@
       android:layout_height="wrap_content"
       app:menu="@menu/reusable_toolbar_edit"
       app:navigationIcon="@drawable/icon_arrow_back"
-      app:title="@string/text_create_queue" />
+      app:title="@string/createQueue" />
 
   <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
@@ -54,7 +54,7 @@
           android:layout_marginStart="@dimen/screen_padding"
           android:layout_marginEnd="@dimen/screen_padding"
           android:layout_marginBottom="5dp"
-          android:hint="@string/text_customer"
+          android:hint="@string/createQueue_customer"
           android:paddingTop="5dp"
           app:endIconDrawable="@drawable/icon_cancel_20"
           app:endIconMode="custom">
@@ -78,7 +78,7 @@
           android:layout_marginTop="5dp"
           android:layout_marginEnd="@dimen/screen_padding"
           android:layout_marginBottom="5dp"
-          android:hint="@string/text_date">
+          android:hint="@string/createQueue_date">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/date"
@@ -99,7 +99,7 @@
           android:layout_marginTop="5dp"
           android:layout_marginEnd="@dimen/screen_padding"
           android:layout_marginBottom="5dp"
-          android:hint="@string/text_status">
+          android:hint="@string/createQueue_status">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/status"
@@ -112,7 +112,6 @@
             app:backgroundTint="@android:color/transparent" />
       </com.google.android.material.textfield.TextInputLayout>
 
-      <!-- Button tag are based on `QueueModel.PaymentMethod` enum. -->
       <TextView
           android:id="@+id/paymentMethodTitle"
           android:layout_width="match_parent"
@@ -121,9 +120,10 @@
           android:layout_marginTop="30dp"
           android:layout_marginEnd="@dimen/screen_padding"
           android:layout_marginBottom="8dp"
-          android:text="@string/text_payment_methods"
+          android:text="@string/createQueue_paymentMethods"
           android:textStyle="bold" />
 
+      <!-- Button tag are based on `QueueModel.PaymentMethod` enum. -->
       <com.google.android.material.button.MaterialButton
           android:id="@+id/paymentMethodCashButton"
           android:layout_width="match_parent"
@@ -138,7 +138,7 @@
           android:paddingEnd="20dp"
           android:paddingBottom="@dimen/button_padding"
           android:tag="CASH"
-          android:text="@string/text_cash"
+          android:text="@string/enum_queuePaymentMethod_cash"
           android:textColor="?android:textColor"
           app:backgroundTint="?colorSurface"
           app:iconPadding="@dimen/text_icon_padding"
@@ -158,7 +158,7 @@
           android:paddingEnd="20dp"
           android:paddingBottom="@dimen/button_padding"
           android:tag="ACCOUNT_BALANCE"
-          android:text="@string/text_account_balance"
+          android:text="@string/enum_queuePaymentMethod_accountBalance"
           android:textColor="?android:textColor"
           app:backgroundTint="?colorSurface"
           app:iconPadding="@dimen/text_icon_padding"

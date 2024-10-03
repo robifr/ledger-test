@@ -129,8 +129,7 @@ public class QueueViewModel extends ViewModel {
               if (queues == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_queues)));
+                        new StringResources.Strings(R.string.queue_fetchAllQueueError)));
               }
 
               result.postValue(queues);
@@ -148,8 +147,8 @@ public class QueueViewModel extends ViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_deleted_x_queue, effected, effected)
-                      : new StringResources.Strings(R.string.text_error_failed_to_delete_queue);
+                          R.plurals.queue_deleted_n_queue, effected, effected)
+                      : new StringResources.Strings(R.string.queue_deleteQueueError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

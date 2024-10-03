@@ -165,7 +165,7 @@ public class FilterCustomerViewModel extends ViewModel {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
                         new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_customers)));
+                            R.string.filterCustomer_fetchAllCustomerError)));
               }
 
               result.postValue(customers);

@@ -103,7 +103,7 @@ public class ProductCardWideComponent {
   private void _setId(@Nullable Long id, boolean isNormalCard) {
     final boolean isIdExists = id != null;
     final String productId =
-        isIdExists ? id.toString() : this._context.getString(R.string.symbol_notavailable);
+        isIdExists ? id.toString() : this._context.getString(R.string.symbol_notAvailable);
 
     if (isNormalCard) {
       this._binding.normalCard.uniqueId.setText(productId);

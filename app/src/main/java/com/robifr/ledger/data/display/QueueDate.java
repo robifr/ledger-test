@@ -59,13 +59,13 @@ public record QueueDate(
   }
 
   public enum Range {
-    ALL_TIME(R.string.text_all_time),
-    TODAY(R.string.text_today),
-    YESTERDAY(R.string.text_yesterday),
-    THIS_WEEK(R.string.text_this_week),
-    THIS_MONTH(R.string.text_this_month),
-    THIS_YEAR(R.string.text_this_year),
-    CUSTOM(R.string.queuefilter_date_selecteddate_chip);
+    ALL_TIME(R.string.enum_queueDate_allTime),
+    TODAY(R.string.enum_queueDate_today),
+    YESTERDAY(R.string.enum_queueDate_yesterday),
+    THIS_WEEK(R.string.enum_queueDate_thisWeek),
+    THIS_MONTH(R.string.enum_queueDate_thisMonth),
+    THIS_YEAR(R.string.enum_queueDate_thisYear),
+    CUSTOM(R.string.enum_queueDate_custom);
 
     @StringRes private final int _resourceString;
 

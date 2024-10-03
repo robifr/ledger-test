@@ -30,7 +30,7 @@
       style="@style/BottomSheetDialog.Title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_sort_by" />
+      android:text="@string/customer_sortBy" />
 
   <com.google.android.material.divider.MaterialDivider
       style="@style/Divider"
@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="NAME"
-        android:text="@string/text_name" />
+        android:text="@string/enum_customerSort_name" />
 
     <RadioButton
         android:id="@+id/balanceRadioButton"
@@ -58,6 +58,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="BALANCE"
-        android:text="@string/text_balance" />
+        android:text="@string/enum_customerSort_balance" />
   </RadioGroup>
 </LinearLayout>

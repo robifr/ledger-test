@@ -71,15 +71,15 @@ data class QueueModel(
       @get:JvmName("resourceBackgroundColor") @ColorRes val resourceBackgroundColor: Int,
       @get:JvmName("resourceTextColor") @ColorRes val resourceTextColor: Int
   ) {
-    IN_QUEUE(R.string.text_in_queue, R.color.light_yellow, R.color.dark_yellow),
-    IN_PROCESS(R.string.text_in_process, R.color.light_blue, R.color.dark_blue),
-    UNPAID(R.string.text_unpaid, R.color.light_red, R.color.dark_red),
-    COMPLETED(R.string.text_completed, R.color.light_gray, R.color.darker_gray)
+    IN_QUEUE(R.string.enum_queueStatus_inQueue, R.color.light_yellow, R.color.dark_yellow),
+    IN_PROCESS(R.string.enum_queueStatus_inProcess, R.color.light_blue, R.color.dark_blue),
+    UNPAID(R.string.enum_queueStatus_unpaid, R.color.light_red, R.color.dark_red),
+    COMPLETED(R.string.enum_queueStatus_completed, R.color.light_gray, R.color.darker_gray)
   }
 
   enum class PaymentMethod(@get:JvmName("resourceString") @StringRes val resourceString: Int) {
-    CASH(R.string.text_cash),
-    ACCOUNT_BALANCE(R.string.text_account_balance)
+    CASH(R.string.enum_queuePaymentMethod_cash),
+    ACCOUNT_BALANCE(R.string.enum_queuePaymentMethod_accountBalance)
   }
 
   /** Reserved constructor to be used by Room upon querying. */

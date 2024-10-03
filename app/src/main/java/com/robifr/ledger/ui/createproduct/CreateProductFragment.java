@@ -137,12 +137,13 @@ public class CreateProductFragment extends Fragment implements Toolbar.OnMenuIte
     @Override
     public void handleOnBackPressed() {
       new MaterialAlertDialogBuilder(CreateProductFragment.this.requireContext())
-          .setTitle(CreateProductFragment.this.getString(R.string.text_discard_this_unsaved_task))
+          .setTitle(
+              CreateProductFragment.this.getString(R.string.createProduct_unsavedChangesWarning))
           .setNegativeButton(
-              CreateProductFragment.this.getString(R.string.text_discard),
+              CreateProductFragment.this.getString(R.string.action_discardAndLeave),
               (dialog, type) -> CreateProductFragment.this.finish())
           .setPositiveButton(
-              CreateProductFragment.this.getString(R.string.text_cancel),
+              CreateProductFragment.this.getString(R.string.action_cancel),
               (dialog, type) -> dialog.dismiss())
           .show();
     }

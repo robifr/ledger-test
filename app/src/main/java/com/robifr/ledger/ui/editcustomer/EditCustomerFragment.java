@@ -52,6 +52,6 @@ public class EditCustomerFragment extends CreateCustomerFragment {
         new EditCustomerViewModelHandler(
             this, (EditCustomerViewModel) this._createCustomerViewModel);
 
-    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.text_edit_customer));
+    this._fragmentBinding.toolbar.setTitle(this.getString(R.string.editCustomer));
   }
 }

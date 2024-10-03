@@ -237,8 +237,7 @@ public class CreateQueueViewModel extends ViewModel {
     if (this._inputtedProductOrders.getValue().isEmpty()) {
       this._snackbarMessage.setValue(
           new SafeEvent<>(
-              new StringResources.Strings(
-                  R.string.text_please_to_include_at_least_one_product_order)));
+              new StringResources.Strings(R.string.createQueue_includeOneProductOrderError)));
       return;
     }
 
@@ -256,8 +255,7 @@ public class CreateQueueViewModel extends ViewModel {
               if (customer == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_failed_to_find_related_customer)));
+                        new StringResources.Strings(R.string.createQueue_fetchCustomerError)));
               }
 
               result.postValue(customer);
@@ -276,8 +274,7 @@ public class CreateQueueViewModel extends ViewModel {
               if (product == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_failed_to_find_related_product)));
+                        new StringResources.Strings(R.string.createQueue_fetchProductError)));
               }
 
               result.postValue(product);
@@ -334,8 +331,8 @@ public class CreateQueueViewModel extends ViewModel {
 
               final StringResources stringRes =
                   id != 0L
-                      ? new StringResources.Plurals(R.plurals.args_added_x_queue, 1, 1)
-                      : new StringResources.Strings(R.string.text_error_failed_to_add_queue);
+                      ? new StringResources.Plurals(R.plurals.createQueue_added_n_queue, 1, 1)
+                      : new StringResources.Strings(R.string.createQueue_addQueueError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

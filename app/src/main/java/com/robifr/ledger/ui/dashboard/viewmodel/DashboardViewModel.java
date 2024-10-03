@@ -153,8 +153,7 @@ public class DashboardViewModel extends ViewModel {
               if (customers == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_customers)));
+                        new StringResources.Strings(R.string.dashboard_fetchAllCustomerError)));
               }
 
               result.postValue(customers);
@@ -173,8 +172,7 @@ public class DashboardViewModel extends ViewModel {
               if (customers == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_customers)));
+                        new StringResources.Strings(R.string.dashboard_fetchAllCustomerError)));
               }
 
               result.postValue(customers);
@@ -197,8 +195,7 @@ public class DashboardViewModel extends ViewModel {
               if (queues == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_queues)));
+                        new StringResources.Strings(R.string.dashboard_fetchAllQueueError)));
               }
 
               result.postValue(queues);

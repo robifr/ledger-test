@@ -77,7 +77,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
   public void onSave() {
     if (this.inputtedCustomer().name().isBlank()) {
       this._inputtedNameError.setValue(
-          Optional.of(new StringResources.Strings(R.string.text_customer_name_is_required)));
+          Optional.of(new StringResources.Strings(R.string.createCustomer_name_emptyError)));
       return;
     }
 
@@ -100,8 +100,7 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
               if (customer == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_failed_to_find_related_customer)));
+                        new StringResources.Strings(R.string.createCustomer_fetchCustomerError)));
               }
 
               result.postValue(customer);
@@ -124,8 +123,8 @@ public class EditCustomerViewModel extends CreateCustomerViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_updated_x_customer, effected, effected)
-                      : new StringResources.Strings(R.string.text_error_failed_to_update_customer);
+                          R.plurals.createCustomer_updated_n_customer, effected, effected)
+                      : new StringResources.Strings(R.string.createCustomer_updateCustomerError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

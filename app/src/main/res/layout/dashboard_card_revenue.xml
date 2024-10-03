@@ -35,7 +35,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_revenue"
+        android:text="@string/dashboard_revenue"
         android:textSize="@dimen/text_mediumlarge"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
-    <!-- Button tags are based on `DashboardRevenue.Chart` enum. -->
+    <!-- Button tags are based on `DashboardRevenue.OverviewType` enum. -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/receivedIncomeCardView"
         android:layout_width="0dp"

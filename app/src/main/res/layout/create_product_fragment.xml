@@ -26,7 +26,7 @@
       android:layout_height="wrap_content"
       app:menu="@menu/reusable_toolbar_edit"
       app:navigationIcon="@drawable/icon_arrow_back"
-      app:title="@string/text_create_product" />
+      app:title="@string/createProduct" />
 
   <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/nameLayout"
@@ -35,7 +35,7 @@
       android:layout_marginStart="@dimen/screen_padding"
       android:layout_marginTop="@dimen/textinput_margintop"
       android:layout_marginEnd="@dimen/screen_padding"
-      android:hint="@string/text_name">
+      android:hint="@string/createProduct_name">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/name"
@@ -55,7 +55,7 @@
       android:layout_marginStart="@dimen/screen_padding"
       android:layout_marginTop="@dimen/textinput_margintop"
       android:layout_marginEnd="@dimen/screen_padding"
-      android:hint="@string/text_price">
+      android:hint="@string/createProduct_price">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/price"

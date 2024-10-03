@@ -41,7 +41,8 @@ public class SearchCustomerHeaderHolder<T extends CustomerListAction>
         this.itemView
             .getContext()
             .getResources()
-            .getQuantityString(R.plurals.args_found_x_customer, totalCustomers, totalCustomers);
+            .getQuantityString(
+                R.plurals.searchCustomer_found_x_customer, totalCustomers, totalCustomers);
 
     this._textBinding.text.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
   }

@@ -67,16 +67,16 @@ public class DashboardSummary implements View.OnClickListener {
     final DashboardCardSummaryBinding cardBinding = this._fragment.fragmentBinding().summary;
     cardBinding.totalQueuesCardView.setOnClickListener(this);
     cardBinding.totalQueuesCard.icon.setImageResource(R.drawable.icon_assignment);
-    cardBinding.totalQueuesCard.title.setText(R.string.text_total_queues);
+    cardBinding.totalQueuesCard.title.setText(R.string.dashboard_totalQueues);
     cardBinding.uncompletedQueuesCardView.setOnClickListener(this);
     cardBinding.uncompletedQueuesCard.icon.setImageResource(R.drawable.icon_assignment_late);
-    cardBinding.uncompletedQueuesCard.title.setText(R.string.text_uncompleted_queues);
+    cardBinding.uncompletedQueuesCard.title.setText(R.string.dashboard_uncompletedQueues);
     cardBinding.activeCustomersCardView.setOnClickListener(this);
     cardBinding.activeCustomersCard.icon.setImageResource(R.drawable.icon_person);
-    cardBinding.activeCustomersCard.title.setText(R.string.text_active_customers);
+    cardBinding.activeCustomersCard.title.setText(R.string.dashboard_activeCustomers);
     cardBinding.productsSoldCardView.setOnClickListener(this);
     cardBinding.productsSoldCard.icon.setImageResource(R.drawable.icon_sell);
-    cardBinding.productsSoldCard.title.setText(R.string.text_products_sold);
+    cardBinding.productsSoldCard.title.setText(R.string.dashboard_productsSold);
   }
 
   @Override
@@ -175,7 +175,7 @@ public class DashboardSummary implements View.OnClickListener {
     final String textInCenter =
         model.oldestDate() != null
             ? String.format(
-                this._fragment.getString(R.string.args_svg_oldest_queue_x),
+                this._fragment.getString(R.string.dashboard_uncompletedQueues_oldestQueue_x),
                 titleFontSize,
                 oldestDateFontSize,
                 oldestDate)
@@ -222,7 +222,10 @@ public class DashboardSummary implements View.OnClickListener {
       final String amountText =
           this._fragment
               .getResources()
-              .getQuantityString(R.plurals.args_x_queue, customer.getValue(), customer.getValue());
+              .getQuantityString(
+                  R.plurals.dashboard_activeCustomers_n_queue,
+                  customer.getValue(),
+                  customer.getValue());
 
       final DashboardCardSummaryListItemBinding listItemBinding =
           DashboardCardSummaryListItemBinding.inflate(
@@ -279,7 +282,7 @@ public class DashboardSummary implements View.OnClickListener {
           this._fragment
               .getResources()
               .getQuantityString(
-                  R.plurals.args_x_item,
+                  R.plurals.dashboard_productsSold_n_item,
                   product.getValue().intValue(),
                   CurrencyFormat.format(product.getValue(), "id", "ID", ""));
 

@@ -91,8 +91,7 @@ public class EditQueueViewModel extends CreateQueueViewModel {
     if (inputtedQueue.productOrders().isEmpty()) {
       this._snackbarMessage.setValue(
           new SafeEvent<>(
-              new StringResources.Strings(
-                  R.string.text_please_to_include_at_least_one_product_order)));
+              new StringResources.Strings(R.string.createQueue_includeOneProductOrderError)));
       return;
     }
 
@@ -115,8 +114,7 @@ public class EditQueueViewModel extends CreateQueueViewModel {
               if (queue == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_failed_to_find_related_queue)));
+                        new StringResources.Strings(R.string.createQueue_fetchQueueError)));
               }
 
               result.postValue(queue);
@@ -203,8 +201,8 @@ public class EditQueueViewModel extends CreateQueueViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_updated_x_queue, effected, effected)
-                      : new StringResources.Strings(R.string.text_error_failed_to_update_queue);
+                          R.plurals.createQueue_added_n_queue, effected, effected)
+                      : new StringResources.Strings(R.string.createQueue_addQueueError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

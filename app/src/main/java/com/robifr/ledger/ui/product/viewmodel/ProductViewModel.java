@@ -121,8 +121,7 @@ public class ProductViewModel extends ViewModel {
               if (products == null) {
                 this._snackbarMessage.postValue(
                     new SafeEvent<>(
-                        new StringResources.Strings(
-                            R.string.text_error_unable_to_retrieve_all_products)));
+                        new StringResources.Strings(R.string.product_fetchAllProductError)));
               }
 
               result.postValue(products);
@@ -140,8 +139,8 @@ public class ProductViewModel extends ViewModel {
               final StringResources stringRes =
                   effected > 0
                       ? new StringResources.Plurals(
-                          R.plurals.args_deleted_x_product, effected, effected)
-                      : new StringResources.Strings(R.string.text_error_failed_to_delete_product);
+                          R.plurals.product_deleted_n_product, effected, effected)
+                      : new StringResources.Strings(R.string.product_deleteProductError);
               this._snackbarMessage.postValue(new SafeEvent<>(stringRes));
             });
   }

@@ -29,7 +29,7 @@
       style="@style/BottomSheetDialog.Title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/text_filters" />
+      android:text="@string/customer_filters" />
 
   <com.google.android.material.divider.MaterialDivider
       style="@style/Divider"

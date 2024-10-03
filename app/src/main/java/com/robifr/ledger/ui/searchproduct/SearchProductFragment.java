@@ -91,12 +91,12 @@ public class SearchProductFragment extends Fragment implements SearchView.OnQuer
         .setStatusBarColor(this.requireContext().getColor(R.color.surface));
     this._fragmentBinding.toolbar.setNavigationOnClickListener(
         v -> this._onBackPressed.handleOnBackPressed());
-    this._fragmentBinding.searchView.setQueryHint(this.getString(R.string.text_search_products));
+    this._fragmentBinding.searchView.setQueryHint(this.getString(R.string.searchProduct));
     this._fragmentBinding.searchView.setOnQueryTextListener(this);
     this._fragmentBinding.noResultsImage.image.setImageResource(R.drawable.image_noresultsfound);
-    this._fragmentBinding.noResultsImage.title.setText(R.string.text_no_results_found);
+    this._fragmentBinding.noResultsImage.title.setText(R.string.searchProduct_noResultsFound);
     this._fragmentBinding.noResultsImage.description.setText(
-        this.getString(R.string.text_cant_find_any_matching_products));
+        this.getString(R.string.searchProduct_noResultsFound_description));
     this._fragmentBinding.recyclerView.setLayoutManager(
         new LinearLayoutManager(this.requireContext()));
     this._fragmentBinding.recyclerView.setAdapter(this._adapter);

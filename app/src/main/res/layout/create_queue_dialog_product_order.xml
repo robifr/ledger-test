@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:text="@string/text_add_product_order"
+        android:text="@string/createQueue_productOrders_makeProductOrders"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/textinput_margintop"
-        android:hint="@string/text_product"
+        android:hint="@string/createQueue_productOrders_product"
         app:layout_constraintTop_toBottomOf="@id/title">
 
       <com.google.android.material.textfield.TextInputEditText
@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/textinput_margintop"
-        android:hint="@string/text_quantity"
+        android:hint="@string/createQueue_productOrders_quantity"
         app:layout_constraintTop_toBottomOf="@id/productLayout">
 
       <com.google.android.material.textfield.TextInputEditText
@@ -81,7 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/textinput_margintop"
-        android:hint="@string/text_discount"
+        android:hint="@string/createQueue_productOrders_discount"
         app:layout_constraintTop_toBottomOf="@id/quantityLayout">
 
       <com.google.android.material.textfield.TextInputEditText
@@ -101,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:gravity="end"
-        android:text="@string/text_total_price"
+        android:text="@string/createQueue_productOrders_totalPrice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/discountLayout"
         app:layout_constraintWidth_percent="0.45" />

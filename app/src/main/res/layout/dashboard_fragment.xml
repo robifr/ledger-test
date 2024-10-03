@@ -31,7 +31,7 @@
         android:background="?android:colorBackground"
         app:layout_scrollFlags="scroll|enterAlways|snap"
         app:navigationIcon="@null"
-        app:title="@string/app_name" />
+        app:title="@string/appName" />
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -54,7 +54,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/screen_padding"
             android:layoutDirection="rtl"
-            android:text="@string/text_date"
             android:textSize="@dimen/text_small"
             app:chipIcon="@drawable/icon_arrow_dropdown_20"
             app:chipIconTint="?android:textColor"

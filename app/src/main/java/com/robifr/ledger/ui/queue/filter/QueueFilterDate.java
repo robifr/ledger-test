@@ -93,7 +93,7 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
     customRangeChip.setVisibility(customRangeVisibility);
     customRangeChip.setText(
         this._fragment.getString(
-            R.string.queuefilter_date_selecteddate_chip,
+            QueueDate.Range.CUSTOM.resourceString(),
             date.dateStart().format(format),
             date.dateEnd().format(format)));
   }
@@ -102,7 +102,7 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
     final MaterialDatePicker<Pair<Long, Long>> picker =
         MaterialDatePicker.Builder.dateRangePicker()
             .setTheme(com.google.android.material.R.style.ThemeOverlay_Material3_MaterialCalendar)
-            .setTitleText(this._fragment.getString(R.string.text_select_date_range))
+            .setTitleText(this._fragment.getString(R.string.queue_filterDate_selectDateRange))
             .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
             .build();
 

@@ -57,7 +57,7 @@ public class ProductOrderCardComponent {
   private void _setProductName(@Nullable String productName) {
     final boolean isNameExists = productName != null;
     final String name =
-        isNameExists ? productName : this._context.getString(R.string.symbol_notavailable);
+        isNameExists ? productName : this._context.getString(R.string.symbol_notAvailable);
 
     this._binding.productName.setText(name);
     this._binding.productName.setEnabled(isNameExists);
@@ -69,12 +69,12 @@ public class ProductOrderCardComponent {
     final String price =
         productPrice != null
             ? CurrencyFormat.format(BigDecimal.valueOf(productPrice), "id", "ID")
-            : this._context.getString(R.string.symbol_notavailable);
+            : this._context.getString(R.string.symbol_notAvailable);
     final String quantities = CurrencyFormat.format(BigDecimal.valueOf(quantity), "id", "ID", "");
 
     this._binding.productPriceQuantity.setText(
         this._context.getString(
-            R.string.productordercard_productpriceandquantity_title, price, quantities));
+            R.string.createQueue_productOrders_n_multiply_n, price, quantities));
   }
 
   private void _setTotalPrice(@NonNull BigDecimal totalPrice) {
@@ -92,7 +92,7 @@ public class ProductOrderCardComponent {
         discountPercent.compareTo(BigDecimal.ZERO) == 0
             ? null
             : this._context.getString(
-                R.string.productordercard_discount_title, discountPercent.toPlainString());
+                R.string.createQueue_productOrders_n_off, discountPercent.toPlainString());
 
     this._binding.discount.setVisibility(textVisibility);
     this._binding.discount.setText(text);

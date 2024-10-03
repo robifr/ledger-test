@@ -50,10 +50,10 @@ public class SelectCustomerHeaderHolder<T extends SelectedCustomerAction>
         new CustomerCardWideComponent(this.itemView.getContext(), this._selectedCardBinding);
 
     this._headerBinding.selectedItemTitle.setText(
-        this.itemView.getContext().getString(R.string.text_selected_customer));
+        this.itemView.getContext().getString(R.string.selectCustomer_selectedCustomer));
     this._headerBinding.selectedItemContainer.addView(this._selectedCardBinding.getRoot());
     this._headerBinding.allListTitle.setText(
-        this.itemView.getContext().getString(R.string.text_all_customers));
+        this.itemView.getContext().getString(R.string.selectCustomer_allCustomers));
     this._headerBinding.newButton.setOnClickListener(this);
     // Don't set menu button to `View.GONE` as the position will be occupied by expand button.
     this._selectedCardBinding.normalCard.menuButton.setVisibility(View.INVISIBLE);

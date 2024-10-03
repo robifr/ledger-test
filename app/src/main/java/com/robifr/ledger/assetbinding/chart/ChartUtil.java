@@ -25,9 +25,11 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
+import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -55,9 +57,7 @@ public class ChartUtil {
 
     return switch (groupBy) {
       case DAYS -> Integer.toString(dateToConvert.getDayOfMonth());
-      case MONTHS ->
-          dateToConvert.getMonth().name().substring(0, 1).toUpperCase()
-              + dateToConvert.getMonth().name().substring(1, 3).toLowerCase();
+      case MONTHS -> dateToConvert.getMonth().getDisplayName(TextStyle.SHORT, Locale.getDefault());
       default -> Integer.toString(dateToConvert.getYear());
     };
   }

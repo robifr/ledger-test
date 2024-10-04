@@ -16,6 +16,7 @@
 
 package com.robifr.ledger.ui.dashboard.viewmodel;
 
+import android.content.Context;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
@@ -111,21 +112,28 @@ public class DashboardRevenueViewModel {
     this._displayedChart.setValue(overviewType);
   }
 
-  public void onDisplayReceivedIncomeChart() {
+  public void onDisplayReceivedIncomeChart(@NonNull Context context) {
+    Objects.requireNonNull(context);
+
     this._onDisplayChart(
+        context,
         List.of(
             DashboardRevenue.OverviewType.PROJECTED_INCOME.unselectedResourceColor(),
             DashboardRevenue.OverviewType.RECEIVED_INCOME.selectedResourceColor()));
   }
 
-  public void onDisplayProjectedIncomeChart() {
+  public void onDisplayProjectedIncomeChart(@NonNull Context context) {
+    Objects.requireNonNull(context);
+
     this._onDisplayChart(
+        context,
         List.of(
             DashboardRevenue.OverviewType.PROJECTED_INCOME.selectedResourceColor(),
             DashboardRevenue.OverviewType.RECEIVED_INCOME.unselectedResourceColor()));
   }
 
-  private void _onDisplayChart(@NonNull @ColorRes List<Integer> colors) {
+  private void _onDisplayChart(@NonNull Context context, @NonNull @ColorRes List<Integer> colors) {
+    Objects.requireNonNull(context);
     Objects.requireNonNull(colors);
 
     final ZonedDateTime startDate =
@@ -187,7 +195,7 @@ public class DashboardRevenueViewModel {
         new IncomeChartModel(
             // Both domains must be the same as the formatted ones.
             ChartUtil.toDateTimeDomain(new Pair<>(startDate, endDate)),
-            ChartUtil.toPercentageLinearDomain(maxValue, yAxisTicks),
+            ChartUtil.toPercentageLinearDomain(context, maxValue, yAxisTicks),
             formattedData,
             colors,
             Set.of(

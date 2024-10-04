@@ -21,6 +21,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.text.HtmlCompat;
 import androidx.transition.ChangeBounds;
 import androidx.transition.TransitionManager;
@@ -40,7 +41,6 @@ import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -166,11 +166,7 @@ public class DashboardSummary implements View.OnClickListener {
             this._fragment.getResources().getDimensionPixelSize(R.dimen.text_mediumlarge));
     final String oldestDate =
         model.oldestDate() != null
-            ? model
-                .oldestDate()
-                .format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-                        .withLocale(new Locale("id", "ID")))
+            ? model.oldestDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
             : null;
     final String textInCenter =
         model.oldestDate() != null
@@ -261,7 +257,9 @@ public class DashboardSummary implements View.OnClickListener {
         .summary
         .productsSoldCard
         .amount
-        .setText(CurrencyFormat.format(amount, "id", "ID", ""));
+        .setText(
+            CurrencyFormat.format(
+                amount, AppCompatDelegate.getApplicationLocales().toLanguageTags(), ""));
   }
 
   /**
@@ -284,7 +282,10 @@ public class DashboardSummary implements View.OnClickListener {
               .getQuantityString(
                   R.plurals.dashboard_productsSold_n_item,
                   product.getValue().intValue(),
-                  CurrencyFormat.format(product.getValue(), "id", "ID", ""));
+                  CurrencyFormat.format(
+                      product.getValue(),
+                      AppCompatDelegate.getApplicationLocales().toLanguageTags(),
+                      ""));
 
       final DashboardCardSummaryListItemBinding listItemBinding =
           DashboardCardSummaryListItemBinding.inflate(

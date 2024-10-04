@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -189,13 +190,16 @@ public class QueueCardWideComponent {
     Objects.requireNonNull(totalDiscount);
 
     this._productOrderBinding.totalDiscount.setText(
-        CurrencyFormat.format(totalDiscount, "id", "ID"));
+        CurrencyFormat.format(
+            totalDiscount, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 
   private void _setGrandTotalPrice(@NonNull BigDecimal grandTotalPrice, boolean isNormalCard) {
     Objects.requireNonNull(grandTotalPrice);
 
-    final String formattedGrandTotalPrice = CurrencyFormat.format(grandTotalPrice, "id", "ID");
+    final String formattedGrandTotalPrice =
+        CurrencyFormat.format(
+            grandTotalPrice, AppCompatDelegate.getApplicationLocales().toLanguageTags());
 
     if (isNormalCard) this._binding.normalCard.grandTotalPrice.setText(formattedGrandTotalPrice);
     else this._productOrderBinding.grandTotalPrice.setText(formattedGrandTotalPrice);
@@ -245,13 +249,16 @@ public class QueueCardWideComponent {
           this._context.getString(R.string.queue_card_x_balance, croppedCustomerName));
       this._productOrderBinding.customerBalanceTitle.setVisibility(View.VISIBLE);
       this._productOrderBinding.customerBalance.setText(
-          CurrencyFormat.format(BigDecimal.valueOf(customer.balance()), "id", "ID"));
+          CurrencyFormat.format(
+              BigDecimal.valueOf(customer.balance()),
+              AppCompatDelegate.getApplicationLocales().toLanguageTags()));
       this._productOrderBinding.customerBalance.setVisibility(View.VISIBLE);
       this._productOrderBinding.customerDebtTitle.setText(
           this._context.getString(R.string.queue_card_x_debt, croppedCustomerName));
       this._productOrderBinding.customerDebtTitle.setVisibility(View.VISIBLE);
       this._productOrderBinding.customerDebt.setText(
-          CurrencyFormat.format(customer.debt(), "id", "ID"));
+          CurrencyFormat.format(
+              customer.debt(), AppCompatDelegate.getApplicationLocales().toLanguageTags()));
       this._productOrderBinding.customerDebt.setTextColor(debtTextColor);
       this._productOrderBinding.customerDebt.setVisibility(View.VISIBLE);
     }
@@ -274,7 +281,9 @@ public class QueueCardWideComponent {
               : this._context.getString(R.string.symbol_notAvailable);
       final String productPrice =
           productOrder.productPrice() != null
-              ? CurrencyFormat.format(BigDecimal.valueOf(productOrder.productPrice()), "id", "ID")
+              ? CurrencyFormat.format(
+                  BigDecimal.valueOf(productOrder.productPrice()),
+                  AppCompatDelegate.getApplicationLocales().toLanguageTags())
               : this._context.getString(R.string.symbol_notAvailable);
       final int discountVisibility =
           productOrder.discountPercent().compareTo(BigDecimal.ZERO) == 0 ? View.GONE : View.VISIBLE;
@@ -283,9 +292,14 @@ public class QueueCardWideComponent {
       dataRowBinding.productName.setEnabled(isProductExists);
       dataRowBinding.productPrice.setText(productPrice);
       dataRowBinding.quantity.setText(
-          CurrencyFormat.format(BigDecimal.valueOf(productOrder.quantity()), "id", "ID", ""));
+          CurrencyFormat.format(
+              BigDecimal.valueOf(productOrder.quantity()),
+              AppCompatDelegate.getApplicationLocales().toLanguageTags(),
+              ""));
       dataRowBinding.totalPrice.setText(
-          CurrencyFormat.format(productOrder.totalPrice(), "id", "ID"));
+          CurrencyFormat.format(
+              productOrder.totalPrice(),
+              AppCompatDelegate.getApplicationLocales().toLanguageTags()));
       dataRowBinding.discount.setText(
           this._context.getString(
               R.string.queue_card_productOrders_n_off,

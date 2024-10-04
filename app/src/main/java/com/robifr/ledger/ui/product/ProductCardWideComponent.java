@@ -20,6 +20,7 @@ import android.content.Context;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
@@ -129,7 +130,9 @@ public class ProductCardWideComponent {
   }
 
   private void _setPrice(long price, boolean isNormalCard) {
-    final String formattedPrice = CurrencyFormat.format(BigDecimal.valueOf(price), "id", "ID");
+    final String formattedPrice =
+        CurrencyFormat.format(
+            BigDecimal.valueOf(price), AppCompatDelegate.getApplicationLocales().toLanguageTags());
 
     if (isNormalCard) this._binding.normalCard.price.setText(formattedPrice);
     else this._binding.expandedCard.price.setText(formattedPrice);

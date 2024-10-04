@@ -103,6 +103,7 @@ dependencies {
   implementation(libs.jetbrains.kotlin.test)
 
   testImplementation(libs.junit.jupiter)
+  testImplementation(libs.mockito.core)
 
   debugImplementation(libs.squareup.leakcanary.android)
 }

@@ -24,6 +24,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.view.ActionMode;
 import com.google.android.material.card.MaterialCardView;
 import com.robifr.ledger.R;
@@ -170,7 +171,9 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
         .fragmentBinding()
         .productOrder
         .grandTotalPrice
-        .setText(CurrencyFormat.format(grandTotalPrice, "id", "ID"));
+        .setText(
+            CurrencyFormat.format(
+                grandTotalPrice, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 
   public void setTotalDiscount(@NonNull BigDecimal totalDiscount) {
@@ -180,7 +183,9 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
         .fragmentBinding()
         .productOrder
         .totalDiscount
-        .setText(CurrencyFormat.format(totalDiscount, "id", "ID"));
+        .setText(
+            CurrencyFormat.format(
+                totalDiscount, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 
   public void setCustomerBalanceAfterPaymentTitle(@Nullable String title) {
@@ -196,7 +201,11 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
 
   public void setCustomerBalanceAfterPayment(@Nullable Long balance) {
     final String text =
-        balance != null ? CurrencyFormat.format(BigDecimal.valueOf(balance), "id", "ID") : null;
+        balance != null
+            ? CurrencyFormat.format(
+                BigDecimal.valueOf(balance),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
+            : null;
     final int viewVisibility = balance != null ? View.VISIBLE : View.GONE;
 
     this._fragment.fragmentBinding().productOrder.customerBalance.setText(text);
@@ -211,7 +220,11 @@ public class CreateQueueProductOrder implements View.OnClickListener, View.OnLon
   }
 
   public void setCustomerDebtAfterPayment(@Nullable BigDecimal debt) {
-    final String text = debt != null ? CurrencyFormat.format(debt, "id", "ID") : null;
+    final String text =
+        debt != null
+            ? CurrencyFormat.format(
+                debt, AppCompatDelegate.getApplicationLocales().toLanguageTags())
+            : null;
     final int textColor =
         debt != null && debt.compareTo(BigDecimal.ZERO) < 0
             // Negative debt will be shown red.

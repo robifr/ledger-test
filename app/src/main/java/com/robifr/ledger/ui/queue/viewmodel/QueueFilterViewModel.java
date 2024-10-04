@@ -17,6 +17,7 @@
 package com.robifr.ledger.ui.queue.viewmodel;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -112,7 +113,9 @@ public class QueueFilterViewModel {
     try {
       if (!this._inputtedMinTotalPriceText.getValue().isBlank()) {
         minTotalPrice =
-            CurrencyFormat.parse(this._inputtedMinTotalPriceText.getValue(), "id", "ID");
+            CurrencyFormat.parse(
+                this._inputtedMinTotalPriceText.getValue(),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags());
       }
 
     } catch (ParseException ignore) {
@@ -121,7 +124,9 @@ public class QueueFilterViewModel {
     try {
       if (!this._inputtedMaxTotalPriceText.getValue().isBlank()) {
         maxTotalPrice =
-            CurrencyFormat.parse(this._inputtedMaxTotalPriceText.getValue(), "id", "ID");
+            CurrencyFormat.parse(
+                this._inputtedMaxTotalPriceText.getValue(),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags());
       }
 
     } catch (ParseException ignore) {
@@ -180,11 +185,15 @@ public class QueueFilterViewModel {
 
     final String minTotalPrice =
         filters.filteredTotalPrice().first != null
-            ? CurrencyFormat.format(filters.filteredTotalPrice().first, "id", "ID")
+            ? CurrencyFormat.format(
+                filters.filteredTotalPrice().first,
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
             : "";
     final String maxTotalPrice =
         filters.filteredTotalPrice().second != null
-            ? CurrencyFormat.format(filters.filteredTotalPrice().second, "id", "ID")
+            ? CurrencyFormat.format(
+                filters.filteredTotalPrice().second,
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
             : "";
 
     this.onCustomersIdsChanged(filters.filteredCustomerIds());

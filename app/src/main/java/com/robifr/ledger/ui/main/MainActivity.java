@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity
     this._activityBinding.bottomNavigation.setOnItemSelectedListener(this);
     this.getOnBackPressedDispatcher().addCallback(this, new OnBackPressedHandler());
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList());
 
     List.of(R.id.dashboardFragment, R.id.queueFragment, R.id.customerFragment, R.id.productFragment)
         .forEach(

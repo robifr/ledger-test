@@ -18,6 +18,7 @@ package com.robifr.ledger.ui.product;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductModel;
@@ -58,6 +59,8 @@ public class ProductCardPackedComponent {
   }
 
   private void _setPrice(long price) {
-    this._binding.price.setText(CurrencyFormat.format(BigDecimal.valueOf(price), "id", "ID"));
+    this._binding.price.setText(
+        CurrencyFormat.format(
+            BigDecimal.valueOf(price), AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 }

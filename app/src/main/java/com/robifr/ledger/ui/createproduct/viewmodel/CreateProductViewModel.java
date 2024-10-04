@@ -17,6 +17,7 @@
 package com.robifr.ledger.ui.createproduct.viewmodel;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -98,7 +99,11 @@ public class CreateProductViewModel extends ViewModel {
     long price = 0L;
 
     try {
-      price = CurrencyFormat.parse(this._inputtedPriceText.getValue(), "id", "ID").longValue();
+      price =
+          CurrencyFormat.parse(
+                  this._inputtedPriceText.getValue(),
+                  AppCompatDelegate.getApplicationLocales().toLanguageTags())
+              .longValue();
 
     } catch (ParseException ignore) {
     }

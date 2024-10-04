@@ -18,6 +18,7 @@ package com.robifr.ledger.ui.createqueue.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import com.robifr.ledger.data.model.ProductModel;
@@ -101,7 +102,9 @@ public class MakeProductOrderViewModel {
     try {
       if (!this._inputtedQuantityText.getValue().isBlank()) {
         quantity =
-            CurrencyFormat.parse(this._inputtedQuantityText.getValue(), "id", "ID")
+            CurrencyFormat.parse(
+                    this._inputtedQuantityText.getValue(),
+                    AppCompatDelegate.getApplicationLocales().toLanguageTags())
                 .stripTrailingZeros()
                 .doubleValue();
       }
@@ -112,7 +115,10 @@ public class MakeProductOrderViewModel {
     try {
       if (!this._inputtedDiscountText.getValue().isBlank()) {
         discount =
-            CurrencyFormat.parse(this._inputtedDiscountText.getValue(), "id", "ID").longValue();
+            CurrencyFormat.parse(
+                    this._inputtedDiscountText.getValue(),
+                    AppCompatDelegate.getApplicationLocales().toLanguageTags())
+                .longValue();
       }
 
     } catch (ParseException ignore) {
@@ -160,9 +166,14 @@ public class MakeProductOrderViewModel {
 
     this._productOrderToEdit = productOrder;
     final String quantity =
-        CurrencyFormat.format(BigDecimal.valueOf(productOrder.quantity()), "id", "ID", "");
+        CurrencyFormat.format(
+            BigDecimal.valueOf(productOrder.quantity()),
+            AppCompatDelegate.getApplicationLocales().toLanguageTags(),
+            "");
     final String discount =
-        CurrencyFormat.format(BigDecimal.valueOf(productOrder.discount()), "id", "ID");
+        CurrencyFormat.format(
+            BigDecimal.valueOf(productOrder.discount()),
+            AppCompatDelegate.getApplicationLocales().toLanguageTags());
 
     this.onProductChanged(productOrder.referencedProduct());
     this.onQuantityTextChanged(quantity);

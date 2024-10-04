@@ -17,6 +17,7 @@
 package com.robifr.ledger.ui.dashboard;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.text.HtmlCompat;
 import com.robifr.ledger.R;
 import com.robifr.ledger.util.CurrencyFormat;
@@ -37,7 +38,9 @@ public class DashboardBalance {
         .fragmentBinding()
         .balance
         .totalBalance
-        .setText(CurrencyFormat.format(amount, "id", "ID"));
+        .setText(
+            CurrencyFormat.format(
+                amount, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 
   public void setTotalCustomersWithBalance(int amount) {
@@ -66,7 +69,9 @@ public class DashboardBalance {
         .fragmentBinding()
         .balance
         .totalDebt
-        .setText(CurrencyFormat.format(amount, "id", "ID"));
+        .setText(
+            CurrencyFormat.format(
+                amount, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
     this._fragment.fragmentBinding().balance.totalDebt.setTextColor(amountTextColor);
   }
 

@@ -28,7 +28,6 @@ import com.robifr.ledger.ui.dashboard.viewmodel.DashboardSummaryViewModel;
 import com.robifr.ledger.ui.dashboard.viewmodel.DashboardViewModel;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -140,8 +139,7 @@ public class DashboardViewModelHandler {
   private void _onDate(@NonNull QueueDate date) {
     Objects.requireNonNull(date);
 
-    final DateTimeFormatter format =
-        DateTimeFormatter.ofPattern("d MMM yyyy", new Locale("id", "ID"));
+    final DateTimeFormatter format = DateTimeFormatter.ofPattern("d MMM yyyy");
     final String text =
         date.range() == QueueDate.Range.CUSTOM
             ? this._fragment.getString(

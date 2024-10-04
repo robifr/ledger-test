@@ -17,6 +17,7 @@
 package com.robifr.ledger.data.display;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.robifr.ledger.data.model.ProductModel;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -53,7 +54,9 @@ public class ProductSorter {
   private List<ProductModel> _sortByName(@NonNull List<ProductModel> products) {
     Objects.requireNonNull(products);
 
-    final Collator collator = Collator.getInstance(new Locale("id", "ID"));
+    final Collator collator =
+        Collator.getInstance(
+            Locale.forLanguageTag(AppCompatDelegate.getApplicationLocales().toLanguageTags()));
     collator.setStrength(Collator.SECONDARY);
 
     final Comparator<ProductModel> compare = Comparator.comparing(ProductModel::name, collator);

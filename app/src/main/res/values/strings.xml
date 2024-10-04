@@ -62,6 +62,10 @@
   <!-- Symbol. -->
   <string name="symbol_notAvailable">n/a</string>
   <string name="symbol_mDash" translatable="false">—</string>
+  <string name="symbol_thousand">K</string>
+  <string name="symbol_million">M</string>
+  <string name="symbol_billion">B</string>
+  <string name="symbol_trillion">T</string>
 
   <!-- Main activity. -->
   <!-- Permission. -->

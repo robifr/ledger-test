@@ -16,16 +16,20 @@
 
 package com.robifr.ledger.assetbinding.chart;
 
+import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.util.Pair;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
+import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -53,9 +57,7 @@ public class ChartUtil {
 
     return switch (groupBy) {
       case DAYS -> Integer.toString(dateToConvert.getDayOfMonth());
-      case MONTHS ->
-          dateToConvert.getMonth().name().substring(0, 1).toUpperCase()
-              + dateToConvert.getMonth().name().substring(1, 3).toLowerCase();
+      case MONTHS -> dateToConvert.getMonth().getDisplayName(TextStyle.SHORT, Locale.getDefault());
       default -> Integer.toString(dateToConvert.getYear());
     };
   }
@@ -110,7 +112,9 @@ public class ChartUtil {
   }
 
   @NonNull
-  public static List<String> toPercentageLinearDomain(@NonNull BigDecimal maxValue, int ticks) {
+  public static List<String> toPercentageLinearDomain(
+      @NonNull Context context, @NonNull BigDecimal maxValue, int ticks) {
+    Objects.requireNonNull(context);
     Objects.requireNonNull(maxValue);
 
     // Set to one as the minimum to prevent zero division.
@@ -123,7 +127,9 @@ public class ChartUtil {
             // From percentages, linearly map the amount up to the top value.
             percent ->
                 CurrencyFormat.formatWithUnit(
-                    BigDecimal.valueOf(percent).multiply(gap), "id", "ID", ""))
+                    context,
+                    BigDecimal.valueOf(percent).multiply(gap),
+                    AppCompatDelegate.getApplicationLocales().toLanguageTags()))
         .collect(Collectors.toList());
   }
 

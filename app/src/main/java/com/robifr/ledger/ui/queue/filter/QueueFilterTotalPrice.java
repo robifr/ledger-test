@@ -46,8 +46,8 @@ public class QueueFilterTotalPrice {
 
     final TextInputEditText minTotalPrice = this._dialogBinding.filterTotalPrice.minimumTotalPrice;
     final TextInputEditText maxTotalPrice = this._dialogBinding.filterTotalPrice.maximumTotalPrice;
-    this._minPriceTextWatcher = new TotalPriceTextWatcher(minTotalPrice, "id", "ID");
-    this._maxPriceTextWatcher = new TotalPriceTextWatcher(maxTotalPrice, "id", "ID");
+    this._minPriceTextWatcher = new TotalPriceTextWatcher(minTotalPrice);
+    this._maxPriceTextWatcher = new TotalPriceTextWatcher(maxTotalPrice);
 
     minTotalPrice.addTextChangedListener(this._minPriceTextWatcher);
     maxTotalPrice.addTextChangedListener(this._maxPriceTextWatcher);
@@ -94,9 +94,8 @@ public class QueueFilterTotalPrice {
   }
 
   private class TotalPriceTextWatcher extends CurrencyTextWatcher {
-    public TotalPriceTextWatcher(
-        @NonNull EditText view, @NonNull String language, @NonNull String country) {
-      super(view, language, country);
+    public TotalPriceTextWatcher(@NonNull EditText view) {
+      super(view);
       this._maximumAmount = BigDecimal.valueOf(Long.MAX_VALUE);
     }
 

@@ -18,6 +18,7 @@ package com.robifr.ledger.ui.editproduct.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
@@ -60,7 +61,9 @@ public class EditProductViewModel extends CreateProductViewModel {
           this._initialProductToEdit = product;
           this.onNameTextChanged(product.name());
           this.onPriceTextChanged(
-              CurrencyFormat.format(BigDecimal.valueOf(product.price()), "id", "ID"));
+              CurrencyFormat.format(
+                  BigDecimal.valueOf(product.price()),
+                  AppCompatDelegate.getApplicationLocales().toLanguageTags()));
         },
         Objects::nonNull);
   }

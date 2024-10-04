@@ -20,6 +20,7 @@ import android.content.Context;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.ProductOrderModel;
@@ -68,9 +69,15 @@ public class ProductOrderCardComponent {
   private void _setProductPriceAndQuantity(@Nullable Long productPrice, double quantity) {
     final String price =
         productPrice != null
-            ? CurrencyFormat.format(BigDecimal.valueOf(productPrice), "id", "ID")
+            ? CurrencyFormat.format(
+                BigDecimal.valueOf(productPrice),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())
             : this._context.getString(R.string.symbol_notAvailable);
-    final String quantities = CurrencyFormat.format(BigDecimal.valueOf(quantity), "id", "ID", "");
+    final String quantities =
+        CurrencyFormat.format(
+            BigDecimal.valueOf(quantity),
+            AppCompatDelegate.getApplicationLocales().toLanguageTags(),
+            "");
 
     this._binding.productPriceQuantity.setText(
         this._context.getString(
@@ -80,7 +87,9 @@ public class ProductOrderCardComponent {
   private void _setTotalPrice(@NonNull BigDecimal totalPrice) {
     Objects.requireNonNull(totalPrice);
 
-    this._binding.totalPrice.setText(CurrencyFormat.format(totalPrice, "id", "ID"));
+    this._binding.totalPrice.setText(
+        CurrencyFormat.format(
+            totalPrice, AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 
   private void _setDiscount(@NonNull BigDecimal discountPercent) {

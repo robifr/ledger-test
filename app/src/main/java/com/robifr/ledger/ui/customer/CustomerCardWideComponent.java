@@ -20,6 +20,7 @@ import android.content.Context;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -135,7 +136,10 @@ public class CustomerCardWideComponent {
   }
 
   private void _setBalance(long balance, boolean isNormalCard) {
-    final String formattedBalance = CurrencyFormat.format(BigDecimal.valueOf(balance), "id", "ID");
+    final String formattedBalance =
+        CurrencyFormat.format(
+            BigDecimal.valueOf(balance),
+            AppCompatDelegate.getApplicationLocales().toLanguageTags());
 
     if (isNormalCard) this._binding.normalCard.balance.setText(formattedBalance);
     else this._binding.expandedCard.balance.setText(formattedBalance);
@@ -144,7 +148,8 @@ public class CustomerCardWideComponent {
   private void _setDebt(@NonNull BigDecimal debt, boolean isNormalCard) {
     Objects.requireNonNull(debt);
 
-    final String debtText = CurrencyFormat.format(debt, "id", "ID");
+    final String debtText =
+        CurrencyFormat.format(debt, AppCompatDelegate.getApplicationLocales().toLanguageTags());
     final int debtTextColor =
         debt.compareTo(BigDecimal.ZERO) < 0
             // Negative debt will be shown red.

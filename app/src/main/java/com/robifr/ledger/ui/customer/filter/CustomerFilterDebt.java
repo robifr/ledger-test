@@ -46,8 +46,8 @@ public class CustomerFilterDebt {
 
     final TextInputEditText minDebt = this._dialogBinding.filterDebt.minimumDebt;
     final TextInputEditText maxDebt = this._dialogBinding.filterDebt.maximumDebt;
-    this._minDebtTextWatcher = new DebtTextWatcher(minDebt, "id", "ID");
-    this._maxDebtTextWatcher = new DebtTextWatcher(maxDebt, "id", "ID");
+    this._minDebtTextWatcher = new DebtTextWatcher(minDebt);
+    this._maxDebtTextWatcher = new DebtTextWatcher(maxDebt);
 
     minDebt.addTextChangedListener(this._minDebtTextWatcher);
     maxDebt.addTextChangedListener(this._maxDebtTextWatcher);
@@ -84,9 +84,8 @@ public class CustomerFilterDebt {
   }
 
   private class DebtTextWatcher extends CurrencyTextWatcher {
-    public DebtTextWatcher(
-        @NonNull EditText view, @NonNull String language, @NonNull String country) {
-      super(view, language, country);
+    public DebtTextWatcher(@NonNull EditText view) {
+      super(view);
       this._maximumAmount = BigDecimal.valueOf(Long.MAX_VALUE);
     }
 

@@ -21,6 +21,7 @@ import android.util.TypedValue;
 import android.webkit.JavascriptInterface;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.robifr.ledger.R;
 import com.robifr.ledger.util.CurrencyFormat;
 import java.math.BigDecimal;
@@ -80,7 +81,14 @@ public class JsInterface {
   @NonNull
   @JavascriptInterface
   public String formatCurrencyWithUnit(
-      double amount, @NonNull String language, @NonNull String country, @NonNull String symbol) {
-    return CurrencyFormat.formatWithUnit(BigDecimal.valueOf(amount), language, country, symbol);
+      double amount, @NonNull String languageTag, @NonNull String symbol) {
+    return CurrencyFormat.formatWithUnit(
+        this._context, BigDecimal.valueOf(amount), languageTag, symbol);
+  }
+
+  @NonNull
+  @JavascriptInterface
+  public String localeLanguageTag() {
+    return AppCompatDelegate.getApplicationLocales().toLanguageTags();
   }
 }

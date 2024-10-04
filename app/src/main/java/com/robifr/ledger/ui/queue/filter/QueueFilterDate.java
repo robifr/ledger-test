@@ -32,7 +32,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
@@ -82,8 +81,7 @@ public class QueueFilterDate implements ChipGroup.OnCheckedStateChangeListener {
         .setChecked(true);
     this._dialogBinding.filterDate.chipGroup.setOnCheckedStateChangeListener(this);
 
-    final DateTimeFormatter format =
-        DateTimeFormatter.ofPattern("d MMM yyyy", new Locale("id", "ID"));
+    final DateTimeFormatter format = DateTimeFormatter.ofPattern("d MMM yyyy");
     final Chip customRangeChip =
         this._dialogBinding.filterDate.chipGroup.findViewWithTag(QueueDate.Range.CUSTOM.toString());
     final int customRangeVisibility =

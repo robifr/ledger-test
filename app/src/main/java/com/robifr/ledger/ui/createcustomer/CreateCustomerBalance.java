@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.CreateCustomerDialogTransactionBinding;
@@ -56,8 +57,7 @@ public class CreateCustomerBalance
             .setNegativeButton(R.string.action_cancel, this)
             .setPositiveButton(R.string.action_withdraw, this)
             .create();
-    this._withdrawTextWatcher =
-        new BalanceTextWatcher(this._withdrawDialogBinding.amount, "id", "ID");
+    this._withdrawTextWatcher = new BalanceTextWatcher(this._withdrawDialogBinding.amount);
 
     this._addBalanceDialogBinding =
         CreateCustomerDialogTransactionBinding.inflate(this._fragment.getLayoutInflater());
@@ -67,8 +67,7 @@ public class CreateCustomerBalance
             .setNegativeButton(R.string.action_cancel, this)
             .setPositiveButton(R.string.action_add, this)
             .create();
-    this._addBalanceTextWatcher =
-        new BalanceTextWatcher(this._addBalanceDialogBinding.amount, "id", "ID");
+    this._addBalanceTextWatcher = new BalanceTextWatcher(this._addBalanceDialogBinding.amount);
 
     this._fragment.fragmentBinding().withdrawButton.setOnClickListener(this);
     this._withdrawDialog.setOnDismissListener(this);
@@ -135,7 +134,10 @@ public class CreateCustomerBalance
   }
 
   public void setInputtedBalance(long balance) {
-    final String formattedBalance = CurrencyFormat.format(BigDecimal.valueOf(balance), "id", "ID");
+    final String formattedBalance =
+        CurrencyFormat.format(
+            BigDecimal.valueOf(balance),
+            AppCompatDelegate.getApplicationLocales().toLanguageTags());
     this._fragment.fragmentBinding().balance.setText(formattedBalance);
 
     // Disable withdraw button when the balance is zero.
@@ -184,13 +186,14 @@ public class CreateCustomerBalance
     this._withdrawDialogBinding.amountLayout.setHelperText(
         this._fragment.getString(
             R.string.createCustomer_balance_withdraw_n_available,
-            CurrencyFormat.format(BigDecimal.valueOf(amount), "id", "ID")));
+            CurrencyFormat.format(
+                BigDecimal.valueOf(amount),
+                AppCompatDelegate.getApplicationLocales().toLanguageTags())));
   }
 
   private class BalanceTextWatcher extends CurrencyTextWatcher {
-    public BalanceTextWatcher(
-        @NonNull EditText editText, @NonNull String language, @NonNull String country) {
-      super(editText, language, country);
+    public BalanceTextWatcher(@NonNull EditText editText) {
+      super(editText);
     }
 
     @Override

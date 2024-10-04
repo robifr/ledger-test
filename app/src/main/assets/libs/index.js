@@ -21,9 +21,9 @@
  * @property {(colorName: string) => string} colorHex
  * @property {(
  *      amount: number,
- *      language: string,
- *      country: string,
+ *      languageTag: string,
  *      symbol: string) => string} formatCurrencyWithUnit
+ * @property {() => string} localeLanguageTag
  */
 
 /**

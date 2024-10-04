@@ -18,6 +18,7 @@ package com.robifr.ledger.ui.customer;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.robifr.ledger.R;
 import com.robifr.ledger.data.model.CustomerModel;
@@ -58,6 +59,9 @@ public class CustomerCardPackedComponent {
   }
 
   private void _setBalance(long balance) {
-    this._binding.balance.setText(CurrencyFormat.format(BigDecimal.valueOf(balance), "id", "ID"));
+    this._binding.balance.setText(
+        CurrencyFormat.format(
+            BigDecimal.valueOf(balance),
+            AppCompatDelegate.getApplicationLocales().toLanguageTags()));
   }
 }

@@ -22,7 +22,7 @@
       android:icon="@drawable/icon_search"
       app:showAsAction="always|withText" />
   <item
-      android:id="@+id/menu"
-      android:icon="@drawable/icon_morevert"
+      android:id="@+id/settings"
+      android:icon="@drawable/icon_settings"
       app:showAsAction="always|withText" />
 </menu>

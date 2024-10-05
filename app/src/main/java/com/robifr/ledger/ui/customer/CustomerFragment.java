@@ -97,6 +97,12 @@ public class CustomerFragment extends Fragment implements Toolbar.OnMenuItemClic
         yield true;
       }
 
+      case R.id.settings -> {
+        Navigation.findNavController(this._fragmentBinding.getRoot())
+            .navigate(R.id.settingsFragment);
+        yield true;
+      }
+
       default -> false;
     };
   }

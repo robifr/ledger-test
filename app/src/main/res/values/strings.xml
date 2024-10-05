@@ -91,6 +91,9 @@
   <string name="main_createNew_customer">Customer</string>
   <string name="main_createNew_product">Product</string>
 
+  <!-- Settings fragment. -->
+  <string name="settings">Settings</string>
+
   <!-- Dashboard fragment. -->
   <string name="dashboard_date_selectDate">Select date</string>
   <string name="dashboard_date_selectDateRange">Select date range</string>

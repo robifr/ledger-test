@@ -107,6 +107,12 @@ public class QueueFragment extends Fragment implements Toolbar.OnMenuItemClickLi
         yield true;
       }
 
+      case R.id.settings -> {
+        Navigation.findNavController(this._fragmentBinding.getRoot())
+            .navigate(R.id.settingsFragment);
+        yield true;
+      }
+
       default -> false;
     };
   }

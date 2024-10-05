@@ -97,6 +97,12 @@ public class ProductFragment extends Fragment implements Toolbar.OnMenuItemClick
         yield true;
       }
 
+      case R.id.settings -> {
+        Navigation.findNavController(this._fragmentBinding.getRoot())
+            .navigate(R.id.settingsFragment);
+        yield true;
+      }
+
       default -> false;
     };
   }

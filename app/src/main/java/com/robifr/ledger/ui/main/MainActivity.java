@@ -40,6 +40,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 import com.robifr.ledger.R;
 import com.robifr.ledger.databinding.MainActivityBinding;
+import com.robifr.ledger.repository.SettingsRepository;
 import com.robifr.ledger.util.Compats;
 import dagger.hilt.android.AndroidEntryPoint;
 import java.util.List;
@@ -126,7 +127,9 @@ public class MainActivity extends AppCompatActivity
     this._activityBinding.bottomNavigation.setOnItemSelectedListener(this);
     this.getOnBackPressedDispatcher().addCallback(this, new OnBackPressedHandler());
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-    AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList());
+    AppCompatDelegate.setApplicationLocales(
+        LocaleListCompat.forLanguageTags(
+            SettingsRepository.instance(this).languageUsed().languageTag()));
 
     List.of(R.id.dashboardFragment, R.id.queueFragment, R.id.customerFragment, R.id.productFragment)
         .forEach(

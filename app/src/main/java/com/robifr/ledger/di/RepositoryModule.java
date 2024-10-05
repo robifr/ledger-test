@@ -22,6 +22,7 @@ import com.robifr.ledger.repository.CustomerRepository;
 import com.robifr.ledger.repository.ProductOrderRepository;
 import com.robifr.ledger.repository.ProductRepository;
 import com.robifr.ledger.repository.QueueRepository;
+import com.robifr.ledger.repository.SettingsRepository;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -64,5 +65,14 @@ public class RepositoryModule {
     Objects.requireNonNull(context);
 
     return QueueRepository.instance(context);
+  }
+
+  @NonNull
+  @Provides
+  public SettingsRepository provideSettingsRepository(
+      @NonNull @ApplicationContext Context context) {
+    Objects.requireNonNull(context);
+
+    return SettingsRepository.instance(context);
   }
 }

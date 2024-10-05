@@ -45,6 +45,8 @@
   <!-- `QueueModel#PaymentMethod`. -->
   <string name="enum_queuePaymentMethod_cash">Cash</string>
   <string name="enum_queuePaymentMethod_accountBalance">Account balance</string>
+  <!-- `LanguageOption`. -->
+  <string name="enum_languageOption_englishUs">English (US)</string>
 
   <!-- Action button. -->
   <string name="action_add">Add</string>
@@ -93,6 +95,10 @@
 
   <!-- Settings fragment. -->
   <string name="settings">Settings</string>
+  <!-- General. -->
+  <string name="settings_general">General</string>
+  <string name="settings_language">Language</string>
+  <string name="settings_selectLanguage">Select language</string>
 
   <!-- Dashboard fragment. -->
   <string name="dashboard_date_selectDate">Select date</string>

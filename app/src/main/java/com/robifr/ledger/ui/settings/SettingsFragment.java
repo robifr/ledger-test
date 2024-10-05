@@ -24,8 +24,10 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.robifr.ledger.databinding.SettingsFragmentBinding;
+import com.robifr.ledger.ui.settings.viewmodel.SettingsViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Objects;
 
@@ -33,6 +35,10 @@ import java.util.Objects;
 public class SettingsFragment extends Fragment {
   @NonNull private final OnBackPressedHandler _onBackPressed = new OnBackPressedHandler();
   @Nullable private SettingsFragmentBinding _fragmentBinding;
+  @Nullable private SettingsLanguage _language;
+
+  @Nullable private SettingsViewModel _settingsViewModel;
+  @Nullable private SettingsViewModelHandler _viewModelHandler;
 
   @Override
   public View onCreateView(
@@ -50,6 +56,10 @@ public class SettingsFragment extends Fragment {
     Objects.requireNonNull(view);
     Objects.requireNonNull(this._fragmentBinding);
 
+    this._language = new SettingsLanguage(this);
+    this._settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
+    this._viewModelHandler = new SettingsViewModelHandler(this, this._settingsViewModel);
+
     this.requireActivity()
         .getOnBackPressedDispatcher()
         .addCallback(this.getViewLifecycleOwner(), this._onBackPressed);
@@ -60,6 +70,16 @@ public class SettingsFragment extends Fragment {
   @NonNull
   public SettingsFragmentBinding fragmentBinding() {
     return Objects.requireNonNull(this._fragmentBinding);
+  }
+
+  @NonNull
+  public SettingsViewModel settingsViewModel() {
+    return Objects.requireNonNull(this._settingsViewModel);
+  }
+
+  @NonNull
+  public SettingsLanguage language() {
+    return Objects.requireNonNull(this._language);
   }
 
   public void finish() {

@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ ~ Copyright 2024 Robi
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~     http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->
+
+<resources>
+  <string name="appName">Ledger</string>
+  <string name="appName_debug">Ledger (Debug)</string>
+
+  <!-- Enum. -->
+  <!-- `QueueSortMethod#SortBy`. -->
+  <string name="enum_queueSort_customerName">Nama pelanggan</string>
+  <string name="enum_queueSort_date">Tanggal</string>
+  <string name="enum_queueSort_totalPrice">Harga total</string>
+  <!-- `CustomerSortMethod#SortBy`. -->
+  <string name="enum_customerSort_name">Nama</string>
+  <string name="enum_customerSort_balance">Saldo</string>
+  <!-- `ProductSortMethod#SortBy`. -->
+  <string name="enum_productSort_name">Nama</string>
+  <string name="enum_productSort_price">Harga</string>
+  <!-- `QueueDate#Range`. -->
+  <string name="enum_queueDate_allTime">Setiap waktu</string>
+  <string name="enum_queueDate_today">Hari ini</string>
+  <string name="enum_queueDate_yesterday">Kemarin</string>
+  <string name="enum_queueDate_thisWeek">Minggu ini</string>
+  <string name="enum_queueDate_thisMonth">Bulan ini</string>
+  <string name="enum_queueDate_thisYear">Tahun ini</string>
+  <string name="enum_queueDate_custom" translatable="false">%s — %s</string>
+  <!-- `QueueModel#Status`. -->
+  <string name="enum_queueStatus_inQueue">Mengantre</string>
+  <string name="enum_queueStatus_inProcess">Diproses</string>
+  <string name="enum_queueStatus_unpaid">Belum dibayar</string>
+  <string name="enum_queueStatus_completed">Selesai</string>
+  <!-- `QueueModel#PaymentMethod`. -->
+  <string name="enum_queuePaymentMethod_cash">Tunai</string>
+  <string name="enum_queuePaymentMethod_accountBalance">Saldo akun</string>
+  <!-- `LanguageOption`. -->
+  <string name="enum_languageOption_englishUs">Inggris (Amerika Serikat)</string>
+  <string name="enum_languageOption_indonesia">Indonesia</string>
+
+  <!-- Action button. -->
+  <string name="action_add">Tambah</string>
+  <string name="action_cancel">Batal</string>
+  <string name="action_delete">Hapus</string>
+  <string name="action_denyAndQuit">Tolak dan keluar</string>
+  <string name="action_discardAndLeave">Buang dan keluar</string>
+  <string name="action_edit">Edit</string>
+  <string name="action_grant">Izinkan</string>
+  <string name="action_new">Baru</string>
+  <string name="action_ok">Oke</string>
+  <string name="action_save">Simpan</string>
+  <string name="action_withdraw">Tarik</string>
+
+  <!-- Symbol. -->
+  <string name="symbol_notAvailable">n/a</string>
+  <string name="symbol_mDash" translatable="false">—</string>
+  <string name="symbol_thousand">rb</string>
+  <string name="symbol_million">jt</string>
+  <string name="symbol_billion">M</string>
+  <string name="symbol_trillion">T</string>
+
+  <!-- Main activity. -->
+  <!-- Permission. -->
+  <string name="main_storageAccessPermission">Izin akses penyimpanan diperlukan</string>
+  <string name="main_storageAccessPermission_description">
+    <![CDATA[
+      <p>
+        Izin ini diperlukan untuk memastikan persistensi data.
+        Memberikan izin ini memungkinkan aplikasi menyimpan semua data bahkan setelah pencopotan pemasangan.
+        Data disimpan di dalam <br/>
+        \'/storage/emulated/0/Documents/.ledger/\'
+      </p>
+    ]]>
+  </string>
+  <!-- Navigation. -->
+  <string name="main_navigation_dashboard">Dashbor</string>
+  <string name="main_navigation_queue">Antrean</string>
+  <string name="main_navigation_customer">Pelanggan</string>
+  <string name="main_navigation_product">Produk</string>
+  <!-- Create. -->
+  <string name="main_createNew">Buat baru</string>
+  <string name="main_createNew_queue">Antrean</string>
+  <string name="main_createNew_customer">Pelanggan</string>
+  <string name="main_createNew_product">Produk</string>
+
+  <!-- Settings fragment. -->
+  <string name="settings">Pengaturan</string>
+  <!-- General. -->
+  <string name="settings_general">Umum</string>
+  <string name="settings_language">Bahasa</string>
+  <string name="settings_selectLanguage">Pilih bahasa</string>
+
+  <!-- Dashboard fragment. -->
+  <string name="dashboard_date_selectDate">Pilih tanggal</string>
+  <string name="dashboard_date_selectDateRange">Pilih rentang tanggal</string>
+  <string name="dashboard_date_customRange">Rentang kustom</string>
+  <!-- Summary. -->
+  <string name="dashboard_summary">Ringkasan</string>
+  <string name="dashboard_totalQueues">Antrean total</string>
+  <string name="dashboard_uncompletedQueues">Antrean belum selesai</string>
+  <string name="dashboard_uncompletedQueues_oldestQueue_x">
+    <![CDATA[
+      <text>
+        <tspan x=\"0\" dy=\"-0.5em\" style=\"font-size: %d;\">Antrean tertua:</tspan>
+        <tspan x=\"0\" dy=\"1.2em\" style=\"font-size: %d; \"font-weight: bold;\">%s</tspan>
+      </text>
+    ]]>
+  </string>
+  <string name="dashboard_activeCustomers">Pelanggan aktif</string>
+  <plurals name="dashboard_activeCustomers_n_queue">
+    <item quantity="one"><![CDATA[<b>%d</b> antrean]]></item>
+    <item quantity="other"><![CDATA[<b>%d</b> antrean]]></item>
+  </plurals>
+  <string name="dashboard_productsSold">Products sold</string>
+  <plurals name="dashboard_productsSold_n_item">
+    <item quantity="one"><![CDATA[<b>%s</b> item]]></item>
+    <item quantity="other"><![CDATA[<b>%s</b> item]]></item>
+  </plurals>
+  <!-- Revenue. -->
+  <string name="dashboard_revenue">Pendapatan</string>
+  <string name="dashboard_receivedIncome">Pemasukan diterima</string>
+  <string name="dashboard_receivedIncome_description">Dari antrean selesai</string>
+  <string name="dashboard_projectedIncome">Proyeksi pemasukan</string>
+  <string name="dashboard_projectedIncome_description">Dari antrean apapun</string>
+  <!-- Balance. -->
+  <string name="dashboard_balance">Saldo</string>
+  <plurals name="dashboard_balance_from_n_customer">
+    <item quantity="one"><![CDATA[Dari <b>%d</b> pelanggan]]></item>
+    <item quantity="other"><![CDATA[Dari <b>%d</b> pelanggan]]></item>
+  </plurals>
+  <string name="dashboard_balance_note">*\u0020\u0020 Filter tanggal tidak berpengaruh pada ikhtisar saldo ini.</string>
+  <string name="dashboard_totalBalance">Saldo total</string>
+  <string name="dashboard_totalDebt">Hutang total</string>
+  <!-- Snackbar. -->
+  <string name="dashboard_fetchAllQueueError" translatable="false">@string/queue_fetchAllQueueError</string>
+  <string name="dashboard_fetchAllCustomerError" translatable="false">@string/customer_fetchAllCustomerError</string>
+  <string name="dashboard_fetchAllProductError" translatable="false">@string/product_fetchAllProductError</string>
+
+  <!-- Queue fragment. -->
+  <plurals name="queue_displaying_n_queue">
+    <item quantity="one"><![CDATA[Menampilkan <b>%d</b> antrean]]></item>
+    <item quantity="other"><![CDATA[Menampilkan <b>%d</b> antrean]]></item>
+  </plurals>
+  <string name="queue_sortBy">Sortir</string>
+  <!-- Filters. -->
+  <string name="queue_filters">Filter</string>
+  <string name="queue_filters_min">Min</string>
+  <string name="queue_filters_max">Maks</string>
+  <string name="queue_filterCustomer">Pelanggan</string>
+  <string name="queue_filterCustomer_showQueueWithNoCustomer">Tampilkan antrean tanpa pelanggan</string>
+  <string name="queue_filterCustomer_filterCustomers">Filter pelanggan</string>
+  <string name="queue_filterDate">Tanggal</string>
+  <string name="queue_filterDate_customRange">Rentang kustom</string>
+  <string name="queue_filterDate_selectDateRange">Pilih rentang kustom</string>
+  <string name="queue_filterStatus">Status</string>
+  <string name="queue_filterTotalPrice">Harga total</string>
+  <!-- Card. -->
+  <string name="queue_card_customer">Pelanggan</string>
+  <string name="queue_card_queueId">ID antrean</string>
+  <string name="queue_card_date">Tanggal</string>
+  <string name="queue_card_status">Status</string>
+  <string name="queue_card_paymentMethod">Metode pembayaran</string>
+  <string name="queue_card_productOrders_product">Produk</string>
+  <string name="queue_card_productOrders_quantity">Kuantitas</string>
+  <string name="queue_card_productOrders_totalPrice">Harga total</string>
+  <string name="queue_card_productOrders_n_off" translatable="false">@string/createQueue_productOrders_n_off</string>
+  <string name="queue_card_grandTotalPrice" translatable="false">@string/createQueue_productOrders_grandTotalPrice</string>
+  <string name="queue_card_totalDiscount" translatable="false">@string/createQueue_productOrders_totalDiscount</string>
+  <string name="queue_card_x_balance" translatable="false">@string/createQueue_productOrders_x_balance</string>
+  <string name="queue_card_x_debt" translatable="false">@string/createQueue_productOrders_x_debt</string>
+  <!-- Card menu. -->
+  <string name="queue_cardMenu_edit" translatable="false">@string/action_edit</string>
+  <string name="queue_cardMenu_delete" translatable="false">@string/action_delete</string>
+  <!-- Snackbar. -->
+  <string name="queue_deleteQueueError">Kesalahan! Gagal menghapus antrean</string>
+  <string name="queue_fetchAllQueueError">Kesalahan! Tidak dapat memuat seluruh antrean</string>
+  <plurals name="queue_deleted_n_queue">
+    <item quantity="one">Menghapus %d antrean</item>
+    <item quantity="other">Menghapus %d antrean</item>
+  </plurals>
+
+  <!-- Customer fragment. -->
+  <plurals name="customer_displaying_n_customer">
+    <item quantity="one"><![CDATA[Menampilkan <b>%d</b> pelanggan]]></item>
+    <item quantity="other"><![CDATA[Menampilkan <b>%d</b> pelanggan]]></item>
+  </plurals>
+  <string name="customer_sortBy" translatable="false">@string/queue_sortBy</string>
+  <!-- Filters. -->
+  <string name="customer_filters" translatable="false">@string/queue_filters</string>
+  <string name="customer_filters_min" translatable="false">@string/queue_filters_min</string>
+  <string name="customer_filters_max" translatable="false">@string/queue_filters_max</string>
+  <string name="customer_filterBalance">Saldo</string>
+  <string name="customer_filterDebt">Hutang</string>
+  <!-- Card. -->
+  <string name="customer_card_name">Nama</string>
+  <string name="customer_card_customerId">ID pelanggan</string>
+  <string name="customer_card_balance">Saldo</string>
+  <string name="customer_card_debt">Hutang</string>
+  <!-- Card menu. -->
+  <string name="customer_cardMenu_edit" translatable="false">@string/action_edit</string>
+  <string name="customer_cardMenu_delete" translatable="false">@string/action_delete</string>
+  <!-- Snackbar. -->
+  <string name="customer_deleteCustomerError">Kesalahan! Gagal menghapus pelanggan</string>
+  <string name="customer_fetchAllCustomerError">Kesalahan! Tidak dapat memuat semua pelanggan</string>
+  <plurals name="customer_deleted_n_customer" translatable="false">
+    <item quantity="one">@string/_customer_deleted_n_customer_one</item>
+    <item quantity="other">@string/_customer_deleted_n_customer_other</item>
+  </plurals>
+  <string name="_customer_deleted_n_customer_one">Menghapus %d pelanggan</string>
+  <string name="_customer_deleted_n_customer_other">Menghapus %d pelanggan</string>
+
+  <!-- Product fragment. -->
+  <plurals name="product_displaying_n_product">
+    <item quantity="one"><![CDATA[Menampilkan <b>%d</b> produk]]></item>
+    <item quantity="other"><![CDATA[Menampilkan <b>%d</b> produk]]></item>
+  </plurals>
+  <string name="product_sortBy" translatable="false">@string/queue_sortBy</string>
+  <!-- Filters. -->
+  <string name="product_filters" translatable="false">@string/queue_filters</string>
+  <string name="product_filters_min" translatable="false">@string/queue_filters_min</string>
+  <string name="product_filters_max" translatable="false">@string/queue_filters_max</string>
+  <string name="product_filterPrice">Harga</string>
+  <!-- Card. -->
+  <string name="product_card_name">Nama</string>
+  <string name="product_card_productId">ID produk</string>
+  <string name="product_card_price">Harga</string>
+  <!-- Card menu. -->
+  <string name="product_cardMenu_edit" translatable="false">@string/action_edit</string>
+  <string name="product_cardMenu_delete" translatable="false">@string/action_delete</string>
+  <!-- Snackbar. -->
+  <string name="product_deleteProductError">Kesalahan! Gagal menghapus produk</string>
+  <string name="product_fetchAllProductError">Kesalahan! Tidak dapat memuat seluruh produk</string>
+  <plurals name="product_deleted_n_product" translatable="false">
+    <item quantity="one">@string/_product_deleted_n_product_one</item>
+    <item quantity="other">@string/_product_deleted_n_product_other</item>
+  </plurals>
+  <string name="_product_deleted_n_product_one">Menghapus %d produk</string>
+  <string name="_product_deleted_n_product_other">Menghapus %d produk</string>
+
+  <!-- Create/edit queue fragment. -->
+  <string name="createQueue">Buat antrean</string>
+  <string name="createQueue_customer">Pelanggan</string>
+  <string name="createQueue_date">Tanggal</string>
+  <string name="createQueue_date_selectDate">Pilih tanggal</string>
+  <string name="createQueue_status">Status</string>
+  <string name="createQueue_status_selectStatus">Pilih status</string>
+  <string name="createQueue_paymentMethods">Metode pembayaran</string>
+  <string name="createQueue_unsavedChangesWarning">Anda memiliki perubahan yang belum disimpan. Apakah Anda ingin membuangnya?</string>
+  <string name="editQueue">Edit antrean</string>
+  <!-- Product orders. -->
+  <string name="createQueue_productOrders">Pesanan produk</string>
+  <string name="createQueue_productOrders_grandTotalPrice">Harga total keseluruhan</string>
+  <string name="createQueue_productOrders_totalDiscount">Diskon total</string>
+  <string name="createQueue_productOrders_x_balance">Saldo %s</string>
+  <string name="createQueue_productOrders_x_debt">Hutang %s</string>
+  <string name="createQueue_productOrders_n_off">Diskon %s%%</string>
+  <string name="createQueue_productOrders_n_multiply_n" translatable="false">%s x %s</string>
+  <!-- Make product orders. -->
+  <string name="createQueue_productOrders_addNew" translatable="false">@string/action_add</string>
+  <string name="createQueue_productOrders_makeProductOrders">Buat pesanan produk</string>
+  <string name="createQueue_productOrders_editProductOrders">Edit pesanan produk</string>
+  <string name="createQueue_productOrders_product">Produk</string>
+  <string name="createQueue_productOrders_quantity">Kuantitas</string>
+  <string name="createQueue_productOrders_discount">Diskon</string>
+  <string name="createQueue_productOrders_totalPrice">Harga total</string>
+  <!-- Snackbar. -->
+  <string name="createQueue_addQueueError">Kesalahan! Gagal menambahkan antrean</string>
+  <string name="createQueue_updateQueueError">Kesalahan! Gagal memperbarui antrean</string>
+  <string name="createQueue_fetchQueueError">Kesalahan! Gagal memuat antrean terkait</string>
+  <string name="createQueue_fetchCustomerError" translatable="false">@string/createCustomer_fetchCustomerError</string>
+  <string name="createQueue_fetchProductError" translatable="false">@string/createProduct_fetchProductError</string>
+  <string name="createQueue_includeOneProductOrderError">Harap sertakan setidaknya satu pesanan produk</string>
+  <plurals name="createQueue_added_n_queue">
+    <item quantity="one">Menambahkan %d antrean</item>
+    <item quantity="other">Menambahkan %d antrean</item>
+  </plurals>
+  <plurals name="createQueue_updated_n_queue">
+    <item quantity="one">Memperbarui %d antrean</item>
+    <item quantity="other">Memperbarui %d antrean</item>
+  </plurals>
+
+  <!-- Create/edit customer fragment. -->
+  <string name="createCustomer">Buat pelanggan</string>
+  <string name="createCustomer_name">Nama</string>
+  <string name="createCustomer_name_emptyError">Nama pelanggan wajib diisi</string>
+  <string name="createCustomer_debt">Hutang</string>
+  <string name="createCustomer_unsavedChangesWarning" translatable="false">@string/createQueue_unsavedChangesWarning</string>
+  <string name="editCustomer">Edit pelanggan</string>
+  <!-- Balance. -->
+  <string name="createCustomer_balance">Saldo</string>
+  <string name="createCustomer_balance_amount">Jumlah</string>
+  <string name="createCustomer_balance_add">Tambah saldo</string>
+  <string name="createCustomer_balance_withdraw">Tarik saldo</string>
+  <string name="createCustomer_balance_withdraw_n_available">Tersedia %s</string>
+  <!-- Snackbar. -->
+  <string name="createCustomer_addCustomerError">Kesalahan! Gagal menambahkan pelanggan</string>
+  <string name="createCustomer_updateCustomerError">Kesalahan! Gagal memperbarui pelangganr</string>
+  <string name="createCustomer_fetchCustomerError">Kesalahan! Gagal memuat pelanggan terkait</string>
+  <plurals name="createCustomer_added_n_customer">
+    <item quantity="one">Menambahkan %d pelanggan</item>
+    <item quantity="other">Menambahkan %d pelanggan</item>
+  </plurals>
+  <plurals name="createCustomer_updated_n_customer">
+    <item quantity="one">Memperbarui %d pelanggan</item>
+    <item quantity="other">Memperbarui %d pelanggan</item>
+  </plurals>
+
+  <!-- Create/edit product fragment. -->
+  <string name="createProduct">Buat produk</string>
+  <string name="createProduct_name">Nama</string>
+  <string name="createProduct_name_emptyError">Nama produk wajib diisi</string>
+  <string name="createProduct_price">Harga</string>
+  <string name="createProduct_unsavedChangesWarning" translatable="false">@string/createQueue_unsavedChangesWarning</string>
+  <string name="editProduct">Edit produk</string>
+  <!-- Snackbar. -->
+  <string name="createProduct_addProductError">Kesalahan! Gagal menambahkan produk</string>
+  <string name="createProduct_updateProductError">Kesalahan! Gagal memperbarui produk</string>
+  <string name="createProduct_fetchProductError">Kesalahan! Gagal memuat produk terkait</string>
+  <plurals name="createProduct_added_n_product">
+    <item quantity="one">Menambahkan %d produk</item>
+    <item quantity="other">Menambahkan %d produk</item>
+  </plurals>
+  <plurals name="createProduct_updated_n_product">
+    <item quantity="one">Memperbarui %d produk</item>
+    <item quantity="other">Memperbarui %d produk</item>
+  </plurals>
+
+  <!-- Select customer fragment. -->
+  <string name="selectCustomer">Pilih pelanggan</string>
+  <string name="selectCustomer_createNew" translatable="false">@string/action_new</string>
+  <string name="selectCustomer_selectedCustomer">Pelanggan dipilih</string>
+  <string name="selectCustomer_allCustomers">Semua pelanggan</string>
+  <string name="selectCustomer_originalCustomerChanged">Pelanggan yang awalnya dipilih telah diubah</string>
+  <string name="selectCustomer_originalCustomerDeleted">Pelanggan yang awalnya dipilih telah dihapus</string>
+  <!-- Snackbar. -->
+  <string name="selectCustomer_fetchAllCustomerError" translatable="false">@string/customer_fetchAllCustomerError</string>
+
+  <!-- Select product fragment. -->
+  <string name="selectProduct">Pilih produk</string>
+  <string name="selectProduct_createNew" translatable="false">@string/action_new</string>
+  <string name="selectProduct_selectedProduct">Produk dipilih</string>
+  <string name="selectProduct_allProducts">Semua produk</string>
+  <string name="selectProduct_originalProductChanged">Produk yang awalnya dipilih telah diubah</string>
+  <string name="selectProduct_originalProductDeleted">Produk yang awalnya dipilih telah dihapus</string>
+  <!-- Snackbar. -->
+  <string name="selectProduct_fetchAllProductError" translatable="false">@string/product_fetchAllProductError</string>
+
+  <!-- Filter customer fragment. -->
+  <string name="filterCustomer">Filter pelanggan</string>
+  <string name="filterCustomer_filteredCustomers">Pelanggan difilter</string>
+  <string name="filterCustomer_allCustomers">Semua pelanggan</string>
+  <!-- Snackbar. -->
+  <string name="filterCustomer_fetchAllCustomerError" translatable="false">@string/customer_fetchAllCustomerError</string>
+
+  <!-- Search fragment. -->
+  <string name="searchCustomersAndProducts">Cari pelanggan &amp; produk</string>
+  <string name="searchCustomersAndProducts_customersFound">Pelanggan</string>
+  <string name="searchCustomersAndProducts_productsFound">Produk</string>
+  <string name="searchCustomersAndProducts_noResultsFound">Tidak ada hasil yang ditemukan</string>
+  <string name="searchCustomersAndProducts_noResultsFound_description">Tidak dapat menemukan pelanggan atau produk yang cocok</string>
+
+  <!-- Search customer fragment. -->
+  <string name="searchCustomer">Cari pelanggan</string>
+  <plurals name="searchCustomer_found_x_customer">
+    <item quantity="one"><![CDATA[Menemukan <b>%d</b> pelanggan]]></item>
+    <item quantity="other"><![CDATA[Menemukan <b>%d</b> pelanggan]]></item>
+  </plurals>
+  <string name="searchCustomer_noResultsFound" translatable="false">@string/searchCustomersAndProducts_noResultsFound</string>
+  <string name="searchCustomer_noResultsFound_description">Tidak dapat menemukan pelanggan yang cocok</string>
+  <!-- Snackbar. -->
+  <string name="searchCustomer_deleteCustomerError" translatable="false">@string/customer_deleteCustomerError</string>
+  <plurals name="searchCustomer_deleted_n_customer" translatable="false">
+    <item quantity="one">@string/_customer_deleted_n_customer_one</item>
+    <item quantity="other">@string/_customer_deleted_n_customer_other</item>
+  </plurals>
+
+  <!-- Search product fragment. -->
+  <string name="searchProduct">Pilih produk</string>
+  <plurals name="searchProduct_found_x_product">
+    <item quantity="one"><![CDATA[Menemukan <b>%d</b> produk]]></item>
+    <item quantity="other"><![CDATA[Menemukan <b>%d</b> produk]]></item>
+  </plurals>
+  <string name="searchProduct_noResultsFound" translatable="false">@string/searchCustomersAndProducts_noResultsFound</string>
+  <string name="searchProduct_noResultsFound_description">Tidak dapat menemukan produk yang cocok</string>
+  <!-- Snackbar. -->
+  <string name="searchProduct_deleteProductError" translatable="false">@string/product_deleteProductError</string>
+  <plurals name="searchProduct_deleted_n_product" translatable="false">
+    <item quantity="one">@string/_product_deleted_n_product_one</item>
+    <item quantity="other">@string/_product_deleted_n_product_other</item>
+  </plurals>
+</resources>

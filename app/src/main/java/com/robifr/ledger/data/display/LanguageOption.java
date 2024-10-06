@@ -22,7 +22,8 @@ import com.robifr.ledger.R;
 import java.util.Objects;
 
 public enum LanguageOption {
-  ENGLISH_US("en-US", R.string.enum_languageOption_englishUs);
+  ENGLISH_US("en-US", R.string.enum_languageOption_englishUs),
+  INDONESIA("id-ID", R.string.enum_languageOption_indonesia);
 
   @NonNull private final String _languageTag;
   @StringRes private final int _resourceString;

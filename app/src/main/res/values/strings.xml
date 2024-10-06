@@ -47,6 +47,7 @@
   <string name="enum_queuePaymentMethod_accountBalance">Account balance</string>
   <!-- `LanguageOption`. -->
   <string name="enum_languageOption_englishUs">English (US)</string>
+  <string name="enum_languageOption_indonesia">Indonesia</string>
 
   <!-- Action button. -->
   <string name="action_add">Add</string>

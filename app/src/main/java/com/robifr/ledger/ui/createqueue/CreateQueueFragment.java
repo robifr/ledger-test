@@ -167,7 +167,7 @@ public class CreateQueueFragment extends Fragment implements Toolbar.OnMenuItemC
     @Override
     public void handleOnBackPressed() {
       new MaterialAlertDialogBuilder(CreateQueueFragment.this.requireContext())
-          .setTitle(R.string.createQueue_unsavedChangesWarning)
+          .setMessage(R.string.createQueue_unsavedChangesWarning)
           .setNegativeButton(
               R.string.action_discardAndLeave, (dialog, type) -> CreateQueueFragment.this.finish())
           .setPositiveButton(R.string.action_cancel, (dialog, type) -> dialog.dismiss())

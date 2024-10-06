@@ -145,7 +145,7 @@ public class CreateCustomerFragment extends Fragment implements Toolbar.OnMenuIt
     @Override
     public void handleOnBackPressed() {
       new MaterialAlertDialogBuilder(CreateCustomerFragment.this.requireContext())
-          .setTitle(R.string.createCustomer_unsavedChangesWarning)
+          .setMessage(R.string.createCustomer_unsavedChangesWarning)
           .setNegativeButton(
               R.string.action_discardAndLeave,
               (dialog, type) -> CreateCustomerFragment.this.finish())

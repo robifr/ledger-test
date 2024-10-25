@@ -1,0 +1,1 @@
+[![codecov](https://codecov.io/github/robifr/ledger-test/graph/badge.svg?token=JEI9V481PB)](https://codecov.io/github/robifr/ledger-test)

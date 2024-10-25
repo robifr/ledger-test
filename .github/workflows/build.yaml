@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches: [robifr/ref/kotlin]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy CI gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci.gradle.properties ~/.gradle/gradle.properties
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-home-cache-cleanup: true
+          validate-wrappers: true
+
+      - name: Ensure gradlew is executable
+        run: chmod +x ./gradlew
+
+      - name: Run test
+        run: ./gradlew test --rerun-tasks
+
+      - name: Generate coverage report
+        run: ./gradlew koverXmlReport
+
+      - name: Upload coverage report to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: "**/build/reports/kover/report.xml"
+          token: ${{ secrets.CODECOV_TOKEN }}

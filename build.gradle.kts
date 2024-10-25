@@ -16,7 +16,6 @@
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 buildscript {
   repositories {
@@ -33,7 +32,6 @@ plugins {
   alias(libs.plugins.diffplug.spotless) apply false
   alias(libs.plugins.google.dagger.hilt.android) apply false
   alias(libs.plugins.google.devtools.ksp) apply false
-  alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
 allprojects {
@@ -93,21 +91,10 @@ allprojects {
     }
   }
 
-  gradle.projectsEvaluated() {
+  gradle.projectsEvaluated {
     tasks {
       withType<JavaCompile>().configureEach {
         options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
-      }
-
-      withType<Test>() {
-        configureEach { useJUnitPlatform() }
-        testLogging {
-          showStandardStreams = true
-          showExceptions = true
-          showCauses = true
-          showStackTraces = true
-          exceptionFormat = TestExceptionFormat.FULL
-        }
       }
 
       create<Delete>("clear") { delete = setOf(rootProject.layout.buildDirectory) }

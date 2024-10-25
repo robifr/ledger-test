@@ -15,13 +15,14 @@
  */
 
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-  alias(libs.plugins.android.application)
-  alias(libs.plugins.google.dagger.hilt.android)
+  id(libs.plugins.android.application.get().pluginId)
+  id(libs.plugins.google.dagger.hilt.android.get().pluginId)
   id(libs.plugins.google.devtools.ksp.get().pluginId)
   id(libs.plugins.jetbrains.kotlin.android.get().pluginId)
-  id(libs.plugins.jetbrains.kotlin.parcelize.get().pluginId)
+  id(libs.plugins.jetbrains.kotlin.plugin.parcelize.get().pluginId)
 }
 
 android {
@@ -107,15 +108,24 @@ dependencies {
   debugImplementation(libs.squareup.leakcanary.android)
 }
 
+tasks.withType<Test> {
+  useJUnitPlatform()
+  testLogging {
+    showStandardStreams = true
+    showExceptions = true
+    showCauses = true
+    showStackTraces = true
+    exceptionFormat = TestExceptionFormat.FULL
+  }
+}
+
 tasks.register<Exec>("downloadD3Js") {
   val version: String = libs.versions.d3.get()
   val url: String = "https://cdn.jsdelivr.net/npm/d3@${version}"
   val dir: File = file("src/main/assets/libs/").apply { mkdirs() }
   val file: File = File(dir, "d3.js")
-
   // Prevent re-downloading when rebuilding the project.
   onlyIf { !file.exists() || !file.readText().contains(version) }
-
   commandLine("curl", url, "-o", file.absolutePath)
 }
 
